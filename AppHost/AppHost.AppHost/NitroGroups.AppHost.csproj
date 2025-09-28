@@ -11,10 +11,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Aspire.Hosting" Version="9.5.0" />
     <PackageReference Include="Aspire.Hosting.AppHost" Version="9.3.1" />
+    <PackageReference Include="Aspire.Hosting.PostgreSQL" Version="9.5.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Persistence\NitroGroups.Persistence.Context\NitroGroups.Persistence.Context.csproj" />
     <ProjectReference Include="..\..\Services\NitroGroups.Services.Api\NitroGroups.Services.Api.csproj" />
     <ProjectReference Include="..\..\UI\NitroGroups.UI.Blazor\NitroGroups.UI.Blazor.csproj" />
   </ItemGroup>

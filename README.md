@@ -28,7 +28,7 @@ La estructura se divide en los siguientes proyectos principales:
 
 - **`AppHost`**: Proyecto de orquestación de **.NET Aspire** para simplificar el entorno de desarrollo local.
 
-- **`Modules/`**: Aquí reside la lógica de negocio principal. Cada módulo representa un **Contexto Delimitado (Bounded Context)** de DDD y está organizado internamente usando Vertical Slices:
+- **`Core/`**: Aquí reside la lógica de negocio principal. Cada módulo representa un **Contexto Delimitado (Bounded Context)** de DDD y está organizado internamente usando Vertical Slices:
     - **`Domain`**: El núcleo del hexágono. Contiene las entidades, agregados y reglas de negocio puras del dominio.
     - **`Application`**: Contiene los "cortes verticales" (casos de uso) con sus Comandos, Consultas (Queries) y Handlers. Define los "puertos" (interfaces) que necesita para comunicarse con el exterior.
     - **`Infrastructure`**: Contiene los "adaptadores" secundarios que implementan los puertos (ej. para la persistencia con EF Core, envío de emails, etc.).
@@ -38,10 +38,10 @@ La estructura se divide en los siguientes proyectos principales:
 ## Stack Tecnológico
 
 - **Backend**: .NET 8, ASP.NET Core, C#
-- **Frontend**: .NET 9, Blazor Web App
+- **Frontend**: .NET 8, Blazor Web App
 - **Orquestación**: .NET Aspire
-- **Arquitectura**: Clean Architecture, Domain-Driven Design (DDD)
-- **Base de Datos**: Entity Framework Core con PostgreSQL)
+- **Arquitectura**: Hexagonal Architecture, Vertical Slice
+- **Base de Datos**: Entity Framework Core con PostgreSQL
 
 ## Cómo Empezar
 
@@ -49,8 +49,9 @@ Para ejecutar el proyecto en un entorno de desarrollo local:
 
 1.  Clona el repositorio.
 2.  Asegúrate de tener instalado el **.NET 8 SDK** (o superior) y el workload de **.NET Aspire**.
-3.  Abre la solución en Visual Studio 2022 o superior y establece el proyecto `NitroGroups.AppHost` como proyecto de inicio.
-4.  Presiona F5 para lanzar la aplicación. .NET Aspire se encargará de iniciar tanto el frontend de Blazor como la API.
+3.  Crea la base de datos con la cadena de conexión que se encuentra en el appsettings de la  api(Puedes modificar la cadena de conexión).
+4.  Abre la solución en Visual Studio 2022 o superior y establece el proyecto `NitroGroups.AppHost` como proyecto de inicio.
+5.  Presiona F5 para lanzar la aplicación. .NET Aspire se encargará de iniciar tanto el frontend de Blazor como la API.
 
 Alternativamente, desde la línea de comandos:
 ```bash
