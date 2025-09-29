@@ -509,3 +509,5 @@ cache/
 *.user
 *.userosscache
 *.sln.docstates
+
+**/wwwroot/app.min.css
