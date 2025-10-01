@@ -1,8 +1,18 @@
 using NitroGroups.Core.Bootstrap;
 using NitroGroups.Persistence.Context;
 using NitroGroups.Shared.EndpointMapping;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Configurar Serilog
+Log.Logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(builder.Configuration)
+    .Enrich.FromLogContext()
+    .WriteTo.Console()
+    .CreateLogger();
+
+builder.Host.UseSerilog();
 
 builder.AddServiceDefaults();
 
@@ -29,4 +39,16 @@ app.UseHttpsRedirection();
 
 app.MapEndpoints();
 
-app.Run();
+try
+{
+    Log.Information("Starting NitroGroups API");
+    app.Run();
+}
+catch (Exception ex)
+{
+    Log.Fatal(ex, "Application terminated unexpectedly");
+}
+finally
+{
+    Log.CloseAndFlush();
+}
