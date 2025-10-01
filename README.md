@@ -79,41 +79,5 @@ Y para ejecutarlo y tenerlo corriendo para ver los cambios que hagas:
 cd UI/NitroGroups.UI.Blazor
 
 #Ejecuta tailwind en modo --watch
-## Cómo Empezar
-
-Para ejecutar el proyecto en un entorno de desarrollo local:
-
-1.  Clona el repositorio.
-2.  Asegúrate de tener instalado el **.NET 8 SDK** (o superior) y el workload de **.NET Aspire**.
-3.  Crea la base de datos con la cadena de conexión que se encuentra en el appsettings de la  api(Puedes modificar la cadena de conexión).
-4.  Abre la solución en Visual Studio 2022 o superior y establece el proyecto `NitroGroups.AppHost` como proyecto de inicio.
-5.  Presiona F5 para lanzar la aplicación. .NET Aspire se encargará de iniciar tanto el frontend de Blazor como la API.
-
-Alternativamente, desde la línea de comandos:
-```bash
-# Navega a la carpeta del proyecto AppHost
-cd AppHost/NitroGroups.AppHost
-
-# Ejecuta el proyecto
-dotnet run
-```
-
-## tailwindcss
-
-Actualmente este proyecto utiliza el tailwind cli, si necesitas hacer cambios de tailwind tienes que instalarlo.
-
-Para instalar en windows sería de esta manera: 
-
-Desde la linea de comandos
-```bash
-winget install TailwindLabs.TailwindCSS
-```
-
-Y para ejecutarlo y tenerlo corriendo para ver los cambios que hagas:
-```bash
-# Navega a la carpeta del proyecto Blazor
-cd UI/NitroGroups.UI.Blazor
-
-#Ejecuta tailwind en modo --watch
 tailwindcss -i wwwroot/css/app.css -o wwwroot/css/app.min.css -w
 ```
