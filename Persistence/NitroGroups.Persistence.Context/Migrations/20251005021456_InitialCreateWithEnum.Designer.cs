@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace NitroGroups.Persistence.Context.Migrations
 {
     [DbContext(typeof(NitroGroupsContext))]
-    [Migration("20250928065809_InitCreate")]
-    partial class InitCreate
+    [Migration("20251005021456_InitialCreateWithEnum")]
+    partial class InitialCreateWithEnum
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -23,6 +23,7 @@ namespace NitroGroups.Persistence.Context.Migrations
                 .HasAnnotation("ProductVersion", "9.0.9")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
+            NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "user_type_enum", "user_type", new[] { "client", "band_member", "admin" });
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
             modelBuilder.Entity("NitroGroups.Core.Users.Domain.Entities.User", b =>
@@ -91,9 +92,8 @@ namespace NitroGroups.Persistence.Context.Migrations
                     b.Property<string>("UserType")
                         .IsRequired()
                         .ValueGeneratedOnAdd()
-                        .HasMaxLength(20)
-                        .HasColumnType("character varying(20)")
-                        .HasDefaultValue("Client");
+                        .HasColumnType("user_type_enum.user_type")
+                        .HasDefaultValue("client");
 
                     b.HasKey("Id");
 

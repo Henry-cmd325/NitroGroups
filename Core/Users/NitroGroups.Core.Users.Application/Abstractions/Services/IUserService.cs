@@ -11,5 +11,6 @@ namespace NitroGroups.Core.Users.Application.Abstractions.Services
     {
         public Task<User> GetByIdAsync(int id);
         public Task<List<User>> GetAllAsync();
+        public Task<User> CreateAsync(User user);
     }
 }

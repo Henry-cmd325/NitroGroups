@@ -28,5 +28,20 @@ namespace NitroGroups.Core.Users.Domain.Entities
         public bool EmailVerified { get; private set; } = false;
         public bool PhoneVerified { get; private set; } = false;
         public bool Active { get; private set; } = true;
+
+        // Constructor para Entity Framework
+        private User() { }
+
+        // Constructor para crear usuarios
+        public User(string auth0Id, string email, string firstName, string lastName, UserType userType = UserType.Client)
+        {
+            Auth0Id = auth0Id;
+            Email = email;
+            FirstName = firstName;
+            LastName = lastName;
+            UserType = userType;
+            CreatedAt = DateTime.UtcNow;
+            Active = true;
+        }
     }
 }

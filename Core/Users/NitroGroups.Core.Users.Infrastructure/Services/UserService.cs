@@ -14,12 +14,23 @@ namespace NitroGroups.Core.Users.Infrastructure.Services
         public async Task<List<User>> GetAllAsync()
         {
             _logger.LogInformation("Executing GetAllAsync()");
-            return await _context.Users.ToListAsync();
+            var varResponse = await _context.Users.ToListAsync();
+            _logger.LogInformation("GetAllAsync() executed successfully: {varResponse}", varResponse);
+            return varResponse;
         }
 
         public async Task<User> GetByIdAsync(int id)
         {
             return await _context.Users.FirstAsync(u => u.Id == id);
+        }
+
+        public async Task<User> CreateAsync(User user)
+        {
+            _logger.LogInformation("Creating new user: {Email}", user.Email);
+            _context.Users.Add(user);
+            await _context.SaveChangesAsync();
+            _logger.LogInformation("User created successfully with ID: {Id}", user.Id);
+            return user;
         }
     }
 }

@@ -1,11 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using NitroGroups.Core.Users.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace NitroGroups.Persistence.Context.Configurations.Users
 {
@@ -39,9 +35,11 @@ namespace NitroGroups.Persistence.Context.Configurations.Users
                 .HasMaxLength(20);
 
             builder.Property(u => u.UserType)
-                .HasConversion<string>()
-                .HasMaxLength(20)
-                .HasDefaultValue(UserType.Client);
+                .HasDefaultValue(UserType.Client)
+                .HasConversion(
+                    v => v.ToString().ToLowerInvariant(),
+                    v => Enum.Parse<UserType>(v, true))
+                .HasColumnType("user_type_enum.user_type");
 
             builder.Property(u => u.ProfilePictureUrl)
                 .HasMaxLength(500);

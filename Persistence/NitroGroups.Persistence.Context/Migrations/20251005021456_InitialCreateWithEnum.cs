@@ -7,11 +7,14 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace NitroGroups.Persistence.Context.Migrations
 {
     /// <inheritdoc />
-    public partial class InitCreate : Migration
+    public partial class InitialCreateWithEnum : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AlterDatabase()
+                .Annotation("Npgsql:Enum:user_type_enum.user_type", "client,band_member,admin");
+
             migrationBuilder.CreateTable(
                 name: "users",
                 columns: table => new
@@ -23,7 +26,7 @@ namespace NitroGroups.Persistence.Context.Migrations
                     FirstName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     LastName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     Phone = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: true),
-                    UserType = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false, defaultValue: "Client"),
+                    UserType = table.Column<string>(type: "user_type_enum.user_type", nullable: false, defaultValue: "client"),
                     ProfilePictureUrl = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
                     LocationText = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "NOW()"),
