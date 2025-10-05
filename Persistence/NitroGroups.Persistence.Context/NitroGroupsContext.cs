@@ -10,7 +10,7 @@ namespace NitroGroups.Persistence.Context
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // Configurar enum a nivel de base de datos
-            modelBuilder.HasPostgresEnum("user_type_enum", "user_type", []);
+            modelBuilder.HasPostgresEnum("user_type_enum", "user_type", ["client", "band_member", "admin"]);
             
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(NitroGroupsContext).Assembly);
         }
