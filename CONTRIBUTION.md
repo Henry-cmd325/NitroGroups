@@ -4,20 +4,12 @@ Bienvenido a la guía de contribución del proyecto. Aquí explicamos cómo real
 
 ---
 
-## Tabla de Contenidos
-- [Convención de commits](#convención-de-commits)
-- [Cómo hacer commits](#cómo-hacer-commits)
-- [Pull Requests](#pull-requests)
-- [Buenas prácticas](#buenas-prácticas)
-
----
-
 <details>
 <summary>Convención de commits</summary>
 
 Usamos la siguiente convención para los mensajes de commit:
 
-<tipo>(<área>): <descripción corta>
+tipo(<área>): <descripción corta>
 
 ### Tipos permitidos
 - feat: Nueva funcionalidad
