@@ -25,7 +25,8 @@ feat(auth): agregar login con Auth0
 fix(api): corregir error al actualizar usuario  
 docs(CONTRIBUTION): agregar sección de contribuciones  
 ci(api): actualizar configuración de CI/CD de la api
-# si la tarea es general se puede omitir el área.
+
+Si la tarea es general se puede omitir el área.
 
 </details>
 
