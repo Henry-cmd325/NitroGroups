@@ -410,7 +410,7 @@ docker-compose.*.yml
 # Configuration files with secrets
 appsettings.Development.json
 appsettings.*.json
-!appsettings.json
+
 secrets.json
 .env
 .env.local
@@ -511,3 +511,4 @@ cache/
 *.sln.docstates
 
 **/wwwroot/app.min.css
+
