@@ -45,6 +45,8 @@ La estructura se divide en los siguientes proyectos principales:
 
 ## Cómo Empezar
 
+- Lee nuestra guía de contribución [aquí](CONTRIBUTION.md).
+
 Para ejecutar el proyecto en un entorno de desarrollo local:
 
 1.  Clona el repositorio.
