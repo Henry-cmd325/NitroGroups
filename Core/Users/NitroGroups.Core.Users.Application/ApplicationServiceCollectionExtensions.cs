@@ -2,7 +2,7 @@
 using FluentValidation;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using NitroGroups.Core.Users.Application.Validators;
+using NitroGroups.Core.Users.Application.UseCases.Users.Create;
 
 namespace NitroGroups.Core.Users.Application
 {
@@ -15,7 +15,7 @@ namespace NitroGroups.Core.Users.Application
                 cfg.AddMaps(typeof(ApplicationServiceCollectionExtensions).Assembly);
             });
 
-            services.AddValidatorsFromAssemblyContaining<CreateUserRequestValidator>();
+            services.AddValidatorsFromAssembly(typeof(ApplicationServiceCollectionExtensions).Assembly);
 
             services.AddCortexMediator(configuration, [typeof(ApplicationServiceCollectionExtensions)]);
 

@@ -63,22 +63,10 @@ app.UseExceptionHandler(errorApp =>
             detail = feature?.Error.Message
         };
 
+        Log.Fatal(feature?.Error, "Application terminated unexpectedly");
         await context.Response.WriteAsJsonAsync(problemDetails);
     });
 });
 
-try
-{
-    Log.Information("Starting NitroGroups API");
-    app.Run();
-}
-catch (Exception ex)
-{
-    Log.Fatal(ex, "Application terminated unexpectedly");
-}
-finally
-{
-    Log.CloseAndFlush();
-}
-
-public partial class Program { }
+Log.Information("Starting NitroGroups API");
+app.Run();

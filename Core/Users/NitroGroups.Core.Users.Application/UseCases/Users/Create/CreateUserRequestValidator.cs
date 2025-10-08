@@ -1,7 +1,7 @@
 using FluentValidation;
 using NitroGroups.Core.Users.Application.Dtos.Requests;
 
-namespace NitroGroups.Core.Users.Application.Validators
+namespace NitroGroups.Core.Users.Application.UseCases.Users.Create
 {
     public class CreateUserRequestValidator : AbstractValidator<CreateUserRequest>
     {

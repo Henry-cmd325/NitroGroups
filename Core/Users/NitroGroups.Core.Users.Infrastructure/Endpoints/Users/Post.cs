@@ -2,15 +2,16 @@ using Cortex.Mediator;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
+using NitroGroups.Core.Users.Application.Dtos;
 using NitroGroups.Core.Users.Application.Dtos.Requests;
 using NitroGroups.Core.Users.Application.UseCases.Users.Create;
-using NitroGroups.Core.Users.Domain.Entities;
 using NitroGroups.Shared.EndpointMapping;
 using NitroGroups.Shared.EndpointMapping.Filters;
+using static Microsoft.AspNetCore.Http.Results;
 
 namespace NitroGroups.Core.Users.Infrastructure.Endpoints.Users
 {
-    public class CreateUser : IEndpoint
+    public class Post : IEndpoint
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
@@ -21,10 +22,11 @@ namespace NitroGroups.Core.Users.Infrastructure.Endpoints.Users
                     request.Email,
                     request.FirstName,
                     request.LastName,
-                    request.UserType);
+                    request.UserType
+                );
 
-                var createdUser = await mediator.SendCommandAsync<CreateUserCommand, User>(command);
-                return Results.Ok(new { message = "Usuario creado", user = createdUser });
+                var createdUser = await mediator.SendCommandAsync<CreateUserCommand, UserDto>(command);
+                return Created(createdUser);
             })
             .AddEndpointFilter<ValidationFilter<CreateUserRequest>>();
         }

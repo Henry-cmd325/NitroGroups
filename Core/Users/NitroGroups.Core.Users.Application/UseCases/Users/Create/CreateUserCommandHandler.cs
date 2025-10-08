@@ -1,30 +1,21 @@
+using AutoMapper;
 using Cortex.Mediator.Commands;
 using NitroGroups.Core.Users.Application.Abstractions.Services;
+using NitroGroups.Core.Users.Application.Dtos;
 using NitroGroups.Core.Users.Domain.Entities;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace NitroGroups.Core.Users.Application.UseCases.Users.Create
 {
-    public class CreateUserCommandHandler : ICommandHandler<CreateUserCommand, User>
+    public class CreateUserCommandHandler(IUserService userService, IMapper mapper) : ICommandHandler<CreateUserCommand, UserDto>
     {
-        private readonly IUserService _userService;
+        private readonly IUserService _userService = userService;
+        private readonly IMapper _mapper = mapper;
 
-        public CreateUserCommandHandler(IUserService userService)
+        public async Task<UserDto> Handle(CreateUserCommand request, CancellationToken cancellationToken)
         {
-            _userService = userService;
-        }
+            var result = await _userService.CreateAsync(_mapper.Map<User>(request));
 
-        public async Task<User> Handle(CreateUserCommand request, CancellationToken cancellationToken)
-        {
-            var user = new User(
-                auth0Id: request.Auth0Id,
-                email: request.Email,
-                firstName: request.FirstName,
-                lastName: request.LastName,
-                userType: request.UserType);
-
-            return await _userService.CreateAsync(user);
+            return _mapper.Map<UserDto>(result);
         }
     }
 }
