@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using NitroGroups.Core.Users.Application.Abstractions.Services;
 using NitroGroups.Core.Users.Domain.Entities;
 using NitroGroups.Persistence.Context;
+using NitroGroups.Shared.Paging;
 
 namespace NitroGroups.Core.Users.Infrastructure.Services
 {
@@ -31,6 +32,11 @@ namespace NitroGroups.Core.Users.Infrastructure.Services
             await _context.SaveChangesAsync();
             _logger.LogInformation("User created successfully with ID: {Id}", user.Id);
             return user;
+        }
+
+        public async Task<PagedResult<User>> GetPagedAsync(int page, int size)
+        { 
+            return await _context.Users.GetPagedAsync(page, size);
         }
     }
 }
