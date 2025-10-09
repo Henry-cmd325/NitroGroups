@@ -15,7 +15,9 @@ namespace NitroGroups.Core.Users.Application.UseCases.Users.Create
         {
             var result = await _userService.CreateAsync(_mapper.Map<User>(request));
 
-            return _mapper.Map<UserDto>(result);
+            var obj = _mapper.Map<UserDto>(result);
+
+            return obj;
         }
     }
 }

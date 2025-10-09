@@ -1,3 +1,4 @@
+using AutoMapper;
 using Cortex.Mediator;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -15,18 +16,12 @@ namespace NitroGroups.Core.Users.Infrastructure.Endpoints.Users
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
-            app.MapPost("api/users", async (CreateUserRequest request, IMediator mediator) =>
+            app.MapPost("api/users", async (CreateUserRequest request, IMediator mediator, IMapper mapper) =>
             {
-                var command = new CreateUserCommand(
-                    request.Auth0Id,
-                    request.Email,
-                    request.FirstName,
-                    request.LastName,
-                    request.UserType
-                );
+                var command = mapper.Map<CreateUserCommand>(request);
 
                 var createdUser = await mediator.SendCommandAsync<CreateUserCommand, UserDto>(command);
-                return Created(createdUser);
+                return Created($"api/users/{createdUser.Id}", createdUser);
             })
             .AddEndpointFilter<ValidationFilter<CreateUserRequest>>();
         }

@@ -1,9 +1,4 @@
 using FluentValidation;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace NitroGroups.Shared.EndpointMapping.Filters
 {
@@ -17,9 +12,7 @@ namespace NitroGroups.Shared.EndpointMapping.Filters
                 return await next(context);
             }
 
-            var argument = context.Arguments.FirstOrDefault(a => a?.GetType() == typeof(T)) as T;
-
-            if (argument is null)
+            if (context.Arguments.FirstOrDefault(a => a?.GetType() == typeof(T)) is not T argument)
             {
                 // This should not happen if the filter is applied correctly
                 return Results.Problem("Validation target not found.", statusCode: 500);
