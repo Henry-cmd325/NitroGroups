@@ -1,11 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using NitroGroups.Core.Users.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace NitroGroups.Persistence.Context.Configurations.Users
 {
@@ -18,55 +14,72 @@ namespace NitroGroups.Persistence.Context.Configurations.Users
             // PK
             builder.HasKey(u => u.Id);
 
-            // Propiedades
+            // Propiedades con mapeo a snake_case para PostgreSQL
             builder.Property(u => u.Auth0Id)
                 .IsRequired()
-                .HasMaxLength(100);
+                .HasMaxLength(100)
+                .HasColumnName("auth0_id");
 
             builder.Property(u => u.Email)
                 .IsRequired()
-                .HasMaxLength(150);
+                .HasMaxLength(150)
+                .HasColumnName("email");
 
             builder.Property(u => u.FirstName)
                 .IsRequired()
-                .HasMaxLength(100);
+                .HasMaxLength(100)
+                .HasColumnName("first_name");
 
             builder.Property(u => u.LastName)
                 .IsRequired()
-                .HasMaxLength(100);
+                .HasMaxLength(100)
+                .HasColumnName("last_name");
 
             builder.Property(u => u.Phone)
-                .HasMaxLength(20);
+                .HasMaxLength(20)
+                .HasColumnName("phone");
 
             builder.Property(u => u.UserType)
-                .HasConversion<string>()
-                .HasMaxLength(20)
-                .HasDefaultValue(UserType.Client);
+                .HasDefaultValue(UserType.Client)
+                .HasConversion(
+                    v => v.ToString().ToLowerInvariant(),
+                    v => Enum.Parse<UserType>(v, true))
+                .HasColumnType("user_type_enum.user_type")
+                .HasColumnName("user_type");
 
             builder.Property(u => u.ProfilePictureUrl)
-                .HasMaxLength(500);
+                .HasMaxLength(500)
+                .HasColumnName("profile_picture_url");
 
             builder.Property(u => u.LocationText)
-                .HasMaxLength(200);
+                .HasMaxLength(200)
+                .HasColumnName("location_text");
 
             builder.Property(u => u.CreatedAt)
-                .HasDefaultValueSql("NOW()");
+                .HasDefaultValueSql("NOW()")
+                .HasColumnName("created_at");
 
             builder.Property(u => u.LastLoginAt)
-                .IsRequired(false);
+                .IsRequired(false)
+                .HasColumnName("last_login_at");
 
             builder.Property(u => u.EmailVerified)
-                .HasDefaultValue(false);
+                .HasDefaultValue(false)
+                .HasColumnName("email_verified");
 
             builder.Property(u => u.PhoneVerified)
-                .HasDefaultValue(false);
+                .HasDefaultValue(false)
+                .HasColumnName("phone_verified");
 
             builder.Property(u => u.Active)
-                .HasDefaultValue(true);
+                .HasDefaultValue(true)
+                .HasColumnName("active");
 
-            // Índices
-            builder.HasIndex(u => u.Auth0Id);
-            builder.HasIndex(u => u.Email);
+            // Índices con nombres de columnas en snake_case
+            builder.HasIndex(u => u.Auth0Id)
+                .HasDatabaseName("IX_users_auth0_id");
+            builder.HasIndex(u => u.Email)
+                .HasDatabaseName("IX_users_email");
         }
     }
 }

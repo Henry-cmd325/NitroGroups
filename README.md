@@ -45,6 +45,8 @@ La estructura se divide en los siguientes proyectos principales:
 
 ## Cómo Empezar
 
+- Lee nuestra guía de contribución [aquí](CONTRIBUTION.md).
+
 Para ejecutar el proyecto en un entorno de desarrollo local:
 
 1.  Clona el repositorio.
@@ -62,6 +64,10 @@ cd AppHost/NitroGroups.AppHost
 dotnet run
 ```
 
+## Ejecución de migraciones desde la consola
+```bash
+dotnet ef database update --project ./Persistence/NitroGroups.Persistence.Context  --startup-project ./Services/NitroGroups.Services.Api
+```
 ## tailwindcss
 
 Actualmente este proyecto utiliza el tailwind cli, si necesitas hacer cambios de tailwind tienes que instalarlo.

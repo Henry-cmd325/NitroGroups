@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using NitroGroups.Core.Users.Application.Dtos;
+using NitroGroups.Core.Users.Application.Dtos.Requests;
+using NitroGroups.Core.Users.Application.UseCases.Users.Create;
 using NitroGroups.Core.Users.Domain.Entities;
 
 namespace NitroGroups.Core.Users.Application.Mappings
@@ -9,6 +11,8 @@ namespace NitroGroups.Core.Users.Application.Mappings
         public UserProfile()
         {
             CreateMap<User, UserDto>();
+            CreateMap<CreateUserCommand, User>();
+            CreateMap<CreateUserRequest, CreateUserCommand>();
         }
     }
 }

@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using NitroGroups.Core.Users.Domain.Entities;
+﻿using NitroGroups.Core.Users.Domain.Entities;
+using NitroGroups.Shared.Paging;
 
 namespace NitroGroups.Core.Users.Application.Abstractions.Services
 {
@@ -11,5 +7,7 @@ namespace NitroGroups.Core.Users.Application.Abstractions.Services
     {
         public Task<User> GetByIdAsync(int id);
         public Task<List<User>> GetAllAsync();
+        public Task<PagedResult<User>> GetPagedAsync(int page, int size);
+        public Task<User> CreateAsync(User user);
     }
 }

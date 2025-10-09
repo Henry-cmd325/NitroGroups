@@ -1,10 +1,11 @@
 ﻿using Cortex.Mediator;
 using Microsoft.AspNetCore.Builder;
-using static Microsoft.AspNetCore.Http.Results;
 using Microsoft.AspNetCore.Routing;
 using NitroGroups.Core.Users.Application.Dtos;
 using NitroGroups.Core.Users.Application.UseCases.Users.GetAll;
 using NitroGroups.Shared.EndpointMapping;
+using NitroGroups.Shared.Paging;
+using static Microsoft.AspNetCore.Http.Results;
 
 namespace NitroGroups.Core.Users.Infrastructure.Endpoints.Users
 {
@@ -12,8 +13,9 @@ namespace NitroGroups.Core.Users.Infrastructure.Endpoints.Users
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
-            app.MapGet("api/users", async (IMediator mediator) => {
-                return Ok(await mediator.SendQueryAsync<GetAllUsersQuery, List<UserDto>>(new()));
+            app.MapGet("api/users", async (IMediator mediator, int page = 1, int size = 10) => {
+                var result = await mediator.SendQueryAsync<GetAllUsersQuery, PagedResult<UserDto>>(new() { Page = page, Size = size });
+                return Ok(result);
             });
         }
     }

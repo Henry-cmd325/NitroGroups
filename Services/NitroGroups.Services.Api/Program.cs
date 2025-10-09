@@ -24,6 +24,12 @@ builder.Services.AddUsersModule(builder.Configuration);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(options =>
+{
+    options.SerializerOptions.PropertyNameCaseInsensitive = true;
+    options.SerializerOptions.PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase;
+});
+
 var app = builder.Build();
 
 app.MapDefaultEndpoints();
@@ -39,16 +45,28 @@ app.UseHttpsRedirection();
 
 app.MapEndpoints();
 
-try
+app.UseExceptionHandler(errorApp =>
 {
-    Log.Information("Starting NitroGroups API");
-    app.Run();
-}
-catch (Exception ex)
-{
-    Log.Fatal(ex, "Application terminated unexpectedly");
-}
-finally
-{
-    Log.CloseAndFlush();
-}
+    errorApp.Run(async context =>
+    {
+        context.Response.ContentType = "application/problem+json";
+        context.Response.StatusCode = 500;
+
+        var feature = context.Features
+            .Get<Microsoft.AspNetCore.Diagnostics.IExceptionHandlerPathFeature>();
+
+        var problemDetails = new
+        {
+            type = "https://tools.ietf.org/html/rfc7231#section-6.6.1",
+            title = "Error inesperado",
+            status = 500,
+            detail = feature?.Error.Message
+        };
+
+        Log.Fatal(feature?.Error, "Application terminated unexpectedly");
+        await context.Response.WriteAsJsonAsync(problemDetails);
+    });
+});
+
+Log.Information("Starting NitroGroups API");
+app.Run();
