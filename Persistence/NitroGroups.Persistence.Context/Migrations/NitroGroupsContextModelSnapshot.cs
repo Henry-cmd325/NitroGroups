@@ -115,6 +115,74 @@ namespace NitroGroups.Persistence.Context.Migrations
 
                     b.ToTable("users", (string)null);
                 });
+
+            modelBuilder.Entity("NitroGroups.Persistence.Context.Entities.OutboxEvent", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("EventData")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("event_data");
+
+                    b.Property<Guid>("EventId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("event_id");
+
+                    b.Property<string>("EventType")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("event_type");
+
+                    b.Property<string>("LastError")
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)")
+                        .HasColumnName("last_error");
+
+                    b.Property<DateTime?>("NextRetryAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("next_retry_at");
+
+                    b.Property<bool>("Processed")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false)
+                        .HasColumnName("processed");
+
+                    b.Property<DateTime?>("ProcessedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("processed_at");
+
+                    b.Property<int>("RetryCount")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(0)
+                        .HasColumnName("retry_count");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedAt")
+                        .HasDatabaseName("ix_outbox_events_created_at");
+
+                    b.HasIndex("EventType")
+                        .HasDatabaseName("ix_outbox_events_event_type");
+
+                    b.HasIndex("NextRetryAt")
+                        .HasDatabaseName("ix_outbox_events_next_retry_at");
+
+                    b.HasIndex("Processed")
+                        .HasDatabaseName("ix_outbox_events_processed");
+
+                    b.ToTable("outbox_events", (string)null);
+                });
 #pragma warning restore 612, 618
         }
     }

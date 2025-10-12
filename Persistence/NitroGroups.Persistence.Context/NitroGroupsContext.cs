@@ -1,11 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NitroGroups.Core.Users.Domain.Entities;
+using NitroGroups.Persistence.Context.Entities;
 
 namespace NitroGroups.Persistence.Context
 {
     public class NitroGroupsContext(DbContextOptions<NitroGroupsContext> options) : DbContext(options)
     {
         public DbSet<User> Users { get; set; }
+        public DbSet<OutboxEvent> OutboxEvents { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

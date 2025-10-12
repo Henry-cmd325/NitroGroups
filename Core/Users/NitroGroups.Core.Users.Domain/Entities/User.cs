@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using NitroGroups.Shared.Abstractions.Events;
 
 namespace NitroGroups.Core.Users.Domain.Entities
 {
@@ -29,6 +25,10 @@ namespace NitroGroups.Core.Users.Domain.Entities
         public bool PhoneVerified { get; private set; } = false;
         public bool Active { get; private set; } = true;
 
+        // Domain Events
+        private readonly List<IDomainEvent> _domainEvents = new();
+        public IReadOnlyCollection<IDomainEvent> DomainEvents => _domainEvents.AsReadOnly();
+
         // Constructor para Entity Framework
         private User() { }
 
@@ -42,6 +42,24 @@ namespace NitroGroups.Core.Users.Domain.Entities
             UserType = userType;
             CreatedAt = DateTime.UtcNow;
             Active = true;
+        }
+
+        // Métodos para manejar Domain Events
+        protected void AddDomainEvent(IDomainEvent domainEvent)
+        {
+            _domainEvents.Add(domainEvent);
+        }
+
+        public void ClearDomainEvents()
+        {
+            _domainEvents.Clear();
+        }
+
+        // Método para disparar evento después de que se asigne el ID
+        public void RaiseUserCreatedEvent()
+        {
+            AddDomainEvent(new Events.UserCreatedDomainEvent(
+                Id, Email, FirstName, LastName, UserType, CreatedAt));
         }
     }
 }

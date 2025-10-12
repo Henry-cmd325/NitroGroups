@@ -21,8 +21,22 @@ namespace NitroGroups.Core.Users.Infrastructure.Endpoints.Users
                 );
 
                 var createdUser = await userService.CreateAsync(testUser);
-                return Ok(new { message = "Usuario de prueba creado", user = createdUser });
+                
+                return Ok(new { 
+                    message = "Usuario de prueba creado con Domain Events procesados", 
+                    user = new {
+                        id = createdUser.Id,
+                        email = createdUser.Email,
+                        firstName = createdUser.FirstName,
+                        lastName = createdUser.LastName,
+                        userType = createdUser.UserType.ToString(),
+                        createdAt = createdUser.CreatedAt
+                    },
+                    domainEventsProcessed = "UserCreatedDomainEvent fue procesado automáticamente"
+                });
             });
         }
     }
 }
+
+

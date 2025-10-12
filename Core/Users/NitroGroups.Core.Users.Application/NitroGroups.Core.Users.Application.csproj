@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\Shared\NitroGroups.Shared.Paging\NitroGroups.Shared.Paging.csproj" />
+    <ProjectReference Include="..\..\..\Shared\NitroGroups.Shared.Abstractions\NitroGroups.Shared.Abstractions.csproj" />
     <ProjectReference Include="..\NitroGroups.Core.Users.Domain\NitroGroups.Core.Users.Domain.csproj" />
   </ItemGroup>
 
