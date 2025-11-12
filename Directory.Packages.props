@@ -3,45 +3,41 @@
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
   <ItemGroup>
+    <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.22" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="8.0.22" />
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.9" />
     <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.9" />
-    
-	<!--Application-->
+    <!--Application-->
     <PackageVersion Include="AutoMapper" Version="15.0.1" />
     <PackageVersion Include="Cortex.Mediator" Version="1.7.0" />
-	<PackageVersion Include="FluentValidation" Version="12.0.0" />
-	<PackageVersion Include="FluentValidation.DependencyInjectionExtensions" Version="12.0.0" />
-    
-	<!--Infrastructure-->
+    <PackageVersion Include="FluentValidation" Version="12.0.0" />
+    <PackageVersion Include="FluentValidation.DependencyInjectionExtensions" Version="12.0.0" />
+    <!--Infrastructure-->
     <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="9.0.9" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.9" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.9" />
     <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.9" />
-    
-	<!--Services-->
+    <!--Services-->
     <PackageVersion Include="Serilog.AspNetCore" Version="9.0.0" />
     <PackageVersion Include="Serilog.Sinks.Console" Version="6.0.0" />
     <PackageVersion Include="Serilog.Sinks.File" Version="7.0.0" />
     <PackageVersion Include="Swashbuckle.AspNetCore" Version="6.6.2" />
-    
-	<!--Blazor-->
+    <!--Blazor-->
     <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.6" />
     <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.6" />
-
-	<!--AppHost-->
-	<PackageVersion Include="Aspire.Hosting" Version="9.5.0" />
-	<PackageVersion Include="Aspire.Hosting.AppHost" Version="9.3.1" />
-	<PackageVersion Include="Aspire.Hosting.PostgreSQL" Version="9.5.0" />
-	<PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="9.4.0" />
-	<PackageVersion Include="Microsoft.Extensions.ServiceDiscovery" Version="9.3.1" />
-	<PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.9.0" />
-	<PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.9.0" />
-	<PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.9.0" />
-	<PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="1.9.0" />
-	<PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="1.9.0" />
-    
-	<!--Test-->
+    <!--AppHost-->
+    <PackageVersion Include="Aspire.Hosting" Version="9.5.0" />
+    <PackageVersion Include="Aspire.Hosting.AppHost" Version="9.3.1" />
+    <PackageVersion Include="Aspire.Hosting.PostgreSQL" Version="9.5.0" />
+    <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="9.4.0" />
+    <PackageVersion Include="Microsoft.Extensions.ServiceDiscovery" Version="9.3.1" />
+    <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.9.0" />
+    <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.9.0" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.9.0" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="1.9.0" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="1.9.0" />
+    <!--Test-->
     <PackageVersion Include="coverlet.collector" Version="6.0.0" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
     <PackageVersion Include="xunit" Version="2.5.3" />
