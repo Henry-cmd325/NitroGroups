@@ -16,7 +16,7 @@ namespace NitroGroups.Core.Users.Infrastructure.Endpoints.Users
             app.MapGet("api/users", async (IMediator mediator, int page = 1, int size = 10) => {
                 var result = await mediator.SendQueryAsync<GetAllUsersQuery, PagedResult<UserDto>>(new() { Page = page, Size = size });
                 return Ok(result);
-            });
+            }).RequireAuthorization();
         }
     }
 }

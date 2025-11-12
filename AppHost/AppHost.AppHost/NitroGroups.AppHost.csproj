@@ -17,7 +17,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Persistence\NitroGroups.Persistence.Context\NitroGroups.Persistence.Context.csproj" />
     <ProjectReference Include="..\..\Services\NitroGroups.Services.Api\NitroGroups.Services.Api.csproj" />
     <ProjectReference Include="..\..\UI\NitroGroups.UI.Blazor\NitroGroups.UI.Blazor.csproj" />
   </ItemGroup>

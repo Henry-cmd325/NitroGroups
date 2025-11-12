@@ -23,6 +23,7 @@ namespace NitroGroups.Core.Users.Infrastructure.Endpoints.Users
                 var createdUser = await mediator.SendCommandAsync<CreateUserCommand, UserDto>(command);
                 return Created($"api/users/{createdUser.Id}", createdUser);
             })
+            .RequireAuthorization()
             .AddEndpointFilter<ValidationFilter<CreateUserRequest>>();
         }
     }

@@ -25,6 +25,7 @@ builder.Services.AddAuthentication(options =>
     options.Authority = builder.Configuration["Auth0:Authority"];
     options.Audience = builder.Configuration["Auth0:Audience"];
 });
+builder.Services.AddAuthorization();
 
 // Add services to the container
 builder.Services.AddPersistence(builder.Configuration);
@@ -52,6 +53,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapEndpoints();
 
