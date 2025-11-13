@@ -8,18 +8,15 @@ builder.Services.AddOidcAuthentication(options =>
 {
     options.ProviderOptions.Authority = builder.Configuration["Auth0:Authority"];
     options.ProviderOptions.ClientId = builder.Configuration["Auth0:ClientId"];
-    options.ProviderOptions.RedirectUri = builder.Configuration["Auth0:RedirectUri"];
 
-    // Auth0 usa el estándar OIDC, así que "code" es el flujo correcto (PKCE)
     options.ProviderOptions.ResponseType = "code";
-
-    options.ProviderOptions.AdditionalProviderParameters.Add("audience", builder.Configuration["Auth0:Audience"]!);
 
     options.ProviderOptions.DefaultScopes.Add("openid");
     options.ProviderOptions.DefaultScopes.Add("profile");
     options.ProviderOptions.DefaultScopes.Add("email");
+
+    options.ProviderOptions.AdditionalProviderParameters.Add("audience", builder.Configuration["Auth0:Audience"]!);
 });
-builder.Services.AddAuthorizationCore();
 
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");

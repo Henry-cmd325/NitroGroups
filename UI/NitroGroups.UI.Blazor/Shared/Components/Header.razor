@@ -19,13 +19,3 @@
         <LoginDisplay />
     </div>
 </header>
-
-@code {
-    [Inject]
-    NavigationManager NavManager { get; set; } = null!;
-
-    private void Login()
-    {
-        NavManager.NavigateTo("authentication/login");
-    }
-}
