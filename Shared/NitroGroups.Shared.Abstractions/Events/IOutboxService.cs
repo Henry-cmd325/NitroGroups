@@ -1,6 +1,4 @@
-using NitroGroups.Shared.Abstractions.Events;
-
-namespace NitroGroups.Shared.Abstractions.Services
+namespace NitroGroups.Shared.Abstractions.Events
 {
     public interface IOutboxService
     {

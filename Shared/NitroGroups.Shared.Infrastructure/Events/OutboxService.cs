@@ -1,43 +1,38 @@
+using Cortex.Mediator;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using NitroGroups.Persistence.Context;
 using NitroGroups.Persistence.Context.Entities;
 using NitroGroups.Shared.Abstractions.Events;
-using NitroGroups.Shared.Abstractions.Services;
 using System.Text.Json;
 
-namespace NitroGroups.Core.Users.Infrastructure.Services
+namespace NitroGroups.Shared.Infrastructure.Events
 {
-    public class OutboxService : IOutboxService
+    public class OutboxService(
+        NitroGroupsContext context,
+        ILogger<OutboxService> logger,
+        IMediator mediator,
+        IEventProvider eventProvider) : IOutboxService
     {
-        private readonly NitroGroupsContext _context;
-        private readonly ILogger<OutboxService> _logger;
-        private readonly IDomainEventDispatcher _eventDispatcher;
-
-        public OutboxService(
-            NitroGroupsContext context, 
-            ILogger<OutboxService> logger,
-            IDomainEventDispatcher eventDispatcher)
-        {
-            _context = context;
-            _logger = logger;
-            _eventDispatcher = eventDispatcher;
-        }
-
+        private readonly NitroGroupsContext _context = context;
+        private readonly ILogger<OutboxService> _logger = logger;
+        private readonly IMediator _mediator = mediator;
+        private readonly IEventProvider _eventProvider = eventProvider;
+        
         public async Task SaveEventAsync(IDomainEvent domainEvent)
         {
             var outboxEvent = new OutboxEvent
             {
                 EventId = domainEvent.EventId,
                 EventType = domainEvent.EventType,
-                EventData = JsonSerializer.Serialize(domainEvent),
+                EventData = JsonSerializer.Serialize(domainEvent, domainEvent.GetType()),
                 CreatedAt = domainEvent.OccurredAt
             };
 
             _context.OutboxEvents.Add(outboxEvent);
             await _context.SaveChangesAsync();
 
-            _logger.LogDebug("Event saved to outbox: {EventType} with ID: {EventId}", 
+            _logger.LogDebug("Event saved to outbox: {EventType} with ID: {EventId}",
                 domainEvent.EventType, domainEvent.EventId);
         }
 
@@ -47,7 +42,7 @@ namespace NitroGroups.Core.Users.Infrastructure.Services
             {
                 EventId = domainEvent.EventId,
                 EventType = domainEvent.EventType,
-                EventData = JsonSerializer.Serialize(domainEvent),
+                EventData = JsonSerializer.Serialize(domainEvent, domainEvent.GetType()),
                 CreatedAt = domainEvent.OccurredAt
             }).ToList();
 
@@ -71,15 +66,15 @@ namespace NitroGroups.Core.Users.Infrastructure.Services
                 {
                     await ProcessEventAsync(outboxEvent);
                     await MarkEventAsProcessedAsync(outboxEvent.EventId);
-                    
-                    _logger.LogDebug("Processed outbox event: {EventType} with ID: {EventId}", 
+
+                    _logger.LogDebug("Processed outbox event: {EventType} with ID: {EventId}",
                         outboxEvent.EventType, outboxEvent.EventId);
                 }
                 catch (Exception ex)
                 {
                     await MarkEventAsFailedAsync(outboxEvent.EventId, ex.Message);
-                    
-                    _logger.LogError(ex, "Failed to process outbox event: {EventType} with ID: {EventId}", 
+
+                    _logger.LogError(ex, "Failed to process outbox event: {EventType} with ID: {EventId}",
                         outboxEvent.EventType, outboxEvent.EventId);
                 }
             }
@@ -87,21 +82,13 @@ namespace NitroGroups.Core.Users.Infrastructure.Services
 
         private async Task ProcessEventAsync(OutboxEvent outboxEvent)
         {
-            // Deserializar el evento
-            var eventType = Type.GetType($"NitroGroups.Core.Users.Domain.Events.{outboxEvent.EventType}");
-            if (eventType == null)
-            {
-                throw new InvalidOperationException($"Event type {outboxEvent.EventType} not found");
-            }
+            var eventType = _eventProvider.GetEventTypeByName(outboxEvent.EventType)
+                ?? throw new InvalidOperationException($"Event type {outboxEvent.EventType} not found, make sure you used RegisterEventsFromAssembly in your Module");
 
-            var domainEvent = JsonSerializer.Deserialize(outboxEvent.EventData, eventType) as IDomainEvent;
-            if (domainEvent == null)
-            {
-                throw new InvalidOperationException($"Failed to deserialize event {outboxEvent.EventType}");
-            }
+            var domainEvent = JsonSerializer.Deserialize(outboxEvent.EventData, eventType) as IDomainEvent
+                ?? throw new InvalidOperationException($"Failed to deserialize event {outboxEvent.EventType}");
 
-            // Procesar el evento
-            await _eventDispatcher.DispatchAsync(domainEvent);
+            await _mediator.PublishAsync(domainEvent);
         }
 
         public async Task MarkEventAsProcessedAsync(Guid eventId)
@@ -126,13 +113,13 @@ namespace NitroGroups.Core.Users.Infrastructure.Services
             {
                 outboxEvent.RetryCount++;
                 outboxEvent.LastError = error;
-                
-                // Backoff exponencial: 2^retryCount minutos
+
                 var delayMinutes = Math.Min(Math.Pow(2, outboxEvent.RetryCount), 60);
                 outboxEvent.NextRetryAt = DateTime.UtcNow.AddMinutes(delayMinutes);
-                
+
                 await _context.SaveChangesAsync();
             }
         }
     }
 }
+

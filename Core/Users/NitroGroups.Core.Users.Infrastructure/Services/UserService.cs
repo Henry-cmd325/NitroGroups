@@ -5,7 +5,6 @@ using NitroGroups.Core.Users.Domain.Entities;
 using NitroGroups.Persistence.Context;
 using NitroGroups.Shared.Paging;
 using NitroGroups.Shared.Abstractions.Events;
-using NitroGroups.Shared.Abstractions.Services;
 
 namespace NitroGroups.Core.Users.Infrastructure.Services
 {

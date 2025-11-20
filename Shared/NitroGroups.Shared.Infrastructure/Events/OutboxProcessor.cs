@@ -1,20 +1,14 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using NitroGroups.Shared.Abstractions.Services;
+using NitroGroups.Shared.Abstractions.Events;
 
-namespace NitroGroups.Core.Users.Infrastructure.Services
+namespace NitroGroups.Shared.Infrastructure.Events
 {
-    public class OutboxProcessor : BackgroundService
+    public class OutboxProcessor(IServiceProvider serviceProvider, ILogger<OutboxProcessor> logger) : BackgroundService
     {
-        private readonly IServiceProvider _serviceProvider;
-        private readonly ILogger<OutboxProcessor> _logger;
-
-        public OutboxProcessor(IServiceProvider serviceProvider, ILogger<OutboxProcessor> logger)
-        {
-            _serviceProvider = serviceProvider;
-            _logger = logger;
-        }
+        private readonly IServiceProvider _serviceProvider = serviceProvider;
+        private readonly ILogger<OutboxProcessor> _logger = logger;
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {

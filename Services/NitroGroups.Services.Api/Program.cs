@@ -2,9 +2,10 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using NitroGroups.Core.Bootstrap;
 using NitroGroups.Persistence.Context;
 using NitroGroups.Shared.EndpointMapping;
+using NitroGroups.Shared.Infrastructure;
 using Serilog;
 
-var builder = WebApplication.CreateBuilder(args);
+var builder = WebAplication.CreateBuilder(args);
 
 // Configurar Serilog
 Log.Logger = new LoggerConfiguration()
@@ -30,6 +31,7 @@ builder.Services.AddAuthorization();
 // Add services to the container
 builder.Services.AddPersistence(builder.Configuration);
 builder.Services.AddUsersModule(builder.Configuration);
+builder.Services.AddSharedInfrastructure();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
