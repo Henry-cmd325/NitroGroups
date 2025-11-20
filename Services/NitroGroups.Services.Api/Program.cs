@@ -5,7 +5,7 @@ using NitroGroups.Shared.EndpointMapping;
 using NitroGroups.Shared.Infrastructure;
 using Serilog;
 
-var builder = WebAplication.CreateBuilder(args);
+var builder = WebApplication.CreateBuilder(args);
 
 // Configurar Serilog
 Log.Logger = new LoggerConfiguration()
