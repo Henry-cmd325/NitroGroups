@@ -7,7 +7,7 @@ namespace NitroGroups.Core.Users.Domain.Events
     {
         public Guid EventId { get; } = Guid.NewGuid();
         public DateTime OccurredAt { get; } = DateTime.UtcNow;
-        public string EventType => "UserCreated";
+        public string EventType => nameof(UserCreatedDomainEvent);
 
         public int UserId { get; } = userId;
         public string Email { get; } = email;

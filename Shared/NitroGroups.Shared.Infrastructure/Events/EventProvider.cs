@@ -5,7 +5,7 @@ namespace NitroGroups.Shared.Infrastructure.Events
 {
     public class EventProvider : IEventProvider
     {
-        private static readonly Dictionary<string, Type> _eventTypes = [];
+        private readonly Dictionary<string, Type> _eventTypes = [];
         public Type? GetEventTypeByName(string name)
         {
             _eventTypes.TryGetValue(name, out var type);

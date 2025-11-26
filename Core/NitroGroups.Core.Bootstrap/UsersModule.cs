@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using NitroGroups.Core.Users.Application;
 using NitroGroups.Core.Users.Infrastructure;
+using NitroGroups.Shared.Abstractions.Events;
 
 namespace NitroGroups.Core.Bootstrap
 {

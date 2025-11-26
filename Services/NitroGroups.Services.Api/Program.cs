@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using NitroGroups.Core.Bootstrap;
+using NitroGroups.Core.Users.Domain.Entities;
 using NitroGroups.Persistence.Context;
+using NitroGroups.Shared.Abstractions.Events;
 using NitroGroups.Shared.EndpointMapping;
 using NitroGroups.Shared.Infrastructure;
 using Serilog;
@@ -30,8 +32,9 @@ builder.Services.AddAuthorization();
 
 // Add services to the container
 builder.Services.AddPersistence(builder.Configuration);
-builder.Services.AddUsersModule(builder.Configuration);
 builder.Services.AddSharedInfrastructure();
+builder.Services.AddUsersModule(builder.Configuration);
+
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -44,6 +47,10 @@ builder.Services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(options =
 });
 
 var app = builder.Build();
+
+// Register Event Types
+var eventProvider = app.Services.GetRequiredService<IEventProvider>();
+eventProvider.RegisterEventsFromAssembly(typeof(User).Assembly);
 
 app.MapDefaultEndpoints();
 

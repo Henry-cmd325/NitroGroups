@@ -8,7 +8,7 @@ namespace NitroGroups.Shared.Infrastructure
     {
         public static IServiceCollection AddSharedInfrastructure(this IServiceCollection services)
         {
-            services.AddScoped<IEventProvider, EventProvider>();
+            services.AddSingleton<IEventProvider, EventProvider>();
             services.AddScoped<IOutboxService, OutboxService>();
             services.AddHostedService<OutboxProcessor>();
 
