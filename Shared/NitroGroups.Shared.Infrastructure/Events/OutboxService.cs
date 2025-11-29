@@ -85,10 +85,10 @@ namespace NitroGroups.Shared.Infrastructure.Events
             var eventType = _eventProvider.GetEventTypeByName(outboxEvent.EventType)
                 ?? throw new InvalidOperationException($"Event type {outboxEvent.EventType} not found, make sure you used RegisterEventsFromAssembly in your Module");
 
-            var domainEvent = JsonSerializer.Deserialize(outboxEvent.EventData, eventType) as IDomainEvent
+            var domainEvent = JsonSerializer.Deserialize(outboxEvent.EventData, eventType)
                 ?? throw new InvalidOperationException($"Failed to deserialize event {outboxEvent.EventType}");
 
-            await _mediator.PublishAsync(domainEvent);
+            await _mediator.PublishAsync((dynamic)domainEvent);
         }
 
         public async Task MarkEventAsProcessedAsync(Guid eventId)
