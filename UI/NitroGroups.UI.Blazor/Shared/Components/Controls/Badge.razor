@@ -1,0 +1,82 @@
+﻿@* // ===================================================================================
+// Badge.razor: Componente Blazor para renderizar un Badge con variantes de Tailwind CSS.
+// Este componente simula la funcionalidad de 'class-variance-authority' (CVA) de JS.
+// =================================================================================== 
+*@
+
+@* // La etiqueta a usar (Tag) es 'a' si se proporciona un 'Href', de lo contrario es 'span'.
+// La clase se calcula en C# usando la propiedad computada 'ComputedClass'.
+*@
+@if (string.IsNullOrEmpty(Href))
+{
+    <span class="@ComputedClass">
+        @ChildContent
+    </span>
+}
+else
+{
+    <a href="@Href" class="@ComputedClass">
+        @ChildContent
+    </a>
+}
+
+@code {
+    /// <summary>
+    /// Contenido interno del Badge.
+    /// </summary>
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    /// <summary>
+    /// Clase CSS adicional proporcionada por el usuario (simula 'class').
+    /// </summary>
+    [Parameter]
+    public string? Class { get; set; }
+
+    /// <summary>
+    /// URL para convertir el Badge en un enlace (simula 'href').
+    /// </summary>
+    [Parameter]
+    public string? Href { get; set; }
+
+    /// <summary>
+    /// Enumeración para definir las variantes de estilo.
+    /// </summary>
+    public enum BadgeVariant
+    {
+        Default,
+        Secondary,
+        Destructive,
+        Outline
+    }
+
+    /// <summary>
+    /// La variante de estilo a aplicar. Por defecto es 'Default'.
+    /// </summary>
+    [Parameter]
+    public BadgeVariant Variant { get; set; } = BadgeVariant.Default;
+
+    // Clases base constantes para todos los Badges
+    private const string BaseClasses = "inline-flex items-center justify-center rounded-md border px-2 py-0.5 text-xs font-medium w-fit whitespace-nowrap shrink-0 [&>svg]:size-3 gap-1 [&>svg]:pointer-events-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive transition-[color,box-shadow] overflow-hidden";
+
+    // Propiedad computada que construye la clase final (simula cn(badgeVariants(...)))
+    private string ComputedClass
+    {
+        get
+        {
+            // 1. Obtener las clases específicas de la variante
+            string variantClasses = Variant switch
+            {
+                BadgeVariant.Secondary => "border-transparent bg-secondary text-secondary-foreground [a&]:hover:bg-secondary/90 rounded",
+                BadgeVariant.Destructive => "border-transparent bg-destructive text-white [a&]:hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
+                BadgeVariant.Outline => "text-foreground [a&]:hover:bg-accent [a&]:hover:text-accent-foreground",
+                // Default
+                _ => "border-transparent bg-primary text-primary-foreground [a&]:hover:bg-primary/90 rounded",
+            };
+
+            // 2. Combinar las clases base, las clases de la variante, y las clases adicionales del usuario
+            // Usamos String.Join para simular 'cn' y eliminar espacios dobles.
+            return string.Join(" ", BaseClasses, variantClasses, Class).Trim();
+        }
+    }
+}
