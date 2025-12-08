@@ -1,66 +1,33 @@
 ﻿@page "/cards-pagination"
-@using Microsoft.AspNetCore.Components.QuickGrid
-
-<h3 class="text-xl font-bold mb-4">Galería de Productos</h3>
-
-<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mb-6">
-    @foreach (var prod in ItemsPaginados)
+<div class="grid grid-cols-3 gap-4">
+    @foreach (var item in ItemsVisibles)
     {
-        <div class="bg-white overflow-hidden shadow rounded-lg border border-gray-200">
-            <div class="px-4 py-5 sm:p-6">
-                <h4 class="text-lg font-medium text-gray-900">@prod.Nombre</h4>
-                <p class="mt-1 text-sm text-gray-500">@prod.Descripcion</p>
-                <div class="mt-4">
-                    <span class="inline-flex items-center rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800">
-                        $@prod.Precio
-                    </span>
-                </div>
-            </div>
-        </div>
+        <div class="p-4 border rounded shadow">@item</div>
     }
 </div>
 
-<StyledPaginator State="@pagination" />
+<StyledPaginator CurrentPage="@paginaActual" 
+                 TotalPages="@totalPaginas" 
+                 OnPageChanged="@CambiarPagina" />
 
 @code {
-    // 1. Instanciamos el estado con items por página
-    private PaginationState pagination = new PaginationState { ItemsPerPage = 5 };
-    
-    private List<Producto> TodosLosProductos { get; set; } = new();
+    private List<string> TodosLosItems = new();
+    private int paginaActual = 0;
+    private int itemsPorPagina = 5;
 
-    // 2. Lógica para cortar la lista basada en la página actual
-    private IEnumerable<Producto> ItemsPaginados
+    private int totalPaginas => (int)Math.Ceiling((double)TodosLosItems.Count / itemsPorPagina);
+
+    private IEnumerable<string> ItemsVisibles => 
+        TodosLosItems.Skip(paginaActual * itemsPorPagina).Take(itemsPorPagina);
+
+    protected override void OnInitialized()
     {
-        get
-        {
-            // OJO: Si la lista viene de DB, harías la query aquí.
-            // Si es en memoria:
-            return TodosLosProductos
-                .Skip(pagination.CurrentPageIndex * pagination.ItemsPerPage)
-                .Take(pagination.ItemsPerPage);
-        }
+        // Llenar datos dummy
+        for (int i = 1; i <= 50; i++) TodosLosItems.Add($"Card #{i}");
     }
 
-    protected override async Task OnInitializedAsync()
+    private void CambiarPagina(int nuevaPagina)
     {
-        // Simulamos cargar 50 productos
-        for (int i = 1; i <= 50; i++)
-        {
-            TodosLosProductos.Add(new Producto 
-            { 
-                Id = i, 
-                Nombre = $"Producto {i}", 
-                Descripcion = "Descripción breve del item para la card.",
-                Precio = new Random().Next(100, 999) 
-            });
-        }
-    }
-
-    public class Producto
-    {
-        public int Id { get; set; }
-        public string Nombre { get; set; }
-        public string Descripcion { get; set; }
-        public decimal Precio { get; set; }
+        paginaActual = nuevaPagina;
     }
 }
