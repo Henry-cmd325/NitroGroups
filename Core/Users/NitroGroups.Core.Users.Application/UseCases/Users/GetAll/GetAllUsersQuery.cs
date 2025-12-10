@@ -1,6 +1,6 @@
 ﻿using Cortex.Mediator.Queries;
 using NitroGroups.Core.Users.Application.Dtos;
-using NitroGroups.Shared.Paging;
+using NitroGroups.Shared.Contracts;
 
 namespace NitroGroups.Core.Users.Application.UseCases.Users.GetAll
 {

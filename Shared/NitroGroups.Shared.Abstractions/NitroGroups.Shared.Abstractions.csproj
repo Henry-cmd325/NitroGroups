@@ -10,4 +10,8 @@
     <PackageReference Include="Cortex.Mediator" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\NitroGroups.Shared.Contracts\NitroGroups.Shared.Contracts.csproj" />
+  </ItemGroup>
+
 </Project>

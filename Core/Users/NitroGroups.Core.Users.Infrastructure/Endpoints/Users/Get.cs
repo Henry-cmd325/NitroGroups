@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 using NitroGroups.Core.Users.Application.Dtos;
 using NitroGroups.Core.Users.Application.UseCases.Users.GetAll;
+using NitroGroups.Shared.Contracts;
 using NitroGroups.Shared.EndpointMapping;
-using NitroGroups.Shared.Paging;
 using static Microsoft.AspNetCore.Http.Results;
 
 namespace NitroGroups.Core.Users.Infrastructure.Endpoints.Users

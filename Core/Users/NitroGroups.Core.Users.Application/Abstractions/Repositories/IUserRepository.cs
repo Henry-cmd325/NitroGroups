@@ -1,9 +1,9 @@
 ﻿using NitroGroups.Core.Users.Domain.Entities;
-using NitroGroups.Shared.Paging;
+using NitroGroups.Shared.Contracts;
 
-namespace NitroGroups.Core.Users.Application.Abstractions.Services
+namespace NitroGroups.Core.Users.Application.Abstractions.Repositories
 {
-    public interface IUserService
+    public interface IUserRepository
     {
         public Task<User> GetByIdAsync(int id);
         public Task<List<User>> GetAllAsync();

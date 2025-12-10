@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
-using NitroGroups.Core.Users.Application.Abstractions.Services;
 using NitroGroups.Core.Users.Domain.Entities;
 using NitroGroups.Shared.EndpointMapping;
+using NitroGroups.Core.Users.Application.Abstractions;
 using static Microsoft.AspNetCore.Http.Results;
 
 namespace NitroGroups.Core.Users.Infrastructure.Endpoints.Users
@@ -11,7 +11,7 @@ namespace NitroGroups.Core.Users.Infrastructure.Endpoints.Users
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
-            app.MapPost("api/users/test-data", async (IUserService userService) => {
+            app.MapPost("api/users/test-data", async (IUnitOfWorkUser unitOfWork) => {
                 var testUser = new User(
                     auth0Id: "test-auth0-id-123",
                     email: "test@example.com",
@@ -19,18 +19,19 @@ namespace NitroGroups.Core.Users.Infrastructure.Endpoints.Users
                     lastName: "Pérez",
                     userType: UserType.Client
                 );
-
-                var createdUser = await userService.CreateAsync(testUser);
                 
+                await unitOfWork.Users.CreateAsync(testUser);
+                int id = await unitOfWork.CompleteAsync();
+
                 return Ok(new { 
                     message = "Usuario de prueba creado con Domain Events procesados", 
                     user = new {
-                        id = createdUser.Id,
-                        email = createdUser.Email,
-                        firstName = createdUser.FirstName,
-                        lastName = createdUser.LastName,
-                        userType = createdUser.UserType.ToString(),
-                        createdAt = createdUser.CreatedAt
+                        id,
+                        email = testUser.Email,
+                        firstName = testUser.FirstName,
+                        lastName = testUser.LastName,
+                        userType = testUser.UserType.ToString(),
+                        createdAt = testUser.CreatedAt
                     },
                     domainEventsProcessed = "UserCreatedDomainEvent fue procesado automáticamente"
                 });
