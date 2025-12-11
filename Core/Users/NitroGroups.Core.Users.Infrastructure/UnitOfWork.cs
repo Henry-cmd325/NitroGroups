@@ -1,14 +1,8 @@
-﻿using Cortex.Mediator.Infrastructure;
-using NitroGroups.Core.Users.Application.Abstractions;
+﻿using NitroGroups.Core.Users.Application.Abstractions;
 using NitroGroups.Core.Users.Domain.Entities;
 using NitroGroups.Persistence.Context;
 using NitroGroups.Shared.Abstractions;
 using NitroGroups.Shared.Infrastructure;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NitroGroups.Core.Users.Infrastructure
 {
@@ -16,10 +10,14 @@ namespace NitroGroups.Core.Users.Infrastructure
     {
         private readonly NitroGroupsContext _context;
         public IGenericRepository<User, int> Users { get; }
+
+        public IGenericRepository<Musician, int> Musicians { get; }
+
         public UnitOfWork(NitroGroupsContext context)
         {
             _context = context;
             Users = new GenericRepository<User, int>(_context);
+            Musicians = new GenericRepository<Musician, int>(_context);
         }
         
         public async Task<int> CompleteAsync()

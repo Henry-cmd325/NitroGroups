@@ -4,9 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NitroGroups.Core.Users.Application.Abstractions.Repositories
+namespace NitroGroups.Shared.Contracts.Users.Enums
 {
-    public interface IMusicianRepository
+    public enum UserType
     {
+        Client,
+        BandMember,
+        Admin
     }
 }

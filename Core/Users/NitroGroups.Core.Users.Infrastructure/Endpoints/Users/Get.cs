@@ -1,9 +1,9 @@
 ﻿using Cortex.Mediator;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
-using NitroGroups.Core.Users.Application.Dtos;
 using NitroGroups.Core.Users.Application.UseCases.Users.GetAll;
 using NitroGroups.Shared.Contracts;
+using NitroGroups.Shared.Contracts.Users.Responses;
 using NitroGroups.Shared.EndpointMapping;
 using static Microsoft.AspNetCore.Http.Results;
 

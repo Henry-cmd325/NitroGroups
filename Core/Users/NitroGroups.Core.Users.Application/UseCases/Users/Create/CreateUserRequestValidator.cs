@@ -1,5 +1,5 @@
 using FluentValidation;
-using NitroGroups.Core.Users.Application.Dtos.Requests;
+using NitroGroups.Shared.Contracts.Users.Requests;
 
 namespace NitroGroups.Core.Users.Application.UseCases.Users.Create
 {

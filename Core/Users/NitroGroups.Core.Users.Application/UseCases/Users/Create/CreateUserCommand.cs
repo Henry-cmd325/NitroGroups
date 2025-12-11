@@ -1,6 +1,6 @@
 using Cortex.Mediator.Commands;
-using NitroGroups.Core.Users.Application.Dtos;
 using NitroGroups.Core.Users.Domain.Entities;
+using NitroGroups.Shared.Contracts.Users.Responses;
 
 namespace NitroGroups.Core.Users.Application.UseCases.Users.Create
 {

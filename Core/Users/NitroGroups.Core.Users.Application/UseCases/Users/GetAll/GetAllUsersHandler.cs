@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using Cortex.Mediator.Queries;
 using NitroGroups.Core.Users.Application.Abstractions;
-using NitroGroups.Core.Users.Application.Dtos;
 using NitroGroups.Shared.Contracts;
+using NitroGroups.Shared.Contracts.Users.Responses;
 
 namespace NitroGroups.Core.Users.Application.UseCases.Users.GetAll
 {

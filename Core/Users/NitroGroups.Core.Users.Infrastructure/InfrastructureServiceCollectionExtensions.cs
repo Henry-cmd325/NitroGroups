@@ -1,7 +1,7 @@
 ﻿using Cortex.Mediator.Notifications;
 using Microsoft.Extensions.DependencyInjection;
 using NitroGroups.Core.Users.Application.Abstractions;
-using NitroGroups.Core.Users.Application.Handlers;
+using NitroGroups.Core.Users.Application.EventHandlers;
 using NitroGroups.Core.Users.Domain.Events;
 using NitroGroups.Shared.EndpointMapping;
 

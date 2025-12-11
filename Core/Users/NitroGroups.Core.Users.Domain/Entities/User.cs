@@ -1,4 +1,4 @@
-﻿using NitroGroups.Shared.Abstractions.Events;
+﻿using NitroGroups.Shared.Abstractions;
 
 namespace NitroGroups.Core.Users.Domain.Entities
 {
@@ -8,7 +8,7 @@ namespace NitroGroups.Core.Users.Domain.Entities
         BandMember,
         Admin
     }
-    public class User
+    public class User : DomainModel
     {
         public int Id { get; private set; }
         public string Auth0Id { get; private set; } = null!;
@@ -25,11 +25,6 @@ namespace NitroGroups.Core.Users.Domain.Entities
         public bool PhoneVerified { get; private set; } = false;
         public bool Active { get; private set; } = true;
 
-        // Domain Events
-        private readonly List<IDomainEvent> _domainEvents = new();
-        public IReadOnlyCollection<IDomainEvent> DomainEvents => _domainEvents.AsReadOnly();
-
-        // Constructor para Entity Framework
         private User() { }
 
         // Constructor para crear usuarios
@@ -42,17 +37,6 @@ namespace NitroGroups.Core.Users.Domain.Entities
             UserType = userType;
             CreatedAt = DateTime.UtcNow;
             Active = true;
-        }
-
-        // Métodos para manejar Domain Events
-        protected void AddDomainEvent(IDomainEvent domainEvent)
-        {
-            _domainEvents.Add(domainEvent);
-        }
-
-        public void ClearDomainEvents()
-        {
-            _domainEvents.Clear();
         }
 
         // Método para disparar evento después de que se asigne el ID

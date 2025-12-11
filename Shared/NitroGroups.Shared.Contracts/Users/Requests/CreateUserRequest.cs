@@ -1,6 +1,6 @@
-using NitroGroups.Core.Users.Domain.Entities;
+using NitroGroups.Shared.Contracts.Users.Enums;
 
-namespace NitroGroups.Core.Users.Application.Dtos.Requests
+namespace NitroGroups.Shared.Contracts.Users.Requests
 {
     public class CreateUserRequest
     {

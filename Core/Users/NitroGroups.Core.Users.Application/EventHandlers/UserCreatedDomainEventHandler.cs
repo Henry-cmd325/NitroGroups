@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 using NitroGroups.Core.Users.Domain.Entities;
 using NitroGroups.Core.Users.Domain.Events;
 
-namespace NitroGroups.Core.Users.Application.Handlers
+namespace NitroGroups.Core.Users.Application.EventHandlers
 {
     public class UserCreatedDomainEventHandler(ILogger<UserCreatedDomainEventHandler> logger) : INotificationHandler<UserCreatedDomainEvent>
     {
