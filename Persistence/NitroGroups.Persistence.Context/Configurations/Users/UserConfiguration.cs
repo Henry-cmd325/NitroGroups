@@ -11,10 +11,8 @@ namespace NitroGroups.Persistence.Context.Configurations.Users
         {
             builder.ToTable("users");
 
-            // PK
             builder.HasKey(u => u.Id);
 
-            // Propiedades con mapeo a snake_case para PostgreSQL
             builder.Property(u => u.Auth0Id)
                 .IsRequired()
                 .HasMaxLength(100)
@@ -75,7 +73,6 @@ namespace NitroGroups.Persistence.Context.Configurations.Users
                 .HasDefaultValue(true)
                 .HasColumnName("active");
 
-            // Índices con nombres de columnas en snake_case
             builder.HasIndex(u => u.Auth0Id)
                 .HasDatabaseName("IX_users_auth0_id");
             builder.HasIndex(u => u.Email)

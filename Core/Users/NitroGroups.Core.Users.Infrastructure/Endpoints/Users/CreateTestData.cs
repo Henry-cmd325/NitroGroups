@@ -26,7 +26,7 @@ namespace NitroGroups.Core.Users.Infrastructure.Endpoints.Users
                 return Ok(new { 
                     message = "Usuario de prueba creado con Domain Events procesados", 
                     user = new {
-                        id,
+                        id = testUser.Id,
                         email = testUser.Email,
                         firstName = testUser.FirstName,
                         lastName = testUser.LastName,

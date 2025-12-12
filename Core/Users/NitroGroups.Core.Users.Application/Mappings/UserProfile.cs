@@ -13,6 +13,7 @@ namespace NitroGroups.Core.Users.Application.Mappings
             CreateMap<User, UserDto>();
             CreateMap<CreateUserCommand, User>();
             CreateMap<CreateUserRequest, CreateUserCommand>();
+            CreateMap<UserInfoData, User>();
         }
     }
 }

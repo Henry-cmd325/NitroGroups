@@ -10,7 +10,7 @@ namespace NitroGroups.Core.Users.Domain.Entities
     }
     public class User : DomainModel
     {
-        public int Id { get; private set; }
+        public long Id { get; private set; }
         public string Auth0Id { get; private set; } = null!;
         public string Email { get; private set; } = null!;
         public string FirstName { get; private set; } = null!;
@@ -24,6 +24,8 @@ namespace NitroGroups.Core.Users.Domain.Entities
         public bool EmailVerified { get; private set; } = false;
         public bool PhoneVerified { get; private set; } = false;
         public bool Active { get; private set; } = true;
+
+        public virtual Musician? Musician { get; private set; }
 
         private User() { }
 
