@@ -1,9 +1,11 @@
 ﻿using Cortex.Mediator.Notifications;
 using Microsoft.Extensions.DependencyInjection;
 using NitroGroups.Core.Users.Application.Abstractions;
+using NitroGroups.Core.Users.Application.Abstractions.Integrations;
 using NitroGroups.Core.Users.Application.EventHandlers;
-using NitroGroups.Core.Users.Domain.Events;
+using NitroGroups.Core.Users.Infrastructure.Adapters;
 using NitroGroups.Shared.EndpointMapping;
+using NitroGroups.Core.Users.Application.Events;
 
 namespace NitroGroups.Core.Users.Infrastructure
 {
@@ -11,9 +13,11 @@ namespace NitroGroups.Core.Users.Infrastructure
     { 
         public static IServiceCollection AddUsersInfrastructure(this IServiceCollection services)
         {
+            services.AddScoped<IGroupIntegrationService, GroupIntegrationMonolith>();
+            
             services.AddScoped<IUnitOfWorkUser, UnitOfWork>();
             
-            services.AddScoped<INotificationHandler<UserCreatedDomainEvent>, UserCreatedDomainEventHandler>();
+            services.AddScoped<INotificationHandler<UserEvents.UserCreatedDomainEvent>, UserCreatedDomainEventHandler>();
 
             services.AddEndpoints(typeof(InfrastructureServiceCollectionExtensions).Assembly);
 

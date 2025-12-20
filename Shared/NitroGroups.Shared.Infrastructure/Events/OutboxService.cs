@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using NitroGroups.Persistence.Context;
 using NitroGroups.Persistence.Context.Entities;
 using NitroGroups.Shared.Abstractions.Events;
+using NitroGroups.Shared.Domain;
 using System.Text.Json;
 
 namespace NitroGroups.Shared.Infrastructure.Events
@@ -46,10 +47,13 @@ namespace NitroGroups.Shared.Infrastructure.Events
                 CreatedAt = domainEvent.OccurredAt
             }).ToList();
 
-            _context.OutboxEvents.AddRange(outboxEvents);
-            await _context.SaveChangesAsync();
+            if (outboxEvents.Count != 0)
+            {
+                _context.OutboxEvents.AddRange(outboxEvents);
+                await _context.SaveChangesAsync();
 
-            _logger.LogDebug("Saved {EventCount} events to outbox", outboxEvents.Count);
+                _logger.LogDebug("Saved {EventCount} events to outbox", outboxEvents.Count);
+            }
         }
 
         public async Task ProcessPendingEventsAsync()
@@ -87,7 +91,7 @@ namespace NitroGroups.Shared.Infrastructure.Events
 
             var domainEvent = JsonSerializer.Deserialize(outboxEvent.EventData, eventType)
                 ?? throw new InvalidOperationException($"Failed to deserialize event {outboxEvent.EventType}");
-
+            
             await _mediator.PublishAsync((dynamic)domainEvent);
         }
 

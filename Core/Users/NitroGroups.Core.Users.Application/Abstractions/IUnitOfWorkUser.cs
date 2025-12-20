@@ -1,12 +1,17 @@
-﻿using NitroGroups.Core.Users.Domain.Entities;
+﻿using NitroGroups.Core.Users.Application.Abstractions.Integrations;
+using NitroGroups.Core.Users.Domain.Entities;
 using NitroGroups.Shared.Abstractions;
+using NitroGroups.Shared.Abstractions.Events;
 
 namespace NitroGroups.Core.Users.Application.Abstractions
 {
     public interface IUnitOfWorkUser : IAsyncDisposable
     {
-        IGenericRepository<User, int> Users { get; }
-        IGenericRepository<Musician, int> Musicians { get; }
+        IOutboxService OutboxService { get; }
+        IGenericRepository<User, long> Users { get; }
+        IGenericRepository<Musician, long> Musicians { get; }
+        
+        IGroupIntegrationService GroupIntegrationService { get; }
         Task<int> CompleteAsync();
     }
 }

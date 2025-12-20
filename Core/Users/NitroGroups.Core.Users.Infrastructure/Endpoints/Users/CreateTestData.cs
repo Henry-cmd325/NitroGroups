@@ -30,7 +30,7 @@ namespace NitroGroups.Core.Users.Infrastructure.Endpoints.Users
                         email = testUser.Email,
                         firstName = testUser.FirstName,
                         lastName = testUser.LastName,
-                        userType = testUser.UserType.ToString(),
+                        userType = testUser.UserType,
                         createdAt = testUser.CreatedAt
                     },
                     domainEventsProcessed = "UserCreatedDomainEvent fue procesado automáticamente"

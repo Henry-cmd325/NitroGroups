@@ -1,11 +1,11 @@
 using NitroGroups.Core.Users.Domain.Entities;
-using NitroGroups.Shared.Abstractions.Events;
+using NitroGroups.Shared.Domain;
 
 namespace NitroGroups.Core.Users.Domain.Events
 {
     public class UserCreatedDomainEvent(long userId, string email, string firstName, string lastName, UserType userType, DateTime createdAt) : IDomainEvent
     {
-        public Guid EventId { get; } = Guid.NewGuid();
+        public Guid EventId { get; set; } = Guid.NewGuid();
         public DateTime OccurredAt { get; } = DateTime.UtcNow;
         public string EventType => nameof(UserCreatedDomainEvent);
 

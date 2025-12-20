@@ -8,7 +8,7 @@ namespace NitroGroups.Persistence.Context
     {
         public static IServiceCollection AddPersistence(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddDbContext<NitroGroupsContext>(options => 
+            services.AddDbContext<NitroGroupsContext>(options =>
                 options.UseNpgsql(configuration.GetConnectionString("NitroGroupsConnection"))
             );
 

@@ -1,4 +1,6 @@
-﻿using NitroGroups.Shared.Abstractions.Events;
+﻿using Cortex.Mediator.Notifications;
+using NitroGroups.Shared.Abstractions.Events;
+using NitroGroups.Shared.Domain;
 using System.Reflection;
 
 namespace NitroGroups.Shared.Infrastructure.Events
@@ -15,31 +17,16 @@ namespace NitroGroups.Shared.Infrastructure.Events
 
         public void RegisterEventsFromAssembly(Assembly assembly)
         {
-            var eventTypes = assembly.GetTypes()
-                .Where(t => t.IsClass && !t.IsAbstract && typeof(IDomainEvent).IsAssignableFrom(t));
+            var notificationTypes = assembly
+                .GetTypes()
+                .Where(t => typeof(INotification).IsAssignableFrom(t) && !t.IsAbstract)
+                .ToList();
 
-            foreach (var eventType in eventTypes)
+            foreach (var type in notificationTypes) 
             {
-                var constructor = eventType.GetConstructors().First();
-                var parameters = constructor.GetParameters();
-                var parameterValues = new object?[parameters.Length];
-                for (int i = 0; i < parameters.Length; i++)
-                {
-                    parameterValues[i] = GetDefaultValue(parameters[i].ParameterType);
-                }
-
-                var eventInstance = (IDomainEvent)constructor.Invoke(parameterValues);
-                _eventTypes.TryAdd(eventInstance.EventType, eventType);
+                if (type.BaseType != null && typeof(IDomainEvent).IsAssignableFrom(type.BaseType))
+                    _eventTypes.Add(type.BaseType.Name, type);
             }
-        }
-
-        private static object? GetDefaultValue(Type t)
-        {
-            if (t.IsValueType)
-            {
-                return Activator.CreateInstance(t);
-            }
-            return null;
         }
     }
 }

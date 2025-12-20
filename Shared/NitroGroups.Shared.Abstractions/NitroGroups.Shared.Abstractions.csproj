@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\NitroGroups.Shared.Contracts\NitroGroups.Shared.Contracts.csproj" />
+    <ProjectReference Include="..\NitroGroups.Shared.Domain\NitroGroups.Shared.Domain.csproj" />
   </ItemGroup>
 
 </Project>

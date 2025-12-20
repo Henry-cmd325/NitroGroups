@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Groups\NitroGroups.Core.Groups.Infrastructure\NitroGroups.Core.Groups.Infrastructure.csproj" />
     <ProjectReference Include="..\Users\NitroGroups.Core.Users.Infrastructure\NitroGroups.Core.Users.Infrastructure.csproj" />
   </ItemGroup>
 

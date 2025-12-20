@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace NitroGroups.Shared.Contracts
+﻿namespace NitroGroups.Shared.Contracts
 {
     public class PagedResult<T>(List<T> items, int count, int pageNumber, int pageSize)
     {

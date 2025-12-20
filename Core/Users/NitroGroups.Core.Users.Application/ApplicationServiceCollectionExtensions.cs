@@ -2,7 +2,6 @@
 using FluentValidation;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using NitroGroups.Core.Users.Application.UseCases.Users.Create;
 
 namespace NitroGroups.Core.Users.Application
 {

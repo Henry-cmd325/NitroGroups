@@ -1,3 +1,5 @@
+using NitroGroups.Shared.Domain;
+
 namespace NitroGroups.Shared.Abstractions.Events
 {
     public interface IOutboxService

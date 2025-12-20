@@ -1,4 +1,4 @@
-﻿using NitroGroups.Shared.Abstractions;
+﻿using NitroGroups.Shared.Domain;
 
 namespace NitroGroups.Core.Users.Domain.Entities
 {
@@ -10,7 +10,6 @@ namespace NitroGroups.Core.Users.Domain.Entities
     }
     public class User : DomainModel
     {
-        public long Id { get; private set; }
         public string Auth0Id { get; private set; } = null!;
         public string Email { get; private set; } = null!;
         public string FirstName { get; private set; } = null!;
@@ -39,13 +38,6 @@ namespace NitroGroups.Core.Users.Domain.Entities
             UserType = userType;
             CreatedAt = DateTime.UtcNow;
             Active = true;
-        }
-
-        // Método para disparar evento después de que se asigne el ID
-        public void RaiseUserCreatedEvent()
-        {
-            AddDomainEvent(new Events.UserCreatedDomainEvent(
-                Id, Email, FirstName, LastName, UserType, CreatedAt));
         }
     }
 }

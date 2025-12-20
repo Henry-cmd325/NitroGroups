@@ -1,15 +1,15 @@
 using Cortex.Mediator.Notifications;
 using Microsoft.Extensions.Logging;
 using NitroGroups.Core.Users.Domain.Entities;
-using NitroGroups.Core.Users.Domain.Events;
+using NitroGroups.Core.Users.Application.Events;
 
 namespace NitroGroups.Core.Users.Application.EventHandlers
 {
-    public class UserCreatedDomainEventHandler(ILogger<UserCreatedDomainEventHandler> logger) : INotificationHandler<UserCreatedDomainEvent>
+    public class UserCreatedDomainEventHandler(ILogger<UserCreatedDomainEventHandler> logger) : INotificationHandler<UserEvents.UserCreatedDomainEvent>
     {
         private readonly ILogger<UserCreatedDomainEventHandler> _logger = logger;
 
-        public async Task Handle(UserCreatedDomainEvent domainEvent, CancellationToken cancellationToken)
+        public async Task Handle(UserEvents.UserCreatedDomainEvent domainEvent, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Processing UserCreated domain event: UserId={UserId}, Email={Email}, Type={UserType}", 
                 domainEvent.UserId, domainEvent.Email, domainEvent.UserType);

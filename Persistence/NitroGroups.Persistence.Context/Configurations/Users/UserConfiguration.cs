@@ -38,11 +38,6 @@ namespace NitroGroups.Persistence.Context.Configurations.Users
                 .HasColumnName("phone");
 
             builder.Property(u => u.UserType)
-                .HasDefaultValue(UserType.Client)
-                .HasConversion(
-                    v => v.ToString().ToLowerInvariant(),
-                    v => Enum.Parse<UserType>(v, true))
-                .HasColumnType("user_type_enum.user_type")
                 .HasColumnName("user_type");
 
             builder.Property(u => u.ProfilePictureUrl)
