@@ -1,39 +1,20 @@
-﻿using Cortex.Mediator;
-using Microsoft.Extensions.Logging;
-using NitroGroups.Core.Groups.Application.Abstractions;
+﻿using NitroGroups.Core.Groups.Application.Abstractions;
 using NitroGroups.Core.Groups.Domain.Entities;
 using NitroGroups.Persistence.Context;
-using NitroGroups.Shared.Abstractions;
 using NitroGroups.Shared.Abstractions.Events;
-using NitroGroups.Shared.Infrastructure;
-using NitroGroups.Shared.Infrastructure.Events;
+using NitroGroups.Shared.Abstractions.Repository;
+using NitroGroups.Shared.Infrastructure.Repository;
 
 namespace NitroGroups.Core.Groups.Infrastructure
 {
-    public class UnitOfWorkGroups : IUnitOfWorkGroups
+    public class UnitOfWorkGroups(
+        NitroGroupsContext context, 
+        IOutboxService outboxService,
+        GenericRepository<Group, long> groups,
+        GenericRepository<GroupMember, long> groupMembers) : UnitOfWork(context, outboxService), IUnitOfWorkGroups
     {
-        private readonly NitroGroupsContext _context;
-        public IOutboxService OutboxService { get; }
+        public IGenericRepository<Group, long> Groups { get; } = groups;
 
-        public IGenericRepository<Group, long> Groups { get; }
-
-        public IGenericRepository<GroupMember, long> GroupMembers { get; }
-
-        public UnitOfWorkGroups(NitroGroupsContext context, ILogger<OutboxService> logger, IMediator mediator, IEventProvider eventProvider)
-        {
-            _context = context;
-            Groups = new GenericRepository<Group, long>(context);
-            GroupMembers = new GenericRepository<GroupMember, long>(context);
-        }
-
-        public Task<int> CompleteAsync()
-        {
-            throw new NotImplementedException();
-        }
-
-        public ValueTask DisposeAsync()
-        {
-            throw new NotImplementedException();
-        }
+        public IGenericRepository<GroupMember, long> GroupMembers { get; } = groupMembers;
     }
 }

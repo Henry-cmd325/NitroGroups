@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using NitroGroups.Core.Bootstrap;
-using NitroGroups.Core.Users.Domain.Entities;
 using NitroGroups.Persistence.Context;
 using NitroGroups.Shared.Abstractions.Events;
 using NitroGroups.Shared.EndpointMapping;

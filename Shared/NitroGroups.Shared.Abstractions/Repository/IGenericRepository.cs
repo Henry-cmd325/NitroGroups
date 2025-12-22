@@ -1,7 +1,7 @@
 ﻿using NitroGroups.Shared.Contracts;
 using System.Linq.Expressions;
 
-namespace NitroGroups.Shared.Abstractions
+namespace NitroGroups.Shared.Abstractions.Repository
 {
     public interface IGenericRepository<TEntity, TKey>
     {

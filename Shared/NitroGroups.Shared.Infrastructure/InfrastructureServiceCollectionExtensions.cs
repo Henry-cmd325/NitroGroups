@@ -1,6 +1,8 @@
 using Microsoft.Extensions.DependencyInjection;
 using NitroGroups.Shared.Abstractions.Events;
+using NitroGroups.Shared.Abstractions.Repository;
 using NitroGroups.Shared.Infrastructure.Events;
+using NitroGroups.Shared.Infrastructure.Repository;
 
 namespace NitroGroups.Shared.Infrastructure
 {
@@ -11,6 +13,7 @@ namespace NitroGroups.Shared.Infrastructure
             services.AddSingleton<IEventProvider, EventProvider>();
             services.AddScoped<IOutboxService, OutboxService>();
             services.AddHostedService<OutboxProcessor>();
+            services.AddScoped(typeof(IGenericRepository<,>), typeof(GenericRepository<,>));
 
             return services;
         }

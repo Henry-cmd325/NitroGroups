@@ -15,7 +15,7 @@ namespace NitroGroups.Core.Users.Infrastructure
         {
             services.AddScoped<IGroupIntegrationService, GroupIntegrationMonolith>();
             
-            services.AddScoped<IUnitOfWorkUser, UnitOfWork>();
+            services.AddScoped<IUnitOfWorkUser, UnitOfWorkUser>();
             
             services.AddScoped<INotificationHandler<UserEvents.UserCreatedDomainEvent>, UserCreatedDomainEventHandler>();
 

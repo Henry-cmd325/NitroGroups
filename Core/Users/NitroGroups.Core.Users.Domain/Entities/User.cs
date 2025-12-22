@@ -1,4 +1,6 @@
-﻿using NitroGroups.Shared.Domain;
+﻿using NitroGroups.Core.Users.Domain.Events;
+using NitroGroups.Shared.Domain;
+using System.Net.Http.Headers;
 
 namespace NitroGroups.Core.Users.Domain.Entities
 {
@@ -8,6 +10,7 @@ namespace NitroGroups.Core.Users.Domain.Entities
         BandMember,
         Admin
     }
+
     public class User : DomainModel
     {
         public string Auth0Id { get; private set; } = null!;
@@ -38,6 +41,12 @@ namespace NitroGroups.Core.Users.Domain.Entities
             UserType = userType;
             CreatedAt = DateTime.UtcNow;
             Active = true;
+        }
+
+        //Agregar metodo para agregar evento
+        public void RaiseSoloMusicianCreatedEvent()
+        {
+            AddDomainEvent(new UserCreatedDomainEvent(Id, Email, FirstName, LastName, UserType, CreatedAt));
         }
     }
 }
