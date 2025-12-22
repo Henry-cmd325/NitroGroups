@@ -31,10 +31,6 @@ namespace NitroGroups.Core.Users.Application.UseCases.Musicians.Create
 
                 newMusician.RaiseMusicianWithGroupCreatedEvent(command.IdGroup);
             }
-            else
-            {
-                newMusician.RaiseSoloMusicianCreatedEvent(command.UserInfo.FirstName + command.UserInfo.LastName);
-            }
 
             await _unitOfWork.OutboxService.SaveEventsAsync(newMusician.DomainEvents);
             await _unitOfWork.CompleteAsync();

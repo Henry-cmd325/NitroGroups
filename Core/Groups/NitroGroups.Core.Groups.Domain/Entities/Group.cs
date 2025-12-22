@@ -4,7 +4,7 @@ namespace NitroGroups.Core.Groups.Domain.Entities;
 
 public class Group : DomainModel
 {
-    public int OwnerUserId { get; set; }
+    public long OwnerUserId { get; set; }
     public string Slug { get; set; } = string.Empty;
     public string GroupName { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
