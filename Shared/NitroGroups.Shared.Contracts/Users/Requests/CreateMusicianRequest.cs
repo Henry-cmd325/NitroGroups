@@ -1,4 +1,6 @@
-﻿namespace NitroGroups.Shared.Contracts.Users.Requests
+﻿using NitroGroups.Shared.Contracts.Users.Enums;
+
+namespace NitroGroups.Shared.Contracts.Users.Requests
 {
     public class CreateMusicianRequest
     {
@@ -13,6 +15,7 @@
         public string FirstName { get; set; } = string.Empty;
         public string LastName { get; set; } = string.Empty;
         public string? Phone { get; set; }
+        public UserType UserType { get; set; }
     }
 
     public class MusicianProfileData

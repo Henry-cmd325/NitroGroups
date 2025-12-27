@@ -1,28 +1,54 @@
-﻿using Auth0.ManagementApi;
+﻿using Auth0.AuthenticationApi;
+using Auth0.AuthenticationApi.Models;
+using Auth0.ManagementApi;
 using Auth0.ManagementApi.Models;
+using NitroGroups.Core.Users.Application.Abstractions.Services;
+using NitroGroups.Core.Users.Domain.Entities;
 using System.Dynamic;
 
 namespace NitroGroups.Core.Users.Infrastructure.Services
 {
-    public class AuthenticationService
+    public class AuthenticationService : IAuthenticationService
     {
-        public async Task ActualizarPermisosUsuario(string auth0UserId, string tipoUsuario, string rolAdmin)
+        private string _accessToken = string.Empty;
+        private DateTime _tokenExpiration;
+
+        private async Task<string> GetAccessToken()
         {
-            var client = new ManagementApiClient("cgr_wDRUYmGngG5oH1jZ", new Uri("https://api-nitrogroups"));
+            if (!string.IsNullOrEmpty(_accessToken) && DateTime.UtcNow < _tokenExpiration)
+            {
+                return _accessToken;
+            }
 
-            // 2. Definir los datos que quieres guardar en app_metadata
-            // Usamos ExpandoObject para crear un JSON dinámico
+            var authClient = new AuthenticationApiClient(new Uri("https://dev-devalion.us.auth0.com/"));
+
+            var tokenRequest = new ClientCredentialsTokenRequest
+            {
+                ClientId = "58wpDJ9tnUdBknOZTV4HnxgFGvGy80TA",
+                ClientSecret = "4047x4HLJekKxjuUBIxNRilMATQxtQb7mdxAU3WSqascuupyV3ME-By3LIrNKnzB",
+                Audience = "https://dev-devalion.us.auth0.com/api/v2/"
+            };
+
+            var tokenResponse = await authClient.GetTokenAsync(tokenRequest);
+            
+            _accessToken = tokenResponse.AccessToken;
+            _tokenExpiration = DateTime.UtcNow.AddSeconds(tokenResponse.ExpiresIn).AddMinutes(-1);
+
+            return _accessToken;
+        }
+
+        public async Task ActualizarTipoUsuario(string auth0UserId, UserType userType)
+        {
+            var client = new ManagementApiClient(await GetAccessToken(), new Uri("https://dev-devalion.us.auth0.com/api/v2/"));
+
             dynamic metadata = new ExpandoObject();
-            metadata.user_type = tipoUsuario;
-            metadata.admin_role = rolAdmin;
+            metadata.user_type = userType;
 
-            // 3. Crear la solicitud de actualización
             var updateRequest = new UserUpdateRequest
             {
                 AppMetadata = metadata
             };
 
-            // 4. Ejecutar la actualización en Auth0
             await client.Users.UpdateAsync(auth0UserId, updateRequest);
         }
     }

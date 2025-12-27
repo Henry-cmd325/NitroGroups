@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Cortex.Mediator.Commands;
 using NitroGroups.Core.Users.Application.Abstractions;
+using NitroGroups.Core.Users.Application.Abstractions.Services;
 using NitroGroups.Core.Users.Domain.Entities;
 using NitroGroups.Shared.Contracts;
 using NitroGroups.Shared.Contracts.Users.Requests;
@@ -13,9 +14,13 @@ namespace NitroGroups.Core.Users.Application.UseCases.Musicians.Create
         MusicianProfileData MusicianProfile, 
         int IdGroup) : ICommand<Result<MusicianDto>>;
     
-    public class CreateMusicianCommandHandler(IUnitOfWorkUser unitOfWork, IMapper mapper) : ICommandHandler<CreateMusicianCommand, Result<MusicianDto>>
+    public class CreateMusicianCommandHandler(
+        IUnitOfWorkUser unitOfWork, 
+        IAuthenticationService authService, 
+        IMapper mapper) : ICommandHandler<CreateMusicianCommand, Result<MusicianDto>>
     {
         private readonly IUnitOfWorkUser _unitOfWork = unitOfWork;
+        private readonly IAuthenticationService _authService = authService;
         private readonly IMapper _mapper = mapper;
 
         public async Task<Result<MusicianDto>> Handle(CreateMusicianCommand command, CancellationToken cancellationToken)
@@ -35,7 +40,9 @@ namespace NitroGroups.Core.Users.Application.UseCases.Musicians.Create
             await _unitOfWork.OutboxService.SaveEventsAsync(newMusician.DomainEvents);
             await _unitOfWork.CompleteAsync();
 
+            await _authService.ActualizarTipoUsuario(newMusician.User.Auth0Id, UserType.BandMember);
+
             return _mapper.Map<Musician, MusicianDto>(newMusician);
         }
     }
-}
+} 
