@@ -16,6 +16,7 @@ namespace NitroGroups.Shared.Contracts.Users.Requests
         public string LastName { get; set; } = string.Empty;
         public string? Phone { get; set; }
         public UserType UserType { get; set; }
+        public Origin Origin { get; set; }
     }
 
     public class MusicianProfileData
