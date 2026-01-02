@@ -11,7 +11,7 @@ namespace NitroGroups.Core.Bootstrap
         public static IServiceCollection AddUsersModule(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddUsersApplication(configuration);
-            services.AddUsersInfrastructure();
+            services.AddUsersInfrastructure(configuration);
 
             return services;
         }

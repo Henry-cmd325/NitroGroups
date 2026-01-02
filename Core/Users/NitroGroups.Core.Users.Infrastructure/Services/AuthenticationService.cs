@@ -2,16 +2,24 @@
 using Auth0.AuthenticationApi.Models;
 using Auth0.ManagementApi;
 using Auth0.ManagementApi.Models;
+using Microsoft.Extensions.Options;
 using NitroGroups.Core.Users.Application.Abstractions.Services;
 using NitroGroups.Core.Users.Domain.Entities;
+using NitroGroups.Core.Users.Infrastructure.Configuration;
 using System.Dynamic;
 
 namespace NitroGroups.Core.Users.Infrastructure.Services
 {
     public class AuthenticationService : IAuthenticationService
     {
+        private readonly Auth0ManagementApiSettings _settings;
         private string _accessToken = string.Empty;
         private DateTime _tokenExpiration;
+
+        public AuthenticationService(IOptions<Auth0ManagementApiSettings> options)
+        {
+            _settings = options.Value;
+        }
 
         private async Task<string> GetAccessToken()
         {
@@ -20,17 +28,17 @@ namespace NitroGroups.Core.Users.Infrastructure.Services
                 return _accessToken;
             }
 
-            var authClient = new AuthenticationApiClient(new Uri("https://dev-devalion.us.auth0.com/"));
+            var authClient = new AuthenticationApiClient(new Uri(_settings.Domain));
 
             var tokenRequest = new ClientCredentialsTokenRequest
             {
-                ClientId = "58wpDJ9tnUdBknOZTV4HnxgFGvGy80TA",
-                ClientSecret = "4047x4HLJekKxjuUBIxNRilMATQxtQb7mdxAU3WSqascuupyV3ME-By3LIrNKnzB",
-                Audience = "https://dev-devalion.us.auth0.com/api/v2/"
+                ClientId = _settings.ClientId,
+                ClientSecret = _settings.ClientSecret,
+                Audience = _settings.Audience
             };
 
             var tokenResponse = await authClient.GetTokenAsync(tokenRequest);
-            
+
             _accessToken = tokenResponse.AccessToken;
             _tokenExpiration = DateTime.UtcNow.AddSeconds(tokenResponse.ExpiresIn).AddMinutes(-1);
 
@@ -39,7 +47,7 @@ namespace NitroGroups.Core.Users.Infrastructure.Services
 
         public async Task ActualizarTipoUsuario(string auth0UserId, UserType userType)
         {
-            var client = new ManagementApiClient(await GetAccessToken(), new Uri("https://dev-devalion.us.auth0.com/api/v2/"));
+            var client = new ManagementApiClient(await GetAccessToken(), new Uri(_settings.Audience));
 
             dynamic metadata = new ExpandoObject();
             metadata.user_type = userType;
