@@ -53,6 +53,8 @@ builder.Services.AddPersistence(builder.Configuration);
 builder.Services.AddSharedInfrastructure();
 builder.Services.AddUsersModule(builder.Configuration);
 
+builder.Services.Configure<NitroGroups.Shared.Infrastructure.Configuration.Auth0ManagementApiSettings>(
+    builder.Configuration.GetSection("Auth0ManagementApi"));
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

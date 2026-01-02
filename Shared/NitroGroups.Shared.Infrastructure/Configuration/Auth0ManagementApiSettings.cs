@@ -1,4 +1,4 @@
-namespace NitroGroups.Core.Users.Infrastructure.Configuration
+namespace NitroGroups.Shared.Infrastructure.Configuration
 {
     public class Auth0ManagementApiSettings
     {
