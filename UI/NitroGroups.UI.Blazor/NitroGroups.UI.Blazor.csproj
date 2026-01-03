@@ -24,4 +24,8 @@
     <Folder Include="Modules\Groups\Components\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\Shared\NitroGroups.Shared.Contracts\NitroGroups.Shared.Contracts.csproj" />
+  </ItemGroup>
+
 </Project>

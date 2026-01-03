@@ -1,5 +1,244 @@
-﻿<h3>GroupProfile</h3>
+@page "/group-profile"
+@using NitroGroups.Shared.Contracts.Groups
+
+<h3>Group Profile</h3>
+
+@if (isEditing)
+{
+    <EditForm Model="@group" OnValidSubmit="HandleSave">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div class="form-group">
+            <label for="groupName">Group Name</label>
+            <InputText id="groupName" class="form-control" @bind-Value="group.GroupName" />
+        </div>
+
+        <div class="form-group">
+            <label for="slug">Slug</label>
+            <InputText id="slug" class="form-control" @bind-Value="group.Slug" />
+        </div>
+
+        <div class="form-group">
+            <label for="description">Description</label>
+            <InputTextArea id="description" class="form-control" @bind-Value="group.Description" />
+        </div>
+
+        <div class="form-group">
+            <label for="biography">Biography</label>
+            <InputTextArea id="biography" class="form-control" @bind-Value="group.Biography" />
+        </div>
+
+        <div class="form-group">
+            <label for="numMembers">Number of Members</label>
+            <InputNumber id="numMembers" class="form-control" @bind-Value="group.NumMembers" />
+        </div>
+
+        <div class="form-group">
+            <label for="yearsExperience">Years of Experience</label>
+            <InputNumber id="yearsExperience" class="form-control" @bind-Value="group.YearsExperience" />
+        </div>
+
+        <div class="form-group">
+            <label for="phone">Phone</label>
+            <InputText id="phone" class="form-control" @bind-Value="group.Phone" />
+        </div>
+
+        <div class="form-group">
+            <label for="email">Email</label>
+            <InputText id="email" class="form-control" @bind-Value="group.Email" />
+        </div>
+
+        <div class="form-group">
+            <label for="locationText">Location</label>
+            <InputText id="locationText" class="form-control" @bind-Value="group.LocationText" />
+        </div>
+
+        <div class="form-group">
+            <label for="serviceRadiusKm">Service Radius (km)</label>
+            <InputNumber id="serviceRadiusKm" class="form-control" @bind-Value="group.ServiceRadiusKm" />
+        </div>
+
+        <div class="form-group">
+            <label for="currency">Currency</label>
+            <InputText id="currency" class="form-control" @bind-Value="group.Currency" />
+        </div>
+
+        <div class="form-group">
+            <label for="basePrice">Base Price</label>
+            <InputNumber id="basePrice" class="form-control" @bind-Value="group.BasePrice" />
+        </div>
+
+        <div class="form-group">
+            <label for="hourlyRate">Hourly Rate</label>
+            <InputNumber id="hourlyRate" class="form-control" @bind-Value="group.HourlyRate" />
+        </div>
+
+        <div class="form-group">
+            <label for="minimumDurationHours">Minimum Duration (hours)</label>
+            <InputNumber id="minimumDurationHours" class="form-control" @bind-Value="group.MinimumDurationHours" />
+        </div>
+
+        <div class="form-group">
+            <label for="setupTimeMinutes">Setup Time (minutes)</label>
+            <InputNumber id="setupTimeMinutes" class="form-control" @bind-Value="group.SetupTimeMinutes" />
+        </div>
+
+        <div class="form-check">
+            <InputCheckbox id="isVerified" @bind-Value="group.IsVerified" />
+            <label class="form-check-label" for="isVerified">Verified</label>
+        </div>
+
+        <div class="form-check">
+            <InputCheckbox id="isFeatured" @bind-Value="group.IsFeatured" />
+            <label class="form-check-label" for="isFeatured">Featured</label>
+        </div>
+
+        <div class="form-check">
+            <InputCheckbox id="isAcceptingBookings" @bind-Value="group.IsAcceptingBookings" />
+            <label class="form-check-label" for="isAcceptingBookings">Accepting Bookings</label>
+        </div>
+
+        <div class="form-check">
+            <InputCheckbox id="active" @bind-Value="group.Active" />
+            <label class="form-check-label" for="active">Active</label>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Save</button>
+        <button type="button" class="btn btn-secondary" @onclick="HandleCancel">Cancel</button>
+    </EditForm>
+}
+else
+{
+    <div>
+        <h4>@group.GroupName</h4>
+        <p><strong>Slug:</strong> @group.Slug</p>
+        <p><strong>Description:</strong> @group.Description</p>
+        <p><strong>Biography:</strong> @group.Biography</p>
+        <p><strong>Members:</strong> @group.NumMembers</p>
+        <p><strong>Years of Experience:</strong> @group.YearsExperience</p>
+        <p><strong>Phone:</strong> @group.Phone</p>
+        <p><strong>Email:</strong> @group.Email</p>
+        <p><strong>Location:</strong> @group.LocationText</p>
+        <p><strong>Service Radius:</strong> @group.ServiceRadiusKm km</p>
+        <p><strong>Currency:</strong> @group.Currency</p>
+        <p><strong>Base Price:</strong> @group.BasePrice</p>
+        <p><strong>Hourly Rate:</strong> @group.HourlyRate</p>
+        <p><strong>Minimum Duration:</strong> @group.MinimumDurationHours hours</p>
+        <p><strong>Setup Time:</strong> @group.SetupTimeMinutes minutes</p>
+        <p><strong>Verified:</strong> @group.IsVerified</p>
+        <p><strong>Featured:</strong> @group.IsFeatured</p>
+        <p><strong>Accepting Bookings:</strong> @group.IsAcceptingBookings</p>
+        <p><strong>Active:</strong> @group.Active</p>
+    </div>
+
+    <button class="btn btn-primary" @onclick="ToggleEditMode">Edit</button>
+}
 
 @code {
+    private MusicGroup group = new MusicGroup();
+    private bool isEditing = false;
+    private MusicGroup originalGroup = new MusicGroup();
 
+    protected override void OnInitialized()
+    {
+        // NOTE: This is for demonstration purposes.
+        // In a real application, you would fetch this data from a service.
+        group = new MusicGroup
+        {
+            Id = 1,
+            OwnerUserId = 1,
+            Slug = "the-cool-band",
+            GroupName = "The Cool Band",
+            Description = "The coolest band in town.",
+            Biography = "A long time ago, in a garage far, far away...",
+            NumMembers = 4,
+            YearsExperience = 5,
+            Phone = "555-1234",
+            Email = "cool@band.com",
+            LocationText = "Music City, USA",
+            ServiceRadiusKm = 100,
+            Currency = "USD",
+            BasePrice = 500,
+            HourlyRate = 100,
+            MinimumDurationHours = 2,
+            SetupTimeMinutes = 60,
+            AverageRating = 4.5m,
+            TotalReviews = 25,
+            ViewCount = 1000,
+            BookingCount = 50,
+            IsVerified = true,
+            IsFeatured = true,
+            IsAcceptingBookings = true,
+            Active = true
+        };
+    }
+
+    private void ToggleEditMode()
+    {
+        if (!isEditing)
+        {
+            // Create a copy of the current data for cancellation
+            originalGroup = new MusicGroup
+            {
+                GroupName = group.GroupName,
+                Slug = group.Slug,
+                Description = group.Description,
+                Biography = group.Biography,
+                NumMembers = group.NumMembers,
+                YearsExperience = group.YearsExperience,
+                Phone = group.Phone,
+                Email = group.Email,
+                LocationText = group.LocationText,
+                ServiceRadiusKm = group.ServiceRadiusKm,
+                Currency = group.Currency,
+                BasePrice = group.BasePrice,
+                HourlyRate = group.HourlyRate,
+                MinimumDurationHours = group.MinimumDurationHours,
+                SetupTimeMinutes = group.SetupTimeMinutes,
+                IsVerified = group.IsVerified,
+                IsFeatured = group.IsFeatured,
+                IsAcceptingBookings = group.IsAcceptingBookings,
+                Active = group.Active
+            };
+        }
+        isEditing = !isEditing;
+    }
+
+    private void HandleSave()
+    {
+        // In a real application, you would save the data to a database here.
+        Console.WriteLine("Saving data...");
+
+        // After saving, toggle back to view mode
+        isEditing = false;
+    }
+
+    private void HandleCancel()
+    {
+        // Revert changes from the original copy
+        group = new MusicGroup
+        {
+            GroupName = originalGroup.GroupName,
+            Slug = originalGroup.Slug,
+            Description = originalGroup.Description,
+            Biography = originalGroup.Biography,
+            NumMembers = originalGroup.NumMembers,
+            YearsExperience = originalGroup.YearsExperience,
+            Phone = originalGroup.Phone,
+            Email = originalGroup.Email,
+            LocationText = originalGroup.LocationText,
+            ServiceRadiusKm = originalGroup.ServiceRadiusKm,
+            Currency = originalGroup.Currency,
+            BasePrice = originalGroup.BasePrice,
+            HourlyRate = originalGroup.HourlyRate,
+            MinimumDurationHours = originalGroup.MinimumDurationHours,
+            SetupTimeMinutes = originalGroup.SetupTimeMinutes,
+            IsVerified = originalGroup.IsVerified,
+            IsFeatured = originalGroup.IsFeatured,
+            IsAcceptingBookings = originalGroup.IsAcceptingBookings,
+            Active = originalGroup.Active
+        };
+        isEditing = false;
+    }
 }
