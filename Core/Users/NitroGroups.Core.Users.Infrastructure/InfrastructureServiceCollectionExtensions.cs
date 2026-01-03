@@ -12,15 +12,15 @@ using NitroGroups.Core.Users.Infrastructure.Services;
 namespace NitroGroups.Core.Users.Infrastructure
 {
     public static class InfrastructureServiceCollectionExtensions
-    { 
+    {
         public static IServiceCollection AddUsersInfrastructure(this IServiceCollection services)
         {
             services.AddScoped<IGroupIntegrationService, GroupIntegrationMonolith>();
 
             services.AddScoped<IAuthenticationService, AuthenticationService>();
-            
+
             services.AddScoped<IUnitOfWorkUser, UnitOfWorkUser>();
-            
+
             services.AddScoped<INotificationHandler<UserEvents.UserCreatedDomainEvent>, UserCreatedDomainEventHandler>();
 
             services.AddEndpoints(typeof(InfrastructureServiceCollectionExtensions).Assembly);
