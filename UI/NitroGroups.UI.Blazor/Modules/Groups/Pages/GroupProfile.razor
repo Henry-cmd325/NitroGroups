@@ -1,139 +1,105 @@
 @page "/group-profile"
 @using NitroGroups.Shared.Contracts.Groups
 
-<h3>Group Profile</h3>
+<div class="bg-gray-900 text-white min-h-screen p-8">
+    <div class="max-w-7xl mx-auto">
 
-@if (isEditing)
-{
-    <EditForm Model="@group" OnValidSubmit="HandleSave">
-        <DataAnnotationsValidator />
-        <ValidationSummary />
+        @if (isEditing)
+        {
+            <EditForm Model="@group" OnValidSubmit="HandleSave" class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <DataAnnotationsValidator />
 
-        <div class="form-group">
-            <label for="groupName">Group Name</label>
-            <InputText id="groupName" class="form-control" @bind-Value="group.GroupName" />
-        </div>
+                {/* Left Column: Editable Form */}
+                <div class="md:col-span-2 space-y-6">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-24 h-24 bg-gray-700 rounded-full flex items-center justify-center">
+                            <span class="text-gray-400">Image</span>
+                        </div>
+                        <div>
+                            <label for="groupName" class="block text-sm font-medium text-gray-400">Group Name</label>
+                            <InputText id="groupName" class="mt-1 block w-full bg-gray-800 border-gray-700 rounded-md shadow-sm py-2 px-3 text-white focus:outline-none focus:ring-violet-500 focus:border-violet-500 sm:text-sm" @bind-Value="group.GroupName" />
+                        </div>
+                    </div>
 
-        <div class="form-group">
-            <label for="slug">Slug</label>
-            <InputText id="slug" class="form-control" @bind-Value="group.Slug" />
-        </div>
+                    <div>
+                        <label for="description" class="block text-sm font-medium text-gray-400">Description</label>
+                        <InputTextArea id="description" class="mt-1 block w-full bg-gray-800 border-gray-700 rounded-md shadow-sm py-2 px-3 text-white focus:outline-none focus:ring-violet-500 focus:border-violet-500 sm:text-sm" @bind-Value="group.Description" rows="3" />
+                    </div>
 
-        <div class="form-group">
-            <label for="description">Description</label>
-            <InputTextArea id="description" class="form-control" @bind-Value="group.Description" />
-        </div>
+                    <div>
+                        <label for="biography" class="block text-sm font-medium text-gray-400">Biography</label>
+                        <InputTextArea id="biography" class="mt-1 block w-full bg-gray-800 border-gray-700 rounded-md shadow-sm py-2 px-3 text-white focus:outline-none focus:ring-violet-500 focus:border-violet-500 sm:text-sm" @bind-Value="group.Biography" rows="5" />
+                    </div>
+                </div>
 
-        <div class="form-group">
-            <label for="biography">Biography</label>
-            <InputTextArea id="biography" class="form-control" @bind-Value="group.Biography" />
-        </div>
+                {/* Right Column: Editable Form */}
+                <div class="bg-gray-800 p-6 rounded-lg space-y-6">
+                    <h3 class="text-xl font-semibold text-white">Información de Contratación</h3>
+                    <div>
+                        <label for="basePrice" class="block text-sm font-medium text-gray-400">Rango de precio</label>
+                        <InputNumber id="basePrice" class="mt-1 block w-full bg-gray-700 border-gray-600 rounded-md shadow-sm py-2 px-3 text-white focus:outline-none focus:ring-violet-500 focus:border-violet-500 sm:text-sm" @bind-Value="group.BasePrice" />
+                    </div>
+                    <div>
+                        <label for="yearsExperience" class="block text-sm font-medium text-gray-400">Experiencia</label>
+                        <InputNumber id="yearsExperience" class="mt-1 block w-full bg-gray-700 border-gray-600 rounded-md shadow-sm py-2 px-3 text-white focus:outline-none focus:ring-violet-500 focus:border-violet-500 sm:text-sm" @bind-Value="group.YearsExperience" />
+                    </div>
+                    <div class="space-y-4">
+                        <button type="submit" class="w-full bg-violet-600 hover:bg-violet-700 text-white font-bold py-3 px-4 rounded-lg transition-colors">Save Changes</button>
+                        <button type="button" class="w-full bg-gray-600 hover:bg-gray-700 text-white font-bold py-3 px-4 rounded-lg transition-colors" @onclick="HandleCancel">Cancel</button>
+                    </div>
+                </div>
+            </EditForm>
+        }
+        else
+        {
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                {/* Left Column: Display */}
+                <div class="md:col-span-2">
+                    <div class="flex items-center space-x-6">
+                        <img class="h-24 w-24 rounded-full object-cover" src="https://via.placeholder.com/150" alt="Band photo" />
+                        <div>
+                            <h1 class="text-4xl font-bold">@group.GroupName</h1>
+                            <div class="flex items-center space-x-4 text-gray-400 mt-2">
+                                <span>🎵 Rock Alternativo</span>
+                                <span>📍 @group.LocationText</span>
+                                <span>⭐ @group.AverageRating (@group.TotalReviews reseñas)</span>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="mt-6 text-gray-300">@group.Description</p>
+                    <div class="mt-4 flex flex-wrap gap-2">
+                        <span class="bg-gray-700 text-gray-300 px-3 py-1 rounded-full text-sm">Rock</span>
+                        <span class="bg-gray-700 text-gray-300 px-3 py-1 rounded-full text-sm">Alternativo</span>
+                        <span class="bg-gray-700 text-gray-300 px-3 py-1 rounded-full text-sm">Pop Rock</span>
+                        <span class="bg-gray-700 text-gray-300 px-3 py-1 rounded-full text-sm">Covers</span>
+                    </div>
+                </div>
 
-        <div class="form-group">
-            <label for="numMembers">Number of Members</label>
-            <InputNumber id="numMembers" class="form-control" @bind-Value="group.NumMembers" />
-        </div>
-
-        <div class="form-group">
-            <label for="yearsExperience">Years of Experience</label>
-            <InputNumber id="yearsExperience" class="form-control" @bind-Value="group.YearsExperience" />
-        </div>
-
-        <div class="form-group">
-            <label for="phone">Phone</label>
-            <InputText id="phone" class="form-control" @bind-Value="group.Phone" />
-        </div>
-
-        <div class="form-group">
-            <label for="email">Email</label>
-            <InputText id="email" class="form-control" @bind-Value="group.Email" />
-        </div>
-
-        <div class="form-group">
-            <label for="locationText">Location</label>
-            <InputText id="locationText" class="form-control" @bind-Value="group.LocationText" />
-        </div>
-
-        <div class="form-group">
-            <label for="serviceRadiusKm">Service Radius (km)</label>
-            <InputNumber id="serviceRadiusKm" class="form-control" @bind-Value="group.ServiceRadiusKm" />
-        </div>
-
-        <div class="form-group">
-            <label for="currency">Currency</label>
-            <InputText id="currency" class="form-control" @bind-Value="group.Currency" />
-        </div>
-
-        <div class="form-group">
-            <label for="basePrice">Base Price</label>
-            <InputNumber id="basePrice" class="form-control" @bind-Value="group.BasePrice" />
-        </div>
-
-        <div class="form-group">
-            <label for="hourlyRate">Hourly Rate</label>
-            <InputNumber id="hourlyRate" class="form-control" @bind-Value="group.HourlyRate" />
-        </div>
-
-        <div class="form-group">
-            <label for="minimumDurationHours">Minimum Duration (hours)</label>
-            <InputNumber id="minimumDurationHours" class="form-control" @bind-Value="group.MinimumDurationHours" />
-        </div>
-
-        <div class="form-group">
-            <label for="setupTimeMinutes">Setup Time (minutes)</label>
-            <InputNumber id="setupTimeMinutes" class="form-control" @bind-Value="group.SetupTimeMinutes" />
-        </div>
-
-        <div class="form-check">
-            <InputCheckbox id="isVerified" @bind-Value="group.IsVerified" />
-            <label class="form-check-label" for="isVerified">Verified</label>
-        </div>
-
-        <div class="form-check">
-            <InputCheckbox id="isFeatured" @bind-Value="group.IsFeatured" />
-            <label class="form-check-label" for="isFeatured">Featured</label>
-        </div>
-
-        <div class="form-check">
-            <InputCheckbox id="isAcceptingBookings" @bind-Value="group.IsAcceptingBookings" />
-            <label class="form-check-label" for="isAcceptingBookings">Accepting Bookings</label>
-        </div>
-
-        <div class="form-check">
-            <InputCheckbox id="active" @bind-Value="group.Active" />
-            <label class="form-check-label" for="active">Active</label>
-        </div>
-
-        <button type="submit" class="btn btn-primary">Save</button>
-        <button type="button" class="btn btn-secondary" @onclick="HandleCancel">Cancel</button>
-    </EditForm>
-}
-else
-{
-    <div>
-        <h4>@group.GroupName</h4>
-        <p><strong>Slug:</strong> @group.Slug</p>
-        <p><strong>Description:</strong> @group.Description</p>
-        <p><strong>Biography:</strong> @group.Biography</p>
-        <p><strong>Members:</strong> @group.NumMembers</p>
-        <p><strong>Years of Experience:</strong> @group.YearsExperience</p>
-        <p><strong>Phone:</strong> @group.Phone</p>
-        <p><strong>Email:</strong> @group.Email</p>
-        <p><strong>Location:</strong> @group.LocationText</p>
-        <p><strong>Service Radius:</strong> @group.ServiceRadiusKm km</p>
-        <p><strong>Currency:</strong> @group.Currency</p>
-        <p><strong>Base Price:</strong> @group.BasePrice</p>
-        <p><strong>Hourly Rate:</strong> @group.HourlyRate</p>
-        <p><strong>Minimum Duration:</strong> @group.MinimumDurationHours hours</p>
-        <p><strong>Setup Time:</strong> @group.SetupTimeMinutes minutes</p>
-        <p><strong>Verified:</strong> @group.IsVerified</p>
-        <p><strong>Featured:</strong> @group.IsFeatured</p>
-        <p><strong>Accepting Bookings:</strong> @group.IsAcceptingBookings</p>
-        <p><strong>Active:</strong> @group.Active</p>
+                {/* Right Column: Display */}
+                <div class="bg-gray-800 p-6 rounded-lg h-fit">
+                    <h3 class="text-xl font-semibold text-white">Información de Contratación</h3>
+                    <div class="mt-6 space-y-4">
+                        <div>
+                            <span class="text-gray-400 text-sm">Rango de precio</span>
+                            <p class="text-violet-400 font-bold text-2xl">$@group.BasePrice-$@(@group.BasePrice + 700)</p>
+                        </div>
+                        <div>
+                            <span class="text-gray-400 text-sm">Experiencia</span>
+                            <p class="text-white font-semibold">@group.YearsExperience+ años</p>
+                        </div>
+                        <div>
+                            <span class="text-gray-400 text-sm">Disponibilidad</span>
+                            <p class="text-white font-semibold">Disponible fines de semana</p>
+                        </div>
+                    </div>
+                    <button class="mt-8 w-full bg-violet-600 hover:bg-violet-700 text-white font-bold py-3 px-4 rounded-lg transition-colors" @onclick="ToggleEditMode">
+                        Edit Profile
+                    </button>
+                </div>
+            </div>
+        }
     </div>
-
-    <button class="btn btn-primary" @onclick="ToggleEditMode">Edit</button>
-}
+</div>
 
 @code {
     private MusicGroup group = new MusicGroup();
@@ -142,33 +108,31 @@ else
 
     protected override void OnInitialized()
     {
-        // NOTE: This is for demonstration purposes.
-        // In a real application, you would fetch this data from a service.
         group = new MusicGroup
         {
             Id = 1,
             OwnerUserId = 1,
-            Slug = "the-cool-band",
-            GroupName = "The Cool Band",
-            Description = "The coolest band in town.",
-            Biography = "A long time ago, in a garage far, far away...",
+            Slug = "los-rockeros",
+            GroupName = "Los Rockeros",
+            Description = "Somos una banda de rock alternativo con más de 10 años de experiencia en el escenario. Nuestra música combina sonidos clásicos del rock con elementos modernos, creando una experiencia única para cada audiencia.",
+            Biography = "Desde nuestros inicios en los suburbios de la Ciudad de México, hemos llevado nuestro sonido a todos los rincones del país.",
             NumMembers = 4,
-            YearsExperience = 5,
-            Phone = "555-1234",
-            Email = "cool@band.com",
-            LocationText = "Music City, USA",
-            ServiceRadiusKm = 100,
-            Currency = "USD",
-            BasePrice = 500,
-            HourlyRate = 100,
-            MinimumDurationHours = 2,
-            SetupTimeMinutes = 60,
-            AverageRating = 4.5m,
-            TotalReviews = 25,
-            ViewCount = 1000,
-            BookingCount = 50,
+            YearsExperience = 10,
+            Phone = "55-1234-5678",
+            Email = "contacto@losrockeros.com",
+            LocationText = "Ciudad de México",
+            ServiceRadiusKm = 150,
+            Currency = "MXN",
+            BasePrice = 800,
+            HourlyRate = 200,
+            MinimumDurationHours = 3,
+            SetupTimeMinutes = 90,
+            AverageRating = 4.8m,
+            TotalReviews = 24,
+            ViewCount = 12500,
+            BookingCount = 156,
             IsVerified = true,
-            IsFeatured = true,
+            IsFeatured = false,
             IsAcceptingBookings = true,
             Active = true
         };
@@ -178,7 +142,6 @@ else
     {
         if (!isEditing)
         {
-            // Create a copy of the current data for cancellation
             originalGroup = new MusicGroup
             {
                 GroupName = group.GroupName,
@@ -209,14 +172,11 @@ else
     {
         // In a real application, you would save the data to a database here.
         Console.WriteLine("Saving data...");
-
-        // After saving, toggle back to view mode
         isEditing = false;
     }
 
     private void HandleCancel()
     {
-        // Revert changes from the original copy
         group = new MusicGroup
         {
             GroupName = originalGroup.GroupName,
