@@ -410,6 +410,7 @@ docker-compose.*.yml
 # Configuration files with secrets
 appsettings.Development.json
 appsettings.*.json
+appsettings.json
 
 secrets.json
 .env
