@@ -1,0 +1,44 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Folder Name="/Core/">
+    <Project Path="Core/NitroGroups.Core.Bootstrap/NitroGroups.Core.Bootstrap.csproj" />
+  </Folder>
+  <Folder Name="/Core/Billing/" />
+  <Folder Name="/Core/Booking/" />
+  <Folder Name="/Core/Catalog/" />
+  <Folder Name="/Core/Communication/" />
+  <Folder Name="/Core/Contracts/" />
+  <Folder Name="/Core/Groups/">
+    <Project Path="Core/Groups/NitroGroups.Core.Groups.Application/NitroGroups.Core.Groups.Application.csproj" />
+    <Project Path="Core/Groups/NitroGroups.Core.Groups.Domain/NitroGroups.Core.Groups.Domain.csproj" />
+    <Project Path="Core/Groups/NitroGroups.Core.Groups.Infrastructure/NitroGroups.Core.Groups.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/Core/Users/">
+    <Project Path="Core/Users/NitroGroups.Core.Users.Application/NitroGroups.Core.Users.Application.csproj" />
+    <Project Path="Core/Users/NitroGroups.Core.Users.Domain/NitroGroups.Core.Users.Domain.csproj" />
+    <Project Path="Core/Users/NitroGroups.Core.Users.Infrastructure/NitroGroups.Core.Users.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/Elementos de la solución/">
+    <File Path="Directory.Packages.props" />
+  </Folder>
+  <Folder Name="/Persistence/">
+    <Project Path="Persistence/NitroGroups.Persistence.Context/NitroGroups.Persistence.Context.csproj" />
+  </Folder>
+  <Folder Name="/Services/">
+    <Project Path="Services/NitroGroups.Services.Api/NitroGroups.Services.Api.csproj" />
+  </Folder>
+  <Folder Name="/Shared/">
+    <Project Path="Shared/NitroGroups.Shared.Abstractions/NitroGroups.Shared.Abstractions.csproj" />
+    <Project Path="Shared/NitroGroups.Shared.Contracts/NitroGroups.Shared.Contracts.csproj" />
+    <Project Path="Shared/NitroGroups.Shared.Domain/NitroGroups.Shared.Domain.csproj" />
+    <Project Path="Shared/NitroGroups.Shared.EndpointMapping/NitroGroups.Shared.EndpointMapping.csproj" />
+    <Project Path="Shared/NitroGroups.Shared.Infrastructure/NitroGroups.Shared.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/UI/" />
+  <Project Path="AppHost/AppHost.AppHost/NitroGroups.AppHost.csproj" />
+  <Project Path="AppHost/AppHost.ServiceDefaults/NitroGroups.ServiceDefaults.csproj" />
+</Solution>
