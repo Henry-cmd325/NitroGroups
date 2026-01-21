@@ -38,7 +38,7 @@ Table musicians {
 
 Table musician_songs {
   id int [pk, increment]
-  musician_id int [ref: > musicians.id, unique, not null]
+  musician_id int [ref: > musicians.id, not null]
   track_id varchar(64) [not null]
 }
 

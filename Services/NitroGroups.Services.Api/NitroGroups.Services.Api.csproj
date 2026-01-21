@@ -28,7 +28,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\AppHost\AppHost.ServiceDefaults\NitroGroups.ServiceDefaults.csproj" />
     <ProjectReference Include="..\..\Core\NitroGroups.Core.Bootstrap\NitroGroups.Core.Bootstrap.csproj" />
-    <ProjectReference Include="..\..\Persistence\NitroGroups.Persistence.Context\NitroGroups.Persistence.Context.csproj" />
     <ProjectReference Include="..\..\Shared\NitroGroups.Shared.EndpointMapping\NitroGroups.Shared.EndpointMapping.csproj" />
     <ProjectReference Include="..\..\Shared\NitroGroups.Shared.Infrastructure\NitroGroups.Shared.Infrastructure.csproj" />
   </ItemGroup>

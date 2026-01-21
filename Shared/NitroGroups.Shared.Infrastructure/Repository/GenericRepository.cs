@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using NitroGroups.Persistence.Context;
 using NitroGroups.Shared.Abstractions.Repository;
 using NitroGroups.Shared.Contracts;
+using NitroGroups.Shared.Infrastructure.Context;
 using System.Linq.Expressions;
 
 namespace NitroGroups.Shared.Infrastructure.Repository

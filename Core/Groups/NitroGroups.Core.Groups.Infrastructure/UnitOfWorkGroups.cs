@@ -1,8 +1,8 @@
 ﻿using NitroGroups.Core.Groups.Application.Abstractions;
 using NitroGroups.Core.Groups.Domain.Entities;
-using NitroGroups.Persistence.Context;
 using NitroGroups.Shared.Abstractions.Events;
 using NitroGroups.Shared.Abstractions.Repository;
+using NitroGroups.Shared.Infrastructure.Context;
 using NitroGroups.Shared.Infrastructure.Repository;
 
 namespace NitroGroups.Core.Groups.Infrastructure

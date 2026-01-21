@@ -1,0 +1,73 @@
+﻿@using System.Reflection
+@typeparam TItem
+
+<div class="overflow-auto">
+    <div class="w-full bg-accent/10 border border-accent/30 rounded overflow-hidden">
+
+        <table class="w-full text-left border-separate border-spacing-0">
+
+            <thead>
+                <tr>
+                    @foreach (var prop in Properties)
+                    {
+                        <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold sm:pl-6 first:rounded last:rounded">
+                            @prop.Name
+                        </th>
+                    }
+                </tr>
+            </thead>
+
+            <tbody class="divide divide-accent/30">
+                @foreach (var item in PagedItems)
+                {
+                    <tr class="hover:bg-accent transition-colors">
+                        @foreach (var prop in Properties)
+                        {
+                            @if (prop.GetType() == typeof(bool))
+                            {
+                                <td>
+                                    <InputCheckbox Value="Convert.ToBoolean(prop.GetValue(item))" />
+                                </td>
+                                continue;
+                            }
+
+                            <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm text-white sm:pl-6">
+                                @prop.GetValue(item)
+                            </td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <StyledPaginator CurrentPage="@CurrentPage" 
+                       TotalPages="@TotalPages" 
+                       OnPageChanged="@OnPageChanged" />
+</div>
+
+@code {
+    [Parameter] public IEnumerable<TItem> Items { get; set; } = Enumerable.Empty<TItem>();
+    [Parameter] public int PageSize { get; set; } = 10;
+
+    private int CurrentPage { get; set; } = 0;
+    
+    // Cacheamos las propiedades para no usar reflection en cada render
+    private PropertyInfo[] Properties = Array.Empty<PropertyInfo>();
+
+    protected override void OnInitialized()
+    {
+        Properties = typeof(TItem).GetProperties();
+    }
+
+    private int TotalPages => (int)Math.Ceiling((double)Items.Count() / PageSize);
+
+    private IEnumerable<TItem> PagedItems => Items
+        .Skip(CurrentPage * PageSize)
+        .Take(PageSize);
+
+    private void OnPageChanged(int newPage)
+    {
+        CurrentPage = newPage;
+    }
+}

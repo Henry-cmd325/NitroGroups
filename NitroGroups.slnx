@@ -25,9 +25,6 @@
   <Folder Name="/Elementos de la solución/">
     <File Path="Directory.Packages.props" />
   </Folder>
-  <Folder Name="/Persistence/">
-    <Project Path="Persistence/NitroGroups.Persistence.Context/NitroGroups.Persistence.Context.csproj" />
-  </Folder>
   <Folder Name="/Services/">
     <Project Path="Services/NitroGroups.Services.Api/NitroGroups.Services.Api.csproj" />
   </Folder>
@@ -38,7 +35,6 @@
     <Project Path="Shared/NitroGroups.Shared.EndpointMapping/NitroGroups.Shared.EndpointMapping.csproj" />
     <Project Path="Shared/NitroGroups.Shared.Infrastructure/NitroGroups.Shared.Infrastructure.csproj" />
   </Folder>
-  <Folder Name="/UI/" />
   <Project Path="AppHost/AppHost.AppHost/NitroGroups.AppHost.csproj" />
   <Project Path="AppHost/AppHost.ServiceDefaults/NitroGroups.ServiceDefaults.csproj" />
 </Solution>

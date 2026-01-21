@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NitroGroups.Core.Users.Application.Abstractions.Integrations;
-using NitroGroups.Persistence.Context;
+using NitroGroups.Shared.Infrastructure.Context;
 
 namespace NitroGroups.Core.Users.Infrastructure.Adapters
 {

@@ -1,0 +1,33 @@
+﻿@page "/cards-pagination"
+<div class="grid grid-cols-3 gap-4">
+    @foreach (var item in ItemsVisibles)
+    {
+        <div class="p-4 border rounded shadow">@item</div>
+    }
+</div>
+
+<StyledPaginator CurrentPage="@paginaActual" 
+                 TotalPages="@totalPaginas" 
+                 OnPageChanged="@CambiarPagina" />
+
+@code {
+    private List<string> TodosLosItems = new();
+    private int paginaActual = 0;
+    private int itemsPorPagina = 5;
+
+    private int totalPaginas => (int)Math.Ceiling((double)TodosLosItems.Count / itemsPorPagina);
+
+    private IEnumerable<string> ItemsVisibles => 
+        TodosLosItems.Skip(paginaActual * itemsPorPagina).Take(itemsPorPagina);
+
+    protected override void OnInitialized()
+    {
+        // Llenar datos dummy
+        for (int i = 1; i <= 50; i++) TodosLosItems.Add($"Card #{i}");
+    }
+
+    private void CambiarPagina(int nuevaPagina)
+    {
+        paginaActual = nuevaPagina;
+    }
+}

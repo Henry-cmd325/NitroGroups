@@ -1,65 +1,120 @@
-import Image from "next/image";
-
 export default function Home() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
+    <div className="flex flex-col gap-24 py-16">
+      <section className="grid gap-10 md:grid-cols-[1.2fr_0.8fr] md:items-center">
+        <div className="space-y-6">
+          <span className="inline-flex w-fit items-center rounded-full bg-primary/10 px-3 py-1 text-sm font-medium text-primary">
+            Plataforma creativa
+          </span>
+          <h1 className="text-4xl font-semibold leading-tight tracking-tight md:text-5xl">
+            Conecta artistas y clientes en un solo lugar
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+          <p className="text-lg text-muted-foreground">
+            NitroGroups centraliza proyectos, contratos y pagos para impulsar
+            colaboraciones rápidas y confiables.
           </p>
+          <div className="flex flex-col gap-3 sm:flex-row">
+            <button className="h-11 rounded bg-primary px-6 font-medium text-white hover:bg-primary/90">
+              Crear cuenta
+            </button>
+            <button className="h-11 rounded border border-border px-6 font-medium hover:bg-accent">
+              Ver demo
+            </button>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+        <div className="rounded-2xl border border-border bg-card p-6 shadow-sm">
+          <div className="space-y-4">
+            <h2 className="text-xl font-semibold">Panel centralizado</h2>
+            <p className="text-sm text-muted-foreground">
+              Gestiona proyectos, agenda y facturación con un flujo simple e
+              intuitivo.
+            </p>
+            <div className="grid gap-3 text-sm">
+              <div className="rounded-lg border border-border bg-background p-3">
+                Seguimiento en tiempo real
+              </div>
+              <div className="rounded-lg border border-border bg-background p-3">
+                Mensajería y archivos
+              </div>
+              <div className="rounded-lg border border-border bg-background p-3">
+                Pagos protegidos
+              </div>
+            </div>
+          </div>
         </div>
-      </main>
+      </section>
+
+      <section id="artistas" className="space-y-6">
+        <h2 className="text-3xl font-semibold">Para artistas</h2>
+        <p className="text-muted-foreground">
+          Crea tu portafolio, recibe solicitudes y automatiza entregas sin perder
+          el control creativo.
+        </p>
+        <div className="grid gap-4 md:grid-cols-3">
+          {[
+            "Portafolio profesional",
+            "Agenda inteligente",
+            "Pagos asegurados",
+          ].map((item) => (
+            <div
+              key={item}
+              className="rounded-xl border border-border bg-card p-5 shadow-sm"
+            >
+              <h3 className="font-semibold">{item}</h3>
+              <p className="mt-2 text-sm text-muted-foreground">
+                Optimiza tu flujo de trabajo y mantén cada proyecto bajo
+                control.
+              </p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section id="clientes" className="space-y-6">
+        <h2 className="text-3xl font-semibold">Para clientes</h2>
+        <p className="text-muted-foreground">
+          Descubre talento, compara propuestas y asegura entregas transparentes.
+        </p>
+        <div className="grid gap-4 md:grid-cols-3">
+          {[
+            "Búsqueda avanzada",
+            "Contratos claros",
+            "Historial completo",
+          ].map((item) => (
+            <div
+              key={item}
+              className="rounded-xl border border-border bg-card p-5 shadow-sm"
+            >
+              <h3 className="font-semibold">{item}</h3>
+              <p className="mt-2 text-sm text-muted-foreground">
+                Procesos simples para contratar y recibir resultados de calidad.
+              </p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section id="funcionalidades" className="space-y-6">
+        <h2 className="text-3xl font-semibold">Funcionalidades clave</h2>
+        <p className="text-muted-foreground">
+          Herramientas diseñadas para escalar tu comunidad creativa.
+        </p>
+        <div className="grid gap-4 md:grid-cols-2">
+          {[
+            "Gestión de proyectos con estados personalizados.",
+            "Notificaciones y recordatorios automáticos.",
+            "Panel de métricas para rendimiento y finanzas.",
+            "Integraciones listas para pagos y contratos digitales.",
+          ].map((item) => (
+            <div
+              key={item}
+              className="rounded-xl border border-border bg-card p-5 shadow-sm"
+            >
+              <p className="text-sm text-muted-foreground">{item}</p>
+            </div>
+          ))}
+        </div>
+      </section>
     </div>
   );
 }

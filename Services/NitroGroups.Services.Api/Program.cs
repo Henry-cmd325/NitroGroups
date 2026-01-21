@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using NitroGroups.Core.Bootstrap;
-using NitroGroups.Persistence.Context;
 using NitroGroups.Shared.Abstractions.Events;
 using NitroGroups.Shared.EndpointMapping;
 using NitroGroups.Shared.Infrastructure;
@@ -60,9 +59,10 @@ builder.Services.AddProblemDetails(options =>
     };
 });
 
+builder.Services.AddHttpContextAccessor();
+
 // Add services to the container
-builder.Services.AddPersistence(builder.Configuration);
-builder.Services.AddSharedInfrastructure();
+builder.Services.AddSharedInfrastructure(builder.Configuration);
 builder.Services.AddUsersModule(builder.Configuration);
 
 builder.Services.Configure<NitroGroups.Shared.Infrastructure.Configuration.Auth0ManagementApiSettings>(

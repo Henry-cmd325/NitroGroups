@@ -36,7 +36,10 @@ public class GroupConfiguration : IEntityTypeConfiguration<Group>
         builder.Property(g => g.IsFeatured).HasDefaultValue(false).HasColumnName("is_featured");
         builder.Property(g => g.IsAcceptingBookings).HasDefaultValue(true).HasColumnName("is_accepting_bookings");
         builder.Property(g => g.CreatedAt).HasDefaultValueSql("now()").HasColumnName("created_at");
-        builder.Property(g => g.UpdatedAt).HasDefaultValueSql("now()").HasColumnName("updated_at");
+        builder.Property(g => g.DeletedAt).HasColumnName("deleted_at");
+        builder.Property(g => g.DeletedBy).HasColumnName("deleted_by");
+        builder.Property(g => g.UpdatedAt).HasColumnName("updated_at");
+        builder.Property(g => g.UpdatedBy).HasColumnName("updated_by");
         builder.Property(g => g.Active).HasDefaultValue(true).HasColumnName("active");
 
         builder.HasMany(g => g.Members)

@@ -12,7 +12,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Persistence\NitroGroups.Persistence.Context\NitroGroups.Persistence.Context.csproj" />
     <ProjectReference Include="..\..\..\Shared\NitroGroups.Shared.EndpointMapping\NitroGroups.Shared.EndpointMapping.csproj" />
     <ProjectReference Include="..\..\..\Shared\NitroGroups.Shared.Infrastructure\NitroGroups.Shared.Infrastructure.csproj" />
     <ProjectReference Include="..\NitroGroups.Core.Groups.Application\NitroGroups.Core.Groups.Application.csproj" />
