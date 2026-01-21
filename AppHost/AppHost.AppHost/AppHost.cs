@@ -18,7 +18,6 @@ var api = builder.AddProject<Projects.NitroGroups_Services_Api>("nitrogroups-ser
 var apiBaseUrl = api.GetEndpoint("https");
 
 builder.AddJavaScriptApp("frontend", "../../UI/nitro-groups")
-    .WithNpm(install: true, installArgs: ["--legacy-peer-deps"])
     .WithHttpEndpoint(port: 3000, env: "PORT")
     .WithEnvironment("NEXT_PUBLIC_API_BASE_URL", apiBaseUrl)
     .WithReference(api);

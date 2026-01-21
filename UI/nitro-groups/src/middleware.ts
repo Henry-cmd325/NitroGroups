@@ -1,9 +1,9 @@
-import { getSession } from "@auth0/nextjs-auth0/edge";
+import { auth0 } from "@/lib/auth0";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 export async function middleware(request: NextRequest) {
-  const session = await getSession(request);
+  const session = await auth0.getSession(request);
 
   if (!session) {
     return NextResponse.redirect(new URL("/", request.url));
