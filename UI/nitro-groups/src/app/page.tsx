@@ -1,120 +1,80 @@
+import Badge from "@/components/controls/Badge";
+import { PlayIcon, CrowdIcon, CalendarIcon } from "@/components/icons";
+
 export default function Home() {
   return (
-    <div className="flex flex-col gap-24 py-16">
-      <section className="grid gap-10 md:grid-cols-[1.2fr_0.8fr] md:items-center">
-        <div className="space-y-6">
-          <span className="inline-flex w-fit items-center rounded-full bg-primary/10 px-3 py-1 text-sm font-medium text-primary">
-            Plataforma creativa
-          </span>
-          <h1 className="text-4xl font-semibold leading-tight tracking-tight md:text-5xl">
-            Conecta artistas y clientes en un solo lugar
-          </h1>
-          <p className="text-lg text-muted-foreground">
-            NitroGroups centraliza proyectos, contratos y pagos para impulsar
-            colaboraciones rápidas y confiables.
-          </p>
-          <div className="flex flex-col gap-3 sm:flex-row">
-            <button className="h-11 rounded bg-primary px-6 font-medium text-white hover:bg-primary/90">
-              Crear cuenta
-            </button>
-            <button className="h-11 rounded border border-border px-6 font-medium hover:bg-accent">
-              Ver demo
-            </button>
-          </div>
-        </div>
-        <div className="rounded-2xl border border-border bg-card p-6 shadow-sm">
-          <div className="space-y-4">
-            <h2 className="text-xl font-semibold">Panel centralizado</h2>
-            <p className="text-sm text-muted-foreground">
-              Gestiona proyectos, agenda y facturación con un flujo simple e
-              intuitivo.
-            </p>
-            <div className="grid gap-3 text-sm">
-              <div className="rounded-lg border border-border bg-background p-3">
-                Seguimiento en tiempo real
-              </div>
-              <div className="rounded-lg border border-border bg-background p-3">
-                Mensajería y archivos
-              </div>
-              <div className="rounded-lg border border-border bg-background p-3">
-                Pagos protegidos
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+    <section className="relative overflow-hidden bg-gradient-to-b from-muted/20 to-background">
+      <div className="container mx-auto px-4 py-15 lg:py-18">
+        <div className="grid lg:grid-cols-2 gap-12 items-center">
+          {/* Left Column - Text Content */}
+          <div className="space-y-8">
+            <div className="space-y-4">
+              <Badge variant="secondary" className="w-fit">
+                🎵 Conecta la música con el mundo
+              </Badge>
 
-      <section id="artistas" className="space-y-6">
-        <h2 className="text-3xl font-semibold">Para artistas</h2>
-        <p className="text-muted-foreground">
-          Crea tu portafolio, recibe solicitudes y automatiza entregas sin perder
-          el control creativo.
-        </p>
-        <div className="grid gap-4 md:grid-cols-3">
-          {[
-            "Portafolio profesional",
-            "Agenda inteligente",
-            "Pagos asegurados",
-          ].map((item) => (
-            <div
-              key={item}
-              className="rounded-xl border border-border bg-card p-5 shadow-sm"
-            >
-              <h3 className="font-semibold">{item}</h3>
-              <p className="mt-2 text-sm text-muted-foreground">
-                Optimiza tu flujo de trabajo y mantén cada proyecto bajo
-                control.
+              <h1 className="text-4xl lg:text-6xl font-bold tracking-tight">
+                La plataforma que conecta{" "}
+                <span className="text-primary">artistas</span> con{" "}
+                <span className="text-primary">eventos</span>
+              </h1>
+              <p className="text-xl text-muted-foreground max-w-lg">
+                NitroGroups es el punto de encuentro entre grupos musicales
+                independientes y organizadores de eventos. Gestiona tu agenda,
+                conecta con clientes y haz crecer tu carrera musical.
               </p>
             </div>
-          ))}
-        </div>
-      </section>
 
-      <section id="clientes" className="space-y-6">
-        <h2 className="text-3xl font-semibold">Para clientes</h2>
-        <p className="text-muted-foreground">
-          Descubre talento, compara propuestas y asegura entregas transparentes.
-        </p>
-        <div className="grid gap-4 md:grid-cols-3">
-          {[
-            "Búsqueda avanzada",
-            "Contratos claros",
-            "Historial completo",
-          ].map((item) => (
-            <div
-              key={item}
-              className="rounded-xl border border-border bg-card p-5 shadow-sm"
-            >
-              <h3 className="font-semibold">{item}</h3>
-              <p className="mt-2 text-sm text-muted-foreground">
-                Procesos simples para contratar y recibir resultados de calidad.
-              </p>
+            <div className="flex flex-col sm:flex-row gap-4">
+              <a
+                href="/api/auth/login"
+                className="cursor-pointer text-lg h-12 px-8 rounded bg-primary text-white hover:bg-primary/90 flex items-center justify-center"
+              >
+                <PlayIcon className="h-6 mr-2" />
+                <span>Comenzar Ahora</span>
+              </a>
             </div>
-          ))}
-        </div>
-      </section>
 
-      <section id="funcionalidades" className="space-y-6">
-        <h2 className="text-3xl font-semibold">Funcionalidades clave</h2>
-        <p className="text-muted-foreground">
-          Herramientas diseñadas para escalar tu comunidad creativa.
-        </p>
-        <div className="grid gap-4 md:grid-cols-2">
-          {[
-            "Gestión de proyectos con estados personalizados.",
-            "Notificaciones y recordatorios automáticos.",
-            "Panel de métricas para rendimiento y finanzas.",
-            "Integraciones listas para pagos y contratos digitales.",
-          ].map((item) => (
-            <div
-              key={item}
-              className="rounded-xl border border-border bg-card p-5 shadow-sm"
-            >
-              <p className="text-sm text-muted-foreground">{item}</p>
+            <div className="flex items-center space-x-8 pt-4">
+              <div className="flex items-center space-x-2">
+                <CrowdIcon className="text-muted-foreground h-6" />
+                <span className="text-sm text-muted-foreground">
+                  500+ Artistas
+                </span>
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <CalendarIcon className="text-muted-foreground h-6" />
+                <span className="text-sm text-muted-foreground">
+                  1000+ Eventos
+                </span>
+              </div>
             </div>
-          ))}
+          </div>
+
+          {/* Right Column - Hero Image */}
+          <div className="relative">
+            <div className="relative rounded-2xl overflow-hidden shadow-2xl">
+              <img
+                src="https://images.unsplash.com/photo-1544598256-fc4016e12325?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxsaXZlJTIwbXVzaWMlMjBjb25jZXJ0JTIwYmFuZCUyMHN0YWdlfGVufDF8fHx8MTc1NzgyMTg3NHww&ixlib=rb-4.1.0&q=80&w=1080"
+                alt="Concierto en vivo"
+                className="w-full h-[400px] lg:h-[500px] object-cover"
+                loading="lazy"
+              />
+
+              <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+              <div className="absolute bottom-6 left-6 text-white">
+                <p className="text-lg font-semibold">
+                  🎸 Conecta con tu audiencia
+                </p>
+                <p className="text-sm opacity-90">
+                  Miles de eventos esperando por tu música
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
-      </section>
-    </div>
+      </div>
+    </section>
   );
 }
