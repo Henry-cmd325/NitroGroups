@@ -7,11 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Mappings\" />
-    <Folder Include="UseCases\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="AutoMapper" />
     <PackageReference Include="Cortex.Mediator" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" />

@@ -7,8 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Adapters\" />
-    <Folder Include="Endpoints\" />
+    <Compile Remove="Adapters\**" />
+    <EmbeddedResource Remove="Adapters\**" />
+    <None Remove="Adapters\**" />
   </ItemGroup>
 
   <ItemGroup>

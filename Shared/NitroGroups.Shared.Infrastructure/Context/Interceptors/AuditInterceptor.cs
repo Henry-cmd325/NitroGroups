@@ -38,6 +38,10 @@ namespace NitroGroups.Shared.Infrastructure.Context.Interceptors
             {
                 switch (entry.State)
                 {
+                    case EntityState.Added:
+                        entry.Entity.CreatedAt = now;
+                        entry.Entity.CreatedBy = userId ?? 0;
+                        break;
                     case EntityState.Modified:
                         entry.Entity.UpdatedAt = now;
                         entry.Entity.UpdatedBy = userId;
