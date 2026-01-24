@@ -1,5 +1,6 @@
 ﻿using Cortex.Mediator;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using NitroGroups.Core.Users.Application.UseCases.Users.GetAll;
 using NitroGroups.Shared.Contracts;
@@ -16,7 +17,9 @@ namespace NitroGroups.Core.Users.Infrastructure.Endpoints.Users
             app.MapGet("api/users", async (IMediator mediator, int page = 1, int size = 10) => {
                 var result = await mediator.SendQueryAsync<GetAllUsersQuery, PagedResult<UserDto>>(new() { Page = page, Size = size });
                 return Ok(result);
-            }).RequireAuthorization();
+            })
+            .RequireAuthorization()
+            .WithTags("Users");
         }
     }
 }

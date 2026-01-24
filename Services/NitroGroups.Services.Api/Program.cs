@@ -63,7 +63,9 @@ builder.Services.AddHttpContextAccessor();
 
 // Add services to the container
 builder.Services.AddSharedInfrastructure(builder.Configuration);
+
 builder.Services.AddUsersModule(builder.Configuration);
+builder.Services.AddGroupsModule(builder.Configuration);
 
 builder.Services.Configure<NitroGroups.Shared.Infrastructure.Configuration.Auth0ManagementApiSettings>(
     builder.Configuration.GetSection("Auth0ManagementApi"));

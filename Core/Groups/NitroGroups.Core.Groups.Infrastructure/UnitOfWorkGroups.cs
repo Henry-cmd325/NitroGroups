@@ -10,8 +10,8 @@ namespace NitroGroups.Core.Groups.Infrastructure
     public class UnitOfWorkGroups(
         NitroGroupsContext context, 
         IOutboxService outboxService,
-        GenericRepository<Group, long> groups,
-        GenericRepository<GroupMember, long> groupMembers) : UnitOfWork(context, outboxService), IUnitOfWorkGroups
+        IGenericRepository<Group, long> groups,
+        IGenericRepository<GroupMember, long> groupMembers) : UnitOfWork(context, outboxService), IUnitOfWorkGroups
     {
         public IGenericRepository<Group, long> Groups { get; } = groups;
 
