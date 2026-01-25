@@ -1,6 +1,6 @@
 "use client";
 
-import { useUser } from "@auth0/nextjs-auth0/client";
+import { useUser } from "@auth0/nextjs-auth0";
 import { useState } from "react";
 import Image from "next/image";
 
@@ -30,8 +30,8 @@ export default function Header() {
           <div className="hidden md:flex items-center space-x-6">
             <span>Panel de Artista</span>
             <span className="text-muted-foreground">Hola, {user.name ?? user.nickname ?? user.email}</span>
-            <a
-              href="/api/auth/logout"
+              <a
+                href="/auth/logout"
               className="bg-primary hover:bg-primary/90 h-8 gap-1.5 px-3 flex items-center text-white rounded"
             >
               Cerrar Sesión
@@ -44,13 +44,13 @@ export default function Header() {
             </nav>
             <div className="hidden md:flex items-center space-x-3">
               <a
-                href="/api/auth/login"
+                href="/auth/login"
                 className="flex items-center cursor-pointer rounded hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50 h-8 gap-1.5 px-3"
               >
                 Iniciar Sesión
               </a>
               <a
-                href="/api/auth/login?screen_hint=signup"
+                href="/auth/login?screen_hint=signup"
                 className="flex items-center bg-primary cursor-pointer hover:bg-primary/90 h-8 gap-1.5 px-3 text-white rounded"
               >
                 Registrarse
@@ -76,7 +76,7 @@ export default function Header() {
             <span className="text-lg font-medium py-2">Panel de Artista</span>
             <span className="text-muted-foreground">Hola, {user.name ?? user.nickname ?? user.email}</span>
             <a
-              href="/api/auth/logout"
+              href="/auth/logout"
               className="bg-primary hover:bg-primary/90 py-2 text-white rounded text-center"
             >
               Cerrar Sesión
@@ -108,13 +108,13 @@ export default function Header() {
 
             <div className="pt-4 flex flex-col space-y-2">
               <a
-                href="/api/auth/login"
+                href="/auth/login"
                 className="py-2 text-center border rounded hover:bg-accent"
               >
                 Iniciar Sesión
               </a>
               <a
-                href="/api/auth/login?screen_hint=signup"
+                href="/auth/login?screen_hint=signup"
                 className="bg-primary hover:bg-primary/90 py-2 text-center text-white rounded"
               >
                 Registrarse

@@ -1,5 +1,9 @@
-import { auth0 } from "@/lib/auth0";
-import { type NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 
-export const GET = (req: NextRequest) => auth0.middleware(req);
-export const POST = (req: NextRequest) => auth0.middleware(req);
+const message = {
+	error: "deprecated_route",
+	message: "Auth0 v4 uses /auth/* routes mounted by middleware.",
+};
+
+export const GET = () => NextResponse.json(message, { status: 404 });
+export const POST = () => NextResponse.json(message, { status: 404 });

@@ -32,7 +32,7 @@ export default function RootLayout({
         <Providers>
           <Header />
           <main className="px-4">
-            <article className="mx-auto w-full max-w-6xl">{children}</article>
+            <article className="w-full">{children}</article>
           </main>
         </Providers>
       </body>
