@@ -18,4 +18,8 @@
     <ProjectReference Include="..\NitroGroups.Core.Groups.Domain\NitroGroups.Core.Groups.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="UseCases\GroupMembers\" />
+  </ItemGroup>
+
 </Project>
