@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Cortex.Mediator;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using NitroGroups.Core.Groups.Application.UseCases.Groups.Update;
 using NitroGroups.Shared.Contracts;
@@ -20,7 +21,8 @@ namespace NitroGroups.Core.Groups.Infrastructure.Endpoints.Groups
                 var result = await mediator.SendCommandAsync<UpdateGroupCommand, Result<bool>>(command);
 
                 return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
-            });
+            })
+            .WithTags("Groups");
         }
     }
 }

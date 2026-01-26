@@ -3,7 +3,7 @@ import { PlayIcon, CrowdIcon, CalendarIcon } from "@/components/icons";
 
 export default function Home() {
   return (
-    <section className="relative overflow-hidden bg-gradient-to-b from-muted/20 to-background">
+    <section className="relative overflow-hidden bg-linear-to-b from-muted/20 to-background">
       <div className="container mx-auto px-4 py-15 lg:py-18">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Left Column - Text Content */}
@@ -27,7 +27,7 @@ export default function Home() {
 
             <div className="flex flex-col sm:flex-row gap-4">
               <a
-                href="/api/auth/login"
+                href="/auth/login"
                 className="cursor-pointer text-lg h-12 px-8 rounded bg-primary text-white hover:bg-primary/90 flex items-center justify-center"
               >
                 <PlayIcon className="h-6 mr-2" />
@@ -58,11 +58,11 @@ export default function Home() {
               <img
                 src="https://images.unsplash.com/photo-1544598256-fc4016e12325?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxsaXZlJTIwbXVzaWMlMjBjb25jZXJ0JTIwYmFuZCUyMHN0YWdlfGVufDF8fHx8MTc1NzgyMTg3NHww&ixlib=rb-4.1.0&q=80&w=1080"
                 alt="Concierto en vivo"
-                className="w-full h-[400px] lg:h-[500px] object-cover"
+                className="w-full h-100 lg:h-125 object-cover"
                 loading="lazy"
               />
 
-              <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+              <div className="absolute inset-0 bg-linear-to-t from-black/50 to-transparent" />
               <div className="absolute bottom-6 left-6 text-white">
                 <p className="text-lg font-semibold">
                   🎸 Conecta con tu audiencia

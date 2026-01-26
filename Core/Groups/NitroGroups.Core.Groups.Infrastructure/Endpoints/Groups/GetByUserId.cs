@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using NitroGroups.Core.Groups.Application.UseCases.Groups.GetByUserId;
-using NitroGroups.Core.Groups.Domain.Entities;
 using NitroGroups.Shared.Contracts;
 using NitroGroups.Shared.Contracts.Groups.Responses;
 using NitroGroups.Shared.EndpointMapping;
@@ -24,12 +23,7 @@ namespace NitroGroups.Core.Groups.Infrastructure.Endpoints.Groups
                 else
                     return NotFound();
             })
-            .WithTags("Groups")
-            .WithDisplayName("Get Groups By User Id")
-            .WithSummary("Retrieves all groups associated with a specific user by their user ID.")
-            .WithDescription("This endpoint allows clients to fetch all groups that a particular user is a member of, identified by their unique user ID.")
-            .Produces<Group>(statusCode: 200)
-            .Produces(statusCode: 404);
+            .WithTags("Groups");
         }
     }
 }

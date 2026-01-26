@@ -30,7 +30,8 @@ namespace NitroGroups.Core.Users.Infrastructure.Endpoints.Musicians
 
                 return Created($"api/musicians/{createdMusician.Value!.Id}", createdMusician.Value);
             })
-            .AddEndpointFilter<ValidationFilter<CreateMusicianRequest>>();
+            .AddEndpointFilter<ValidationFilter<CreateMusicianRequest>>()
+            .WithTags("Musicians");
         }
     }
 }

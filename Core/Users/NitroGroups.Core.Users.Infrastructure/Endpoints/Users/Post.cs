@@ -24,7 +24,8 @@ namespace NitroGroups.Core.Users.Infrastructure.Endpoints.Users
                 return Created($"api/users/{createdUser.Id}", createdUser);
             })
             .RequireAuthorization()
-            .AddEndpointFilter<ValidationFilter<CreateUserRequest>>();
+            .AddEndpointFilter<ValidationFilter<CreateUserRequest>>()
+            .WithTags("Users");
         }
     }
 }
