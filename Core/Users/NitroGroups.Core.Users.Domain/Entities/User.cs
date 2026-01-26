@@ -1,15 +1,9 @@
 ﻿using NitroGroups.Core.Users.Domain.Events;
 using NitroGroups.Shared.Domain;
+using NitroGroups.Shared.Domain.DomainEvents.Users.Enums;
 
 namespace NitroGroups.Core.Users.Domain.Entities
 {
-    public enum UserType
-    {
-        Client,
-        BandMember,
-        Admin
-    }
-
     public class User : DomainModel
     {
         public string Auth0Id { get; private set; } = null!;
