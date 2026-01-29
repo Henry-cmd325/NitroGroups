@@ -23,7 +23,7 @@ namespace NitroGroups.Core.Groups.Domain.Entities
         public GroupMemberRole Role { get; set; }
         public bool IsActive { get; set; }
         public DateTime JoinedAt { get; set; }
-        public DateTime LeftAt { get; set; }
+        public DateTime? LeftAt { get; set; }
         public JoinedVia JoinedVia { get; set; }
         public int ApprovedBy { get; set; }
 

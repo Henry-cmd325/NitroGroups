@@ -44,13 +44,13 @@ export default function Header() {
             </nav>
             <div className="hidden md:flex items-center space-x-3">
               <a
-                href="/auth/login"
+                href="/auth/login?returnTo=%2Fdashboard%2Fmusician"
                 className="flex items-center cursor-pointer rounded hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50 h-8 gap-1.5 px-3"
               >
                 Iniciar Sesión
               </a>
               <a
-                href="/auth/login?screen_hint=signup"
+                href="/auth/login?screen_hint=signup&returnTo=%2Fdashboard%2Fmusician"
                 className="flex items-center bg-primary cursor-pointer hover:bg-primary/90 h-8 gap-1.5 px-3 text-white rounded"
               >
                 Registrarse
@@ -108,13 +108,13 @@ export default function Header() {
 
             <div className="pt-4 flex flex-col space-y-2">
               <a
-                href="/auth/login"
+                href="/auth/login?returnTo=%2Fdashboard%2Fmusician"
                 className="py-2 text-center border rounded hover:bg-accent"
               >
                 Iniciar Sesión
               </a>
               <a
-                href="/auth/login?screen_hint=signup"
+                href="/auth/login?screen_hint=signup&returnTo=%2Fdashboard%2Fmusician"
                 className="bg-primary hover:bg-primary/90 py-2 text-center text-white rounded"
               >
                 Registrarse

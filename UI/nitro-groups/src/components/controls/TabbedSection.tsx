@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactNode, useState, Children, isValidElement } from "react";
+import { ReactNode, useState, Children, isValidElement, useEffect } from "react";
 
 interface TabItemProps {
   title: string;
@@ -20,22 +20,33 @@ export default function TabbedSection({ children }: TabbedSectionProps) {
   const tabs: { title: string; tabKey: string; content: ReactNode }[] = [];
 
   Children.forEach(children, (child) => {
-    if (isValidElement<TabItemProps>(child) && child.type === TabItem) {
-      tabs.push({
-        title: child.props.title,
-        tabKey: child.props.tabKey,
-        content: child.props.children,
-      });
-    }
+    if (!isValidElement(child)) return;
+
+    const { title, tabKey, children: tabContent } = child.props as Partial<TabItemProps>;
+
+    if (typeof title !== "string" || typeof tabKey !== "string") return;
+
+    tabs.push({
+      title,
+      tabKey,
+      content: tabContent,
+    });
   });
 
-  const [selectedKey, setSelectedKey] = useState(tabs[0]?.tabKey || "");
+  const [selectedKey, setSelectedKey] = useState("");
+
+  useEffect(() => {
+    if (!tabs.length) return;
+    if (!selectedKey || !tabs.some((tab) => tab.tabKey === selectedKey)) {
+      setSelectedKey(tabs[0].tabKey);
+    }
+  }, [tabs, selectedKey]);
 
   const activeTab = tabs.find((t) => t.tabKey === selectedKey);
 
   return (
     <div className="mx-auto mt-5 px-3">
-      <nav className="flex justify-around mb-2 overflow-x-auto bg-muted text-muted-foreground p-[3px] rounded-2xl">
+      <nav className="flex justify-around mb-2 overflow-x-auto bg-muted text-muted-foreground p-0.75 rounded-2xl">
         {tabs.map((tab) => {
           const isSelected = tab.tabKey === selectedKey;
           const tabClass = isSelected

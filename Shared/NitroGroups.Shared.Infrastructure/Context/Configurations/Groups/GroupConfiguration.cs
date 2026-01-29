@@ -12,6 +12,8 @@ public class GroupConfiguration : IEntityTypeConfiguration<Group>
 
         builder.HasKey(g => g.Id);
 
+        builder.Property(g => g.Id).HasColumnName("id");
+
         builder.Property(g => g.OwnerUserId).HasColumnName("owner_user_id");
         builder.Property(g => g.Slug).IsRequired().HasMaxLength(120).HasColumnName("slug");
         builder.Property(g => g.GroupName).IsRequired().HasMaxLength(150).HasColumnName("group_name");
@@ -36,6 +38,7 @@ public class GroupConfiguration : IEntityTypeConfiguration<Group>
         builder.Property(g => g.IsFeatured).HasDefaultValue(false).HasColumnName("is_featured");
         builder.Property(g => g.IsAcceptingBookings).HasDefaultValue(true).HasColumnName("is_accepting_bookings");
         builder.Property(g => g.CreatedAt).HasDefaultValueSql("now()").HasColumnName("created_at");
+        builder.Property(g => g.CreatedBy).HasColumnName("created_by");
         builder.Property(g => g.DeletedAt).HasColumnName("deleted_at");
         builder.Property(g => g.DeletedBy).HasColumnName("deleted_by");
         builder.Property(g => g.UpdatedAt).HasColumnName("updated_at");

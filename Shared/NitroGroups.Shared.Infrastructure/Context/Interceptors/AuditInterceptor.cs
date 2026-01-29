@@ -53,7 +53,6 @@ namespace NitroGroups.Shared.Infrastructure.Context.Interceptors
                         // Esto le dice a EF: "No hagas un DELETE, haz un UPDATE"
                         entry.State = EntityState.Modified;
 
-                        entry.Entity.IsDeleted = true;
                         entry.Entity.DeletedAt = now;
                         entry.Entity.DeletedBy = userId;
                         break;

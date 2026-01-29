@@ -27,7 +27,7 @@ export default function Home() {
 
             <div className="flex flex-col sm:flex-row gap-4">
               <a
-                href="/auth/login"
+                href="/auth/login?returnTo=%2Fdashboard%2Fmusician"
                 className="cursor-pointer text-lg h-12 px-8 rounded bg-primary text-white hover:bg-primary/90 flex items-center justify-center"
               >
                 <PlayIcon className="h-6 mr-2" />

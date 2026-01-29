@@ -11,6 +11,8 @@ namespace NitroGroups.Shared.Infrastructure.Context.Configurations.Users
             builder.ToTable("musicians");
 
             builder.HasKey(m => m.Id);
+            builder.Property(m => m.Id)
+                .HasColumnName("id");
 
             builder.Property(m => m.UserId)
                 .HasColumnName("user_id");

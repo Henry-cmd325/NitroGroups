@@ -11,6 +11,7 @@ public class GroupMemberConfiguration : IEntityTypeConfiguration<GroupMember>
         builder.ToTable("group_members");
 
         builder.HasKey(gm => gm.Id);
+        builder.Property(gm => gm.Id).HasColumnName("id");
 
         builder.Property(gm => gm.GroupId).HasColumnName("group_id");
         builder.Property(gm => gm.UserId).HasColumnName("user_id");

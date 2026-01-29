@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace NitroGroups.Shared.Infrastructure.Context.Migrations
 {
     [DbContext(typeof(NitroGroupsContext))]
-    [Migration("20260121185920_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20260128035030_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -29,7 +29,8 @@ namespace NitroGroups.Shared.Infrastructure.Context.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
@@ -65,6 +66,10 @@ namespace NitroGroups.Shared.Infrastructure.Context.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at")
                         .HasDefaultValueSql("now()");
+
+                    b.Property<long>("CreatedBy")
+                        .HasColumnType("bigint")
+                        .HasColumnName("created_by");
 
                     b.Property<string>("Currency")
                         .IsRequired()
@@ -108,9 +113,6 @@ namespace NitroGroups.Shared.Infrastructure.Context.Migrations
                         .HasColumnType("boolean")
                         .HasDefaultValue(true)
                         .HasColumnName("is_accepting_bookings");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
 
                     b.Property<bool>("IsFeatured")
                         .ValueGeneratedOnAdd()
@@ -214,7 +216,8 @@ namespace NitroGroups.Shared.Infrastructure.Context.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
@@ -242,7 +245,7 @@ namespace NitroGroups.Shared.Infrastructure.Context.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("joined_via");
 
-                    b.Property<DateTime>("LeftAt")
+                    b.Property<DateTime?>("LeftAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("left_at");
 
@@ -268,7 +271,8 @@ namespace NitroGroups.Shared.Infrastructure.Context.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
@@ -306,7 +310,8 @@ namespace NitroGroups.Shared.Infrastructure.Context.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 

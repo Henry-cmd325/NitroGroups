@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace NitroGroups.Shared.Infrastructure.Context.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class Init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -16,7 +16,7 @@ namespace NitroGroups.Shared.Infrastructure.Context.Migrations
                 name: "music_groups",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
+                    id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     owner_user_id = table.Column<long>(type: "bigint", nullable: false),
                     slug = table.Column<string>(type: "character varying(120)", maxLength: 120, nullable: false),
@@ -42,16 +42,16 @@ namespace NitroGroups.Shared.Infrastructure.Context.Migrations
                     is_featured = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false),
                     is_accepting_bookings = table.Column<bool>(type: "boolean", nullable: false, defaultValue: true),
                     active = table.Column<bool>(type: "boolean", nullable: false, defaultValue: true),
+                    created_by = table.Column<long>(type: "bigint", nullable: false),
                     created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "now()"),
                     updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     updated_by = table.Column<long>(type: "bigint", nullable: true),
-                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
                     deleted_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     deleted_by = table.Column<long>(type: "bigint", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_music_groups", x => x.Id);
+                    table.PrimaryKey("PK_music_groups", x => x.id);
                 });
 
             migrationBuilder.CreateTable(
@@ -78,7 +78,7 @@ namespace NitroGroups.Shared.Infrastructure.Context.Migrations
                 name: "users",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
+                    id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     auth0_id = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     email = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
@@ -96,32 +96,32 @@ namespace NitroGroups.Shared.Infrastructure.Context.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_users", x => x.Id);
+                    table.PrimaryKey("PK_users", x => x.id);
                 });
 
             migrationBuilder.CreateTable(
                 name: "group_members",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
+                    id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     group_id = table.Column<long>(type: "bigint", nullable: false),
                     user_id = table.Column<long>(type: "bigint", nullable: false),
                     role = table.Column<int>(type: "integer", nullable: false),
                     is_active = table.Column<bool>(type: "boolean", nullable: false, defaultValue: true),
                     joined_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "now()"),
-                    left_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    left_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     joined_via = table.Column<int>(type: "integer", nullable: false),
                     approved_by = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_group_members", x => x.Id);
+                    table.PrimaryKey("PK_group_members", x => x.id);
                     table.ForeignKey(
                         name: "FK_group_members_music_groups_group_id",
                         column: x => x.group_id,
                         principalTable: "music_groups",
-                        principalColumn: "Id",
+                        principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -129,7 +129,7 @@ namespace NitroGroups.Shared.Infrastructure.Context.Migrations
                 name: "musicians",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
+                    id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     user_id = table.Column<long>(type: "bigint", nullable: false),
                     years_experience = table.Column<int>(type: "integer", nullable: false, defaultValue: 0),
@@ -138,12 +138,12 @@ namespace NitroGroups.Shared.Infrastructure.Context.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_musicians", x => x.Id);
+                    table.PrimaryKey("PK_musicians", x => x.id);
                     table.ForeignKey(
                         name: "FK_musicians_users_user_id",
                         column: x => x.user_id,
                         principalTable: "users",
-                        principalColumn: "Id",
+                        principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
 

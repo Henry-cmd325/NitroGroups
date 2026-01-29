@@ -12,6 +12,8 @@ namespace NitroGroups.Shared.Infrastructure.Context.Configurations.Users
             builder.ToTable("users");
 
             builder.HasKey(u => u.Id);
+            builder.Property(u => u.Id)
+                .HasColumnName("id");
 
             builder.Property(u => u.Auth0Id)
                 .IsRequired()
