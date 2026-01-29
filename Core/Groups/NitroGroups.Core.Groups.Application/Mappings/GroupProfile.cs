@@ -10,6 +10,7 @@ namespace NitroGroups.Core.Groups.Application.Mappings
         public GroupProfile() 
         {
             CreateMap<UpdateGroupCommand, GroupResponse>();
+            CreateMap<GroupMember, GroupMemberResponse>();
             CreateMap<Group, GroupResponse>();
         }
     }

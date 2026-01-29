@@ -5,6 +5,7 @@ using NitroGroups.Shared.EndpointMapping;
 using NitroGroups.Core.Users.Application.Abstractions;
 using static Microsoft.AspNetCore.Http.Results;
 using Microsoft.Extensions.Logging;
+using NitroGroups.Shared.Domain.DomainEvents.Users.Enums;
 
 namespace NitroGroups.Core.Users.Infrastructure.Endpoints.Users
 {

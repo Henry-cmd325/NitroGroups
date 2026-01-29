@@ -1,21 +1,8 @@
 ﻿using NitroGroups.Shared.Domain;
+using NitroGroups.Shared.Domain.DomainEvents.Groups.Enums;
 
 namespace NitroGroups.Core.Groups.Domain.Entities
 {
-    public enum GroupMemberRole
-    {
-        Leader,
-        Member,
-        Guest
-    }
-
-    public enum JoinedVia
-    {
-        Request,
-        Invitation, 
-        Manual
-    }
-
     public class GroupMember : DomainModel
     {
         public long GroupId { get; set; }

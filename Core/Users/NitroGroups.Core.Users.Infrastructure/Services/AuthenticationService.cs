@@ -4,7 +4,7 @@ using Auth0.ManagementApi;
 using Auth0.ManagementApi.Models;
 using Microsoft.Extensions.Options;
 using NitroGroups.Core.Users.Application.Abstractions.Services;
-using NitroGroups.Core.Users.Domain.Entities;
+using NitroGroups.Shared.Domain.DomainEvents.Users.Enums;
 using NitroGroups.Shared.Infrastructure.Configuration;
 using System.Dynamic;
 

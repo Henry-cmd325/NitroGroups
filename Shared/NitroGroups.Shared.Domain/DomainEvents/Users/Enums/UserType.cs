@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NitroGroups.Shared.Contracts.Users.Enums
+namespace NitroGroups.Shared.Domain.DomainEvents.Users.Enums
 {
     public enum UserType
     {

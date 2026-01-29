@@ -7,6 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="UseCases\GroupMembers\**" />
+    <EmbeddedResource Remove="UseCases\GroupMembers\**" />
+    <None Remove="UseCases\GroupMembers\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper" />
     <PackageReference Include="Cortex.Mediator" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" />

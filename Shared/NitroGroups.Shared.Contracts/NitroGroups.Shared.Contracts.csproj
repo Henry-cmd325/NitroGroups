@@ -10,4 +10,8 @@
     <Folder Include="Groups\Enums\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\NitroGroups.Shared.Domain\NitroGroups.Shared.Domain.csproj" />
+  </ItemGroup>
+
 </Project>

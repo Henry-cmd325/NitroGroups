@@ -6,6 +6,7 @@ using NitroGroups.Core.Users.Domain.Entities;
 using NitroGroups.Shared.Contracts;
 using NitroGroups.Shared.Contracts.Users.Requests;
 using NitroGroups.Shared.Contracts.Users.Responses;
+using NitroGroups.Shared.Domain.DomainEvents.Users.Enums;
 
 namespace NitroGroups.Core.Users.Application.UseCases.Musicians.Create
 {

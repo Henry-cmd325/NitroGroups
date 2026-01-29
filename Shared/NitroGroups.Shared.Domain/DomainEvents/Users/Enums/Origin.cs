@@ -1,4 +1,4 @@
-﻿namespace NitroGroups.Shared.Contracts.Users.Enums
+﻿namespace NitroGroups.Shared.Domain.DomainEvents.Users.Enums
 {
     public enum Origin
     {

@@ -85,7 +85,7 @@ var app = builder.Build();
 // Register Event Types
 var eventProvider = app.Services.GetRequiredService<IEventProvider>();
 eventProvider.RegisterEventsFromAssembly(typeof(NitroGroups.Core.Users.Application.Events.UserEvents).Assembly);
-eventProvider.RegisterEventsFromAssembly(typeof(NitroGroups.Core.Groups.Application.Events.UserEvents).Assembly);
+eventProvider.RegisterEventsFromAssembly(typeof(NitroGroups.Core.Groups.Application.Events.UsersEvents).Assembly);
 
 app.MapDefaultEndpoints();
 

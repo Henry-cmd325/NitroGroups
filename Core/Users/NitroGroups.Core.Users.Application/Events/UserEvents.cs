@@ -1,5 +1,5 @@
 ﻿using Cortex.Mediator.Notifications;
-using NitroGroups.Core.Users.Domain.Entities;
+using NitroGroups.Shared.Domain.DomainEvents.Users.Enums;
 
 namespace NitroGroups.Core.Users.Application.Events
 {
