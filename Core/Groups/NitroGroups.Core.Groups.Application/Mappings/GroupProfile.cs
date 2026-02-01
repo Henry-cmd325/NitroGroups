@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using NitroGroups.Core.Groups.Application.UseCases.Groups.Update;
 using NitroGroups.Core.Groups.Domain.Entities;
+using NitroGroups.Shared.Contracts.Groups.Requests;
 using NitroGroups.Shared.Contracts.Groups.Responses;
 
 namespace NitroGroups.Core.Groups.Application.Mappings
@@ -9,6 +10,33 @@ namespace NitroGroups.Core.Groups.Application.Mappings
     {
         public GroupProfile() 
         {
+            CreateMap<GroupRequest, UpdateGroupCommand>()
+            .ConstructUsing((src, ctx) => new UpdateGroupCommand(
+                (long)ctx.Items["Id"],
+                src.Slug,
+                src.GroupName,
+                src.Description,
+                src.Biography,
+                src.NumMembers,
+                src.YearsExperience,
+                src.Phone,
+                src.Email,
+                src.LocationText,
+                src.ServiceRadiusKm,
+                src.Currency,
+                src.BasePrice,
+                src.HourlyRate,
+                src.MinimumDurationHours,
+                src.SetupTimeMinutes,
+                src.AverageRating,
+                src.TotalReviews,
+                src.ViewCount,
+                src.BookingCount,
+                src.IsVerified,
+                src.IsFeatured,
+                src.IsAcceptingBookings,
+                src.Active));
+            CreateMap<UpdateGroupCommand, Group>();
             CreateMap<UpdateGroupCommand, GroupResponse>();
             CreateMap<GroupMember, GroupMemberResponse>();
             CreateMap<Group, GroupResponse>();

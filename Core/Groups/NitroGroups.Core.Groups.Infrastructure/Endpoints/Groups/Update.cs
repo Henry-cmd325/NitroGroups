@@ -17,10 +17,9 @@ namespace NitroGroups.Core.Groups.Infrastructure.Endpoints.Groups
         {
             app.MapPut("/groups/{id:long}", async (long id, GroupRequest request, IMediator mediator, IMapper mapper) =>
             {
-                var command = mapper.Map<UpdateGroupCommand>(request);
+                var command = mapper.Map<UpdateGroupCommand>(request, opt => opt.Items["Id"] = id);
                 var result = await mediator.SendCommandAsync<UpdateGroupCommand, Result<bool>>(command);
-
-                return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
+                return result.IsSuccess ? NoContent() : BadRequest(result.Error);
             })
             .WithTags("Groups");
         }

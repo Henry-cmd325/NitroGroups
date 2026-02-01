@@ -45,7 +45,7 @@ export default function TabbedSection({ children }: TabbedSectionProps) {
   const activeTab = tabs.find((t) => t.tabKey === selectedKey);
 
   return (
-    <div className="mx-auto mt-5 px-3">
+    <div className="mx-auto mt-1 px-3">
       <nav className="flex justify-around mb-2 overflow-x-auto bg-muted text-muted-foreground p-0.75 rounded-2xl">
         {tabs.map((tab) => {
           const isSelected = tab.tabKey === selectedKey;

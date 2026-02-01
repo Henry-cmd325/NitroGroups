@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getAccessToken } from "@auth0/nextjs-auth0";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { MusicGroup } from "@/types/MusicGroup";
+import { Loader } from "../controls";
+import { getApiAccessToken } from "@/lib/auth-client";
 
 const emptyGroup: MusicGroup = {
   id: 0,
@@ -43,7 +44,7 @@ export default function GroupProfile() {
   const groupQuery = useQuery({
     queryKey: ["music-group", userId],
     queryFn: async () => {
-      const accessToken = await getAccessToken();
+      const accessToken = await getApiAccessToken();
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/users/${userId}/groups`, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
@@ -64,7 +65,7 @@ export default function GroupProfile() {
 
   const saveMutation = useMutation({
     mutationFn: async (payload: MusicGroup) => {
-      const accessToken = await getAccessToken();
+      const accessToken = await getApiAccessToken();
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/groups/${payload.id}`, {
         method: "PUT",
         headers: {
@@ -78,7 +79,7 @@ export default function GroupProfile() {
         throw new Error("No se pudo guardar el grupo");
       }
 
-      return (await response.json()) as MusicGroup;
+      return payload;
     },
     onSuccess: (updatedGroup) => {
       queryClient.setQueryData(["music-group", updatedGroup.id], updatedGroup);
@@ -118,15 +119,15 @@ export default function GroupProfile() {
 
   if (groupQuery.isLoading) {
     return (
-      <div className="text-white p-8">
-        <div className="max-w-7xl mx-auto">Cargando grupo...</div>
+      <div className="text-white px-8 py-5">
+        <Loader/>
       </div>
     );
   }
 
   if (groupQuery.isError) {
     return (
-      <div className="text-white p-8">
+      <div className="text-white px-8 py-5">
         <div className="max-w-7xl mx-auto">
           Error al cargar el grupo.
         </div>
@@ -135,7 +136,7 @@ export default function GroupProfile() {
   }
 
   return (
-    <div className=" text-white p-8">
+    <div className=" text-white px-8 py-5">
       <div className="max-w-7xl mx-auto">
         {isEditing ? (
           <form
@@ -237,14 +238,14 @@ export default function GroupProfile() {
               <div className="space-y-4">
                 <button
                   type="submit"
-                  className="w-full bg-violet-600 hover:bg-violet-700 text-white font-bold py-3 px-4 rounded-lg transition-colors"
+                  className="w-full bg-primary hover:cursor-pointer hover:bg-primary/90 text-white font-bold py-3 px-4 rounded-lg transition-colors"
                 >
-                  Save Changes
+                  Guardar Cambios
                 </button>
                 <button
                   type="button"
                   onClick={handleCancel}
-                  className="w-full bg-gray-600 hover:bg-gray-700 text-white font-bold py-3 px-4 rounded-lg transition-colors"
+                  className="w-full hover:cursor-pointer bg-gray-600 hover:bg-gray-700 text-white font-bold py-3 px-4 rounded-lg transition-colors"
                 >
                   Cancel
                 </button>
@@ -295,7 +296,7 @@ export default function GroupProfile() {
               <div className="mt-6 space-y-4">
                 <div>
                   <span className="text-gray-400 text-sm">Rango de precio</span>
-                  <p className="text-violet-400 font-bold text-2xl">
+                  <p className="text-primary font-bold text-2xl">
                     ${group.basePrice}-${group.basePrice + 700}
                   </p>
                 </div>
@@ -314,9 +315,9 @@ export default function GroupProfile() {
               </div>
               <button
                 onClick={toggleEditMode}
-                className="mt-8 w-full bg-violet-600 hover:bg-violet-700 text-white font-bold py-3 px-4 rounded-lg transition-colors"
+                className="mt-8 w-full bg-primary hover:cursor-pointer hover:bg-primary/90 text-white font-bold py-3 px-4 rounded-lg transition-colors"
               >
-                Edit Profile
+                Editar Perfil
               </button>
             </div>
           </div>
