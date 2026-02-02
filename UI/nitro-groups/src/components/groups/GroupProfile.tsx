@@ -34,16 +34,38 @@ const emptyGroup: MusicGroup = {
   active: false,
 };
 
-export default function GroupProfile() {
+type GroupProfileProps = {
+  mode?: "private" | "public";
+  slug?: string;
+  initialGroup?: MusicGroup;
+};
+
+export default function GroupProfile({ mode = "private", slug, initialGroup }: GroupProfileProps) {
   const userId = 1;
+  const isPublic = mode === "public";
   const queryClient = useQueryClient();
-  const [group, setGroup] = useState<MusicGroup>(emptyGroup);
-  const [originalGroup, setOriginalGroup] = useState<MusicGroup>(emptyGroup);
+  const [group, setGroup] = useState<MusicGroup>(initialGroup ?? emptyGroup);
+  const [originalGroup, setOriginalGroup] = useState<MusicGroup>(initialGroup ?? emptyGroup);
   const [isEditing, setIsEditing] = useState(false);
 
+  const shouldFetch = !initialGroup && (!isPublic || Boolean(slug));
+
   const groupQuery = useQuery({
-    queryKey: ["music-group", userId],
+    queryKey: isPublic ? ["music-group-public", slug] : ["music-group", userId],
     queryFn: async () => {
+      if (isPublic) {
+        if (!slug) {
+          throw new Error("No se pudo cargar el grupo");
+        }
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/groups/slug/${encodeURIComponent(slug)}`,
+        );
+        if (!response.ok) {
+          throw new Error("No se pudo cargar el grupo");
+        }
+        return (await response.json()) as MusicGroup;
+      }
+
       const accessToken = await getApiAccessToken();
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/users/${userId}/groups`, {
         headers: {
@@ -61,6 +83,7 @@ export default function GroupProfile() {
     refetchOnMount: false,
     refetchOnReconnect: false,
     retry: false,
+    enabled: shouldFetch,
   });
 
   const saveMutation = useMutation({
@@ -90,13 +113,23 @@ export default function GroupProfile() {
   });
 
   useEffect(() => {
+    if (initialGroup) {
+      setGroup(initialGroup);
+      setOriginalGroup(initialGroup);
+      return;
+    }
+
     if (groupQuery.data) {
       setGroup(groupQuery.data);
       setOriginalGroup(groupQuery.data);
     }
-  }, [groupQuery.data]);
+  }, [groupQuery.data, initialGroup]);
 
   const toggleEditMode = () => {
+    if (isPublic) {
+      return;
+    }
+
     if (!isEditing) {
       setOriginalGroup({ ...group });
     }
@@ -105,6 +138,9 @@ export default function GroupProfile() {
 
   const handleSave = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if (isPublic) {
+      return;
+    }
     saveMutation.mutate(group);
   };
 
@@ -117,7 +153,7 @@ export default function GroupProfile() {
     setGroup((prev) => ({ ...prev, [key]: value }));
   };
 
-  if (groupQuery.isLoading) {
+  if (shouldFetch && groupQuery.isLoading) {
     return (
       <div className="text-white px-8 py-5">
         <Loader/>
@@ -125,7 +161,7 @@ export default function GroupProfile() {
     );
   }
 
-  if (groupQuery.isError) {
+  if (shouldFetch && groupQuery.isError) {
     return (
       <div className="text-white px-8 py-5">
         <div className="max-w-7xl mx-auto">
@@ -138,7 +174,7 @@ export default function GroupProfile() {
   return (
     <div className=" text-white px-8 py-5">
       <div className="max-w-7xl mx-auto">
-        {isEditing ? (
+        {isEditing && !isPublic ? (
           <form
             onSubmit={handleSave}
             className="grid grid-cols-1 md:grid-cols-3 gap-8"
@@ -313,13 +349,20 @@ export default function GroupProfile() {
                   </p>
                 </div>
               </div>
-              <button
-                onClick={toggleEditMode}
-                className="mt-8 w-full bg-primary hover:cursor-pointer hover:bg-primary/90 text-white font-bold py-3 px-4 rounded-lg transition-colors"
-              >
-                Editar Perfil
-              </button>
+              {!isPublic && (
+                <button
+                  onClick={toggleEditMode}
+                  className="mt-8 w-full bg-primary hover:cursor-pointer hover:bg-primary/90 text-white font-bold py-3 px-4 rounded-lg transition-colors"
+                >
+                  Editar Perfil
+                </button>
+              )}
             </div>
+          </div>
+        )}
+        {isPublic && (
+          <div className="mt-10">
+            <p className="text-gray-300">Calendario</p>
           </div>
         )}
       </div>

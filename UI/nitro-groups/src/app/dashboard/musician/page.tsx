@@ -1,10 +1,11 @@
 import { GroupProfile } from "@/components/groups";
+import ProtectedPage from "@/components/identity/ProtectedPage";
 
 import { TabItem, TabbedSection } from "@/components/controls";
 
 export default function MusicianDashboardPage() {
   return (
-    <>
+    <ProtectedPage>
       <GroupProfile />
       <TabbedSection>
         <TabItem title="Galeria" tabKey="galeria">
@@ -20,6 +21,6 @@ export default function MusicianDashboardPage() {
           <div>Cotizaciones</div>
         </TabItem>
       </TabbedSection>
-    </>
+    </ProtectedPage>
   );
 }

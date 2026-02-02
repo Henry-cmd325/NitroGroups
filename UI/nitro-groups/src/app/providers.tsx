@@ -1,6 +1,6 @@
 "use client";
 
-import { Auth0Provider } from "@auth0/nextjs-auth0";
+import { Auth0Provider } from "@auth0/nextjs-auth0/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useState } from "react";
 
