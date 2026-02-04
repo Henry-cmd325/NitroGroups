@@ -191,3 +191,39 @@
         transform: rotate(360deg);
     }
 }
+
+/* FullCalendar theme overrides */
+.fc {
+    --fc-page-bg-color: transparent;
+    --fc-border-color: rgba(196, 181, 253, 0.15);
+    --fc-neutral-bg-color: rgba(15, 23, 42, 0.75);
+    --fc-today-bg-color: rgba(168, 85, 247, 0.15);
+    --fc-event-text-color: #0f172a;
+    --fc-button-bg-color: var(--primary);
+    --fc-button-border-color: var(--primary);
+    --fc-button-text-color: #0f172a;
+    --fc-button-hover-bg-color: #9333ea;
+    --fc-button-hover-border-color: #9333ea;
+    --fc-button-active-bg-color: #7c3aed;
+    --fc-button-active-border-color: #7c3aed;
+}
+
+.fc .fc-toolbar-title {
+    color: #f8fafc;
+    font-weight: 600;
+}
+
+.fc .fc-col-header-cell-cushion,
+.fc .fc-daygrid-day-number,
+.fc .fc-timegrid-axis-cushion {
+    color: #e2e8f0;
+}
+
+.fc .fc-timegrid-slot-label,
+.fc .fc-timegrid-axis-frame {
+    color: #cbd5f5;
+}
+
+.fc .fc-button {
+    box-shadow: none;
+}

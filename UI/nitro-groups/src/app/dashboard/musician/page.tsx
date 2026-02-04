@@ -1,4 +1,4 @@
-import { GroupProfile } from "@/components/groups";
+import { GroupCalendar, GroupProfile } from "@/components/groups";
 import ProtectedPage from "@/components/identity/ProtectedPage";
 
 import { TabItem, TabbedSection } from "@/components/controls";
@@ -15,7 +15,7 @@ export default function MusicianDashboardPage() {
           <div>Eventos</div>
         </TabItem>
         <TabItem title="Calendario" tabKey="calendario">
-          <div>Calendario</div>
+          <GroupCalendar mode="private" />
         </TabItem>
         <TabItem title="Cotizaciones" tabKey="cotizaciones">
           <div>Cotizaciones</div>

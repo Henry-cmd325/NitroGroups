@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { MusicGroup } from "@/types/MusicGroup";
 import { Loader } from "../controls";
+import GroupCalendar from "./GroupCalendar";
 import { getApiAccessToken } from "@/lib/auth-client";
 
 const emptyGroup: MusicGroup = {
@@ -362,7 +363,7 @@ export default function GroupProfile({ mode = "private", slug, initialGroup }: G
         )}
         {isPublic && (
           <div className="mt-10">
-            <p className="text-gray-300">Calendario</p>
+            <GroupCalendar mode="public" />
           </div>
         )}
       </div>
