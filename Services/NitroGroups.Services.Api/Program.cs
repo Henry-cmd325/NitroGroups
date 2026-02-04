@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Mvc;
 using NitroGroups.Core.Bootstrap;
-using NitroGroups.Persistence.Context;
 using NitroGroups.Shared.Abstractions.Events;
 using NitroGroups.Shared.EndpointMapping;
 using NitroGroups.Shared.Infrastructure;
@@ -48,10 +49,23 @@ builder.Services.AddAuthentication(options =>
 });
 builder.Services.AddAuthorization();
 
+builder.Services.AddProblemDetails(options =>
+{
+    options.CustomizeProblemDetails = context =>
+    {
+        context.ProblemDetails.Title ??= "Error inesperado";
+        context.ProblemDetails.Type ??= $"https://httpstatuses.io/{context.ProblemDetails.Status}";
+        context.ProblemDetails.Extensions.TryAdd("traceId", context.HttpContext.TraceIdentifier);
+    };
+});
+
+builder.Services.AddHttpContextAccessor();
+
 // Add services to the container
-builder.Services.AddPersistence(builder.Configuration);
-builder.Services.AddSharedInfrastructure();
+builder.Services.AddSharedInfrastructure(builder.Configuration);
+
 builder.Services.AddUsersModule(builder.Configuration);
+builder.Services.AddGroupsModule(builder.Configuration);
 
 builder.Services.Configure<NitroGroups.Shared.Infrastructure.Configuration.Auth0ManagementApiSettings>(
     builder.Configuration.GetSection("Auth0ManagementApi"));
@@ -71,7 +85,7 @@ var app = builder.Build();
 // Register Event Types
 var eventProvider = app.Services.GetRequiredService<IEventProvider>();
 eventProvider.RegisterEventsFromAssembly(typeof(NitroGroups.Core.Users.Application.Events.UserEvents).Assembly);
-eventProvider.RegisterEventsFromAssembly(typeof(NitroGroups.Core.Groups.Application.Events.UserEvents).Assembly);
+eventProvider.RegisterEventsFromAssembly(typeof(NitroGroups.Core.Groups.Application.Events.UsersEvents).Assembly);
 
 app.MapDefaultEndpoints();
 
@@ -80,6 +94,10 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+}
+else
+{
+    app.UseHsts();
 }
 
 app.UseHttpsRedirection();
@@ -95,22 +113,25 @@ app.UseExceptionHandler(errorApp =>
 {
     errorApp.Run(async context =>
     {
-        context.Response.ContentType = "application/problem+json";
-        context.Response.StatusCode = 500;
+        var feature = context.Features.Get<IExceptionHandlerPathFeature>();
+        var problemDetailsService = context.RequestServices.GetRequiredService<IProblemDetailsService>();
 
-        var feature = context.Features
-            .Get<Microsoft.AspNetCore.Diagnostics.IExceptionHandlerPathFeature>();
+        Log.Error(feature?.Error, "Unhandled exception");
 
-        var problemDetails = new
+        var problemDetailsContext = new ProblemDetailsContext
         {
-            type = "https://tools.ietf.org/html/rfc7231#section-6.6.1",
-            title = "Error inesperado",
-            status = 500,
-            detail = feature?.Error.Message
+            HttpContext = context,
+            Exception = feature?.Error,
+            ProblemDetails = new ProblemDetails
+            {
+                Status = StatusCodes.Status500InternalServerError,
+                Title = "Error inesperado",
+                Detail = feature?.Error.Message,
+                Type = "https://httpstatuses.io/500"
+            }
         };
 
-        Log.Fatal(feature?.Error, "Application terminated unexpectedly");
-        await context.Response.WriteAsJsonAsync(problemDetails);
+        await problemDetailsService.WriteAsync(problemDetailsContext);
     });
 });
 

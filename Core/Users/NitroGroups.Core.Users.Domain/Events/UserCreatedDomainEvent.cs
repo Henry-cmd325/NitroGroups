@@ -1,5 +1,5 @@
-using NitroGroups.Core.Users.Domain.Entities;
 using NitroGroups.Shared.Domain;
+using NitroGroups.Shared.Domain.DomainEvents.Users.Enums;
 
 namespace NitroGroups.Core.Users.Domain.Events
 {

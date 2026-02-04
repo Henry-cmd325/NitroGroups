@@ -2,7 +2,7 @@
 
 namespace NitroGroups.Core.Groups.Domain.Entities;
 
-public class Group : DomainModel
+public class Group : AuditableModel
 {
     public long OwnerUserId { get; set; }
     public string Slug { get; set; } = string.Empty;
@@ -27,8 +27,6 @@ public class Group : DomainModel
     public bool IsVerified { get; set; }
     public bool IsFeatured { get; set; }
     public bool IsAcceptingBookings { get; set; }
-    public DateTime CreatedAt { get; set; }
-    public DateTime UpdatedAt { get; set; }
     public bool Active { get; set; }
 
     public virtual ICollection<GroupMember> Members { get; set; } = [];

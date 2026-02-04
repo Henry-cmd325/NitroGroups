@@ -1,19 +1,22 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Cortex.Mediator" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" />
     <PackageReference Include="Microsoft.Extensions.Hosting" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Core\Groups\NitroGroups.Core.Groups.Domain\NitroGroups.Core.Groups.Domain.csproj" />
+    <ProjectReference Include="..\..\Core\Users\NitroGroups.Core.Users.Domain\NitroGroups.Core.Users.Domain.csproj" />
     <ProjectReference Include="..\NitroGroups.Shared.Abstractions\NitroGroups.Shared.Abstractions.csproj" />
-    <ProjectReference Include="..\..\Persistence\NitroGroups.Persistence.Context\NitroGroups.Persistence.Context.csproj" />
     <ProjectReference Include="..\NitroGroups.Shared.Domain\NitroGroups.Shared.Domain.csproj" />
   </ItemGroup>
 

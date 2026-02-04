@@ -1,8 +1,8 @@
 ﻿using NitroGroups.Core.Groups.Application.Abstractions;
 using NitroGroups.Core.Groups.Domain.Entities;
-using NitroGroups.Persistence.Context;
 using NitroGroups.Shared.Abstractions.Events;
 using NitroGroups.Shared.Abstractions.Repository;
+using NitroGroups.Shared.Infrastructure.Context;
 using NitroGroups.Shared.Infrastructure.Repository;
 
 namespace NitroGroups.Core.Groups.Infrastructure
@@ -10,8 +10,8 @@ namespace NitroGroups.Core.Groups.Infrastructure
     public class UnitOfWorkGroups(
         NitroGroupsContext context, 
         IOutboxService outboxService,
-        GenericRepository<Group, long> groups,
-        GenericRepository<GroupMember, long> groupMembers) : UnitOfWork(context, outboxService), IUnitOfWorkGroups
+        IGenericRepository<Group, long> groups,
+        IGenericRepository<GroupMember, long> groupMembers) : UnitOfWork(context, outboxService), IUnitOfWorkGroups
     {
         public IGenericRepository<Group, long> Groups { get; } = groups;
 

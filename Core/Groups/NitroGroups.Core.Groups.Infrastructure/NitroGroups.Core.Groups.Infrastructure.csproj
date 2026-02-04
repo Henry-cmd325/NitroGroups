@@ -1,18 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Adapters\" />
-    <Folder Include="Endpoints\" />
+    <Compile Remove="Adapters\**" />
+    <EmbeddedResource Remove="Adapters\**" />
+    <None Remove="Adapters\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Persistence\NitroGroups.Persistence.Context\NitroGroups.Persistence.Context.csproj" />
     <ProjectReference Include="..\..\..\Shared\NitroGroups.Shared.EndpointMapping\NitroGroups.Shared.EndpointMapping.csproj" />
     <ProjectReference Include="..\..\..\Shared\NitroGroups.Shared.Infrastructure\NitroGroups.Shared.Infrastructure.csproj" />
     <ProjectReference Include="..\NitroGroups.Core.Groups.Application\NitroGroups.Core.Groups.Application.csproj" />

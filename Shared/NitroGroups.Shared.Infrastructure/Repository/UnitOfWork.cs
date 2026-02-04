@@ -1,6 +1,6 @@
-﻿using NitroGroups.Persistence.Context;
-using NitroGroups.Shared.Abstractions.Events;
+﻿using NitroGroups.Shared.Abstractions.Events;
 using NitroGroups.Shared.Abstractions.Repository;
+using NitroGroups.Shared.Infrastructure.Context;
 using NitroGroups.Shared.Infrastructure.Repository.Adapters;
 
 namespace NitroGroups.Shared.Infrastructure.Repository

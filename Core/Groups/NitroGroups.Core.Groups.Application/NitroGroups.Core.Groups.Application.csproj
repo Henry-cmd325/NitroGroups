@@ -1,14 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Mappings\" />
-    <Folder Include="UseCases\" />
+    <Compile Remove="UseCases\GroupMembers\**" />
+    <EmbeddedResource Remove="UseCases\GroupMembers\**" />
+    <None Remove="UseCases\GroupMembers\**" />
   </ItemGroup>
 
   <ItemGroup>

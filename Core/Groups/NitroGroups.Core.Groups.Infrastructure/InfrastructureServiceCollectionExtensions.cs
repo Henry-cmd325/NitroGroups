@@ -13,7 +13,7 @@ namespace NitroGroups.Core.Groups.Infrastructure
         {   
             services.AddScoped<IUnitOfWorkGroups, UnitOfWorkGroups>();
             
-            services.AddScoped<INotificationHandler<UserEvents.SoloMusicianCreatedEvent>, SoloMusicianCreatedEventHandler>();
+            services.AddScoped<INotificationHandler<UsersEvents.SoloMusicianCreatedEvent>, SoloMusicianCreatedEventHandler>();
 
             services.AddEndpoints(typeof(InfrastructureServiceCollectionExtensions).Assembly);
 

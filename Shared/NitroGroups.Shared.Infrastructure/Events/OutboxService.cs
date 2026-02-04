@@ -1,10 +1,10 @@
 using Cortex.Mediator;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using NitroGroups.Persistence.Context;
-using NitroGroups.Persistence.Context.Entities;
 using NitroGroups.Shared.Abstractions.Events;
 using NitroGroups.Shared.Domain;
+using NitroGroups.Shared.Infrastructure.Context;
+using NitroGroups.Shared.Infrastructure.Context.Entities;
 using System.Text.Json;
 
 namespace NitroGroups.Shared.Infrastructure.Events

@@ -1,4 +1,4 @@
-using NitroGroups.Shared.Contracts.Users.Enums;
+using NitroGroups.Shared.Domain.DomainEvents.Users.Enums;
 
 namespace NitroGroups.Shared.Contracts.Users.Requests
 {

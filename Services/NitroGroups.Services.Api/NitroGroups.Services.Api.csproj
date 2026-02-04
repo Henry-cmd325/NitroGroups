@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>9a19cbee-c65e-4ea9-a03e-2f7dffabb523</UserSecretsId>
@@ -28,7 +28,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\AppHost\AppHost.ServiceDefaults\NitroGroups.ServiceDefaults.csproj" />
     <ProjectReference Include="..\..\Core\NitroGroups.Core.Bootstrap\NitroGroups.Core.Bootstrap.csproj" />
-    <ProjectReference Include="..\..\Persistence\NitroGroups.Persistence.Context\NitroGroups.Persistence.Context.csproj" />
     <ProjectReference Include="..\..\Shared\NitroGroups.Shared.EndpointMapping\NitroGroups.Shared.EndpointMapping.csproj" />
     <ProjectReference Include="..\..\Shared\NitroGroups.Shared.Infrastructure\NitroGroups.Shared.Infrastructure.csproj" />
   </ItemGroup>

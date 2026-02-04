@@ -1,7 +1,7 @@
 using Cortex.Mediator.Notifications;
 using Microsoft.Extensions.Logging;
-using NitroGroups.Core.Users.Domain.Entities;
 using NitroGroups.Core.Users.Application.Events;
+using NitroGroups.Shared.Domain.DomainEvents.Users.Enums;
 
 namespace NitroGroups.Core.Users.Application.EventHandlers
 {
