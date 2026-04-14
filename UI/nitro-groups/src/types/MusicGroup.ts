@@ -1,4 +1,7 @@
-export type MusicGroup = {
+import type { GenreResponse } from "./Genre";
+import type { GroupMediaResponse } from "./GroupMedia";
+
+export interface MusicGroup {
   id: number;
   ownerUserId: number;
   slug: string;
@@ -12,8 +15,8 @@ export type MusicGroup = {
   locationText: string;
   serviceRadiusKm: number;
   currency: string;
-  basePrice: number;
-  hourlyRate: number;
+  basePrice?: number;
+  hourlyRate?: number;
   minimumDurationHours: number;
   setupTimeMinutes: number;
   averageRating: number;
@@ -24,4 +27,8 @@ export type MusicGroup = {
   isFeatured: boolean;
   isAcceptingBookings: boolean;
   active: boolean;
-};
+  profilePictureUrl?: string;
+  coverImageUrl?: string;
+  genres?: GenreResponse[];
+  media?: GroupMediaResponse[];
+}

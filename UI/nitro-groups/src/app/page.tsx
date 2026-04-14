@@ -1,4 +1,4 @@
-import Badge from "@/components/controls/Badge";
+import Badge from "@/components/ui/Badge";
 import { PlayIcon, CrowdIcon, CalendarIcon } from "@/components/icons";
 
 export default function Home() {
@@ -27,11 +27,11 @@ export default function Home() {
 
             <div className="flex flex-col sm:flex-row gap-4">
               <a
-                href="/auth/login?returnTo=%2Fdashboard%2Fmusician"
+                href="/signup"
                 className="cursor-pointer text-lg h-12 px-8 rounded bg-primary text-white hover:bg-primary/90 flex items-center justify-center"
               >
                 <PlayIcon className="h-6 mr-2" />
-                <span>Comenzar Ahora</span>
+                <span>Registrarse Gratis</span>
               </a>
             </div>
 

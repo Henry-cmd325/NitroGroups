@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Cortex.Mediator;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -31,6 +31,7 @@ namespace NitroGroups.Core.Users.Infrastructure.Endpoints.Musicians
                 return Created($"api/musicians/{createdMusician.Value!.Id}", createdMusician.Value);
             })
             .AddEndpointFilter<ValidationFilter<CreateMusicianRequest>>()
+            .AddEndpointFilter<IdempotencyFilter>()
             .WithTags("Musicians");
         }
     }

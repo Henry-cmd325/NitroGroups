@@ -3,7 +3,7 @@ import GroupProfile from "@/components/groups/GroupProfile";
 import { notFound } from "next/navigation";
 
 type GroupPublicPageProps = {
-  params: Promise<{ slug: string }>;
+    params: Promise<{ slug: string }>;
 };
 
 export default async function GroupPublicPage({ params }: GroupPublicPageProps) {
@@ -12,10 +12,10 @@ export default async function GroupPublicPage({ params }: GroupPublicPageProps) 
     if (!slug) {
         notFound();
     }
-    
+
     const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_BASE_URL}/groups/slug/${encodeURIComponent(slug)}`,
-    { cache: "no-store" },
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/groups/slug/${encodeURIComponent(slug)}`,
+        { cache: "no-store" },
     );
 
     if (!response.ok) {

@@ -1,4 +1,4 @@
-﻿using NitroGroups.Shared.Domain;
+using NitroGroups.Shared.Domain;
 
 namespace NitroGroups.Core.Groups.Domain.Entities;
 
@@ -29,5 +29,12 @@ public class Group : AuditableModel
     public bool IsAcceptingBookings { get; set; }
     public bool Active { get; set; }
 
+    // Images
+    public string? ProfilePictureUrl { get; set; }
+    public string? CoverImageUrl { get; set; }
+
+    // Navigation
     public virtual ICollection<GroupMember> Members { get; set; } = [];
+    public virtual ICollection<GroupGenre> Genres { get; set; } = [];
+    public virtual ICollection<GroupMedia> Media { get; set; } = [];
 }

@@ -1,4 +1,4 @@
-﻿using NitroGroups.Core.Users.Domain.Events;
+using NitroGroups.Core.Users.Domain.Events;
 using NitroGroups.Shared.Domain;
 using NitroGroups.Shared.Domain.DomainEvents.Users.Enums;
 
@@ -40,6 +40,21 @@ namespace NitroGroups.Core.Users.Domain.Entities
         public void RaiseSoloMusicianCreatedEvent()
         {
             AddDomainEvent(new UserCreatedDomainEvent(Id, Email, FirstName, LastName, UserType, CreatedAt));
+        }
+
+        public void UpdateLastLogin()
+        {
+            LastLoginAt = DateTime.UtcNow;
+        }
+
+        public void UpdateUserType(UserType userType)
+        {
+            UserType = userType;
+        }
+
+        public void UpdateProfilePicture(string profilePictureUrl)
+        {
+            ProfilePictureUrl = profilePictureUrl;
         }
     }
 }

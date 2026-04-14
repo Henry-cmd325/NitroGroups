@@ -60,12 +60,14 @@ builder.Services.AddProblemDetails(options =>
 });
 
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddMemoryCache(); // Required for IdempotencyFilter
 
 // Add services to the container
 builder.Services.AddSharedInfrastructure(builder.Configuration);
 
 builder.Services.AddUsersModule(builder.Configuration);
 builder.Services.AddGroupsModule(builder.Configuration);
+builder.Services.AddSchedulesModule(builder.Configuration);
 
 builder.Services.Configure<NitroGroups.Shared.Infrastructure.Configuration.Auth0ManagementApiSettings>(
     builder.Configuration.GetSection("Auth0ManagementApi"));

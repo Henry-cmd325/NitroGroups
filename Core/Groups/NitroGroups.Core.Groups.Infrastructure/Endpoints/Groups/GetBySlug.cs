@@ -14,7 +14,7 @@ namespace NitroGroups.Core.Groups.Infrastructure.Endpoints.Groups
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
-            app.MapGet("/groups/slug/{slug}", async (string slug, IMediator mediator) =>
+            app.MapGet("api/groups/slug/{slug}", async (string slug, IMediator mediator) =>
             {
                 var result = await mediator.SendQueryAsync<GetGroupBySlugQuery, Result<GroupResponse>>(new(slug));
 

@@ -1,6 +1,6 @@
-﻿namespace NitroGroups.Shared.Domain.DomainEvents.Users
+namespace NitroGroups.Shared.Domain.DomainEvents.Users
 {
-    public class SoloMusicianCreatedEvent(long idUser, string groupName) : IDomainEvent
+    public class SoloMusicianCreatedEvent(long idUser, string name) : IDomainEvent
     {
         public Guid EventId { get; } = Guid.NewGuid();
 
@@ -9,6 +9,6 @@
         public string EventType => nameof(SoloMusicianCreatedEvent);
 
         public long IdUser { get; } = idUser;
-        public string Name { get; } = groupName;
+        public string Name { get; } = name;
     }
 }

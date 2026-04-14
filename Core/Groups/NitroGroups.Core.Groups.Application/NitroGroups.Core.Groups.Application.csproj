@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
@@ -21,6 +21,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\Shared\NitroGroups.Shared.Abstractions\NitroGroups.Shared.Abstractions.csproj" />
     <ProjectReference Include="..\..\..\Shared\NitroGroups.Shared.Domain\NitroGroups.Shared.Domain.csproj" />
+    <ProjectReference Include="..\..\..\Shared\NitroGroups.Shared.Infrastructure\NitroGroups.Shared.Infrastructure.csproj" />
     <ProjectReference Include="..\NitroGroups.Core.Groups.Domain\NitroGroups.Core.Groups.Domain.csproj" />
   </ItemGroup>
 

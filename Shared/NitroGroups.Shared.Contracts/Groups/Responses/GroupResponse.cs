@@ -1,8 +1,9 @@
-﻿namespace NitroGroups.Shared.Contracts.Groups.Responses
+namespace NitroGroups.Shared.Contracts.Groups.Responses
 {
     public class GroupResponse
     {
         public long Id { get; set; }
+        public long OwnerUserId { get; set; }
         public string Slug { get; set; } = string.Empty;
         public string GroupName { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
@@ -26,5 +27,10 @@
         public bool IsFeatured { get; set; }
         public bool IsAcceptingBookings { get; set; }
         public bool Active { get; set; }
+        public string? ProfilePictureUrl { get; set; }
+        public string? CoverImageUrl { get; set; }
+
+        public List<GenreResponse> Genres { get; set; } = [];
+        public List<GroupMediaResponse> Media { get; set; } = [];
     }
 }

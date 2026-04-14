@@ -1,0 +1,14 @@
+// Core/{{moduleName}}/NitroGroups.Core.{{moduleName}}.Application/UseCases/{{actionName}}/{{actionName}}CommandValidator.cs
+using FluentValidation;
+
+namespace NitroGroups.Core.{{moduleName}}.Application.UseCases.{{actionName}};
+
+public class {{actionName}}CommandValidator : AbstractValidator<{{actionName}}Command>
+{
+    public {{actionName}}CommandValidator()
+    {
+        {{#each properties}}
+        RuleFor(x => x.{{name}}).NotEmpty(); // Basic NotEmpty rule. Adjust as needed.
+        {{/each}}
+    }
+}

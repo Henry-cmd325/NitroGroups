@@ -1,4 +1,4 @@
-﻿using NitroGroups.Shared.Domain.DomainEvents.Users.Enums;
+using NitroGroups.Shared.Domain.DomainEvents.Users.Enums;
 
 namespace NitroGroups.Shared.Contracts.Users.Requests
 {
@@ -25,5 +25,7 @@ namespace NitroGroups.Shared.Contracts.Users.Requests
         public int YearsExperience { get; set; }
         //public List<int> InstrumentIds { get; set; } = new();
         public bool IsOpenToJoin { get; set; }
+        public bool CreateGroup { get; set; }
+        public string? GroupName { get; set; }
     }
 }

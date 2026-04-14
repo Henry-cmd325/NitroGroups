@@ -6,6 +6,7 @@
     <PackageVersion Include="Aspire.Hosting.JavaScript" Version="13.1.0" />
     <PackageVersion Include="Auth0.AuthenticationApi" Version="7.43.1" />
     <PackageVersion Include="Auth0.ManagementApi" Version="7.43.1" />
+    <PackageVersion Include="MediatR" Version="14.1.0" />
     <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.2" />
     <PackageVersion Include="Microsoft.AspNetCore.Components.QuickGrid" Version="8.0.22" />
     <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="8.0.22" />

@@ -18,6 +18,7 @@
     <ProjectReference Include="..\..\Core\Users\NitroGroups.Core.Users.Domain\NitroGroups.Core.Users.Domain.csproj" />
     <ProjectReference Include="..\NitroGroups.Shared.Abstractions\NitroGroups.Shared.Abstractions.csproj" />
     <ProjectReference Include="..\NitroGroups.Shared.Domain\NitroGroups.Shared.Domain.csproj" />
+    <ProjectReference Include="..\..\Core\Schedules\NitroGroups.Core.Schedules.Domain\NitroGroups.Core.Schedules.Domain.csproj" />
   </ItemGroup>
 
 </Project>

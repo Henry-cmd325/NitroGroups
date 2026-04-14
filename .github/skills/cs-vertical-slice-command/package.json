@@ -1,0 +1,9 @@
+{
+  "name": "cs-vertical-slice-command",
+  "version": "1.0.0",
+  "description": "Dependencies for cs-vertical-slice-command skill scripts",
+  "main": "scripts/generate_command.cjs",
+  "dependencies": {
+    "handlebars": "^4.7.7"
+  }
+}

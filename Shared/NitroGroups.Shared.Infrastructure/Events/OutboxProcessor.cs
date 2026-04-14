@@ -18,7 +18,7 @@ namespace NitroGroups.Shared.Infrastructure.Events
             {
                 try
                 {
-                    using var scope = _serviceProvider.CreateScope();
+                    await using var scope = _serviceProvider.CreateAsyncScope();
                     var outboxService = scope.ServiceProvider.GetRequiredService<IOutboxService>();
                     
                     await outboxService.ProcessPendingEventsAsync();

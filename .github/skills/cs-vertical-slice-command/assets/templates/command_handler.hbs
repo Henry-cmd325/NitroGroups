@@ -1,0 +1,42 @@
+// Core/{{moduleName}}/NitroGroups.Core.{{moduleName}}.Application/UseCases/{{actionName}}/{{actionName}}CommandHandler.cs
+using Cortex.Mediator;
+using NitroGroups.Core.{{moduleName}}.Domain.Entities; // Assuming entity is in Domain.Entities
+using NitroGroups.Core.{{moduleName}}.Domain.Repositories; // Assuming a repository interface
+using NitroGroups.Shared.Contracts;
+using NitroGroups.Shared.Contracts.{{moduleName}};
+
+namespace NitroGroups.Core.{{moduleName}}.Application.UseCases.{{actionName}};
+
+public sealed class {{actionName}}CommandHandler : ICommandHandler<{{actionName}}Command, Result<{{actionName}}Response>>
+{
+    private readonly I{{entityName}}Repository _repository; // Placeholder for repository
+    private readonly IUnitOfWork{{moduleName}} _unitOfWork; // Placeholder for Unit of Work
+
+    public {{actionName}}CommandHandler(I{{entityName}}Repository repository, IUnitOfWork{{moduleName}} unitOfWork)
+    {
+        _repository = repository;
+        _unitOfWork = unitOfWork;
+    }
+
+    public async Task<Result<{{actionName}}Response>> Handle({{actionName}}Command command, CancellationToken cancellationToken)
+    {
+        // [GENERATED_INSTRUCTION]: Implement business logic here for {{actionName}}.
+        // This handler should orchestrate domain entities and interact with repositories.
+        // Example:
+        // if (await _repository.ExistsAsync(command.Property))
+        // {
+        //     return Result<{{actionName}}Response>.Failure("Entity already exists.");
+        // }
+
+        // var entity = {{entityName}}.Create(command.Property1, command.Property2);
+        // await _repository.AddAsync(entity);
+        // await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        // return Result<{{actionName}}Response>.Success(new {{actionName}}Response(entity.Id, entity.Property));
+
+        // [GENERATED_INSTRUCTION]: Remove this line after implementing logic.
+        await Task.CompletedTask; 
+        // [GENERATED_INSTRUCTION]: Return a meaningful response.
+        return Result<{{actionName}}Response>.Success(new {{actionName}}Response(true, "Operation completed (implement actual logic)."));
+    }
+}

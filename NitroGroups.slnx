@@ -17,6 +17,11 @@
     <Project Path="Core/Groups/NitroGroups.Core.Groups.Domain/NitroGroups.Core.Groups.Domain.csproj" />
     <Project Path="Core/Groups/NitroGroups.Core.Groups.Infrastructure/NitroGroups.Core.Groups.Infrastructure.csproj" />
   </Folder>
+  <Folder Name="/Core/Schedules/">
+    <Project Path="Core/Schedules/NitroGroups.Core.Schedules.Application/NitroGroups.Core.Schedules.Application.csproj" />
+    <Project Path="Core/Schedules/NitroGroups.Core.Schedules.Domain/NitroGroups.Core.Schedules.Domain.csproj" />
+    <Project Path="Core/Schedules/NitroGroups.Core.Schedules.Infrastructure/NitroGroups.Core.Schedules.Infrastructure.csproj" />
+  </Folder>
   <Folder Name="/Core/Users/">
     <Project Path="Core/Users/NitroGroups.Core.Users.Application/NitroGroups.Core.Users.Application.csproj" />
     <Project Path="Core/Users/NitroGroups.Core.Users.Domain/NitroGroups.Core.Users.Domain.csproj" />

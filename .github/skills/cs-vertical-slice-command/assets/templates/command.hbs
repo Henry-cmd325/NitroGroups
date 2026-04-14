@@ -1,0 +1,8 @@
+// Core/{{moduleName}}/NitroGroups.Core.{{moduleName}}.Application/UseCases/{{actionName}}/{{actionName}}Command.cs
+using NitroGroups.Shared.Contracts.{{moduleName}};
+using NitroGroups.Shared.Contracts;
+using Cortex.Mediator;
+
+namespace NitroGroups.Core.{{moduleName}}.Application.UseCases.{{actionName}};
+
+public record {{actionName}}Command({{propertiesDefinition}}) : ICommand<Result<{{actionName}}Response>>;
