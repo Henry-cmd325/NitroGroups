@@ -75,10 +75,10 @@ export const usersService = {
         const firstName = nameParts[0] || auth0User.email.split('@')[0];
         const lastName = nameParts.slice(1).join(' ') || '';
 
-        // Map userType to backend enum integer: Client=0, Musician=1, BandMember=2, Admin=3
-        const typeMap: Record<string, number> = { client: 0, musician: 1, band_member: 2 };
+        // Map userType to backend string enum: Client, Musician, BandMember, Admin
+        const typeMap: Record<string, string> = { client: 'Client', musician: 'Musician', band_member: 'BandMember' };
         const rawType = (auth0User.user_metadata?.user_type || 'musician').toLowerCase();
-        const userType = typeMap[rawType] ?? 1;
+        const userType = typeMap[rawType] ?? 'Musician';
 
         const { data } = await apiClient.post<User>(
             "/auth/sync",

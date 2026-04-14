@@ -22,14 +22,23 @@ namespace NitroGroups.Shared.Infrastructure.Events
                     var outboxService = scope.ServiceProvider.GetRequiredService<IOutboxService>();
                     
                     await outboxService.ProcessPendingEventsAsync();
+
+                    // Procesar eventos cada 5 segundos
+                    await Task.Delay(TimeSpan.FromSeconds(5), stoppingToken);
+                }
+                catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested)
+                {
+                    // Graceful shutdown — exit the loop
+                    break;
                 }
                 catch (Exception ex)
                 {
                     _logger.LogError(ex, "Error processing outbox events");
+                    
+                    // Wait before retrying even on error
+                    try { await Task.Delay(TimeSpan.FromSeconds(5), stoppingToken); }
+                    catch (OperationCanceledException) { break; }
                 }
-
-                // Procesar eventos cada 5 segundos
-                await Task.Delay(TimeSpan.FromSeconds(5), stoppingToken);
             }
 
             _logger.LogInformation("OutboxProcessor stopped");
