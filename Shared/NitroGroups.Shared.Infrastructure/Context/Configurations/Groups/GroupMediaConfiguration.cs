@@ -13,7 +13,7 @@ public class GroupMediaConfiguration : IEntityTypeConfiguration<GroupMedia>
         builder.HasKey(m => m.Id);
         builder.Property(m => m.Id).HasColumnName("id");
         builder.Property(m => m.GroupId).HasColumnName("group_id");
-        builder.Property(m => m.Type).IsRequired().HasConversion<string>().HasMaxLength(10).HasColumnName("type");
+        builder.Property(m => m.Type).IsRequired().HasMaxLength(10).HasColumnName("type");
         builder.Property(m => m.Url).IsRequired().HasMaxLength(500).HasColumnName("url");
         builder.Property(m => m.ThumbnailUrl).HasMaxLength(500).HasColumnName("thumbnail_url");
         builder.Property(m => m.Title).HasMaxLength(200).HasColumnName("title");

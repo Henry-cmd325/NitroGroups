@@ -18,7 +18,6 @@ public class BusyScheduleConfiguration : IEntityTypeConfiguration<BusySchedule>
         
         builder.Property(e => e.Source)
             .HasColumnName("source")
-            .HasConversion<string>()
             .HasDefaultValue(BusyScheduleSource.Contract);
 
         builder.Property(e => e.ContractId).HasColumnName("contract_id");

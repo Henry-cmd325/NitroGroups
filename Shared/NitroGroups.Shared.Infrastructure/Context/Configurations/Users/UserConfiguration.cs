@@ -40,7 +40,6 @@ namespace NitroGroups.Shared.Infrastructure.Context.Configurations.Users
                 .HasColumnName("phone");
 
             builder.Property(u => u.UserType)
-                .HasConversion<string>()
                 .HasMaxLength(20)
                 .HasColumnName("user_type");
 

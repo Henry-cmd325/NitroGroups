@@ -319,10 +319,9 @@ namespace NitroGroups.Shared.Infrastructure.Context.Migrations
                         .HasColumnType("character varying(200)")
                         .HasColumnName("title");
 
-                    b.Property<string>("Type")
-                        .IsRequired()
+                    b.Property<int>("Type")
                         .HasMaxLength(10)
-                        .HasColumnType("character varying(10)")
+                        .HasColumnType("integer")
                         .HasColumnName("type");
 
                     b.Property<DateTime?>("UpdatedAt")
@@ -379,20 +378,18 @@ namespace NitroGroups.Shared.Infrastructure.Context.Migrations
                         .HasColumnName("joined_at")
                         .HasDefaultValueSql("now()");
 
-                    b.Property<string>("JoinedVia")
-                        .IsRequired()
+                    b.Property<int>("JoinedVia")
                         .HasMaxLength(20)
-                        .HasColumnType("character varying(20)")
+                        .HasColumnType("integer")
                         .HasColumnName("joined_via");
 
                     b.Property<DateTime?>("LeftAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("left_at");
 
-                    b.Property<string>("Role")
-                        .IsRequired()
+                    b.Property<int>("Role")
                         .HasMaxLength(20)
-                        .HasColumnType("character varying(20)")
+                        .HasColumnType("integer")
                         .HasColumnName("role");
 
                     b.Property<long>("UserId")
@@ -498,11 +495,10 @@ namespace NitroGroups.Shared.Infrastructure.Context.Migrations
                         .HasColumnType("bigint")
                         .HasColumnName("group_id");
 
-                    b.Property<string>("Source")
-                        .IsRequired()
+                    b.Property<int>("Source")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("text")
-                        .HasDefaultValue("Contract")
+                        .HasColumnType("integer")
+                        .HasDefaultValue(0)
                         .HasColumnName("source");
 
                     b.Property<DateTimeOffset>("StartAt")
@@ -722,10 +718,9 @@ namespace NitroGroups.Shared.Infrastructure.Context.Migrations
                         .HasColumnType("character varying(500)")
                         .HasColumnName("profile_picture_url");
 
-                    b.Property<string>("UserType")
-                        .IsRequired()
+                    b.Property<int>("UserType")
                         .HasMaxLength(20)
-                        .HasColumnType("character varying(20)")
+                        .HasColumnType("integer")
                         .HasColumnName("user_type");
 
                     b.HasKey("Id");
