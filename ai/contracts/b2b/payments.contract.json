@@ -1,0 +1,39 @@
+{
+  "v": "1.0.0",
+  "feature": "payments",
+  "endpoint": "/api/payments",
+  "scope": {
+     "allowedEndpoints": ["create", "getById"],
+     "allowInternalLogic": true
+  },
+  "businessRules": {
+     "timezoneStrategy": "UTC",
+     "precision": "decimal",
+     "allowOverlaps": false,
+     "notes": "Estrategia de pagos financieros con validación estricta de monto."
+  },
+  "entityHash": "INITIAL_SIGNATURE",
+  "methods": [
+    {
+      "name": "createPayment",
+      "http": "POST",
+      "request": {
+        "name": "CreatePaymentRequest",
+        "fields": {
+          "amount": { "type": "number", "format": "decimal" },
+          "currency": { "type": "string", "format": "iso-currency" },
+          "groupId": { "type": "number", "format": "long" }
+        }
+      },
+      "response": {
+        "name": "PaymentResponse",
+        "fields": {
+          "id": { "type": "string", "format": "uuid" },
+          "amount": { "type": "number", "format": "decimal" },
+          "status": { "type": "string" }
+        }
+      }
+    }
+  ],
+  "auth": true
+}

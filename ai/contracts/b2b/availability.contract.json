@@ -1,0 +1,39 @@
+{
+  "v": "1.0",
+  "feature": "availability",
+  "endpoint": "/availability",
+  "scope": "global",
+  "businessRules": [
+    {
+      "rule": "disponibilidad",
+      "description": "La aplicación debe estar disponible al menos el 99% del tiempo"
+    }
+  ],
+  "entityHash": {
+    "availability": {
+      "methods": [
+        {
+          "method": "get",
+          "fields": [
+            {
+              "name": "status",
+              "type": "string",
+              "format": "availability-status"
+            },
+            {
+              "name": "timestamp",
+              "type": "integer",
+              "format": "unix-timestamp"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "auth": {
+    "type": "oauth2",
+    "scopes": [
+      "read:availability"
+    ]
+  }
+}
