@@ -28,7 +28,8 @@ Genera EXACTAMENTE estos archivos:
 
 2. [FILE: UI/nitro-groups/src/features/{feature}/services/{feature}.service.ts]
    - Usa "apiClient" importado desde "@/lib/api-client".
-   - Importa getApiAccessToken desde "@/features/auth/services/auth.service".
+   - Importa getApiAccessToken desde "@/services/auth.service".
+   - Importa TODOS los tipos DTO desde "../types/{feature}.types".
    - Patrón obligatorio:
      export const {feature}Service = {
        methodName: async (params): Promise<ResponseType> => {
@@ -42,7 +43,8 @@ Genera EXACTAMENTE estos archivos:
    - PROHIBIDO usar axios o fetch directo.
 
 3. [FILE: UI/nitro-groups/src/features/{feature}/hooks/use{Feature}.ts]
-   - Hook personalizado con React Query (useQuery/useMutation).
+   - Hook personalizado con React Query de "@tanstack/react-query" (useQuery/useMutation).
+   - Importa TODOS los tipos DTO desde "../types/{feature}.types".
    - Implementa queryKey descriptivo: ["{feature}", ...params].
    - Usa staleTime razonable (5-10 min para datos estables).
    - Exporta loading, error, data y las funciones de mutación.
@@ -104,5 +106,67 @@ PROHIBIDO:
 INSPIRACIÓN:
 - Piensa en Linear.app, Vercel Dashboard, o Spotify Premium.
 - Dark mode con acentos neón sutiles sobre fondos profundos.
+
+═══════════════════════════════════════
+ALLOWLIST DE IMPORTS (ESTRICTO — NO INVENTES)
+═══════════════════════════════════════
+
+PAQUETES EXTERNOS PERMITIDOS (únicos autorizados):
+- "@tanstack/react-query"   (hooks de query/mutation)
+- "axios"                   (solo vía apiClient, no directo)
+- "clsx" / "tailwind-merge" (utilidades de clases)
+- "class-variance-authority"
+- "lucide-react"            (ÚNICA librería de iconos permitida, p.ej. { Calendar, Loader2, AlertCircle })
+- "react" / "react-dom" / "next"
+
+PROHIBIDOS EXPLÍCITAMENTE (NO están instalados):
+- "date-fns"        → usa Intl.DateTimeFormat nativo
+- "date-fns/locale" → no existe, usa Intl
+- "react-icons"     → usa lucide-react
+- "dayjs" / "moment"→ usa Intl nativo
+
+EJEMPLO OBLIGATORIO para formatear fechas (sustituto de date-fns):
+\`\`\`tsx
+// helper inline, no necesita imports
+const formatDate = (iso: string) =>
+  new Intl.DateTimeFormat("es-PE", {
+    dateStyle: "medium",
+    timeStyle: "short"
+  }).format(new Date(iso));
+\`\`\`
+Si te sientes tentado de escribir \`import { format } from "date-fns"\`,
+DETENTE y usa el bloque de arriba. No necesitas ninguna librería.
+
+ALIASES DEL PROYECTO (casing EXACTO obligatorio):
+- "@/lib/api-client"          (exports: apiClient)
+- "@/services/auth.service"   (exports: getApiAccessToken)
+- "@/components/ui/Alert"     (named: Alert, AlertTitle, AlertDescription)
+- "@/components/ui/Badge"     (default: Badge)
+- "@/components/ui/Button"    (named: Button, buttonVariants)
+- "@/components/ui/Card"      (default: Card — API: { header, children, footer, className })
+- "@/components/ui/Input"     (named: Input)
+- "@/components/ui/Loader"    (default: Loader)
+
+NO EXISTEN (errores comunes a evitar):
+- "@/components/ui/skeleton" | "@/components/ui/Skeleton"
+- "@/components/ui/card"  (minúscula, usa "Card" con mayúscula)
+- "@/components/ui/button"(minúscula, usa "Button" con mayúscula)
+- "CardHeader"/"CardTitle"/"CardContent" de "@/components/ui/Card"
+  Nuestro Card es default export con API { header, children, footer }.
+  Si necesitas título, pásalo como prop header: <Card header={<h2>Título</h2>}>...</Card>
+- Para skeletons: construye uno inline con tailwind
+  <div className="animate-pulse bg-gray-800 rounded h-4 w-full" />
+
+═══════════════════════════════════════
+REGLAS DE FORMATO (ESTRICTO)
+═══════════════════════════════════════
+1. CADA archivo debe empezar con [FILE: ruta/al/archivo.tsx].
+2. Inmediatamente después de la etiqueta [FILE], abre un bloque de código markdown (\`\`\`tsx).
+3. Cierra el bloque de código (\`\`\`) antes de empezar el siguiente archivo.
+4. NO envuelvas toda tu respuesta en un solo bloque de código.
+5. NO añadas texto explicativo fuera de los bloques de archivos.
+6. PROHIBIDO usar imports fuera de la ALLOWLIST de arriba.
+7. PROHIBIDO usar "react-query"; usa exclusivamente "@tanstack/react-query".
+8. Respeta SIEMPRE el casing de los aliases del proyecto (Card, Button, Alert con mayúscula).
 `;
 }

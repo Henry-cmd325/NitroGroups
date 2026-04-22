@@ -2,6 +2,11 @@ import fs from "fs";
 import path from "path";
 import crypto from "crypto";
 
+export interface DomainContextResolution {
+    moduleName: string;
+    context: string | null;
+}
+
 // ─── FRONTEND CONTEXT ───
 
 /**
@@ -31,11 +36,11 @@ export function extractContext(featureName: string): string | null {
  * Busca la entidad de dominio y extrae sus propiedades y firmas de métodos.
  */
 export function extractDomainContext(featureName: string): string | null {
-    const capitalized = featureName.charAt(0).toUpperCase() + featureName.slice(1);
-    const entityDir = path.join(process.cwd(), "Core", capitalized, `NitroGroups.Core.${capitalized}.Domain`, "Entities");
+    return resolveDomainContext(featureName)?.context ?? null;
+}
 
+function extractEntitySignatures(entityDir: string): string | null {
     if (!fs.existsSync(entityDir)) return null;
-
     const files = fs.readdirSync(entityDir).filter(f => f.endsWith(".cs"));
     if (files.length === 0) return null;
 
@@ -52,6 +57,59 @@ export function extractDomainContext(featureName: string): string | null {
     }
 
     return allContext.trim() || null;
+}
+
+export function resolveDomainContext(featureName: string): DomainContextResolution | null {
+    const coreDir = path.join(process.cwd(), "Core");
+    if (!fs.existsSync(coreDir)) return null;
+
+    const normalizedFeature = featureName.trim().toLowerCase();
+    const capitalizedFeature = featureName.charAt(0).toUpperCase() + featureName.slice(1);
+
+    const moduleDirs = fs.readdirSync(coreDir, { withFileTypes: true })
+        .filter(entry => entry.isDirectory())
+        .map(entry => entry.name);
+
+    let bestMatch: DomainContextResolution | null = null;
+    let bestScore = 0;
+
+    for (const moduleName of moduleDirs) {
+        const entityDir = path.join(coreDir, moduleName, `NitroGroups.Core.${moduleName}.Domain`, "Entities");
+        if (!fs.existsSync(entityDir)) continue;
+
+        const files = fs.readdirSync(entityDir).filter(f => f.endsWith(".cs"));
+        if (files.length === 0) continue;
+
+        let score = 0;
+        for (const file of files) {
+            const filePath = path.join(entityDir, file);
+            const content = fs.readFileSync(filePath, "utf-8").toLowerCase();
+            const fileLower = file.toLowerCase();
+
+            if (fileLower.includes(normalizedFeature)) score += 3;
+            if (content.includes(`class ${normalizedFeature}`)) score += 4;
+            if (content.includes(normalizedFeature)) score += 1;
+        }
+
+        if (moduleName.toLowerCase() === normalizedFeature) score += 2;
+        if (score > bestScore) {
+            bestScore = score;
+            bestMatch = { moduleName, context: extractEntitySignatures(entityDir) };
+        }
+    }
+
+    if (bestMatch && bestScore > 0) return bestMatch;
+
+    // Fallback determinista: módulo con mismo nombre del feature (si existe)
+    const fallbackEntityDir = path.join(coreDir, capitalizedFeature, `NitroGroups.Core.${capitalizedFeature}.Domain`, "Entities");
+    if (fs.existsSync(fallbackEntityDir)) {
+        return {
+            moduleName: capitalizedFeature,
+            context: extractEntitySignatures(fallbackEntityDir)
+        };
+    }
+
+    return null;
 }
 
 // ─── SEMANTIC HASH ───

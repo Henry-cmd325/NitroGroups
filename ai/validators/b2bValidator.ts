@@ -7,7 +7,7 @@ const TYPE_MAPPINGS: Record<string, string[]> = {
 const FORMAT_TO_CSHARP: Record<string, string[]> = {
     "decimal": ["decimal", "decimal?"],
     "long": ["long", "long?", "int", "int?"],
-    "int": ["int", "int?"],
+    "int": ["int", "int?", "long", "long?"],
     "uuid": ["Guid", "Guid?"],
     "iso-date": ["DateTime", "DateTime?", "DateTimeOffset", "DateTimeOffset?"],
     "iso-currency": ["string", "string?"]
@@ -37,6 +37,77 @@ export function validateB2BCoherence(contract: any, frontendCode: string, backen
     }
 
     return { isValid: true };
+}
+
+export function validateContractIntegrity(contract: any): { isValid: boolean; errors: string[]; warnings: string[] } {
+    const errors: string[] = [];
+    const warnings: string[] = [];
+
+    if (!contract || typeof contract !== "object") {
+        return { isValid: false, errors: ["Contrato inválido: JSON no parseable o no es un objeto."], warnings };
+    }
+
+    if (!contract.feature || typeof contract.feature !== "string") {
+        errors.push("El contrato debe incluir 'feature' (string).");
+    }
+
+    if (!contract.endpoint || typeof contract.endpoint !== "string" || !contract.endpoint.startsWith("/api/")) {
+        errors.push("El contrato debe incluir 'endpoint' válido y debe iniciar con '/api/'.");
+    }
+
+    if (!Array.isArray(contract.methods) || contract.methods.length === 0) {
+        errors.push("El contrato debe incluir al menos un método en 'methods'.");
+    }
+
+    const allowedEndpoints: string[] = Array.isArray(contract.scope?.allowedEndpoints)
+        ? contract.scope.allowedEndpoints
+            .map((value: unknown) => String(value).trim().toLowerCase())
+            .filter(Boolean)
+        : [];
+
+    if (allowedEndpoints.length === 0) {
+        warnings.push("No se definieron 'scope.allowedEndpoints'. Se usará el endpoint del contrato como referencia mínima.");
+    }
+
+    for (const method of contract.methods || []) {
+        if (!method?.name || typeof method.name !== "string") {
+            errors.push("Cada método debe incluir 'name' (string).");
+            continue;
+        }
+
+        if (!method.http || typeof method.http !== "string") {
+            errors.push(`El método '${method.name}' no define 'http'.`);
+            continue;
+        }
+
+        const methodToken = `${method.name}`.toLowerCase();
+        const httpToken = `${method.http}`.toLowerCase();
+        const matchesScope = allowedEndpoints.length === 0
+            ? true
+            : allowedEndpoints.some(allowed => allowed === httpToken || methodToken.includes(allowed));
+
+        if (!matchesScope) {
+            errors.push(`El método '${method.name}' (${method.http}) no está permitido por 'scope.allowedEndpoints'.`);
+        }
+
+        if (!method.request?.name || !method.response?.name) {
+            warnings.push(`El método '${method.name}' no define name completo en request/response DTO.`);
+        }
+    }
+
+    for (const allowed of allowedEndpoints) {
+        const hasImplementation = (contract.methods || []).some((method: any) => {
+            const methodToken = `${method?.name || ""}`.toLowerCase();
+            const httpToken = `${method?.http || ""}`.toLowerCase();
+            return allowed === httpToken || methodToken.includes(allowed);
+        });
+
+        if (!hasImplementation) {
+            errors.push(`'scope.allowedEndpoints' declara '${allowed}' pero no existe método compatible en 'methods'.`);
+        }
+    }
+
+    return { isValid: errors.length === 0, errors, warnings };
 }
 
 function checkFieldsInCode(fields: any, code: string, lang: 'C#' | 'TS'): string | null {

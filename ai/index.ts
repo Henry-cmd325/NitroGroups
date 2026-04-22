@@ -17,14 +17,20 @@ Comandos disponibles:
   npm run ai generate-service <domain> [--force] [--preview] [--example=<domain>]
     → Genera un servicio frontend aislado.
 
-  npm run ai generate-feature <domain> [--update-hash]
+  npm run ai generate-feature <domain> [--update-hash] [--mode=full-stack|frontend-only|contract-only]
     → Genera feature Full-Stack (Backend + Frontend) desde contrato B2B.
     → Sin contrato: inicia fase de Drafting inteligente.
     → Con contrato: ejecuta generación determinista.
     → --update-hash: firma el hash actual de la entidad de dominio.
+    → --mode=full-stack (def.): Backend+Frontend.
+    → --mode=frontend-only: Solo UI (útil si el backend ya está listo).
+    → --mode=contract-only: Solo genera/valida el contrato, sin tocar código.
 
   npm run ai build-patterns
     → Extrae patrones del repositorio para alimentar los prompts.
+
+  npm run ai providers
+    → Muestra la cadena de proveedores LLM activa (Groq → Cerebras → Gemini → Ollama).
 `);
     process.exit(1);
 }
@@ -32,13 +38,13 @@ Comandos disponibles:
 const task = args[0];
 const input = args[1]; // Puede ser un flag o el input
 
-// Parse options
-const options: any = { force: false, preview: false, updateHash: false };
+const options: any = { force: false, preview: false, updateHash: false, mode: "full-stack" };
 for (const arg of args) {
     if (arg === "--force") options.force = true;
     if (arg === "--preview") options.preview = true;
     if (arg === "--update-hash") options.updateHash = true;
     if (arg.startsWith("--example=")) options.example = arg.split("=")[1];
+    if (arg.startsWith("--mode=")) options.mode = arg.split("=")[1];
 }
 
 function log(data: any) {
@@ -63,11 +69,28 @@ async function run() {
             return;
         }
         const { generateFeature } = await import("./tasks/generateFeature");
-        await generateFeature(input, { updateHash: options.updateHash });
+        const { parseMode } = await import("./orchestrator/pipeline/modes");
+        await generateFeature(input, { updateHash: options.updateHash, mode: parseMode(options.mode) });
     }
 
     else if (task === "build-patterns") {
         await buildPatterns();
+    }
+
+    else if (task === "providers") {
+        const { getConfiguredProviderChain, describeChain } = await import("./providers/registry");
+        const chain = getConfiguredProviderChain();
+        console.log(`\n🔗 Cadena activa: ${describeChain(chain)}\n`);
+        if (chain.length === 0) {
+            console.warn("⚠️  Sin proveedores configurados. Edita ai/.env.");
+            return;
+        }
+        for (const provider of chain) {
+            const reachable = provider.ping ? await provider.ping() : true;
+            const flag = reachable ? "✔️ alcanzable" : "❌ inaccesible";
+            console.log(`  • ${provider.name.padEnd(10)} ${flag}  modelos: ${provider.models.join(", ")}`);
+        }
+        console.log("");
     }
 
     else {
