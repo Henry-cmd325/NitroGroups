@@ -1,0 +1,10 @@
+{
+  "R2": {
+    "AccountId": "<cloudflare-account-id>",
+    "ServiceUrl": null,
+    "AccessKeyId": "<r2-s3-api-token-access-key-id>",
+    "SecretAccessKey": "<r2-s3-api-token-secret>",
+    "Bucket": "group-media",
+    "PublicBaseUrl": "https://<public-bucket-host>.r2.dev"
+  }
+}

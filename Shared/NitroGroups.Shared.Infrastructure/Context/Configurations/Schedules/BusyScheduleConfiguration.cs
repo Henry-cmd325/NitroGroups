@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using NitroGroups.Core.Schedules.Domain.Entities;
+using NitroGroups.Shared.Infrastructure.Context;
 
 namespace NitroGroups.Shared.Infrastructure.Context.Configurations.Schedules;
 
@@ -21,8 +22,14 @@ public class BusyScheduleConfiguration : IEntityTypeConfiguration<BusySchedule>
             .HasDefaultValue(BusyScheduleSource.Contract);
 
         builder.Property(e => e.ContractId).HasColumnName("contract_id");
-        builder.Property(e => e.StartAt).HasColumnName("start_at").IsRequired();
-        builder.Property(e => e.EndAt).HasColumnName("end_at").IsRequired();
+        builder.Property(e => e.StartAt)
+            .HasColumnName("start_at")
+            .IsRequired()
+            .HasConversion(DateTimeOffsetUtcConverters.TimestampTz);
+        builder.Property(e => e.EndAt)
+            .HasColumnName("end_at")
+            .IsRequired()
+            .HasConversion(DateTimeOffsetUtcConverters.TimestampTz);
 
         builder.HasIndex(e => new { e.GroupId, e.StartAt });
         builder.HasIndex(e => e.ContractId);

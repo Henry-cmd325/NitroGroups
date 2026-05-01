@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using NitroGroups.Core.Groups.Application.Abstractions;
-using NitroGroups.Core.Groups.Domain.Entities;
+using GroupMediaEntity = NitroGroups.Core.Groups.Domain.Entities.GroupMedia;
 using NitroGroups.Shared.Contracts.Groups.Requests;
 using NitroGroups.Shared.EndpointMapping;
 using static Microsoft.AspNetCore.Http.Results;
@@ -18,10 +18,11 @@ namespace NitroGroups.Core.Groups.Infrastructure.Endpoints.Groups
                 var group = await unitOfWork.Groups.GetByIdAsync(groupId);
                 if (group is null) return NotFound("Group not found.");
 
-                if (!Enum.TryParse<MediaType>(request.Type, true, out var mediaType))
+                if (!Enum.TryParse<NitroGroups.Core.Groups.Domain.Entities.MediaType>(
+                        request.Type, true, out var mediaType))
                     return BadRequest("Invalid media type. Use: photo, video, or audio.");
 
-                var media = new GroupMedia
+                var media = new GroupMediaEntity
                 {
                     GroupId = groupId,
                     Type = mediaType,

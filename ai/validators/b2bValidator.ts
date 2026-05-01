@@ -1,3 +1,29 @@
+/**
+ * Alinea tokens de `scope.allowedEndpoints` (p. ej. `list-availability`) con
+ * nombres de método camelCase (`listAvailability`) y con verbos HTTP.
+ */
+function normalizeScopeKey(s: string): string {
+    return s.trim().toLowerCase().replace(/-/g, "");
+}
+
+function methodMatchesScopeAllowlist(
+    allowed: string,
+    method: { name?: string; http?: string }
+): boolean {
+    const a = allowed.trim().toLowerCase();
+    if (!a) return false;
+    const httpToken = `${method.http || ""}`.toLowerCase();
+    const methodToken = `${method.name || ""}`.toLowerCase();
+    if (a === httpToken) return true;
+    if (methodToken.includes(a)) return true;
+    const an = normalizeScopeKey(allowed);
+    const mn = normalizeScopeKey(method.name || "");
+    if (an.length === 0 || mn.length === 0) return false;
+    if (mn === an) return true;
+    if (mn.includes(an) || an.includes(mn)) return true;
+    return false;
+}
+
 const TYPE_MAPPINGS: Record<string, string[]> = {
     "number": ["int", "long", "float", "double", "decimal", "int?", "long?", "decimal?"],
     "decimal": ["decimal", "decimal?"],
@@ -80,27 +106,32 @@ export function validateContractIntegrity(contract: any): { isValid: boolean; er
             continue;
         }
 
-        const methodToken = `${method.name}`.toLowerCase();
-        const httpToken = `${method.http}`.toLowerCase();
-        const matchesScope = allowedEndpoints.length === 0
-            ? true
-            : allowedEndpoints.some(allowed => allowed === httpToken || methodToken.includes(allowed));
+        const matchesScope =
+            allowedEndpoints.length === 0
+                ? true
+                : allowedEndpoints.some(allowed => methodMatchesScopeAllowlist(allowed, method));
 
         if (!matchesScope) {
             errors.push(`El método '${method.name}' (${method.http}) no está permitido por 'scope.allowedEndpoints'.`);
         }
 
-        if (!method.request?.name || !method.response?.name) {
-            warnings.push(`El método '${method.name}' no define name completo en request/response DTO.`);
+        // El request sólo es obligatorio para verbos con body (POST/PUT/PATCH)
+        // o para GET con parámetros. En `list` (GET sin params) y `delete-all`
+        // es legítimo omitirlo.
+        const httpUpper = String(method.http).toUpperCase();
+        const requestObligatorio = httpUpper === "POST" || httpUpper === "PUT" || httpUpper === "PATCH";
+        if (requestObligatorio && !method.request?.name) {
+            warnings.push(`El método '${method.name}' (${httpUpper}) suele llevar request DTO y no se definió.`);
+        }
+        if (!method.response?.name) {
+            warnings.push(`El método '${method.name}' no define name en response DTO.`);
         }
     }
 
     for (const allowed of allowedEndpoints) {
-        const hasImplementation = (contract.methods || []).some((method: any) => {
-            const methodToken = `${method?.name || ""}`.toLowerCase();
-            const httpToken = `${method?.http || ""}`.toLowerCase();
-            return allowed === httpToken || methodToken.includes(allowed);
-        });
+        const hasImplementation = (contract.methods || []).some((method: any) =>
+            methodMatchesScopeAllowlist(allowed, method)
+        );
 
         if (!hasImplementation) {
             errors.push(`'scope.allowedEndpoints' declara '${allowed}' pero no existe método compatible en 'methods'.`);

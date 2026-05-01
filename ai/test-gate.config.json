@@ -1,0 +1,11 @@
+{
+  "$comment": "Comandos de test ejecutados en collectQualityBaseline y runQualityGates (solo fallos *nuevos* vs baseline). ORCH_TEST_GATE=0 desactiva. ORCH_UI_TEST_CMD / ORCH_DOTNET_TEST_CMD sobreescriben.",
+  "commands": [
+    {
+      "id": "dotnet-orchestrator-gate",
+      "backendOnly": true,
+      "cwd": ".",
+      "run": "dotnet test \"Tests/NitroGroups.Orchestrator.Gate/NitroGroups.Orchestrator.Gate.csproj\" --nologo -v m"
+    }
+  ]
+}

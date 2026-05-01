@@ -42,6 +42,67 @@ interface RepairResult {
     content: string;
 }
 
+/**
+ * Reemplaza el tipo C# de un campo existente dentro de un DTO.
+ * Ej: `public string StartAt { get; set; }` → `public DateTimeOffset StartAt { get; set; }`.
+ * Soporta tanto clases con cuerpo como records posicionales.
+ * Devuelve changed=false si no encuentra el campo (fuerza fallback upstream).
+ */
+function replaceCsharpFieldType(content: string, typeName: string, fieldName: string, newCsType: string): RepairResult {
+    const pascal = toPascalCase(fieldName);
+
+    // Record posicional: (long Id, string Name, ...)
+    const positionalRecordRegex = new RegExp(
+        `((?:public\\s+)?(?:sealed\\s+)?record\\s+${typeName}\\s*\\()([^)]*)(\\))`
+    );
+    const positional = positionalRecordRegex.exec(content);
+    if (positional) {
+        const params = positional[2];
+        const paramRegex = new RegExp(`(^|,\\s*)([A-Za-z_][\\w.?<>]*)(\\s+${pascal}\\b)`);
+        if (paramRegex.test(params)) {
+            const newParams = params.replace(paramRegex, (_match, sep, _oldType, tail) => `${sep}${newCsType}${tail}`);
+            if (newParams !== params) {
+                const before = content.slice(0, positional.index);
+                const after = content.slice(positional.index + positional[0].length);
+                return { changed: true, content: `${before}${positional[1]}${newParams}${positional[3]}${after}` };
+            }
+        }
+    }
+
+    // Clase/record con cuerpo: `public <Type> Name { get; set; } [= ...]`
+    const classPropRegex = new RegExp(
+        `(public\\s+)([A-Za-z_][\\w.?<>]*)(\\s+${pascal}\\s*\\{\\s*get\\s*;\\s*set\\s*;\\s*\\}[^\\n;]*;?)`,
+        "m"
+    );
+    // Acotamos al bloque del DTO para no pisar otros campos con el mismo nombre en otro DTO.
+    const blockStart = new RegExp(`(?:record|class)\\s+${typeName}\\b[^\\n]*\\n\\{`, "m").exec(content);
+    if (blockStart) {
+        let depth = 0;
+        let started = false;
+        let end = -1;
+        for (let i = blockStart.index; i < content.length; i++) {
+            const ch = content[i];
+            if (ch === "{") { depth++; started = true; }
+            else if (ch === "}") { depth--; if (started && depth === 0) { end = i + 1; break; } }
+        }
+        if (end > 0) {
+            const blockContent = content.slice(blockStart.index, end);
+            const match = classPropRegex.exec(blockContent);
+            if (match) {
+                const rebuilt = blockContent.replace(classPropRegex, `$1${newCsType}$3`);
+                if (rebuilt !== blockContent) {
+                    return {
+                        changed: true,
+                        content: content.slice(0, blockStart.index) + rebuilt + content.slice(end)
+                    };
+                }
+            }
+        }
+    }
+
+    return { changed: false, content };
+}
+
 function insertCsharpField(content: string, typeName: string, fieldName: string, csType: string): RepairResult {
     const pascal = toPascalCase(fieldName);
 
@@ -189,8 +250,18 @@ export function repairStructuralIssues(
                 applied.push(`+${issue.lang} ${issue.dto}.${issue.field}`);
                 changedAny = true;
             }
+        } else if (issue.code === "B2B_TYPE_MISMATCH" && issue.lang === "C#") {
+            // Repair dirigido: reemplaza solo el tipo del campo, preservando el resto
+            // del handler/DTO generado por el LLM. Evita tener que rebuildear todo el
+            // backend vía fallback determinista cuando el LLM acertó en todo lo demás.
+            const result = replaceCsharpFieldType(target.content, issue.dto, issue.field, mapTypeToCSharp(fieldMeta));
+            if (result.changed) {
+                updated[targetFileIdx] = { ...target, content: result.content };
+                applied.push(`~C# ${issue.dto}.${issue.field}:${mapTypeToCSharp(fieldMeta)}`);
+                changedAny = true;
+            }
         }
-        // B2B_TYPE_MISMATCH: no se autorrepara automáticamente; lo escala a la IA o fallback.
+        // B2B_TYPE_MISMATCH en TS no se auto-repara aquí; el fallback frontend lo reescribe.
     }
 
     return { changed: changedAny, files: updated, applied };

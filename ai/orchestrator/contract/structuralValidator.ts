@@ -1,3 +1,5 @@
+import fs from "fs";
+import path from "path";
 import {
     B2BContract,
     ContractDto,
@@ -9,12 +11,27 @@ import {
     normalizeToPosix
 } from "../types";
 
+function collectTsPathsRecursive(dir: string): string[] {
+    const out: string[] = [];
+    if (!fs.existsSync(dir)) return out;
+    for (const ent of fs.readdirSync(dir, { withFileTypes: true })) {
+        const full = path.join(dir, ent.name);
+        if (ent.isDirectory()) {
+            out.push(...collectTsPathsRecursive(full));
+        } else if (/\.tsx?$/i.test(ent.name)) {
+            out.push(full);
+        }
+    }
+    return out;
+}
+
 const FORMAT_TO_CSHARP: Record<string, string[]> = {
     decimal: ["decimal", "decimal?"],
     long: ["long", "long?", "int", "int?"],
     int: ["int", "int?", "long", "long?"],
     uuid: ["Guid", "Guid?"],
     "iso-date": ["DateTime", "DateTime?", "DateTimeOffset", "DateTimeOffset?"],
+    "iso-date-time": ["DateTime", "DateTime?", "DateTimeOffset", "DateTimeOffset?"],
     "iso-currency": ["string", "string?"]
 };
 
@@ -110,7 +127,14 @@ function checkTsType(detectedType: string, format?: string, jsType?: string): bo
     if (format && FORMAT_TO_TS[format]) {
         return FORMAT_TO_TS[format].some(type => normalized === type);
     }
-    if (jsType === "string") return /^string/.test(normalized);
+    if (jsType === "string") {
+        if (/^string/.test(normalized)) return true;
+        // El LLM a veces declara "asc" | "desc" (o basura al final) en vez de `string`
+        // — sigue siendo un subtipo de string y pasa en runtime.
+        const raw = detectedType.trim();
+        if (raw.startsWith(`"`) || raw.startsWith(`'`)) return true;
+        return false;
+    }
     if (jsType === "number" || jsType === "integer") return /^number/.test(normalized);
     if (jsType === "boolean" || jsType === "bool") return /^boolean/.test(normalized);
     return true;
@@ -201,10 +225,37 @@ function validateDtoInTs(dto: ContractDto, location: DtoLocation, issues: Struct
     }
 }
 
-function validateEndpointReference(contract: B2BContract, tsFiles: FileOutput[], issues: StructuralIssue[]): void {
-    const endpoint = contract.endpoint;
+function validateEndpointReference(
+    contract: B2BContract,
+    tsFiles: FileOutput[],
+    issues: StructuralIssue[],
+    diskFallback?: { projectRoot: string; feature: string }
+): void {
+    const endpoint = String(contract.endpoint || "");
+    if (!endpoint) return;
     const shortened = endpoint.replace(/^\/api/, "");
-    const referenced = tsFiles.some(file => file.content.includes(endpoint) || file.content.includes(shortened));
+    let referenced = tsFiles.some(file => file.content.includes(endpoint) || file.content.includes(shortened));
+    if (!referenced && diskFallback?.projectRoot && diskFallback?.feature) {
+        const base = path.join(
+            diskFallback.projectRoot,
+            "UI",
+            "nitro-groups",
+            "src",
+            "features",
+            diskFallback.feature
+        );
+        try {
+            for (const fp of collectTsPathsRecursive(base)) {
+                const content = fs.readFileSync(fp, "utf8");
+                if (content.includes(endpoint) || content.includes(shortened)) {
+                    referenced = true;
+                    break;
+                }
+            }
+        } catch {
+            /* ignore disk errors */
+        }
+    }
     if (!referenced) {
         issues.push({
             code: "B2B_ROUTE_MISMATCH",
@@ -237,6 +288,12 @@ function validateBackendEndpointMethod(method: ContractMethod, csFiles: FileOutp
 export interface StructuralValidationOptions {
     includeBackend: boolean;
     includeFrontend: boolean;
+    /**
+     * Si el listado solo mira `files` generados en memoria, el FE existente en disco
+     * (p. ej. `features/groupMedia/types/...` con la constante B2B) no se ve y dispara
+     * B2B_ROUTE_MISMATCH en falso. Opcional: escanea esa carpeta en disco.
+     */
+    frontendEndpointDiskFallback?: { projectRoot: string; feature: string };
 }
 
 export function validateB2BStructural(
@@ -253,7 +310,7 @@ export function validateB2BStructural(
     });
 
     if (options.includeFrontend) {
-        validateEndpointReference(contract, tsFiles, issues);
+        validateEndpointReference(contract, tsFiles, issues, options.frontendEndpointDiskFallback);
     }
 
     for (const method of contract.methods || []) {

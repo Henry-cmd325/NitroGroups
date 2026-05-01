@@ -1,0 +1,282 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.__internal__ = exports.summarizeIssues = exports.validateB2BStructural = void 0;
+const types_1 = require("../types");
+const FORMAT_TO_CSHARP = {
+    decimal: ["decimal", "decimal?"],
+    long: ["long", "long?", "int", "int?"],
+    int: ["int", "int?", "long", "long?"],
+    uuid: ["Guid", "Guid?"],
+    "iso-date": ["DateTime", "DateTime?", "DateTimeOffset", "DateTimeOffset?"],
+    "iso-date-time": ["DateTime", "DateTime?", "DateTimeOffset", "DateTimeOffset?"],
+    "iso-currency": ["string", "string?"]
+};
+const FORMAT_TO_TS = {
+    decimal: ["number"],
+    long: ["number"],
+    int: ["number"],
+    uuid: ["string"],
+    "iso-date": ["string"],
+    "iso-currency": ["string"]
+};
+function extractCsTypeBlock(content, typeName) {
+    const regex = new RegExp(`(?:public\\s+)?(?:sealed\\s+)?(?:record|class)\\s+${typeName}\\b[^\\n]*(?:\\([^)]*\\))?`, "m");
+    const match = regex.exec(content);
+    if (!match)
+        return null;
+    const startIndex = match.index + match[0].length;
+    // record con sintaxis posicional: record Foo(long Id, string Name);
+    if (match[0].includes("(")) {
+        return match[0];
+    }
+    // Clase/record con cuerpo {}
+    let depth = 0;
+    let started = false;
+    let end = -1;
+    for (let i = match.index; i < content.length; i++) {
+        const ch = content[i];
+        if (ch === "{") {
+            depth++;
+            started = true;
+        }
+        else if (ch === "}") {
+            depth--;
+            if (started && depth === 0) {
+                end = i + 1;
+                break;
+            }
+        }
+    }
+    if (end === -1)
+        return null;
+    return content.slice(startIndex, end);
+}
+function extractTsInterfaceBlock(content, typeName) {
+    const regex = new RegExp(`export\\s+(?:interface|type)\\s+${typeName}\\b[^\\n]*(?:=\\s*{|\\{)`, "m");
+    const match = regex.exec(content);
+    if (!match)
+        return null;
+    let depth = 0;
+    let started = false;
+    let end = -1;
+    for (let i = match.index; i < content.length; i++) {
+        const ch = content[i];
+        if (ch === "{") {
+            depth++;
+            started = true;
+        }
+        else if (ch === "}") {
+            depth--;
+            if (started && depth === 0) {
+                end = i + 1;
+                break;
+            }
+        }
+    }
+    if (end === -1)
+        return null;
+    return content.slice(match.index, end);
+}
+function csFieldRegex(fieldName) {
+    const pascal = fieldName.charAt(0).toUpperCase() + fieldName.slice(1);
+    // Propiedad: public <Type> Name { get; set; }
+    // Parámetro de record: (Type Name, ...)
+    return new RegExp(`\\b([A-Za-z_][\\w.?<>]*)\\s+${pascal}\\b`);
+}
+function tsFieldRegex(fieldName) {
+    return new RegExp(`\\b${fieldName}\\b\\s*\\??\\s*:\\s*([^;\\n,)}]+)`);
+}
+function checkCsharpType(detectedType, format, jsType) {
+    if (format && FORMAT_TO_CSHARP[format]) {
+        return FORMAT_TO_CSHARP[format].some(type => detectedType === type || detectedType.startsWith(type));
+    }
+    if (jsType === "string")
+        return /^(string\??|Guid\??|DateTime\??|DateTimeOffset\??)/.test(detectedType);
+    if (jsType === "number" || jsType === "integer")
+        return /^(int|long|short|double|float|decimal)\??$/.test(detectedType);
+    if (jsType === "boolean" || jsType === "bool")
+        return /^bool\??$/.test(detectedType);
+    return true;
+}
+function checkTsType(detectedType, format, jsType) {
+    const normalized = detectedType.trim().replace(/\s+/g, " ").replace(/\|.*$/, "").trim();
+    if (format && FORMAT_TO_TS[format]) {
+        return FORMAT_TO_TS[format].some(type => normalized === type);
+    }
+    if (jsType === "string")
+        return /^string/.test(normalized);
+    if (jsType === "number" || jsType === "integer")
+        return /^number/.test(normalized);
+    if (jsType === "boolean" || jsType === "bool")
+        return /^boolean/.test(normalized);
+    return true;
+}
+function findCsDto(files, dto) {
+    for (const file of files) {
+        const normalized = (0, types_1.normalizeToPosix)(file.path);
+        if (!normalized.toLowerCase().endsWith(".cs"))
+            continue;
+        const block = extractCsTypeBlock(file.content, dto.name);
+        if (block !== null)
+            return { file, block };
+    }
+    return null;
+}
+function findTsDto(files, dto) {
+    for (const file of files) {
+        const normalized = (0, types_1.normalizeToPosix)(file.path).toLowerCase();
+        if (!normalized.endsWith(".ts") && !normalized.endsWith(".tsx"))
+            continue;
+        const block = extractTsInterfaceBlock(file.content, dto.name);
+        if (block !== null)
+            return { file, block };
+    }
+    return null;
+}
+function validateDtoInCs(dto, location, issues) {
+    for (const [field, meta] of Object.entries(dto.fields)) {
+        const regex = csFieldRegex(field);
+        const match = regex.exec(location.block);
+        if (!match) {
+            issues.push({
+                code: "B2B_FIELD_MISSING",
+                message: `Campo '${field}' no encontrado en DTO C# '${dto.name}'.`,
+                field,
+                dto: dto.name,
+                lang: "C#",
+                severity: "error"
+            });
+            continue;
+        }
+        const detectedType = match[1];
+        if (!checkCsharpType(detectedType, meta.format, meta.type)) {
+            issues.push({
+                code: "B2B_TYPE_MISMATCH",
+                message: `Campo '${field}' en DTO C# '${dto.name}' tiene tipo '${detectedType}' incompatible con (type='${meta.type}', format='${meta.format || "-"}').`,
+                field,
+                dto: dto.name,
+                lang: "C#",
+                severity: "error"
+            });
+        }
+    }
+}
+function validateDtoInTs(dto, location, issues) {
+    for (const [field, meta] of Object.entries(dto.fields)) {
+        const regex = tsFieldRegex(field);
+        const match = regex.exec(location.block);
+        if (!match) {
+            issues.push({
+                code: "B2B_FIELD_MISSING",
+                message: `Campo '${field}' no encontrado en interfaz TS '${dto.name}'.`,
+                field,
+                dto: dto.name,
+                lang: "TS",
+                severity: "error"
+            });
+            continue;
+        }
+        const detectedType = match[1];
+        if (!checkTsType(detectedType, meta.format, meta.type)) {
+            issues.push({
+                code: "B2B_TYPE_MISMATCH",
+                message: `Campo '${field}' en TS '${dto.name}' tiene tipo '${detectedType.trim()}' incompatible con contrato (type='${meta.type}', format='${meta.format || "-"}').`,
+                field,
+                dto: dto.name,
+                lang: "TS",
+                severity: "error"
+            });
+        }
+    }
+}
+function validateEndpointReference(contract, tsFiles, issues) {
+    const endpoint = contract.endpoint;
+    const shortened = endpoint.replace(/^\/api/, "");
+    const referenced = tsFiles.some(file => file.content.includes(endpoint) || file.content.includes(shortened));
+    if (!referenced) {
+        issues.push({
+            code: "B2B_ROUTE_MISMATCH",
+            message: `El frontend no referencia el endpoint '${endpoint}'.`,
+            severity: "error"
+        });
+    }
+}
+function validateBackendEndpointMethod(method, csFiles, issues) {
+    const http = String(method.http || "").toUpperCase();
+    if (!http)
+        return;
+    const mapCall = `MapMethodPlaceholder_${http}`; // reserved for lookup, not used directly
+    const expected = `Map${http.charAt(0)}${http.slice(1).toLowerCase()}`;
+    const anyEndpoint = csFiles.some(file => {
+        const normalized = (0, types_1.normalizeToPosix)(file.path).toLowerCase();
+        if (!normalized.includes("/endpoints/"))
+            return false;
+        return file.content.includes(expected + "(") || file.content.includes(`app.${expected}(`);
+    });
+    if (!anyEndpoint) {
+        issues.push({
+            code: "B2B_BACKEND_ENDPOINT_MISSING",
+            message: `No se encontró un endpoint .NET (${expected}) para el método '${method.name}' (${http}).`,
+            severity: "error"
+        });
+    }
+}
+function validateB2BStructural(contract, files, options) {
+    const issues = [];
+    const csFiles = files.filter(file => (0, types_1.normalizeToPosix)(file.path).toLowerCase().endsWith(".cs"));
+    const tsFiles = files.filter(file => {
+        const ext = (0, types_1.normalizeToPosix)(file.path).toLowerCase();
+        return ext.endsWith(".ts") || ext.endsWith(".tsx");
+    });
+    if (options.includeFrontend) {
+        validateEndpointReference(contract, tsFiles, issues);
+    }
+    for (const method of contract.methods || []) {
+        if (options.includeBackend) {
+            validateBackendEndpointMethod(method, csFiles, issues);
+            for (const dto of [method.request, method.response].filter(Boolean)) {
+                const loc = findCsDto(csFiles, dto);
+                if (!loc) {
+                    issues.push({
+                        code: "B2B_DTO_MISSING",
+                        message: `DTO C# '${dto.name}' no encontrado en backend generado.`,
+                        dto: dto.name,
+                        lang: "C#",
+                        severity: "error"
+                    });
+                }
+                else {
+                    validateDtoInCs(dto, loc, issues);
+                }
+            }
+        }
+        if (options.includeFrontend) {
+            for (const dto of [method.request, method.response].filter(Boolean)) {
+                const loc = findTsDto(tsFiles, dto);
+                if (!loc) {
+                    issues.push({
+                        code: "B2B_DTO_MISSING",
+                        message: `Interfaz TS '${dto.name}' no encontrada en frontend generado.`,
+                        dto: dto.name,
+                        lang: "TS",
+                        severity: "error"
+                    });
+                }
+                else {
+                    validateDtoInTs(dto, loc, issues);
+                }
+            }
+        }
+    }
+    return {
+        ok: issues.filter(issue => issue.severity === "error").length === 0,
+        issues
+    };
+}
+exports.validateB2BStructural = validateB2BStructural;
+function summarizeIssues(issues) {
+    return issues.map(issue => `[${issue.code}] ${issue.message}`).join("\n");
+}
+exports.summarizeIssues = summarizeIssues;
+// Helper para tests y lookup manual
+exports.__internal__ = { extractCsTypeBlock, extractTsInterfaceBlock };

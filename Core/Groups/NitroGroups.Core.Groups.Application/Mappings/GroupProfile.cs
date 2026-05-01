@@ -72,7 +72,9 @@ namespace NitroGroups.Core.Groups.Application.Mappings
                 .ForMember(d => d.IsPrimary, o => o.MapFrom(s => s.IsPrimary));
 
             CreateMap<GroupMedia, GroupMediaResponse>()
-                .ForMember(d => d.Type, o => o.MapFrom(s => s.Type.ToString().ToLower()));
+                .ForMember(d => d.Type, o => o.MapFrom(s => s.Type.ToString().ToLower()))
+                .ForMember(d => d.UploadedAt, o => o.MapFrom(s => s.CreatedAt.ToUniversalTime().ToString("o")))
+                .ForMember(d => d.Description, o => o.MapFrom(s => s.Description));
 
             CreateMap<MusicGenre, GenreListResponse>();
         }

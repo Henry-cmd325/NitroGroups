@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Plus, Play, Image as ImageIcon, Film, MoreHorizontal, Music, Trash2, X } from "lucide-react";
 import { useQueryClient, useMutation, useQuery } from "@tanstack/react-query";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { groupsService } from "@/services/groups.service";
+import { uploadGroupMediaFile } from "@/lib/groupMediaUpload";
 import { Loader } from "@/components/ui";
 import type { GroupMediaResponse } from "@/types/GroupMedia";
 import type { MusicGroup } from "@/types/MusicGroup";
@@ -34,8 +35,20 @@ export default function GroupGallery({ media: mediaProp }: GroupGalleryProps) {
 
     // Local state for add media modal
     const [isAdding, setIsAdding] = useState(false);
-    const [newMedia, setNewMedia] = useState({ type: "image", url: "", title: "" });
-    
+    const [addMode, setAddMode] = useState<"upload" | "url">("upload");
+    const [newMedia, setNewMedia] = useState({ type: "photo", url: "", title: "" });
+    /** `File` en `useState` fuerza re-renders con un objeto gordo; en Windows + Next 16 (Turbopack) a veces inestable al elegir archivo; se usa ref + etiqueta. */
+    const fileRef = useRef<File | null>(null);
+    const [fileSelectionLabel, setFileSelectionLabel] = useState<string | null>(null);
+    const [fileInputKey, setFileInputKey] = useState(0);
+
+    const openAddModal = () => {
+        setFileInputKey((k) => k + 1);
+        fileRef.current = null;
+        setFileSelectionLabel(null);
+        setIsAdding(true);
+    };
+
     // Delete state
     const [deletingId, setDeletingId] = useState<number | null>(null);
 
@@ -43,6 +56,16 @@ export default function GroupGallery({ media: mediaProp }: GroupGalleryProps) {
     const addMutation = useMutation({
         mutationFn: async () => {
             if (!groupId) throw new Error("No group context");
+            const picked = fileRef.current;
+            if (addMode === "upload" && picked) {
+                const { url, mediaType } = await uploadGroupMediaFile(groupId, picked);
+                return groupsService.addMedia(groupId, {
+                    type: mediaType,
+                    url,
+                    title: newMedia.title,
+                    displayOrder: media.length,
+                });
+            }
             return groupsService.addMedia(groupId, {
                 type: newMedia.type,
                 url: newMedia.url,
@@ -58,7 +81,11 @@ export default function GroupGallery({ media: mediaProp }: GroupGalleryProps) {
                 });
             }
             setIsAdding(false);
-            setNewMedia({ type: "image", url: "", title: "" });
+            setAddMode("upload");
+            fileRef.current = null;
+            setFileSelectionLabel(null);
+            setFileInputKey((k) => k + 1);
+            setNewMedia({ type: "photo", url: "", title: "" });
         }
     });
 
@@ -81,7 +108,13 @@ export default function GroupGallery({ media: mediaProp }: GroupGalleryProps) {
 
     const handleAddSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        if (newMedia.url) addMutation.mutate();
+        if (addMode === "upload") {
+            if (fileRef.current) {
+                addMutation.mutate();
+            }
+        } else if (newMedia.url?.trim()) {
+            addMutation.mutate();
+        }
     };
 
     return (
@@ -94,7 +127,7 @@ export default function GroupGallery({ media: mediaProp }: GroupGalleryProps) {
                 </div>
                 {groupId && (
                     <button 
-                        onClick={() => setIsAdding(true)}
+                        onClick={openAddModal}
                         className="flex items-center gap-2 bg-primary hover:bg-primary/85 text-white text-sm px-5 py-2.5 rounded-xl font-semibold transition-colors"
                     >
                         <Plus size={16} /> Subir Contenido
@@ -107,14 +140,14 @@ export default function GroupGallery({ media: mediaProp }: GroupGalleryProps) {
                 {/* upload placeholder */}
                 {groupId && (
                     <div 
-                        onClick={() => setIsAdding(true)}
+                        onClick={openAddModal}
                         className="bg-card border-2 border-dashed border-border rounded-2xl aspect-[4/3] flex flex-col items-center justify-center cursor-pointer hover:border-primary/40 hover:bg-primary/5 transition-colors group"
                     >
                         <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
                             <Plus className="text-primary" size={24} />
                         </div>
                         <p className="text-sm font-medium text-white">Añadir foto o video</p>
-                        <p className="text-xs text-gray-500 mt-1">JPG, PNG, MP4 · Max 50 MB</p>
+                        <p className="text-xs text-gray-500 mt-1">Subida a almacenamiento (R2) — máx. 50 MB</p>
                     </div>
                 )}
 
@@ -199,8 +232,67 @@ export default function GroupGallery({ media: mediaProp }: GroupGalleryProps) {
                             </button>
                         </div>
                         <form onSubmit={handleAddSubmit} className="p-5 space-y-4">
+                            <div className="flex rounded-xl border border-border p-0.5 bg-background/50">
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        setAddMode("upload");
+                                    }}
+                                    className={`flex-1 rounded-lg py-2 text-sm font-medium transition-colors ${
+                                        addMode === "upload" ? "bg-primary text-primary-foreground" : "text-gray-400 hover:text-white"
+                                    }`}
+                                >
+                                    Subir archivo
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        setAddMode("url");
+                                        fileRef.current = null;
+                                        setFileSelectionLabel(null);
+                                        setFileInputKey((k) => k + 1);
+                                    }}
+                                    className={`flex-1 rounded-lg py-2 text-sm font-medium transition-colors ${
+                                        addMode === "url" ? "bg-primary text-primary-foreground" : "text-gray-400 hover:text-white"
+                                    }`}
+                                >
+                                    Enlace (URL)
+                                </button>
+                            </div>
+                            {addMode === "upload" && (
                             <div>
-                                <label className="block text-sm text-gray-400 mb-1.5">Tipo de archivo</label>
+                                <label className="block text-sm text-gray-400 mb-1.5" htmlFor="group-media-file">Archivo</label>
+                                <input
+                                    id="group-media-file"
+                                    key={fileInputKey}
+                                    type="file"
+                                    accept="image/*,video/*,audio/*"
+                                    onClick={(e) => e.stopPropagation()}
+                                    onChange={(e) => {
+                                        e.stopPropagation();
+                                        const f = e.target.files?.[0] ?? null;
+                                        fileRef.current = f;
+                                        setFileSelectionLabel(
+                                            f
+                                                ? `${f.name} (${f.size > 0 ? Math.max(1, Math.round(f.size / 1024)) : 0} KB)`
+                                                : null
+                                        );
+                                    }}
+                                    className="block w-full min-w-0 text-sm text-white file:mr-3 file:rounded-lg file:border-0 file:bg-primary/20 file:px-3 file:py-1.5 file:text-primary"
+                                />
+                                {fileSelectionLabel ? (
+                                    <p className="text-xs text-emerald-500/90 mt-1.5" aria-live="polite">
+                                        Listo: {fileSelectionLabel}
+                                    </p>
+                                ) : (
+                                    <p className="text-xs text-gray-500 mt-1.5">Imagen, video o audio · máx. 50 MB</p>
+                                )}
+                            </div>
+                            )}
+                            {addMode === "url" && (
+                            <>
+                            <div>
+                                <label className="block text-sm text-gray-400 mb-1.5">Tipo de contenido</label>
                                 <select 
                                     value={newMedia.type} 
                                     onChange={e => setNewMedia({...newMedia, type: e.target.value})}
@@ -212,17 +304,18 @@ export default function GroupGallery({ media: mediaProp }: GroupGalleryProps) {
                                 </select>
                             </div>
                             <div>
-                                <label className="block text-sm text-gray-400 mb-1.5">URL del archivo</label>
+                                <label className="block text-sm text-gray-400 mb-1.5">URL</label>
                                 <input 
                                     type="url" 
                                     value={newMedia.url} 
                                     onChange={e => setNewMedia({...newMedia, url: e.target.value})}
                                     placeholder="https://" 
                                     className="w-full bg-background border border-border rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-primary/50"
-                                    required
                                 />
-                                <p className="text-xs text-gray-500 mt-1">Por ahora solo aceptamos enlaces directos o YouTube.</p>
+                                <p className="text-xs text-gray-500 mt-1">Enlace directo, YouTube, etc.</p>
                             </div>
+                            </>
+                            )}
                             <div>
                                 <label className="block text-sm text-gray-400 mb-1.5">Título (opcional)</label>
                                 <input 
@@ -237,14 +330,24 @@ export default function GroupGallery({ media: mediaProp }: GroupGalleryProps) {
                             <div className="pt-4 flex gap-3">
                                 <button 
                                     type="button" 
-                                    onClick={() => setIsAdding(false)}
+                                    onClick={() => {
+                                        setIsAdding(false);
+                                        setAddMode("upload");
+                                        fileRef.current = null;
+                                        setFileSelectionLabel(null);
+                                        setFileInputKey((k) => k + 1);
+                                    }}
                                     className="flex-1 px-4 py-2.5 rounded-xl border border-white/10 hover:bg-white/5 transition-colors text-sm"
                                 >
                                     Cancelar
                                 </button>
                                 <button 
                                     type="submit" 
-                                    disabled={addMutation.isPending || !newMedia.url}
+                                    disabled={
+                                        addMutation.isPending ||
+                                        (addMode === "upload" && !fileSelectionLabel) ||
+                                        (addMode === "url" && !newMedia.url?.trim())
+                                    }
                                     className="flex-1 bg-primary hover:bg-primary/80 text-white font-medium px-4 py-2.5 rounded-xl transition-colors text-sm flex justify-center items-center"
                                 >
                                     {addMutation.isPending ? <Loader className="w-5 h-5" /> : 'Guardar'}

@@ -13,8 +13,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Shared\NitroGroups.Shared.Abstractions\NitroGroups.Shared.Abstractions.csproj" />
     <ProjectReference Include="..\..\..\Shared\NitroGroups.Shared.EndpointMapping\NitroGroups.Shared.EndpointMapping.csproj" />
     <ProjectReference Include="..\..\..\Shared\NitroGroups.Shared.Infrastructure\NitroGroups.Shared.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\Users\NitroGroups.Core.Users.Application\NitroGroups.Core.Users.Application.csproj" />
     <ProjectReference Include="..\NitroGroups.Core.Groups.Application\NitroGroups.Core.Groups.Application.csproj" />
   </ItemGroup>
 

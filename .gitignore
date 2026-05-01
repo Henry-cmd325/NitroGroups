@@ -566,3 +566,9 @@ next-env.d.ts
 ai/memory/decisions.json
 ai/memory/errors.json
 ai/memory/successes.json
+
+# Sandbox de runs (snapshots + manifests). GC automático según ORCH_SANDBOX_RETENTION_DAYS.
+ai/.sandbox/
+
+# Logs de verdicts por run.
+ai/logs/

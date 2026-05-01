@@ -23,7 +23,7 @@ Estructura principal:
 - **`NitroGroups.slnx`**: Archivo de solución que agrupa los proyectos .NET.
 - **`UI/nitro-groups`**: Frontend en **Next.js 16** (React 19, TypeScript). Actúa como adaptador primario.
 - **`Services/NitroGroups.Services.Api`**: API backend en ASP.NET Core que expone los endpoints consumidos por el frontend.
-- **`AppHost`**: Proyecto de orquestación con **.NET Aspire** para el entorno local del backend.
+- **`AppHost`**: Proyecto de orquestación con **.NET Aspire** para levantar la API en local (el front se ejecuta en otra consola; ver abajo).
 - **`Core/`**: Lógica de negocio por contexto delimitado usando vertical slices:
   - **`Domain`**: Entidades, agregados y reglas de negocio.
   - **`Application`**: Casos de uso (comandos/consultas) y puertos.
@@ -46,12 +46,18 @@ Estructura principal:
 - **.NET 10 SDK** y workload de **.NET Aspire**.
 - **Node.js 18.18+** (o superior) y **npm**.
 
-### Ejecución unificada (Aspire)
-Aspire levanta la API y el frontend en un solo comando:
+### Ejecución con Aspire (API) + front aparte
+El AppHost **solo** arranca la API (puerto **5144** en HTTP) para evitar cierres del proceso al usar el diálogo de archivos del navegador bajo Windows/Visual Studio con el host Aspire ([detalle](https://github.com/dotnet/aspire/issues/7998)). Luego levanta Next en otra consola.
 ```bash
-cd AppHost/NitroGroups.AppHost
+cd AppHost/AppHost.AppHost
 dotnet run
 ```
+En otra terminal:
+```bash
+cd UI/nitro-groups
+npm run dev
+```
+Asegúrate de que `BACKEND_API_URL` en `UI/nitro-groups/.env.local` apunte a `http://localhost:5144` (o el host/puerto que muestre el dashboard de Aspire).
 
 ### Backend (.NET) por separado
 1. Clona el repositorio.

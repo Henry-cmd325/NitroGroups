@@ -1,5 +1,10 @@
 import { apiClient } from "@/lib/api-client";
 
+/** Alineado con `api/groups/{id}/schedule` (GroupAvailability) — no con la ruta antigua /availabilities. */
+function newIdempotencyKey(): string {
+  return globalThis.crypto.randomUUID();
+}
+
 export interface ScheduleEventDto {
     id: string;
     title: string;
@@ -51,8 +56,34 @@ class SchedulesService {
     }
 
     async createAvailability(groupId: number, request: CreateAvailabilityRequest): Promise<ScheduleEventDto> {
-        const response = await apiClient.post(`/groups/${groupId}/availabilities`, request);
-        return response.data;
+        const body = {
+            title: request.note?.trim() || "Disponibilidad",
+            description:
+                request.customPrice != null
+                    ? `customPrice: ${request.customPrice}`
+                    : (request.note?.trim() || ""),
+            startAt: request.start,
+            endAt: request.end,
+        };
+        const { data } = await apiClient.post<{
+            id: number;
+            startAt: string;
+            endAt: string;
+            title: string;
+            description: string;
+        }>(`/groups/${groupId}/schedule`, body, {
+            headers: { "Idempotency-Key": newIdempotencyKey() },
+        });
+        return {
+            id: `avail_${data.id}`,
+            title: data.title,
+            start: data.startAt,
+            end: data.endAt,
+            isAvailable: true,
+            backgroundColor: "#10b981",
+            borderColor: "#059669",
+            textColor: "#fff",
+        };
     }
 
     async createBusySchedule(groupId: number, request: CreateBusyScheduleRequest): Promise<ScheduleEventDto> {
@@ -61,14 +92,38 @@ class SchedulesService {
     }
 
     async updateAvailability(groupId: number, availabilityId: string, request: UpdateAvailabilityRequest): Promise<ScheduleEventDto> {
-        const id = availabilityId.replace('avail_', '');
-        const response = await apiClient.put(`/groups/${groupId}/availabilities/${id}`, request);
-        return response.data;
+        const id = availabilityId.replace("avail_", "");
+        const body: Record<string, string | undefined> = {
+            startAt: request.start,
+            endAt: request.end,
+        };
+        if (request.note?.trim()) {
+            body.title = request.note.trim();
+        }
+        if (request.customPrice != null) {
+            body.description = `customPrice: ${request.customPrice}`;
+        }
+        const { data } = await apiClient.patch<{
+            id: number;
+            startAt: string;
+            endAt: string;
+            title: string;
+        }>(`/groups/${groupId}/schedule/${id}`, body);
+        return {
+            id: `avail_${data.id}`,
+            title: data.title,
+            start: data.startAt,
+            end: data.endAt,
+            isAvailable: true,
+            backgroundColor: "#10b981",
+            borderColor: "#059669",
+            textColor: "#fff",
+        };
     }
 
     async removeAvailability(groupId: number, availabilityId: string): Promise<void> {
-        const id = availabilityId.replace('avail_', '');
-        await apiClient.delete(`/groups/${groupId}/availabilities/${id}`);
+        const id = availabilityId.replace("avail_", "");
+        await apiClient.delete(`/groups/${groupId}/schedule/${id}`);
     }
 
     async updateBusySchedule(groupId: number, scheduleId: string, request: UpdateBusyScheduleRequest): Promise<ScheduleEventDto> {

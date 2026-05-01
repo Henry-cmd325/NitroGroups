@@ -1,0 +1,296 @@
+{
+  "v": "1.0.0",
+  "entityHash": "INITIAL_SIGNATURE",
+  "feature": "groupAvailability",
+  "endpoint": "/api/groups/{groupId}/schedule",
+  "auth": true,
+  "scope": {
+    "allowedEndpoints": [
+      "get",
+      "post",
+      "delete",
+      "patch"
+    ]
+  },
+  "methods": [
+    {
+      "name": "listSchedule",
+      "http": "GET",
+      "request": {
+        "name": "ListScheduleRequest",
+        "fields": {
+          "groupId": {
+            "type": "number",
+            "format": "long",
+            "in": "path",
+            "required": true
+          },
+          "start": {
+            "type": "string",
+            "format": "iso-date-time",
+            "in": "query",
+            "required": true
+          },
+          "end": {
+            "type": "string",
+            "format": "iso-date-time",
+            "in": "query",
+            "required": true
+          },
+          "source": {
+            "type": "string",
+            "in": "query",
+            "required": false
+          },
+          "typeFilter": {
+            "type": "string",
+            "in": "query",
+            "required": false,
+            "description": "all|busy|blocks"
+          }
+        }
+      },
+      "response": {
+        "name": "ListScheduleResponse",
+        "fields": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/ScheduleItem"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "createBlock",
+      "http": "POST",
+      "request": {
+        "name": "CreateBlockRequest",
+        "fields": {
+          "groupId": {
+            "type": "number",
+            "format": "long",
+            "in": "path",
+            "required": true
+          },
+          "idempotencyKey": {
+            "type": "string",
+            "format": "uuid",
+            "in": "header",
+            "required": true,
+            "description": "Idempotency-Key header"
+          },
+          "title": {
+            "type": "string",
+            "in": "body",
+            "required": false
+          },
+          "description": {
+            "type": "string",
+            "in": "body",
+            "required": false
+          },
+          "startAt": {
+            "type": "string",
+            "format": "iso-date-time",
+            "in": "body",
+            "required": true
+          },
+          "endAt": {
+            "type": "string",
+            "format": "iso-date-time",
+            "in": "body",
+            "required": true
+          }
+        }
+      },
+      "response": {
+        "name": "CreateBlockResponse",
+        "fields": {
+          "id": {
+            "type": "number",
+            "format": "long"
+          },
+          "groupId": {
+            "type": "number",
+            "format": "long"
+          },
+          "startAt": {
+            "type": "string",
+            "format": "iso-date-time"
+          },
+          "endAt": {
+            "type": "string",
+            "format": "iso-date-time"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "source": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "deleteScheduleItem",
+      "http": "DELETE",
+      "request": {
+        "name": "DeleteScheduleItemRequest",
+        "fields": {
+          "groupId": {
+            "type": "number",
+            "format": "long",
+            "in": "path",
+            "required": true
+          },
+          "id": {
+            "type": "number",
+            "format": "long",
+            "in": "path",
+            "required": true
+          }
+        }
+      },
+      "response": {
+        "name": "DeleteResponse",
+        "fields": {}
+      }
+    },
+    {
+      "name": "updateScheduleItem",
+      "http": "PATCH",
+      "request": {
+        "name": "UpdateScheduleItemRequest",
+        "fields": {
+          "groupId": {
+            "type": "number",
+            "format": "long",
+            "in": "path",
+            "required": true
+          },
+          "id": {
+            "type": "number",
+            "format": "long",
+            "in": "path",
+            "required": true
+          },
+          "title": {
+            "type": "string",
+            "in": "body",
+            "required": false
+          },
+          "description": {
+            "type": "string",
+            "in": "body",
+            "required": false
+          },
+          "startAt": {
+            "type": "string",
+            "format": "iso-date-time",
+            "in": "body",
+            "required": false
+          },
+          "endAt": {
+            "type": "string",
+            "format": "iso-date-time",
+            "in": "body",
+            "required": false
+          }
+        }
+      },
+      "response": {
+        "name": "UpdateScheduleItemResponse",
+        "fields": {
+          "id": {
+            "type": "number",
+            "format": "long"
+          },
+          "groupId": {
+            "type": "number",
+            "format": "long"
+          },
+          "startAt": {
+            "type": "string",
+            "format": "iso-date-time"
+          },
+          "endAt": {
+            "type": "string",
+            "format": "iso-date-time"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "source": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  ],
+  "definitions": {
+    "ScheduleItem": {
+      "type": "object",
+      "fields": {
+        "id": {
+          "type": "number",
+          "format": "long"
+        },
+        "groupId": {
+          "type": "number",
+          "format": "long"
+        },
+        "startAt": {
+          "type": "string",
+          "format": "iso-date-time"
+        },
+        "endAt": {
+          "type": "string",
+          "format": "iso-date-time"
+        },
+        "type": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        },
+        "available": {
+          "type": "boolean"
+        },
+        "customPrice": {
+          "type": "number",
+          "format": "decimal"
+        },
+        "note": {
+          "type": "string"
+        },
+        "rRule": {
+          "type": "string"
+        },
+        "timezone": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "businessRules": {
+    "overlapPolicy": "blocks cannot overlap with other blocks, but can coexist with contract occupations; overlapping with contract occupation may be rejected depending on business logic",
+    "idempotency": "createBlock uses Idempotency-Key header to prevent duplicate blocks",
+    "cancelAction": "on client cancellation, delete the corresponding BusySchedule (source=Contract) to free the slot",
+    "timezone": "all datetimes are in UTC unless specified by group timezone, but stored as DateTimeOffset",
+    "precision": "decimal"
+  }
+}

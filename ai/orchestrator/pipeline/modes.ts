@@ -9,6 +9,11 @@ export interface ModeConfig {
     runDotnetBuild: boolean;
     runTypescriptCheck: boolean;
     allowContractDraftOnly: boolean;
+    /**
+     * Ejecuta `dotnet test` / `npm test` (config en `ai/test-gate.config.json` o env).
+     * Si no hay comandos resueltos, se omite sin error.
+     */
+    runTestGate: boolean;
 }
 
 const MODES: Record<OrchestratorMode, ModeConfig> = {
@@ -20,7 +25,8 @@ const MODES: Record<OrchestratorMode, ModeConfig> = {
         validateFrontendStructural: true,
         runDotnetBuild: true,
         runTypescriptCheck: true,
-        allowContractDraftOnly: false
+        allowContractDraftOnly: false,
+        runTestGate: true
     },
     "frontend-only": {
         generateBackend: false,
@@ -30,7 +36,8 @@ const MODES: Record<OrchestratorMode, ModeConfig> = {
         validateFrontendStructural: true,
         runDotnetBuild: false,
         runTypescriptCheck: true,
-        allowContractDraftOnly: false
+        allowContractDraftOnly: false,
+        runTestGate: true
     },
     "contract-only": {
         generateBackend: false,
@@ -40,7 +47,8 @@ const MODES: Record<OrchestratorMode, ModeConfig> = {
         validateFrontendStructural: false,
         runDotnetBuild: false,
         runTypescriptCheck: false,
-        allowContractDraftOnly: true
+        allowContractDraftOnly: true,
+        runTestGate: false
     }
 };
 

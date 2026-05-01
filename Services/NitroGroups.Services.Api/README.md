@@ -64,7 +64,7 @@ The `Shared` directory contains cross-cutting concerns and common utilities used
 
 ### 1.5. Application Host
 
-*   **`AppHost.AppHost`**: Likely part of a .NET Aspire solution, this project is responsible for defining and orchestrating the different services (API, databases, etc.) that make up the application. It simplifies local development, deployment, and monitoring.
+*   **`AppHost.AppHost`**: .NET Aspire host that starts the **API** locally. The **Next.js** front runs separately (`npm run dev` in `UI/nitro-groups`); see root `README.md`.
 *   **`AppHost.ServiceDefaults`**: Contains common service defaults and configurations applied across all services in the Aspire application.
 
 ## 2. Communication Between Classes and Modules
@@ -345,7 +345,7 @@ Refer to the root `README.md` and any Aspire-specific documentation for setting 
 2.  Ensuring .NET SDK (version X.Y) is installed.
 3.  Restoring NuGet packages.
 4.  Setting up local database (e.g., PostgreSQL with Docker).
-5.  Running the `AppHost` project.
+5.  Running the `AppHost` project, then the frontend in a second shell (`cd UI/nitro-groups; npm run dev`).
 
 ---
 

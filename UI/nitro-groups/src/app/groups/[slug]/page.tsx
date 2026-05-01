@@ -1,5 +1,6 @@
 import type { MusicGroup } from "@/types/MusicGroup";
 import GroupProfile from "@/components/groups/GroupProfile";
+import { normalizeBackendApiBaseUrl } from "@/lib/backendBaseUrl";
 import { notFound } from "next/navigation";
 
 type GroupPublicPageProps = {
@@ -13,8 +14,11 @@ export default async function GroupPublicPage({ params }: GroupPublicPageProps) 
         notFound();
     }
 
+    const apiRoot = normalizeBackendApiBaseUrl(
+        process.env.NEXT_PUBLIC_API_BASE_URL || process.env.BACKEND_API_URL
+    );
     const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/groups/slug/${encodeURIComponent(slug)}`,
+        `${apiRoot}/groups/slug/${encodeURIComponent(slug)}`,
         { cache: "no-store" },
     );
 

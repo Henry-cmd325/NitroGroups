@@ -1,0 +1,43 @@
+# Smoke + integración del orquestador (sin claves de LLM; override vacío en integración).
+name: orquestador
+on:
+  push:
+    paths:
+      - "ai/**"
+      - "Tests/**"
+      - "package.json"
+      - "package-lock.json"
+      - "UI/nitro-groups/package.json"
+      - "UI/nitro-groups/package-lock.json"
+      - "Directory.Packages.props"
+      - ".github/workflows/orchestrator.yml"
+  pull_request:
+    paths:
+      - "ai/**"
+      - "Tests/**"
+      - "package.json"
+      - "package-lock.json"
+      - "UI/nitro-groups/package.json"
+      - "UI/nitro-groups/package-lock.json"
+      - "Directory.Packages.props"
+      - ".github/workflows/orchestrator.yml"
+
+jobs:
+  orchestrator:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+      - name: Instalar dependencias (raíz)
+        run: npm ci
+      - name: Instalar dependencias (UI, tsc y eslint del quality gate)
+        working-directory: UI/nitro-groups
+        run: npm ci
+      - name: Orquestador (smoke + integración)
+        run: npm run orchestrator:test

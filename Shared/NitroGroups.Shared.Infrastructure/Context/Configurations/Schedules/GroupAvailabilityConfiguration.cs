@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using NitroGroups.Core.Schedules.Domain.Entities;
+using NitroGroups.Shared.Infrastructure.Context;
 
 namespace NitroGroups.Shared.Infrastructure.Context.Configurations.Schedules;
 
@@ -13,8 +14,14 @@ public class GroupAvailabilityConfiguration : IEntityTypeConfiguration<GroupAvai
         builder.HasKey(e => e.Id);
 
         builder.Property(e => e.GroupId).HasColumnName("group_id").IsRequired();
-        builder.Property(e => e.StartAt).HasColumnName("start_at").IsRequired();
-        builder.Property(e => e.EndAt).HasColumnName("end_at").IsRequired();
+        builder.Property(e => e.StartAt)
+            .HasColumnName("start_at")
+            .IsRequired()
+            .HasConversion(DateTimeOffsetUtcConverters.TimestampTz);
+        builder.Property(e => e.EndAt)
+            .HasColumnName("end_at")
+            .IsRequired()
+            .HasConversion(DateTimeOffsetUtcConverters.TimestampTz);
         builder.Property(e => e.Available).HasColumnName("available").HasDefaultValue(true);
         builder.Property(e => e.CustomPrice).HasColumnName("custom_price").HasColumnType("decimal(12,2)");
         builder.Property(e => e.Note).HasColumnName("note").HasMaxLength(200);

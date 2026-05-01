@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { resolveBackendApiBaseUrl } from "@/lib/backendBaseUrl";
 
 interface LoginRequest {
     email: string;
@@ -29,6 +30,15 @@ export async function POST(request: NextRequest) {
             console.error("Missing Auth0 configuration");
             return NextResponse.json(
                 { error: "Error de configuración del servidor" },
+                { status: 500 }
+            );
+        }
+
+        // Sin audience, Auth0 puede emitir un access_token que NO es para la API .NET → 401 en /api/users/...
+        if (!audience?.trim()) {
+            console.error("AUTH0_AUDIENCE is required (must match Auth0:Audience / user-secrets en NitroGroups.Services.Api)");
+            return NextResponse.json(
+                { error: "Error de configuración del servidor (AUTH0_AUDIENCE)" },
                 { status: 500 }
             );
         }
@@ -101,7 +111,7 @@ export async function POST(request: NextRequest) {
         };
 
         // Sync user to PostgreSQL database (non-blocking)
-        const backendUrl = process.env.BACKEND_API_URL || "http://localhost:5144/api";
+        const backendUrl = resolveBackendApiBaseUrl();
         try {
             // Use resolved names from signup body or id_token
             const rawType = bodyUserType

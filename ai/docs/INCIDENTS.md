@@ -7,6 +7,95 @@ Cada entrada es trazable a commits y archivos concretos.
 
 ---
 
+## INC-20260423-01 — Memoria del orquestador: playbook de stack + hints Npgsql
+
+**Fecha:** 2026-04-23  
+**Severidad:** bajo (mejora generación; no bug de runtime del orquestador)
+
+**Contexto:** Errores de producción (Npgsql solo acepta `DateTimeOffset` UTC en `timestamptz`, rutas front ≠ contrato, JWT audience) no estaban garantizados en el prompt si `ai/memory/errors.json` estaba vacío.
+
+**Fix:**
+- Nuevo `ai/memory/stackPlaybook.ts`: bloques estáticos **siempre** anexados al prompt backend/frontend en `promptContextPhase.ts` (complementa `errorDigest`).
+- `errorDigest.ts`: hints heurísticos adicionales para mensajes que contengan `only offset 0 (UTC)` / `Cannot write DateTimeOffset` / `DbUpdateException` + DateTimeOffset.
+- `backendArchitecturePrompt.ts`: una línea explícita sobre UTC al persistir fechas.
+
+**Lecciones:** La memoria efectiva = digest de `errors.json` + reglas fijadas del repo en playbook. Sin playbook, el LLM repite errores que aún no se han registrado como entradas de digest.
+
+---
+
+## INC-20260422-04 — Archivos huérfanos del LLM quedaban en el árbol
+
+**Fecha:** 2026-04-22
+**Severidad:** medio (riesgo silencioso de basura en el repo)
+**Fase afectada:** escritura final
+
+**Síntoma:**
+Cuando el LLM generaba archivos en rutas divergentes (p.ej. `UseCases/GroupAvailability/List/ListHandler.cs`)
+y el fallback determinista producía el set correcto (`UseCases/GroupAvailability/Get/GetHandler.cs`),
+el pipeline escribía el set correcto pero no borraba los del LLM. Resultado: dos handlers
+para la misma feature conviviendo en el repo, uno de ellos compilando y otro no.
+
+**Causa raíz:**
+No había fase de reconciliación. El set "autoritativo" se escribía con `writeFileSync`
+pero ningún paso eliminaba archivos preexistentes dentro del scope de la feature que no
+estuvieran en el set.
+
+**Fix:**
+- Nuevo módulo `ai/orchestrator/pipeline/fileReconciler.ts`:
+  - `planReconciliation()` escanea scopes de la feature
+    (`Core/<Module>/**.Application/UseCases/<Feature>/`, etc.) y detecta archivos
+    `.cs`/`.ts`/`.tsx` que no están en el set final.
+  - `executeReconciliation()` los borra guardando backup.
+  - `rollbackReconciliation()` los restaura si el quality gate final falla.
+- Integrado en `generateFeature.ts` justo antes del bucle de escritura, con el mismo
+  `try/catch` que el rollback de archivos sobrescritos.
+
+**Archivos afectados:**
+- `ai/orchestrator/pipeline/fileReconciler.ts` (nuevo)
+- `ai/tasks/generateFeature.ts` (integración + rollback)
+
+**Lecciones:**
+- Cualquier pipeline que mezcla dos generadores necesita una fase de reconciliación.
+- El rollback debe cubrir tanto archivos sobrescritos como eliminados.
+
+---
+
+## INC-20260422-05 — UI_ALIASES desactualizadas cuando se añadía un componente UI
+
+**Fecha:** 2026-04-22
+**Severidad:** bajo-medio (gastos de tokens adicionales por patches repetitivos)
+**Fase afectada:** normalizer frontend + prompt frontend
+
+**Síntoma:**
+El `frontendNormalizer.ts` tenía una lista hardcoded de componentes UI con sus
+exports default/named. Si alguien agregaba `TabbedSection.tsx` o `ProgressSteps.tsx`
+al proyecto, el normalizer no lo conocía; el LLM adivinaba la forma del export
+(normalmente mal) y el quality gate fallaba.
+
+**Causa raíz:**
+Lista estática dentro del módulo, desincronizada con el disco.
+
+**Fix:**
+- Nuevo `ai/orchestrator/generation/uiComponentIntrospector.ts` que lee
+  `UI/nitro-groups/src/components/ui/*.tsx` en runtime, detecta default/named
+  exports y variants CVA con balanceo real de llaves.
+- `frontendNormalizer.ts` consume esta introspección.
+- `ai/prompts/shared/uiAllowlist.ts` genera el bloque de aliases del prompt
+  desde la misma fuente, para que LLM y normalizer vean la misma lista.
+- Añadir un componente nuevo a UI/ se propaga automáticamente a ambos.
+
+**Archivos afectados:**
+- `ai/orchestrator/generation/uiComponentIntrospector.ts` (nuevo)
+- `ai/orchestrator/generation/frontendNormalizer.ts` (reescrito)
+- `ai/prompts/shared/uiAllowlist.ts` (nuevo)
+- `ai/prompts/frontendArchitecturePrompt.ts` (consume allowlist dinámica)
+
+**Lecciones:**
+- Cualquier lista que espeje el disco debe introspectarse, no duplicarse.
+- Un único punto de verdad evita el drift entre prompt-time y validate-time.
+
+---
+
 ## INC-20260420-01 — Frontend generado no compilaba (react-query vs @tanstack/react-query)
 
 **Fecha:** 2026-04-20
@@ -597,6 +686,211 @@ así que el compilador no los encontraba.
 **Verificación:**
 Smoke test 15/15 assertions pasan. Backend determinista ahora es
 compilable de primera.
+
+---
+
+## INC-20260421-11 — "Verde" != "util" (handler stub, DTO inventado, ruta ausente)
+
+**Fecha:** 2026-04-21
+**Severidad:** critico (arquitectonico)
+**Fase afectada:** fallback backend + promocion de runs
+
+**Sintoma:**
+Tras dos runs consecutivos verdes (04 y 06), el equipo valida la feature
+`availability` manualmente y descubre que:
+1. El `GetAvailabilityQueryHandler` era un stub determinista con valores
+   hardcodeados (`Id = 0; Status = "available"; Timestamp = 0`). No tocaba
+   ningun `IGroupAvailabilityRepository`.
+2. El contrato declaraba `status` y `timestamp`, campos que no existen en
+   la entidad `GroupAvailability` (tiene `StartAt`, `EndAt`, `CustomPrice`,
+   `Available`). El repair dirigido los inyecto como DTO vacio para no
+   romper la validacion estructural.
+3. El `AvailabilityPanel.tsx` quedo generado pero nunca fue referenciado:
+   no existia `app/availability/page.tsx`, asi que la ruta `/availability`
+   no resolvia.
+4. El pipeline imprimia "desplegado exitosamente" en todos los casos,
+   ocultando los puntos 1-3.
+
+**Causa raiz:**
+- El `buildDeterministicBackend` solo generaba stubs.
+- No habia forma programatica de obtener un contrato fiel a la entidad;
+  se escribia a mano y se desalineaba.
+- El orquestador no sabia distinguir "LLM produjo codigo real" de
+  "cayo al fallback determinista". El mensaje de exito era siempre el mismo.
+- El wire-in del frontend era un paso implicito que nadie hacia.
+
+**Fix aplicado (Plan v1.1 — cinco bloques B, A, E, C, D):**
+1. **B — Veredicto honesto:** `ai/orchestrator/pipeline/runVerdict.ts` +
+   `handlerInspector.ts` + instrumentacion en `generateFeature.ts`.
+   Sustituye el mensaje final por `printVerdictReport` con
+   `real` | `stub` | `partial` | `failed` y persiste en `ai/logs/verdicts.jsonl`.
+2. **A — Contract-from-Entity:** `ai/orchestrator/contract/csEntityParser.ts`
+   + `contractFromEntity.ts` + CLI `generate-contract`. Deriva el contrato
+   del `.cs` real (con herencia `DomainModel` / `AuditableModel`), mapea
+   tipos (`long`, `Guid`, `DateTimeOffset`, `decimal`) y calcula
+   `entityHash`. Elimina el escenario "campo inventado".
+3. **E — Real handler bootstrap:** `moduleIntrospector.ts` (descubre repos
+   + UoW del modulo) + `realHandlerBuilder.ts` (genera handler que inyecta
+   `IUnitOfWork<Module>`, llama `GetAllAsync` / `GetByIdAsync` / `CreateAsync`
+   / `Update` / `Delete` + `SaveChangesAsync`, y mapea propiedad a propiedad).
+   Cuando `buildDeterministicBackend` recibe `projectRoot`, ya no emite
+   stubs: emite codigo funcional contra el repo real.
+4. **C — Wire-in automatico:** `generation/frontendWireIn.ts` genera
+   `UI/nitro-groups/src/app/<feature>/page.tsx` que importa y monta el
+   `<Feature>Panel` al final de la fase de escritura.
+5. **D — Sandbox + GC:** `pipeline/sandbox.ts` snapshotea cada run en
+   `ai/.sandbox/<ts>-<feature>/` con `manifest.json`; el verdict queda
+   estampado al finalizar (evidencia auditable independiente del rollback).
+   `gcOldSandboxes` corre al inicio (retencion via
+   `ORCH_SANDBOX_RETENTION_DAYS`). Nuevo CLI `clean-feature` para
+   borrados intencionales (incluye deteccion de phantoms Core/<feat>).
+
+**Verificacion:**
+`__smokeTest.ts` extendido con cuatro bloques (verdict matrix, contract
+derivation, wire-in, sandbox). Todas las aserciones pasan. La matriz de
+verdicts distingue correctamente stub/real/partial/failed en casos
+construidos. `generate-contract GroupAvailability --dry-run` produce un
+contrato con tipos correctos (`id: number/long`, `startAt: string/iso-date`,
+`customPrice: number/decimal`, `available: boolean`).
+
+**Pendiente (v1.2):**
+- El introspector puede elegir modulos phantom (`Core/Availability/`) si
+  existen directorios legacy homonimos. Mientras tanto, el usuario debe
+  llamar `clean-feature` + `generate-contract --module=<Real>`.
+- Habilitar que `generateFeature` invoque `generate-contract` automaticamente
+  si el `entityHash` del contrato esta vacio o desactualizado.
+
+---
+
+## INC-20260422-01 — Verdict reportaba STUB cuando el handler era REAL
+
+**Fecha:** 2026-04-22
+**Severidad:** medio
+**Fase afectada:** reporting (`pipeline/runVerdict.ts`)
+
+**Síntoma:**
+Tras los fixes v1.1, `generate-feature groupAvailability` producía un handler
+.cs con primary constructor + inyección de `IUnitOfWorkSchedules` + `await
+unitOfWork.AvailabilityRepository.GetAllAsync()` — es decir, **código real**
+que compilaba y respetaba la arquitectura. Sin embargo el verdict final
+imprimía `🟡 STUB` con la leyenda "Backend: fallback determinista (handler
+stub pendiente de lógica real)".
+
+**Causa raíz:**
+`computeVerdict` usaba como heurística de stub la _procedencia_ del backend
+(`backendDeterministicFallback === true → stub`) en vez de la _realidad_ del
+código (`backendRealHandler === true|false`). Con el bloque E de v1.1, el
+fallback determinista dejó de ser sinónimo de "handler mock": cuando el
+módulo expone UoW/repositorios introspectables, el fallback emite código
+real. El verdict no se actualizó en consecuencia.
+
+Además, la taxonomía `stub | real | partial | failed` no distinguía el caso
+frecuente **backend real + frontend placeholder** (o viceversa): ambos caían
+en `stub`, ocultando que una capa sí quedó operativa.
+
+**Fix aplicado (`ai/orchestrator/pipeline/runVerdict.ts`):**
+- `computeVerdict` ahora usa `backendRealHandler` como señal autoritativa
+  del backend y `frontendLlmSucceeded && !frontendDeterministicFallback`
+  como señal del frontend.
+- Nueva semántica: **real** = ambas capas reales; **partial** = solo una
+  capa real (resto stub/descartado); **stub** = ambas capas placeholder;
+  **failed** = rollback o quality gates finales fallidos.
+- `buildVerdictReport` imprime origen explícito del handler real
+  ("generación LLM" vs "fallback determinista con contexto del módulo").
+- `generateFeature.ts` cambia el texto "Problemas estructurales residuales"
+  por "LLM produjo DTOs incompatibles con el contrato. Corrigiendo vía
+  fallback determinista" para no sugerir bugs pendientes cuando el
+  pipeline está auto-corrigiendo.
+
+**Verificación:**
+`ai/orchestrator/__smokeTest.ts` cubre los cuatro escenarios
+(real/partial×2/stub) y el caso v1.1 "fallback con contexto → real".
+
+---
+
+## INC-20260422-02 — LLM usaba `string` para fechas ISO, disparaba fallback masivo
+
+**Fecha:** 2026-04-22
+**Severidad:** medio
+**Fase afectada:** prompt backend + repair dirigido
+
+**Síntoma:**
+En runs donde el backend LLM respondía OK (Groq verde), el DTO salía con
+`public string StartAt { get; set; }` aunque el contrato lo declaraba como
+`type: "string", format: "iso-date"`. El validador estructural lo marcaba
+`B2B_TYPE_MISMATCH` y el orquestador rebuildeaba **todo el backend** con el
+fallback determinista, descartando el handler correcto que el LLM había
+producido. Resultado: verdict degradado de `real` → `partial`/`stub` sin
+razón técnica.
+
+**Causa raíz:**
+1. El prompt backend no documentaba el mapeo `format → C# type`. Mostraba
+   `DateTimeOffset Timestamp` en un ejemplo pero no era una regla explícita.
+2. `contractRepair.ts` tenía comentado:
+   `// B2B_TYPE_MISMATCH: no se autorrepara automáticamente`. Cualquier
+   mismatch escalaba al fallback global, perdiendo el resto del trabajo LLM.
+
+**Fix aplicado:**
+- `backendArchitecturePrompt.ts`: tabla explícita de mapeo
+  (iso-date → DateTimeOffset, uuid → Guid, long → long, etc.) + regla de
+  nullability. Esto previene el problema en origen cuando el LLM responde.
+- `contractRepair.ts`: nueva función `replaceCsharpFieldType` que hace un
+  patch quirúrgico sobre el DTO (clase o record posicional), y
+  `repairStructuralIssues` ahora maneja `B2B_TYPE_MISMATCH` con `lang: "C#"`.
+  Preserva handler, endpoints y demás lógica del LLM.
+- Smoke test 5b cubre el escenario: `string Timestamp` → repair → `long Timestamp` → validación OK.
+
+**Verificación:**
+`npx ts-node --transpile-only ai/orchestrator/__smokeTest.ts` pasa
+todas las aserciones (incluidas las nuevas de TYPE_MISMATCH repair).
+
+---
+
+## INC-20260422-03 — LLM frontend ignoraba allowlist (Card/Loader/Badge) → rollback
+
+**Fecha:** 2026-04-22
+**Severidad:** alto
+**Fase afectada:** generación frontend + quality gates
+
+**Síntoma:**
+Run de `generate-feature groupAvailability` terminó con
+`💥 NO SE PUDO AUTOCORREGIR LA GENERACIÓN.` Las 3 rondas de autocorrección
+IA fallaron con variantes del mismo patrón:
+- `TS2614: Module '"@/components/ui/Card"' has no exported member 'Card'`
+- `TS2614: Module '"@/components/ui/Loader"' has no exported member 'Loader'`
+- `TS2304: Cannot find name 'Badge'` (uso sin import)
+- `TS2322: Type '"success"' is not assignable to variant` (Badge variants
+  inventadas)
+- `TS2613: Module ... has no default export` (el Panel alternaba
+  default/named export entre rondas, dejando el `page.tsx` del wire-in
+  fuera de sync).
+
+**Causa raíz:**
+1. El prompt frontend tenía la allowlist correcta, pero el LLM la ignoraba
+   en ~50% de los runs. La autocorrección IA heredaba los mismos vicios.
+2. El wire-in hacía detección runtime (default vs named) sobre el Panel en
+   memoria, pero cada ronda de IA podía reescribirlo con el otro estilo,
+   desincronizando el import del `page.tsx`.
+3. No había ninguna capa determinista entre el LLM y la validación: cada
+   "dumbness" del LLM se propagaba al quality gate.
+
+**Fix aplicado:**
+- `ai/orchestrator/generation/frontendNormalizer.ts` — nueva capa
+  determinista que corrige los 5 patrones más frecuentes
+  (imports invertidos, imports fantasma de `Card`, Badge variants,
+  `<Badge>` sin import, Panel sin default export). Ver changelog `[1.1.3]`.
+- `generateFeature.ts`: normalizer invocado (a) tras generación inicial y
+  (b) tras cada ronda de autocorrección IA. Esto blinda contra el caso en
+  que la IA "arregla" un error pero introduce otro.
+- `frontendWireIn.ts`: siempre prefiere default import. Como el normalizer
+  garantiza `export default <Feature>Panel`, la combinación es estable
+  entre rondas.
+- Smoke test 8b cubre los 8 aspectos del normalizer.
+
+**Verificación:**
+`ai/orchestrator/__smokeTest.ts` agrega 8 nuevas aserciones sobre
+`normalizeFrontendOutput`. En runs reales, errores `TS2614`/`TS2304` de esta
+naturaleza se corrigen antes de llegar al quality gate.
 
 ---
 

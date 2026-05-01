@@ -5,20 +5,23 @@ Diseño, configuración y política de failover de la cadena multi-proveedor.
 ## Orden por defecto
 
 ```
-groq → cerebras → gemini → ollama
+deepseek → groq → cerebras → gemini → ollama
 ```
 
-Controlado por `AI_PROVIDER_ORDER` en `ai/.env`:
+(Si `DEEPSEEK_API_KEY` no está, `deepseek` se considera no configurado y se sigue con el resto.)
+
+Controlado por `AI_PROVIDER_ORDER` en `ai/.env` (ver también `ai/env.example`):
 
 ```env
-AI_PROVIDER_ORDER=groq,cerebras,gemini,ollama
+AI_PROVIDER_ORDER=deepseek,groq,cerebras,gemini,ollama
 ```
 
 ## Proveedores soportados
 
 | Proveedor | Tipo | API Spec | Uso recomendado | Modelos default |
 |-----------|------|----------|-----------------|-----------------|
-| **groq** | Cloud, free tier | OpenAI-compat | Primer recurso: rápido y barato | `llama-3.3-70b-versatile`, `qwen/qwen3-32b`, `llama-3.1-8b-instant`, `mixtral-8x7b-32768`, `gemma2-9b-it` |
+| **deepseek** | Cloud (clave) | OpenAI-compat (base `https://api.deepseek.com/v1`) | Primer puesto de la cadena por defecto (opcional) | Por defecto: `deepseek-v4-pro` (thinking con `DEEPSEEK_V4_THINKING=1`). Alternativa: `deepseek-v4-flash`. Legacy `deepseek-chat` / `deepseek-reasoner` hasta 2026-07-24 |
+| **groq** | Cloud, free tier | OpenAI-compat | Rápido y barato | `llama-3.3-70b-versatile`, `qwen/qwen3-32b`, `llama-3.1-8b-instant`, `mixtral-8x7b-32768`, `gemma2-9b-it` |
 | **cerebras** | Cloud, free tier | OpenAI-compat | Fallback primario sin rate-limit de Groq. Nota: `gpt-oss-120b` aparece en `/models` pero **404 en tier libre** (ver INC-20260421-08). | `qwen-3-235b-a22b-instruct-2507`, `llama3.1-8b` |
 | **gemini** | Cloud, free tier | OpenAI-compat (beta) | Fallback secundario: capacidad diversa | `gemini-2.0-flash-exp`, `gemini-1.5-flash`, `gemini-1.5-pro` |
 | **ollama** | Local | OpenAI-compat | Último recurso offline | `qwen2.5-coder:3b-instruct` |
@@ -27,7 +30,16 @@ AI_PROVIDER_ORDER=groq,cerebras,gemini,ollama
 
 ```env
 # Orden de la cadena (coma-separado)
-AI_PROVIDER_ORDER=groq,cerebras,gemini,ollama
+AI_PROVIDER_ORDER=deepseek,groq,cerebras,gemini,ollama
+
+# DeepSeek
+DEEPSEEK_API_KEY=sk-...
+DEEPSEEK_BASE_URL=https://api.deepseek.com/v1
+# v4: `deepseek-v4-pro` (default en código) o `deepseek-v4-flash`; `DEEPSEEK_V4_THINKING=1` añade thinking+reasoning_effort (sin temperature).
+# Lista coma = orden de reintento dentro del proveedor, p. ej. deepseek-v4-pro,deepseek-v4-flash
+DEEPSEEK_MODELS=deepseek-v4-pro
+DEEPSEEK_V4_THINKING=1
+# Opcional: AI_LOG_DEEPSEEK=1 — log de tamaño CoT vs respuesta (usa `content` como hace la doc)
 
 # Política de failover
 LLM_LONG_RATE_LIMIT_MS=60000        # >60s rate-limit → salta a siguiente proveedor

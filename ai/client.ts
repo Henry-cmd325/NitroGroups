@@ -14,7 +14,7 @@ function getChain(): LLMProvider[] {
         cachedChain = getConfiguredProviderChain();
         if (!chainLogged) {
             if (cachedChain.length === 0) {
-                console.warn("⚠️  Sin proveedores LLM configurados. Configura GROQ_API_KEY o CEREBRAS_API_KEY o GEMINI_API_KEY, o levanta Ollama.");
+                console.warn("⚠️  Sin proveedores LLM configurados. Configura DEEPSEEK_API_KEY, GROQ_API_KEY, CEREBRAS_API_KEY, GEMINI_API_KEY, o levanta Ollama.");
             } else {
                 console.log(`🔗 Cadena LLM activa: ${describeChain(cachedChain)}`);
             }
@@ -47,14 +47,33 @@ export function initializeAIClient() {
     getChain();
 }
 
+/**
+ * Sustituye `generateCode` (tests de integración, CI sin claves, harness).
+ * En producción debe permanecer en `null`. No use en flujos de app.
+ */
+export type GenerateCodeOverride = (
+    systemPrompt: string,
+    userPrompt: string
+) => Promise<string>;
+
+let generateCodeOverride: GenerateCodeOverride | null = null;
+
+export function setGenerateCodeOverride(override: GenerateCodeOverride | null): void {
+    generateCodeOverride = override;
+}
+
 export async function generateCode(
     systemPrompt: string,
     userPrompt: string,
     _model?: string
 ): Promise<string> {
+    if (generateCodeOverride) {
+        return generateCodeOverride(systemPrompt, userPrompt);
+    }
+
     const chain = getChain();
     if (chain.length === 0) {
-        throw new Error("No hay proveedores LLM configurados. Añade GROQ_API_KEY / CEREBRAS_API_KEY / GEMINI_API_KEY o levanta Ollama.");
+        throw new Error("No hay proveedores LLM configurados. Añade DEEPSEEK_API_KEY, GROQ_API_KEY, CEREBRAS_API_KEY, GEMINI_API_KEY, o levanta Ollama.");
     }
 
     const config = getGenerateConfig();
@@ -87,7 +106,7 @@ export async function generateCode(
                     // Política 1: rate-limit largo en cualquier modelo del proveedor → todo el proveedor
                     // probablemente está saturado; mejor saltar al siguiente proveedor.
                     if (suggestedWait > longRateLimitThresholdMs) {
-                        console.warn(`⚠️  [${provider.name}:${model}] rate-limit de ${(suggestedWait / 1000).toFixed(1)}s (>${(longRateLimitThresholdMs / 1000).toFixed(0)}s). Saltando al siguiente proveedor.`);
+                        console.warn(`⚠️  [${provider.name}:${model}] rate-limit de ${(suggestedWait / 1000).toFixed(1)}s (>${(longRateLimitThresholdMs / 1000).toFixed(0)}s). Se pasa a otro proveedor en la cadena.`);
                         continue providerLoop;
                     }
 

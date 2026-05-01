@@ -52,6 +52,18 @@ export interface OpenAICompatibleConfig {
     requireApiKey?: boolean;
     temperatureOverride?: number;
     timeoutMs?: number;
+    /**
+     * P. ej. DeepSeek `deepseek-reasoner` y modo thinking v4: la API acepta `temperature` pero
+     * no tiene efecto (y en thinking está desaconsejado). Si devuelve true, no se envía.
+     * @see https://api-docs.deepseek.com/guides/reasoning_model
+     * @see https://api-docs.deepseek.com/guides/thinking_mode
+     */
+    shouldOmitTemperatureForModel?: (model: string) => boolean;
+    /**
+     * Campos extra del cuerpo de `chat.completions` (p. ej. `thinking`, `reasoning_effort` en DeepSeek v4).
+     * Se mezclan antes de `temperature`; se envía a la API con casteo amplio para compat.
+     */
+    extraChatCompletionFieldsForModel?: (model: string) => Record<string, unknown> | undefined;
 }
 
 /**
@@ -90,15 +102,32 @@ export class OpenAICompatibleProvider implements LLMProvider {
 
     async generate(model: string, options: ProviderGenerateOptions): Promise<string> {
         try {
-            const response = await this.getClient().chat.completions.create({
+            const omitTemp = this.config.shouldOmitTemperatureForModel?.(model) === true;
+            const extra = this.config.extraChatCompletionFieldsForModel?.(model) ?? {};
+            const requestBody: Record<string, unknown> = {
                 model,
                 messages: [
                     { role: "system", content: options.systemPrompt },
                     { role: "user", content: options.userPrompt }
                 ],
-                temperature: options.temperature ?? this.config.temperatureOverride ?? 0.1
-            });
-            return (response.choices[0]?.message?.content || "").trim();
+                ...extra
+            };
+            if (!omitTemp) {
+                requestBody.temperature = options.temperature ?? this.config.temperatureOverride ?? 0.1;
+            }
+            // Cuerpos con extensiones de proveedor (p. ej. `thinking` en DeepSeek v4) no están en el tipo canónico de OpenAI.
+            const response = await this.getClient().chat.completions.create(requestBody as any);
+            const message = response.choices[0]?.message as
+                | { content?: string | null; reasoning_content?: string | null }
+                | undefined;
+            const out = (message?.content ?? "").trim();
+            if (process.env.AI_LOG_DEEPSEEK === "1" && this.name === "deepseek" && message?.reasoning_content) {
+                const rc = message.reasoning_content;
+                console.log(
+                    `   [deepseek] model=${model} CoT_chars=${String(rc).length} answer_chars=${out.length} (el orquestador usa solo content, la respuesta final)`
+                );
+            }
+            return out;
         } catch (error: any) {
             if (isRateLimitLike(error)) {
                 throw new RateLimitError(

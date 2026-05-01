@@ -1,13 +1,16 @@
 import { LLMProvider } from "./types";
+import { createDeepseekProvider } from "./deepseekProvider";
 import { createGroqProvider } from "./groqProvider";
 import { createCerebrasProvider } from "./cerebrasProvider";
 import { createGeminiProvider } from "./geminiProvider";
 import { createOllamaProvider } from "./ollamaProvider";
 
-const DEFAULT_ORDER = ["groq", "cerebras", "gemini", "ollama"];
+/** `deepseek` va primero: si no hay clave, `isConfigured()` lo omite y sigue con el resto. */
+const DEFAULT_ORDER = ["deepseek", "groq", "cerebras", "gemini", "ollama"];
 
 function buildAllProviders(): Record<string, LLMProvider> {
     return {
+        deepseek: createDeepseekProvider(),
         groq: createGroqProvider(),
         cerebras: createCerebrasProvider(),
         gemini: createGeminiProvider(),
