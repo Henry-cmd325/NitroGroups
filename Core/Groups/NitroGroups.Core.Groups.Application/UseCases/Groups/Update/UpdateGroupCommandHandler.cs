@@ -1,7 +1,8 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Cortex.Mediator.Commands;
 using NitroGroups.Core.Groups.Application.Abstractions;
 using NitroGroups.Shared.Contracts;
+using NitroGroups.Shared.Contracts.Groups.Responses;
 
 namespace NitroGroups.Core.Groups.Application.UseCases.Groups.Update
 {
@@ -22,21 +23,16 @@ namespace NitroGroups.Core.Groups.Application.UseCases.Groups.Update
         decimal? HourlyRate,
         int MinimumDurationHours,
         int SetupTimeMinutes,
-        decimal AverageRating,
-        int TotalReviews,
-        int ViewCount, 
-        int BookingCount,
-        bool IsVerified,
-        bool IsFeatured,
         bool IsAcceptingBookings,
-        bool Active) : ICommand<Result<bool>>;
+        string? ProfilePictureUrl,
+        string? CoverImageUrl) : ICommand<Result<GroupResponse>>;
 
-    public class UpdateGroupCommandHandler(IUnitOfWorkGroups unitOfWork, IMapper mapper) : ICommandHandler<UpdateGroupCommand, Result<bool>>
+    public class UpdateGroupCommandHandler(IUnitOfWorkGroups unitOfWork, IMapper mapper) : ICommandHandler<UpdateGroupCommand, Result<GroupResponse>>
     {
         private readonly IUnitOfWorkGroups _unitOfWork = unitOfWork;
         private readonly IMapper _mapper = mapper;
 
-        public async Task<Result<bool>> Handle(UpdateGroupCommand command, CancellationToken cancellationToken)
+        public async Task<Result<GroupResponse>> Handle(UpdateGroupCommand command, CancellationToken cancellationToken)
         {
             var group = await _unitOfWork.Groups.GetByIdAsync(command.Id);
 
@@ -48,7 +44,14 @@ namespace NitroGroups.Core.Groups.Application.UseCases.Groups.Update
             _unitOfWork.Groups.Update(group);
             await _unitOfWork.CompleteAsync();
 
-            return true;
+            // Recargar con includes para devolver genres y media
+            var updatedGroups = await _unitOfWork.Groups.FindWithIncludesAsync(
+                g => g.Id == command.Id,
+                g => g.Genres,
+                g => g.Media);
+            var updatedGroup = updatedGroups.FirstOrDefault() ?? group;
+
+            return _mapper.Map<GroupResponse>(updatedGroup);
         }
     }
-}
+}

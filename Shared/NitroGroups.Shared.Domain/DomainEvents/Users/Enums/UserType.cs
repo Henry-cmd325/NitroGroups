@@ -9,6 +9,7 @@ namespace NitroGroups.Shared.Domain.DomainEvents.Users.Enums
     public enum UserType
     {
         Client,
+        Musician,
         BandMember,
         Admin
     }

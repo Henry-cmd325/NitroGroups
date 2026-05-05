@@ -1,0 +1,14 @@
+{
+  "imports": {
+    "forbidden": ["axios", "fetch"],
+    "allowedPrefixes": ["@/", "./"]
+  },
+  "auth": {
+    "required": true,
+    "pattern": "Authorization: Bearer ${accessToken}"
+  },
+  "client": {
+    "instance": "apiClient",
+    "methods": ["get", "post", "put", "delete", "patch"]
+  }
+}

@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using NitroGroups.Shared.Abstractions.Repository;
 using NitroGroups.Shared.Contracts;
 using NitroGroups.Shared.Infrastructure.Context;
@@ -43,5 +43,16 @@ namespace NitroGroups.Shared.Infrastructure.Repository
         {
             return await _dbSet.Where(predicate).ToListAsync();
         }
+
+        public async Task<IEnumerable<TEntity>> FindWithIncludesAsync(
+            Expression<Func<TEntity, bool>> predicate,
+            params Expression<Func<TEntity, object>>[] includes)
+        {
+            IQueryable<TEntity> query = _dbSet;
+            foreach (var include in includes)
+                query = query.Include(include);
+            return await query.Where(predicate).ToListAsync();
+        }
     }
 }
+

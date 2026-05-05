@@ -13,6 +13,8 @@
   <ItemGroup>
     <ProjectReference Include="..\Groups\NitroGroups.Core.Groups.Infrastructure\NitroGroups.Core.Groups.Infrastructure.csproj" />
     <ProjectReference Include="..\Users\NitroGroups.Core.Users.Infrastructure\NitroGroups.Core.Users.Infrastructure.csproj" />
+    <ProjectReference Include="..\Schedules\NitroGroups.Core.Schedules.Application\NitroGroups.Core.Schedules.Application.csproj" />
+    <ProjectReference Include="..\Schedules\NitroGroups.Core.Schedules.Infrastructure\NitroGroups.Core.Schedules.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

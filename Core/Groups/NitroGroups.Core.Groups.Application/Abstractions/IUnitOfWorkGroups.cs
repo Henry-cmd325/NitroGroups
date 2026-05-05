@@ -1,4 +1,4 @@
-﻿using NitroGroups.Core.Groups.Domain.Entities;
+using NitroGroups.Core.Groups.Domain.Entities;
 using NitroGroups.Shared.Abstractions.Repository;
 
 namespace NitroGroups.Core.Groups.Application.Abstractions
@@ -7,5 +7,8 @@ namespace NitroGroups.Core.Groups.Application.Abstractions
     {
         IGenericRepository<Group, long> Groups { get; }
         IGenericRepository<GroupMember, long> GroupMembers { get; }
+        IGenericRepository<MusicGenre, long> MusicGenres { get; }
+        IGenericRepository<GroupGenre, long> GroupGenres { get; }
+        IGenericRepository<GroupMedia, long> GroupMedia { get; }
     }
 }

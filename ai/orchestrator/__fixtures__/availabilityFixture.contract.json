@@ -1,0 +1,47 @@
+{
+  "v": "1.0.0",
+  "feature": "availability",
+  "endpoint": "/api/availability",
+  "scope": {
+    "allowedEndpoints": [
+      "get"
+    ],
+    "allowInternalLogic": true
+  },
+  "businessRules": {
+    "precision": "decimal",
+    "notes": "Sistema de disponibilidad para grupos musicales."
+  },
+  "entityHash": "038a75c99df2",
+  "methods": [
+    {
+      "name": "getAvailability",
+      "http": "GET",
+      "request": {
+        "name": "GetAvailabilityRequest",
+        "fields": {
+          "status": {
+            "type": "string"
+          }
+        }
+      },
+      "response": {
+        "name": "AvailabilityResponse",
+        "fields": {
+          "id": {
+            "type": "number",
+            "format": "int"
+          },
+          "status": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "number",
+            "format": "long"
+          }
+        }
+      }
+    }
+  ],
+  "auth": true
+}

@@ -1,6 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using NitroGroups.Core.Groups.Domain.Entities;
 using NitroGroups.Core.Users.Domain.Entities;
+using NitroGroups.Core.Schedules.Domain.Entities;
 using NitroGroups.Shared.Domain;
 using NitroGroups.Shared.Infrastructure.Context.Entities;
 using System.Linq.Expressions;
@@ -12,9 +13,12 @@ namespace NitroGroups.Shared.Infrastructure.Context
         public DbSet<User> Users { get; set; }
         public DbSet<Group> Groups { get; set; }
         public DbSet<GroupMember> GroupMembers { get; set; }
+        public DbSet<MusicGenre> MusicGenres { get; set; }
+        public DbSet<GroupGenre> GroupGenres { get; set; }
+        public DbSet<GroupMedia> GroupMedia { get; set; }
         public DbSet<OutboxEvent> OutboxEvents { get; set; }
-
-
+        public DbSet<GroupAvailability> GroupAvailabilities { get; set; }
+        public DbSet<BusySchedule> BusySchedules { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {            
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(NitroGroupsContext).Assembly);

@@ -44,8 +44,18 @@ public class GroupConfiguration : IEntityTypeConfiguration<Group>
         builder.Property(g => g.UpdatedAt).HasColumnName("updated_at");
         builder.Property(g => g.UpdatedBy).HasColumnName("updated_by");
         builder.Property(g => g.Active).HasDefaultValue(true).HasColumnName("active");
+        builder.Property(g => g.ProfilePictureUrl).HasMaxLength(500).HasColumnName("profile_picture_url");
+        builder.Property(g => g.CoverImageUrl).HasMaxLength(500).HasColumnName("cover_image_url");
 
         builder.HasMany(g => g.Members)
+            .WithOne(m => m.Group)
+            .HasForeignKey(m => m.GroupId);
+
+        builder.HasMany(g => g.Genres)
+            .WithOne(gg => gg.Group)
+            .HasForeignKey(gg => gg.GroupId);
+
+        builder.HasMany(g => g.Media)
             .WithOne(m => m.Group)
             .HasForeignKey(m => m.GroupId);
 

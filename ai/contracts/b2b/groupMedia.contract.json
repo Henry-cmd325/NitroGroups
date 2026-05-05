@@ -1,0 +1,133 @@
+{
+  "feature": "groupMedia",
+  "v": "1.0.0",
+  "entityHash": "INITIAL_SIGNATURE",
+  "endpoint": "/api/groups/{groupId}/media",
+  "auth": true,
+  "scope": {
+    "allowedEndpoints": [
+      "get"
+    ]
+  },
+  "methods": [
+    {
+      "name": "listGroupMedia",
+      "http": "GET",
+      "request": {
+        "name": "listGroupMediaRequest",
+        "fields": {
+          "groupId": {
+            "type": "number",
+            "format": "long",
+            "in": "path",
+            "required": true
+          },
+          "after": {
+            "type": "string",
+            "format": null,
+            "in": "query",
+            "optional": true
+          },
+          "limit": {
+            "type": "integer",
+            "format": null,
+            "in": "query",
+            "optional": true
+          },
+          "sort": {
+            "type": "string",
+            "format": null,
+            "in": "query",
+            "optional": true,
+            "description": "uploadedAt | displayOrder (default: uploadedAt)"
+          },
+          "order": {
+            "type": "string",
+            "format": null,
+            "in": "query",
+            "optional": true,
+            "description": "asc | desc (default: desc para uploadedAt, asc para displayOrder)"
+          }
+        }
+      },
+      "response": {
+        "name": "groupMediaListResponse",
+        "fields": {
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "fields": {
+                "id": {
+                  "type": "number",
+                  "format": "long",
+                  "optional": false
+                },
+                "uploadedAt": {
+                  "type": "string",
+                  "format": "iso-date-time",
+                  "optional": false
+                },
+                "url": {
+                  "type": "string",
+                  "format": null,
+                  "optional": false
+                },
+                "thumbnailUrl": {
+                  "type": "string",
+                  "format": null,
+                  "optional": true
+                },
+                "title": {
+                  "type": "string",
+                  "format": null,
+                  "optional": true
+                },
+                "description": {
+                  "type": "string",
+                  "format": null,
+                  "optional": true
+                },
+                "fileSizeBytes": {
+                  "type": "number",
+                  "format": "long",
+                  "optional": true
+                },
+                "durationSeconds": {
+                  "type": "integer",
+                  "format": null,
+                  "optional": true
+                },
+                "isPrimary": {
+                  "type": "boolean",
+                  "format": null,
+                  "optional": true
+                },
+                "displayOrder": {
+                  "type": "integer",
+                  "format": null,
+                  "optional": true
+                },
+                "type": {
+                  "type": "string",
+                  "format": null,
+                  "optional": false,
+                  "description": "Valores: Photo, Video, Audio (MediaType en dominio)"
+                }
+              }
+            },
+            "optional": false
+          },
+          "nextCursor": {
+            "type": "string",
+            "format": null,
+            "optional": true
+          }
+        }
+      },
+      "businessRules": {
+        "notes": "Listado con scroll tipo Instagram: cursor opaco en 'after' y 'nextCursor'; limit por defecto 24. Orden por defecto uploadedAt desc; sort/order permiten displayOrder. Bucket privado: url y thumbnailUrl son presigned URLs generadas por el API .NET usando R2 (SDK S3 compatible), con TTL típico de 1h. Lectura: miembros autenticados del grupo. Subida, edición de metadatos y eliminación se gestionan mediante endpoints separados (no incluidos en este contrato v1). isPrimary: v1 no usa medios principales automáticos; el campo es opcional en respuesta (siempre false hasta nueva versión). entityHash: recalcular con generate-contract o generate-feature --update-hash cuando el contrato se alinee con la entidad GroupMedia en Core (incluye Id, GroupId, etc.)."
+      }
+    }
+  ]
+}

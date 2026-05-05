@@ -1,5 +1,6 @@
 using Cortex.Mediator;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NitroGroups.Shared.Abstractions.Events;
 using NitroGroups.Shared.Domain;
@@ -12,12 +13,12 @@ namespace NitroGroups.Shared.Infrastructure.Events
     public class OutboxService(
         NitroGroupsContext context,
         ILogger<OutboxService> logger,
-        IMediator mediator,
+        IServiceProvider serviceProvider,
         IEventProvider eventProvider) : IOutboxService
     {
         private readonly NitroGroupsContext _context = context;
         private readonly ILogger<OutboxService> _logger = logger;
-        private readonly IMediator _mediator = mediator;
+        private readonly IServiceProvider _serviceProvider = serviceProvider;
         private readonly IEventProvider _eventProvider = eventProvider;
         
         public async Task SaveEventAsync(IDomainEvent domainEvent)
@@ -68,7 +69,11 @@ namespace NitroGroups.Shared.Infrastructure.Events
             {
                 try
                 {
-                    await ProcessEventAsync(outboxEvent);
+                    // Cada evento se procesa en su propio scope para evitar
+                    // conflictos de concurrencia en el DbContext compartido
+                    await using var eventScope = _serviceProvider.CreateAsyncScope();
+                    
+                    await ProcessEventAsync(outboxEvent, eventScope.ServiceProvider);
                     await MarkEventAsProcessedAsync(outboxEvent.EventId);
 
                     _logger.LogDebug("Processed outbox event: {EventType} with ID: {EventId}",
@@ -84,7 +89,7 @@ namespace NitroGroups.Shared.Infrastructure.Events
             }
         }
 
-        private async Task ProcessEventAsync(OutboxEvent outboxEvent)
+        private async Task ProcessEventAsync(OutboxEvent outboxEvent, IServiceProvider scopedProvider)
         {
             var eventType = _eventProvider.GetEventTypeByName(outboxEvent.EventType)
                 ?? throw new InvalidOperationException($"Event type {outboxEvent.EventType} not found, make sure you used RegisterEventsFromAssembly in your Module");
@@ -92,7 +97,24 @@ namespace NitroGroups.Shared.Infrastructure.Events
             var domainEvent = JsonSerializer.Deserialize(outboxEvent.EventData, eventType)
                 ?? throw new InvalidOperationException($"Failed to deserialize event {outboxEvent.EventType}");
             
-            await _mediator.PublishAsync((dynamic)domainEvent);
+            if (domainEvent is Cortex.Mediator.Notifications.INotification)
+            {
+                var handlerType = typeof(Cortex.Mediator.Notifications.INotificationHandler<>).MakeGenericType(eventType);
+                var handler = scopedProvider.GetService(handlerType);
+                if (handler != null)
+                {
+                    var method = handlerType.GetMethod("Handle");
+                    if (method != null)
+                    {
+                        var task = (Task)method.Invoke(handler, new object[] { domainEvent, CancellationToken.None });
+                        if (task != null) await task;
+                        return;
+                    }
+                }
+                
+                var mediator = scopedProvider.GetRequiredService<Cortex.Mediator.IMediator>();
+                await mediator.PublishAsync((dynamic)domainEvent);
+            }
         }
 
         public async Task MarkEventAsProcessedAsync(Guid eventId)

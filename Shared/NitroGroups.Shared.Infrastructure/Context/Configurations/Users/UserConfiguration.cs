@@ -40,6 +40,7 @@ namespace NitroGroups.Shared.Infrastructure.Context.Configurations.Users
                 .HasColumnName("phone");
 
             builder.Property(u => u.UserType)
+                .HasMaxLength(20)
                 .HasColumnName("user_type");
 
             builder.Property(u => u.ProfilePictureUrl)

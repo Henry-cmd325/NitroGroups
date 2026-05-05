@@ -17,6 +17,7 @@ public class GroupMemberConfiguration : IEntityTypeConfiguration<GroupMember>
         builder.Property(gm => gm.UserId).HasColumnName("user_id");
 
         builder.Property(gm => gm.Role)
+            .HasMaxLength(20)
             .HasColumnName("role");
 
         builder.Property(gm => gm.IsActive).HasDefaultValue(true).HasColumnName("is_active");
@@ -24,6 +25,7 @@ public class GroupMemberConfiguration : IEntityTypeConfiguration<GroupMember>
         builder.Property(gm => gm.LeftAt).HasColumnName("left_at");
 
         builder.Property(gm => gm.JoinedVia)
+            .HasMaxLength(20)
             .HasColumnName("joined_via");
 
         builder.Property(gm => gm.ApprovedBy).HasColumnName("approved_by");

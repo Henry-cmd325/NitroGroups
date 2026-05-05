@@ -12,7 +12,12 @@ namespace NitroGroups.Shared.Infrastructure.Services
         {
             var id = _httpContextAccessor.HttpContext?.User?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
 
-            return Convert.ToInt64(id);
+            if (string.IsNullOrEmpty(id))
+                return null;
+
+            // Auth0 JWTs use string identifiers (e.g. "auth0|abc123"), not numeric IDs.
+            // Return null if the claim value is not a valid number.
+            return long.TryParse(id, out var userId) ? userId : null;
         }
     }
 }

@@ -14,7 +14,7 @@ namespace NitroGroups.Core.Groups.Infrastructure.Endpoints.Groups
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
-            app.MapGet("/groups/{groupId:long}/members", async (long groupId, IMediator mediator) =>
+            app.MapGet("api/groups/{groupId:long}/members", async (long groupId, IMediator mediator) =>
             {
                 var result = await mediator.SendQueryAsync<GetMembersRoleByIdGroupQuery, Result<List<GroupMemberResponse>>>(new(groupId));
 

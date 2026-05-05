@@ -58,6 +58,11 @@ namespace NitroGroups.Shared.Infrastructure.Context.Migrations
                         .HasDefaultValue(0)
                         .HasColumnName("booking_count");
 
+                    b.Property<string>("CoverImageUrl")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("cover_image_url");
+
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
@@ -151,6 +156,11 @@ namespace NitroGroups.Shared.Infrastructure.Context.Migrations
                         .HasColumnType("character varying(20)")
                         .HasColumnName("phone");
 
+                    b.Property<string>("ProfilePictureUrl")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("profile_picture_url");
+
                     b.Property<int>("ServiceRadiusKm")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
@@ -209,6 +219,136 @@ namespace NitroGroups.Shared.Infrastructure.Context.Migrations
                     b.ToTable("music_groups", (string)null);
                 });
 
+            modelBuilder.Entity("NitroGroups.Core.Groups.Domain.Entities.GroupGenre", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<long>("GenreId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("genre_id");
+
+                    b.Property<long>("GroupId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("group_id");
+
+                    b.Property<bool>("IsPrimary")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false)
+                        .HasColumnName("is_primary");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GenreId");
+
+                    b.HasIndex("GroupId");
+
+                    b.HasIndex("GroupId", "GenreId")
+                        .IsUnique();
+
+                    b.ToTable("group_genres", (string)null);
+                });
+
+            modelBuilder.Entity("NitroGroups.Core.Groups.Domain.Entities.GroupMedia", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at")
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<long>("CreatedBy")
+                        .HasColumnType("bigint")
+                        .HasColumnName("created_by");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
+
+                    b.Property<long?>("DeletedBy")
+                        .HasColumnType("bigint")
+                        .HasColumnName("deleted_by");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text")
+                        .HasColumnName("description");
+
+                    b.Property<int>("DisplayOrder")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(0)
+                        .HasColumnName("display_order");
+
+                    b.Property<int?>("DurationSeconds")
+                        .HasColumnType("integer")
+                        .HasColumnName("duration_seconds");
+
+                    b.Property<long?>("FileSizeBytes")
+                        .HasColumnType("bigint")
+                        .HasColumnName("file_size_bytes");
+
+                    b.Property<long>("GroupId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("group_id");
+
+                    b.Property<bool>("IsPrimary")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false)
+                        .HasColumnName("is_primary");
+
+                    b.Property<string>("ThumbnailUrl")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("thumbnail_url");
+
+                    b.Property<string>("Title")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("title");
+
+                    b.Property<int>("Type")
+                        .HasMaxLength(10)
+                        .HasColumnType("integer")
+                        .HasColumnName("type");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.Property<long?>("UpdatedBy")
+                        .HasColumnType("bigint")
+                        .HasColumnName("updated_by");
+
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("url");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GroupId");
+
+                    b.HasIndex("GroupId", "DisplayOrder");
+
+                    b.HasIndex("GroupId", "Type");
+
+                    b.ToTable("group_media", (string)null);
+                });
+
             modelBuilder.Entity("NitroGroups.Core.Groups.Domain.Entities.GroupMember", b =>
                 {
                     b.Property<long>("Id")
@@ -239,6 +379,7 @@ namespace NitroGroups.Shared.Infrastructure.Context.Migrations
                         .HasDefaultValueSql("now()");
 
                     b.Property<int>("JoinedVia")
+                        .HasMaxLength(20)
                         .HasColumnType("integer")
                         .HasColumnName("joined_via");
 
@@ -247,6 +388,7 @@ namespace NitroGroups.Shared.Infrastructure.Context.Migrations
                         .HasColumnName("left_at");
 
                     b.Property<int>("Role")
+                        .HasMaxLength(20)
                         .HasColumnType("integer")
                         .HasColumnName("role");
 
@@ -262,6 +404,203 @@ namespace NitroGroups.Shared.Infrastructure.Context.Migrations
                         .IsUnique();
 
                     b.ToTable("group_members", (string)null);
+                });
+
+            modelBuilder.Entity("NitroGroups.Core.Groups.Domain.Entities.MusicGenre", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("ColorHex")
+                        .HasMaxLength(7)
+                        .HasColumnType("character varying(7)")
+                        .HasColumnName("color_hex");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text")
+                        .HasColumnName("description");
+
+                    b.Property<string>("IconUrl")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("icon_url");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(true)
+                        .HasColumnName("is_active");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("name");
+
+                    b.Property<string>("Slug")
+                        .IsRequired()
+                        .HasMaxLength(120)
+                        .HasColumnType("character varying(120)")
+                        .HasColumnName("slug");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.HasIndex("Slug")
+                        .IsUnique();
+
+                    b.ToTable("music_genres", (string)null);
+                });
+
+            modelBuilder.Entity("NitroGroups.Core.Schedules.Domain.Entities.BusySchedule", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<long?>("ContractId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("contract_id");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<long>("CreatedBy")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<long?>("DeletedBy")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("description");
+
+                    b.Property<DateTimeOffset>("EndAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("end_at");
+
+                    b.Property<long>("GroupId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("group_id");
+
+                    b.Property<int>("Source")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(0)
+                        .HasColumnName("source");
+
+                    b.Property<DateTimeOffset>("StartAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("start_at");
+
+                    b.Property<string>("Title")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("title");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<long?>("UpdatedBy")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ContractId");
+
+                    b.HasIndex("GroupId", "StartAt");
+
+                    b.HasIndex("GroupId", "StartAt", "EndAt");
+
+                    b.ToTable("busy_schedules", (string)null);
+                });
+
+            modelBuilder.Entity("NitroGroups.Core.Schedules.Domain.Entities.GroupAvailability", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<bool>("Available")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(true)
+                        .HasColumnName("available");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<long>("CreatedBy")
+                        .HasColumnType("bigint");
+
+                    b.Property<decimal?>("CustomPrice")
+                        .HasColumnType("decimal(12,2)")
+                        .HasColumnName("custom_price");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<long?>("DeletedBy")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTimeOffset>("EndAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("end_at");
+
+                    b.Property<long>("GroupId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("group_id");
+
+                    b.Property<string>("Note")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("note");
+
+                    b.Property<string>("RRule")
+                        .HasColumnType("text")
+                        .HasColumnName("rrule");
+
+                    b.Property<DateTimeOffset>("StartAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("start_at");
+
+                    b.Property<string>("Timezone")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasDefaultValue("UTC")
+                        .HasColumnName("timezone");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<long?>("UpdatedBy")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GroupId", "Available");
+
+                    b.HasIndex("GroupId", "StartAt");
+
+                    b.HasIndex("GroupId", "StartAt", "EndAt");
+
+                    b.ToTable("group_availability", (string)null);
                 });
 
             modelBuilder.Entity("NitroGroups.Core.Users.Domain.Entities.Musician", b =>
@@ -380,6 +719,7 @@ namespace NitroGroups.Shared.Infrastructure.Context.Migrations
                         .HasColumnName("profile_picture_url");
 
                     b.Property<int>("UserType")
+                        .HasMaxLength(20)
                         .HasColumnType("integer")
                         .HasColumnName("user_type");
 
@@ -462,6 +802,36 @@ namespace NitroGroups.Shared.Infrastructure.Context.Migrations
                     b.ToTable("outbox_events", (string)null);
                 });
 
+            modelBuilder.Entity("NitroGroups.Core.Groups.Domain.Entities.GroupGenre", b =>
+                {
+                    b.HasOne("NitroGroups.Core.Groups.Domain.Entities.MusicGenre", "Genre")
+                        .WithMany("GroupGenres")
+                        .HasForeignKey("GenreId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("NitroGroups.Core.Groups.Domain.Entities.Group", "Group")
+                        .WithMany("Genres")
+                        .HasForeignKey("GroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Genre");
+
+                    b.Navigation("Group");
+                });
+
+            modelBuilder.Entity("NitroGroups.Core.Groups.Domain.Entities.GroupMedia", b =>
+                {
+                    b.HasOne("NitroGroups.Core.Groups.Domain.Entities.Group", "Group")
+                        .WithMany("Media")
+                        .HasForeignKey("GroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Group");
+                });
+
             modelBuilder.Entity("NitroGroups.Core.Groups.Domain.Entities.GroupMember", b =>
                 {
                     b.HasOne("NitroGroups.Core.Groups.Domain.Entities.Group", "Group")
@@ -486,7 +856,16 @@ namespace NitroGroups.Shared.Infrastructure.Context.Migrations
 
             modelBuilder.Entity("NitroGroups.Core.Groups.Domain.Entities.Group", b =>
                 {
+                    b.Navigation("Genres");
+
+                    b.Navigation("Media");
+
                     b.Navigation("Members");
+                });
+
+            modelBuilder.Entity("NitroGroups.Core.Groups.Domain.Entities.MusicGenre", b =>
+                {
+                    b.Navigation("GroupGenres");
                 });
 
             modelBuilder.Entity("NitroGroups.Core.Users.Domain.Entities.User", b =>

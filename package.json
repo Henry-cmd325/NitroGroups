@@ -1,0 +1,21 @@
+{
+  "name": "nitrogroups-ai",
+  "version": "1.0.0",
+  "scripts": {
+    "ai": "ts-node --transpile-only ai/index.ts",
+    "orchestrator:smoke": "ts-node --transpile-only ai/orchestrator/__smokeTest.ts",
+    "orchestrator:integration": "ts-node --transpile-only ai/orchestrator/__integrationTest.ts",
+    "orchestrator:test": "npm run orchestrator:smoke && npm run orchestrator:integration",
+    "verify:supabase": "npm run verify:supabase --prefix UI/nitro-groups"
+  },
+  "type": "commonjs",
+  "dependencies": {
+    "dotenv": "^17.4.2",
+    "openai": "^6.34.0",
+    "typescript": "5.4"
+  },
+  "devDependencies": {
+    "@types/node": "^25.6.0",
+    "ts-node": "^10.9.2"
+  }
+}
