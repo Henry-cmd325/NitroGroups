@@ -1,7 +1,6 @@
 ﻿using Auth0.AuthenticationApi;
 using Auth0.AuthenticationApi.Models;
 using Auth0.ManagementApi;
-using Auth0.ManagementApi.Models;
 using Microsoft.Extensions.Options;
 using NitroGroups.Core.Users.Application.Abstractions.Services;
 using NitroGroups.Shared.Domain.DomainEvents.Users.Enums;
@@ -47,12 +46,17 @@ namespace NitroGroups.Core.Users.Infrastructure.Services
 
         public async Task ActualizarTipoUsuario(string auth0UserId, UserType userType)
         {
-            var client = new ManagementApiClient(await GetAccessToken(), new Uri(_settings.Audience));
+            var client = new ManagementApiClient(
+                await GetAccessToken(),
+                new ClientOptions
+                {
+                    BaseUrl = $"{_settings.Domain.TrimEnd('/')}/api/v2"
+                });
 
             dynamic metadata = new ExpandoObject();
             metadata.user_type = userType;
 
-            var updateRequest = new UserUpdateRequest
+            var updateRequest = new UpdateUserRequestContent
             {
                 AppMetadata = metadata
             };

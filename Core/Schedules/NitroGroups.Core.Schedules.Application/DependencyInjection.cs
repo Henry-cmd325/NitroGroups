@@ -16,7 +16,7 @@ public static class DependencyInjection
 
         services.AddValidatorsFromAssembly(typeof(DependencyInjection).Assembly);
 
-        services.AddCortexMediator(configuration, [typeof(DependencyInjection)]);
+        services.AddCortexMediator([typeof(DependencyInjection)]);
 
         return services;
     }

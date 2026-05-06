@@ -16,7 +16,7 @@ namespace NitroGroups.Core.Users.Application
 
             services.AddValidatorsFromAssembly(typeof(ApplicationServiceCollectionExtensions).Assembly);
 
-            services.AddCortexMediator(configuration, [typeof(ApplicationServiceCollectionExtensions)]);
+            services.AddCortexMediator([typeof(ApplicationServiceCollectionExtensions)]);
 
             return services;
         }
