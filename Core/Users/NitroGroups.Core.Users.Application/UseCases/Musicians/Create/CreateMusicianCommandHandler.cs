@@ -71,7 +71,7 @@ namespace NitroGroups.Core.Users.Application.UseCases.Musicians.Create
                 newMusician.RaiseSoloMusicianCreatedEvent(groupName);
             }
 
-            if (newMusician.DomainEvents.Any())
+            if (newMusician.DomainEvents.Count != 0)
             {
                 await _unitOfWork.OutboxService.SaveEventsAsync(newMusician.DomainEvents);
                 await _unitOfWork.CompleteAsync();

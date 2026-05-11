@@ -40,6 +40,11 @@
     <Project Path="Shared/NitroGroups.Shared.EndpointMapping/NitroGroups.Shared.EndpointMapping.csproj" />
     <Project Path="Shared/NitroGroups.Shared.Infrastructure/NitroGroups.Shared.Infrastructure.csproj" />
   </Folder>
+  <Folder Name="/Tests/">
+    <Project Path="NitroGroups.Tests.Endpoints/NitroGroups.Tests.Endpoints.csproj" Id="f61a6d56-cac7-496a-afe8-52f0734b4c74" />
+    <Project Path="Tests/NitroGroups.Orchestrator.Gate/NitroGroups.Orchestrator.Gate.csproj" />
+    <Project Path="Tests/NitroGroups.Tests.Application/NitroGroups.Tests.Integration.csproj" Id="1859700f-aa59-40c9-9911-c4bd35f275ba" />
+  </Folder>
   <Project Path="AppHost/AppHost.AppHost/NitroGroups.AppHost.csproj" />
   <Project Path="AppHost/AppHost.ServiceDefaults/NitroGroups.ServiceDefaults.csproj" />
 </Solution>

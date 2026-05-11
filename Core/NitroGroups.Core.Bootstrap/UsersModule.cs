@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using NitroGroups.Core.Groups.Application;
 using NitroGroups.Core.Users.Application;
 using NitroGroups.Core.Users.Infrastructure;
 

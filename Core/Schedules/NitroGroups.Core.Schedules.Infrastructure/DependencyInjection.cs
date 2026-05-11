@@ -1,4 +1,3 @@
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NitroGroups.Core.Schedules.Application.Abstractions;
 using NitroGroups.Core.Schedules.Infrastructure.Repositories;
@@ -8,7 +7,7 @@ namespace NitroGroups.Core.Schedules.Infrastructure;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddSchedulesInfrastructure(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddSchedulesInfrastructure(this IServiceCollection services)
     {
         services.AddScoped<IGroupAvailabilityRepository, GroupAvailabilityRepository>();
         services.AddScoped<IBusyScheduleRepository, BusyScheduleRepository>();

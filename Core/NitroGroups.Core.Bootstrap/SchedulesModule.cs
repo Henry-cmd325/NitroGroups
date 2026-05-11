@@ -10,7 +10,7 @@ namespace NitroGroups.Core.Bootstrap
         public static IServiceCollection AddSchedulesModule(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddSchedulesApplication(configuration);
-            services.AddSchedulesInfrastructure(configuration);
+            services.AddSchedulesInfrastructure();
 
             return services;
         }

@@ -1,6 +1,5 @@
 using Cortex.Mediator.Commands;
 using NitroGroups.Core.Schedules.Application.Abstractions;
-using NitroGroups.Core.Schedules.Domain.Entities;
 using NitroGroups.Shared.Contracts;
 using DomainGroupAvailability = NitroGroups.Core.Schedules.Domain.Entities.GroupAvailability;
 

@@ -6,16 +6,10 @@ using NitroGroups.Shared.Contracts.Users.Responses;
 
 namespace NitroGroups.Core.Users.Application.UseCases.Users.Sync
 {
-    public class SyncUserCommandHandler : ICommandHandler<SyncUserCommand, UserDto>
+    public class SyncUserCommandHandler(IUnitOfWorkUser unitOfWork, IMapper mapper) : ICommandHandler<SyncUserCommand, UserDto>
     {
-        private readonly IUnitOfWorkUser _unitOfWork;
-        private readonly IMapper _mapper;
-
-        public SyncUserCommandHandler(IUnitOfWorkUser unitOfWork, IMapper mapper)
-        {
-            _unitOfWork = unitOfWork;
-            _mapper = mapper;
-        }
+        private readonly IUnitOfWorkUser _unitOfWork = unitOfWork;
+        private readonly IMapper _mapper = mapper;
 
         public async Task<UserDto> Handle(SyncUserCommand command, CancellationToken cancellationToken)
         {

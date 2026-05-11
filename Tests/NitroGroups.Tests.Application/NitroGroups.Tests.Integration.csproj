@@ -1,0 +1,36 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="coverlet.collector" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="NSubstitute" />
+    <PackageReference Include="xunit" />
+    <PackageReference Include="xunit.runner.visualstudio" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core\Users\NitroGroups.Core.Users.Application\NitroGroups.Core.Users.Application.csproj" />
+    <ProjectReference Include="..\..\Core\Users\NitroGroups.Core.Users.Infrastructure\NitroGroups.Core.Users.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\Core\Groups\NitroGroups.Core.Groups.Application\NitroGroups.Core.Groups.Application.csproj" />
+    <ProjectReference Include="..\..\Core\Groups\NitroGroups.Core.Groups.Infrastructure\NitroGroups.Core.Groups.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\Core\Schedules\NitroGroups.Core.Schedules.Application\NitroGroups.Core.Schedules.Application.csproj" />
+    <ProjectReference Include="..\..\Core\Schedules\NitroGroups.Core.Schedules.Infrastructure\NitroGroups.Core.Schedules.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\Shared\NitroGroups.Shared.Infrastructure\NitroGroups.Shared.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\Shared\NitroGroups.Shared.Contracts\NitroGroups.Shared.Contracts.csproj" />
+    <ProjectReference Include="..\..\Shared\NitroGroups.Shared.Abstractions\NitroGroups.Shared.Abstractions.csproj" />
+    <ProjectReference Include="..\..\Shared\NitroGroups.Shared.Domain\NitroGroups.Shared.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Xunit" />
+  </ItemGroup>
+
+</Project>

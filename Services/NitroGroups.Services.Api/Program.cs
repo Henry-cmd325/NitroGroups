@@ -186,3 +186,6 @@ app.UseExceptionHandler(errorApp =>
 
 Log.Information("Starting NitroGroups API");
 app.Run();
+
+// Exponer Program para WebApplicationFactory en los tests de integración
+public partial class Program { }
