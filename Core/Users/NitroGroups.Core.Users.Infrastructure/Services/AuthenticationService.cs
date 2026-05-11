@@ -1,6 +1,7 @@
 ﻿using Auth0.AuthenticationApi;
 using Auth0.AuthenticationApi.Models;
 using Auth0.ManagementApi;
+using Auth0.ManagementApi.Models;
 using Microsoft.Extensions.Options;
 using NitroGroups.Core.Users.Application.Abstractions.Services;
 using NitroGroups.Shared.Domain.DomainEvents.Users.Enums;
@@ -9,16 +10,11 @@ using System.Dynamic;
 
 namespace NitroGroups.Core.Users.Infrastructure.Services
 {
-    public class AuthenticationService : IAuthenticationService
+    public class AuthenticationService(IOptions<Auth0ManagementApiSettings> options) : IAuthenticationService
     {
-        private readonly Auth0ManagementApiSettings _settings;
+        private readonly Auth0ManagementApiSettings _settings = options.Value;
         private string _accessToken = string.Empty;
         private DateTime _tokenExpiration;
-
-        public AuthenticationService(IOptions<Auth0ManagementApiSettings> options)
-        {
-            _settings = options.Value;
-        }
 
         private async Task<string> GetAccessToken()
         {
@@ -46,17 +42,12 @@ namespace NitroGroups.Core.Users.Infrastructure.Services
 
         public async Task ActualizarTipoUsuario(string auth0UserId, UserType userType)
         {
-            var client = new ManagementApiClient(
-                await GetAccessToken(),
-                new ClientOptions
-                {
-                    BaseUrl = $"{_settings.Domain.TrimEnd('/')}/api/v2"
-                });
+            var client = new ManagementApiClient(await GetAccessToken(), new Uri(_settings.Audience));
 
             dynamic metadata = new ExpandoObject();
             metadata.user_type = userType;
 
-            var updateRequest = new UpdateUserRequestContent
+            var updateRequest = new UserUpdateRequest
             {
                 AppMetadata = metadata
             };

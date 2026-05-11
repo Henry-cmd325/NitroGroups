@@ -1,18 +1,6 @@
-using Aspire.Hosting;
 using Microsoft.Extensions.Configuration;
 
-// ProjectDirectory explícito: DCP/diagnósticos de VS resuelven mejor rutas y recursos (Aspire).
-// En Windows + depurador, abrir el dashboard en el navegador predeterminado y usar el diálogo
-// de archivos en Chrome/Brave puede tumbar el AppHost (-1); por eso launchBrowser=false en
-// launchSettings y un perfil opcional que vuelve a abrir el dashboard.
-var appHostProjectDir = FindDirectoryContainingFile(AppContext.BaseDirectory, "NitroGroups.AppHost.csproj")
-    ?? throw new InvalidOperationException(
-        "No se encontró NitroGroups.AppHost.csproj; ejecuta desde la solución NitroGroups.");
-var builder = DistributedApplication.CreateBuilder(new DistributedApplicationOptions
-{
-    Args = args,
-    ProjectDirectory = appHostProjectDir,
-});
+var builder = DistributedApplication.CreateBuilder(args);
 
 var authConfig = builder.Configuration.GetRequiredSection("Auth0");
 
@@ -27,43 +15,14 @@ var api = builder.AddProject<Projects.NitroGroups_Services_Api>("nitrogroups-ser
     .WithEnvironment("Auth0__Audience", audience)
     .WithHttpHealthCheck("/health");
 
-var apiBaseUrl = api.GetEndpoint("https");
+var apiBaseUrl = api.GetEndpoint("http");
 
-var uiRoot = GetNitroGroupsUiPath();
-var npm = OperatingSystem.IsWindows() ? "npm.cmd" : "npm";
-builder.AddExecutable("frontend", npm, uiRoot, "run", "dev")
+builder.AddJavaScriptApp("frontend", Path.Combine("../../UI/nitro-groups"))
     .WithHttpEndpoint(port: 3000, env: "PORT")
+    .WithEnvironment("NODE_TLS_REJECT_UNAUTHORIZED", "0")
     .WithEnvironment("NEXT_PUBLIC_API_BASE_URL", apiBaseUrl)
     .WithEnvironment("BACKEND_API_URL", apiBaseUrl)
     .WithReference(api);
 
+
 builder.Build().Run();
-
-static string? FindDirectoryContainingFile(string startDir, string fileName)
-{
-    for (var dir = new DirectoryInfo(startDir); dir != null; dir = dir.Parent)
-    {
-        if (File.Exists(Path.Combine(dir.FullName, fileName)))
-        {
-            return dir.FullName;
-        }
-    }
-
-    return null;
-}
-
-static string GetNitroGroupsUiPath()
-{
-    for (var dir = new DirectoryInfo(AppContext.BaseDirectory); dir != null; dir = dir.Parent)
-    {
-        var ui = Path.Combine(dir.FullName, "UI", "nitro-groups");
-        if (File.Exists(Path.Combine(ui, "package.json")))
-        {
-            return Path.GetFullPath(ui);
-        }
-    }
-
-    throw new InvalidOperationException(
-        "No se encontró 'UI/nitro-groups/package.json' al subir directorios desde " + AppContext.BaseDirectory
-        + ". Ejecuta el AppHost desde el repositorio NitroGroups.");
-}

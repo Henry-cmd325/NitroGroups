@@ -12,15 +12,15 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace NitroGroups.Shared.Infrastructure.Context.Migrations
 {
     [DbContext(typeof(NitroGroupsContext))]
-    [Migration("20260322010914_AddSchedulesModule")]
-    partial class AddSchedulesModule
+    [Migration("20260506040553_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "10.0.2")
+                .HasAnnotation("ProductVersion", "10.0.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -322,10 +322,9 @@ namespace NitroGroups.Shared.Infrastructure.Context.Migrations
                         .HasColumnType("character varying(200)")
                         .HasColumnName("title");
 
-                    b.Property<string>("Type")
-                        .IsRequired()
+                    b.Property<int>("Type")
                         .HasMaxLength(10)
-                        .HasColumnType("character varying(10)")
+                        .HasColumnType("integer")
                         .HasColumnName("type");
 
                     b.Property<DateTime?>("UpdatedAt")
@@ -383,6 +382,7 @@ namespace NitroGroups.Shared.Infrastructure.Context.Migrations
                         .HasDefaultValueSql("now()");
 
                     b.Property<int>("JoinedVia")
+                        .HasMaxLength(20)
                         .HasColumnType("integer")
                         .HasColumnName("joined_via");
 
@@ -391,6 +391,7 @@ namespace NitroGroups.Shared.Infrastructure.Context.Migrations
                         .HasColumnName("left_at");
 
                     b.Property<int>("Role")
+                        .HasMaxLength(20)
                         .HasColumnType("integer")
                         .HasColumnName("role");
 
@@ -497,11 +498,10 @@ namespace NitroGroups.Shared.Infrastructure.Context.Migrations
                         .HasColumnType("bigint")
                         .HasColumnName("group_id");
 
-                    b.Property<string>("Source")
-                        .IsRequired()
+                    b.Property<int>("Source")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("text")
-                        .HasDefaultValue("Contract")
+                        .HasColumnType("integer")
+                        .HasDefaultValue(0)
                         .HasColumnName("source");
 
                     b.Property<DateTimeOffset>("StartAt")
@@ -722,6 +722,7 @@ namespace NitroGroups.Shared.Infrastructure.Context.Migrations
                         .HasColumnName("profile_picture_url");
 
                     b.Property<int>("UserType")
+                        .HasMaxLength(20)
                         .HasColumnType("integer")
                         .HasColumnName("user_type");
 
