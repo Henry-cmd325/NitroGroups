@@ -2,7 +2,7 @@ import { apiClient } from "@/lib/api-client";
 
 /** Alineado con `api/groups/{id}/schedule` (GroupAvailability) — no con la ruta antigua /availabilities. */
 function newIdempotencyKey(): string {
-    return globalThis.crypto.randomUUID();
+  return globalThis.crypto.randomUUID();
 }
 
 export interface ScheduleEventDto {

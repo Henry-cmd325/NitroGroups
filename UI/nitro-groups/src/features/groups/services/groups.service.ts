@@ -3,10 +3,6 @@ import type { MusicGroup } from "../types/MusicGroup";
 import type { GenreResponse } from "../types/Genre";
 import type { GroupMediaResponse } from "@/features/groupMedia/types/GroupMedia";
 
-export interface GroupsResponse {
-    id: number;
-}
-
 export interface CreateGroupRequest {
     ownerUserId: number;
     slug: string;
@@ -83,11 +79,6 @@ export type GenreListItem = {
 };
 
 export const groupsService = {
-    getAll: async (): Promise<GroupsResponse[]> => {
-        const { data } = await apiClient.get<GroupsResponse[]>("/groups");
-        return data;
-    },
-
     /**
      * Create a new music group.
      * POST /api/groups
