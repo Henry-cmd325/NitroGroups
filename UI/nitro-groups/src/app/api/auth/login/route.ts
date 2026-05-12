@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { resolveBackendApiBaseUrl } from "@/lib/backendBaseUrl";
+import { signNitroSession, type NitroSession } from "@/services/session-token";
 
 interface LoginRequest {
     email: string;
@@ -93,7 +94,12 @@ export async function POST(request: NextRequest) {
             ? `${resolvedFirstName} ${resolvedLastName}`
             : idTokenPayload.name || idTokenPayload.email;
 
-        const sessionData = {
+        const rawType = bodyUserType
+            || idTokenPayload["https://nitrogroups.com/user_metadata"]?.user_type
+            || idTokenPayload.user_metadata?.user_type
+            || "client";
+
+        const sessionData: NitroSession = {
             user: {
                 sub: idTokenPayload.sub,
                 email: idTokenPayload.email,
@@ -103,6 +109,7 @@ export async function POST(request: NextRequest) {
                 picture: idTokenPayload.picture,
                 email_verified: idTokenPayload.email_verified,
                 nickname: idTokenPayload.nickname,
+                user_type: rawType,
             },
             accessToken: tokenData.access_token,
             idToken: tokenData.id_token,
@@ -114,10 +121,6 @@ export async function POST(request: NextRequest) {
         const backendUrl = resolveBackendApiBaseUrl();
         try {
             // Use resolved names from signup body or id_token
-            const rawType = bodyUserType
-                || idTokenPayload["https://nitrogroups.com/user_metadata"]?.user_type
-                || idTokenPayload.user_metadata?.user_type
-                || "client";
             const userTypeMap: Record<string, number> = {
                 client: 0,
                 musician: 1,
@@ -158,16 +161,7 @@ export async function POST(request: NextRequest) {
         });
 
         // Encrypt and set session cookie
-        const { SignJWT } = await import("jose");
-        const secret = new TextEncoder().encode(
-            process.env.AUTH0_SECRET || "default-secret-change-me"
-        );
-
-        const jwt = await new SignJWT({ session: sessionData })
-            .setProtectedHeader({ alg: "HS256" })
-            .setIssuedAt()
-            .setExpirationTime("7d")
-            .sign(secret);
+        const jwt = await signNitroSession(sessionData);
 
         response.cookies.set("nitro_session", jwt, {
             httpOnly: true,

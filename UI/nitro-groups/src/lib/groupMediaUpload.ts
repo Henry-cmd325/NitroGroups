@@ -1,7 +1,6 @@
 "use client";
 
 import { getBrowserApiBase } from "@/lib/backendBaseUrl";
-import { getApiAccessToken } from "@/services/auth.service";
 
 export type GroupUploadMediaType = "photo" | "video" | "audio";
 
@@ -19,13 +18,11 @@ export async function uploadGroupMediaFile(
 ): Promise<GroupMediaUploadResult> {
   const form = new FormData();
   form.append("file", file);
-  const token = await getApiAccessToken();
   const res = await fetch(
     `${getBrowserApiBase()}/groups/${groupId}/media/upload`,
     {
       method: "POST",
       body: form,
-      headers: { Authorization: `Bearer ${token}` }
     }
   );
   if (!res.ok) {

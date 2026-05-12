@@ -2,7 +2,7 @@ import { apiClient } from "@/lib/api-client";
 
 /** Alineado con `api/groups/{id}/schedule` (GroupAvailability) — no con la ruta antigua /availabilities. */
 function newIdempotencyKey(): string {
-  return globalThis.crypto.randomUUID();
+    return globalThis.crypto.randomUUID();
 }
 
 export interface ScheduleEventDto {
@@ -47,7 +47,7 @@ export interface UpdateBusyScheduleRequest {
     source?: 'contract' | 'rehearsal' | 'maintenance' | 'personal' | 'travel';
 }
 
-class SchedulesService {
+class GroupAvailabilityService {
     async listSchedule(params: { groupId: number; start: string; end: string }): Promise<ScheduleEventDto[]> {
         return this.getGroupSchedules(params.groupId, params.start, params.end);
     }
@@ -142,4 +142,4 @@ class SchedulesService {
     }
 }
 
-export const groupAvailabilityService = new SchedulesService();
+export const groupAvailabilityService = new GroupAvailabilityService();
