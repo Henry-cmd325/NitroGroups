@@ -77,13 +77,6 @@ export default function ManagerOnboardingPage() {
         }
     }, [authUser]);
 
-    // Redirect if not authenticated
-    useEffect(() => {
-        if (!authLoading && !isAuthenticated) {
-            router.push("/login");
-        }
-    }, [authLoading, isAuthenticated, router]);
-
     // Check slug availability with debounce
     const checkSlug = useCallback(async (slug: string) => {
         if (!slug || slug.length < 3) {

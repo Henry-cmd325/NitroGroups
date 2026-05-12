@@ -53,13 +53,6 @@ export default function MusicianOnboardingPage() {
         }
     }, [authUser]);
 
-    // Redirect if not authenticated
-    useEffect(() => {
-        if (!authLoading && !isAuthenticated) {
-            router.push("/login");
-        }
-    }, [authLoading, isAuthenticated, router]);
-
     if (authLoading) {
         return (
             <div className="min-h-screen flex items-center justify-center">
