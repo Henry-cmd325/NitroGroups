@@ -19,7 +19,8 @@ public class GetGroupByUserIdQueryHandlerIntegrationTests : IClassFixture<Integr
     {
         await using var context = _fixture.CreateContext();
         var mapper = _fixture.CreateMapper();
-        var handler = new GetGroupByUserIdQueryHandler(context, mapper);
+        var unitOfWork = _fixture.CreateGroupsUnitOfWork(context);
+        var handler = new GetGroupByUserIdQueryHandler(unitOfWork, mapper);
 
         var group = new Group
         {
@@ -58,7 +59,8 @@ public class GetGroupByUserIdQueryHandlerIntegrationTests : IClassFixture<Integr
     {
         await using var context = _fixture.CreateContext();
         var mapper = _fixture.CreateMapper();
-        var handler = new GetGroupByUserIdQueryHandler(context, mapper);
+        var unitOfWork = _fixture.CreateGroupsUnitOfWork(context);
+        var handler = new GetGroupByUserIdQueryHandler(unitOfWork, mapper);
 
         var result = await handler.Handle(new GetGroupByUserIdQuery(999), CancellationToken.None);
 

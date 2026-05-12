@@ -6,14 +6,13 @@ using NitroGroups.Shared.Contracts.Schedules.Responses;
 namespace NitroGroups.Core.Schedules.Application.UseCases.Schedules.Get;
 
 public class GetGroupSchedulesQueryHandler(
-    IGroupAvailabilityRepository availabilityRepository,
-    IBusyScheduleRepository busyScheduleRepository) 
+    IUnitOfWorkSchedules unitOfWork) 
     : IQueryHandler<GetGroupSchedulesQuery, Result<List<ScheduleEventDto>>>
 {
     public async Task<Result<List<ScheduleEventDto>>> Handle(GetGroupSchedulesQuery request, CancellationToken cancellationToken)
     {
-        var availabilities = await availabilityRepository.GetAvailabilitiesByGroupIdAsync(request.GroupId, request.Start.ToUniversalTime(), request.End.ToUniversalTime(), cancellationToken);
-        var busySchedules = await busyScheduleRepository.GetBusySchedulesByGroupIdAsync(request.GroupId, request.Start.ToUniversalTime(), request.End.ToUniversalTime(), cancellationToken);
+        var availabilities = await unitOfWork.AvailabilityRepository.GetAvailabilitiesByGroupIdAsync(request.GroupId, request.Start.ToUniversalTime(), request.End.ToUniversalTime(), cancellationToken);
+        var busySchedules = await unitOfWork.BusyScheduleRepository.GetBusySchedulesByGroupIdAsync(request.GroupId, request.Start.ToUniversalTime(), request.End.ToUniversalTime(), cancellationToken);
 
         var events = new List<ScheduleEventDto>();
 

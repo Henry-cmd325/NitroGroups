@@ -1,20 +1,19 @@
-using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using NitroGroups.Shared.Infrastructure.Configuration;
-using NitroGroups.Shared.Infrastructure.Services;
 using NitroGroups.Shared.Abstractions.Events;
-using NitroGroups.Shared.Abstractions.Services;
 using NitroGroups.Shared.Abstractions.Repository;
+using NitroGroups.Shared.Abstractions.Services;
+using NitroGroups.Shared.Infrastructure.Configuration;
 using NitroGroups.Shared.Infrastructure.Context;
 using NitroGroups.Shared.Infrastructure.Context.Interceptors;
 using NitroGroups.Shared.Infrastructure.Events;
 using NitroGroups.Shared.Infrastructure.Repository;
+using NitroGroups.Shared.Infrastructure.Services;
 
 namespace NitroGroups.Shared.Infrastructure
 {
-    public static class InfrastructureServiceCollectionExtensions
+    public static class DependencyInjection
     {
         public static IServiceCollection AddSharedInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {

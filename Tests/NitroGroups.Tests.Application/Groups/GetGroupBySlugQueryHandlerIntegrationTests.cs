@@ -13,7 +13,8 @@ public class GetGroupBySlugQueryHandlerIntegrationTests(IntegrationTestFixture f
     {
         await using var context = _fixture.CreateContext();
         var mapper = _fixture.CreateMapper();
-        var handler = new GetGroupBySlugQueryHandler(context, mapper);
+        var unitOfWork = _fixture.CreateGroupsUnitOfWork(context);
+        var handler = new GetGroupBySlugQueryHandler(unitOfWork, mapper);
 
         var group = new Group
         {
@@ -71,7 +72,8 @@ public class GetGroupBySlugQueryHandlerIntegrationTests(IntegrationTestFixture f
     {
         await using var context = _fixture.CreateContext();
         var mapper = _fixture.CreateMapper();
-        var handler = new GetGroupBySlugQueryHandler(context, mapper);
+        var unitOfWork = _fixture.CreateGroupsUnitOfWork(context);
+        var handler = new GetGroupBySlugQueryHandler(unitOfWork, mapper);
 
         var result = await handler.Handle(new GetGroupBySlugQuery("missing-slug"), CancellationToken.None);
 

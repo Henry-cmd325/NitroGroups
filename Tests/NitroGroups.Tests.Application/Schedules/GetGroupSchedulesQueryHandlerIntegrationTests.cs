@@ -13,7 +13,7 @@ public class GetGroupSchedulesQueryHandlerIntegrationTests(IntegrationTestFixtur
     {
         await using var context = _fixture.CreateContext();
         var unitOfWork = _fixture.CreateSchedulesUnitOfWork(context);
-        var handler = new GetGroupSchedulesQueryHandler(unitOfWork.AvailabilityRepository, unitOfWork.BusyScheduleRepository);
+        var handler = new GetGroupSchedulesQueryHandler(unitOfWork);
 
         context.GroupAvailabilities.AddRange(
             new GroupAvailability
@@ -74,7 +74,7 @@ public class GetGroupSchedulesQueryHandlerIntegrationTests(IntegrationTestFixtur
     {
         await using var context = _fixture.CreateContext();
         var unitOfWork = _fixture.CreateSchedulesUnitOfWork(context);
-        var handler = new GetGroupSchedulesQueryHandler(unitOfWork.AvailabilityRepository, unitOfWork.BusyScheduleRepository);
+        var handler = new GetGroupSchedulesQueryHandler(unitOfWork);
 
         context.GroupAvailabilities.AddRange(
             new GroupAvailability
