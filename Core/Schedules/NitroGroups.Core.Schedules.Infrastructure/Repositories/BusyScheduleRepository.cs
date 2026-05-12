@@ -10,7 +10,7 @@ internal sealed class BusyScheduleRepository(NitroGroupsContext dbContext) : Gen
 {
     public async Task<List<BusySchedule>> GetBusySchedulesByGroupIdAsync(long groupId, DateTimeOffset start, DateTimeOffset end, CancellationToken cancellationToken = default)
     {
-        return await dbContext.BusySchedules
+        return await _context.BusySchedules
             .Where(x => x.GroupId == groupId && x.StartAt < end && x.EndAt > start)
             .OrderBy(x => x.StartAt)
             .ToListAsync(cancellationToken);

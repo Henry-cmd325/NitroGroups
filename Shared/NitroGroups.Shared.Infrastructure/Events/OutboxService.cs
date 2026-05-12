@@ -106,8 +106,7 @@ namespace NitroGroups.Shared.Infrastructure.Events
                     var method = handlerType.GetMethod("Handle");
                     if (method != null)
                     {
-                        var task = (Task)method.Invoke(handler, new object[] { domainEvent, CancellationToken.None });
-                        if (task != null) await task;
+                        if (method.Invoke(handler, [domainEvent, CancellationToken.None]) is Task task) await task;
                         return;
                     }
                 }
