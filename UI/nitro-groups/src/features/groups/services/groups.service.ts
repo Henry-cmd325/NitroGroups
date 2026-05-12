@@ -1,11 +1,8 @@
 import { apiClient } from "@/lib/api-client";
+import { getApiAccessToken } from "@/services/auth.service";
 import type { MusicGroup } from "../types/MusicGroup";
 import type { GenreResponse } from "../types/Genre";
 import type { GroupMediaResponse } from "@/features/groupMedia/types/GroupMedia";
-
-export interface GroupsResponse {
-    id: number;
-}
 
 export interface CreateGroupRequest {
     ownerUserId: number;
@@ -83,20 +80,21 @@ export type GenreListItem = {
 };
 
 export const groupsService = {
-    getAll: async (): Promise<GroupsResponse[]> => {
-        const { data } = await apiClient.get<GroupsResponse[]>("/groups");
-        return data;
-    },
-
     /**
      * Create a new music group.
      * POST /api/groups
      * Backend: GroupRequest -> Group
      */
     create: async (request: CreateGroupRequest): Promise<GroupResponse> => {
+        const accessToken = await getApiAccessToken();
         const { data } = await apiClient.post<GroupResponse>(
             "/groups",
-            request
+            request,
+            {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            }
         );
         return data;
     },
@@ -107,8 +105,14 @@ export const groupsService = {
      */
     checkSlugAvailability: async (slug: string): Promise<boolean> => {
         try {
+            const accessToken = await getApiAccessToken();
             const { data } = await apiClient.get<{ available: boolean }>(
-                `/groups/check-slug/${slug}`
+                `/groups/check-slug/${slug}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                    },
+                }
             );
             return data.available;
         } catch {
@@ -117,9 +121,15 @@ export const groupsService = {
         }
     },
     getByUserId: async (userId: number): Promise<MusicGroup | null> => {
+        const accessToken = await getApiAccessToken();
         try {
             const { data } = await apiClient.get<MusicGroup | MusicGroup[]>(
-                `/users/${userId}/groups`
+                `/users/${userId}/groups`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                    },
+                }
             );
 
             if (Array.isArray(data)) {
@@ -134,16 +144,28 @@ export const groupsService = {
     },
 
     getBySlug: async (slug: string): Promise<MusicGroup> => {
+        const accessToken = await getApiAccessToken();
         const { data } = await apiClient.get<MusicGroup>(
-            `/groups/slug/${slug}`
+            `/groups/slug/${slug}`,
+            {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            }
         );
         return data;
     },
 
     update: async (id: number, payload: UpdateGroupRequest): Promise<MusicGroup> => {
+        const accessToken = await getApiAccessToken();
         const { data } = await apiClient.put<MusicGroup>(
             `/groups/${id}`,
-            payload
+            payload,
+            {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            }
         );
         return data;
     },
@@ -151,27 +173,42 @@ export const groupsService = {
     /* ── Genre endpoints ── */
 
     listGenres: async (): Promise<GenreListItem[]> => {
-        const { data } = await apiClient.get<GenreListItem[]>("/genres");
+        const accessToken = await getApiAccessToken();
+        const { data } = await apiClient.get<GenreListItem[]>("/genres", {
+            headers: { Authorization: `Bearer ${accessToken}` },
+        });
         return data;
     },
 
     assignGenres: async (groupId: number, genreIds: number[]): Promise<void> => {
-        await apiClient.post(`/groups/${groupId}/genres`, { genreIds });
+        const accessToken = await getApiAccessToken();
+        await apiClient.post(`/groups/${groupId}/genres`, { genreIds }, {
+            headers: { Authorization: `Bearer ${accessToken}` },
+        });
     },
 
     removeGenre: async (groupId: number, genreId: number): Promise<void> => {
-        await apiClient.delete(`/groups/${groupId}/genres/${genreId}`);
+        const accessToken = await getApiAccessToken();
+        await apiClient.delete(`/groups/${groupId}/genres/${genreId}`, {
+            headers: { Authorization: `Bearer ${accessToken}` },
+        });
     },
 
     /* ── Media endpoints ── */
 
     addMedia: async (groupId: number, payload: { type: string; url: string; thumbnailUrl?: string; title?: string; displayOrder?: number }): Promise<{ id: number }> => {
-        const { data } = await apiClient.post<{ id: number }>(`/groups/${groupId}/media`, payload);
+        const accessToken = await getApiAccessToken();
+        const { data } = await apiClient.post<{ id: number }>(`/groups/${groupId}/media`, payload, {
+            headers: { Authorization: `Bearer ${accessToken}` },
+        });
         return data;
     },
 
     removeMedia: async (groupId: number, mediaId: number): Promise<void> => {
-        await apiClient.delete(`/groups/${groupId}/media/${mediaId}`);
+        const accessToken = await getApiAccessToken();
+        await apiClient.delete(`/groups/${groupId}/media/${mediaId}`, {
+            headers: { Authorization: `Bearer ${accessToken}` },
+        });
     },
 };
 

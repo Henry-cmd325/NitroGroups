@@ -9,6 +9,7 @@ export default function LogoutButton() {
     setIsLoading(true);
     try {
       await fetch("/api/auth/logout", { method: "POST" });
+      localStorage.removeItem("nitro_logged_in");
       window.location.href = "/";
     } catch {
       setIsLoading(false);

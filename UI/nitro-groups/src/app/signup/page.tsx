@@ -256,6 +256,7 @@ export default function SignupPage() {
                 return;
             }
 
+            localStorage.setItem("nitro_logged_in", "true");
             sessionStorage.setItem("nitro_signup_user_type", userType);
 
             let returnTo: string;
