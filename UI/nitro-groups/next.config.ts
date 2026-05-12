@@ -39,10 +39,6 @@ const nextConfig: NextConfig = {
         destination: `${backendUrl}/groups/:path*`,
       },
       {
-        source: "/api/genres/:path*",
-        destination: `${backendUrl}/genres/:path*`,
-      },
-      {
         source: "/api/auth/sync",
         destination: `${backendUrl}/auth/sync`,
       },

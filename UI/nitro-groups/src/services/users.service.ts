@@ -1,4 +1,5 @@
 import { apiClient } from "@/lib/api-client";
+import { getApiAccessToken } from "@/services/auth.service";
 import { User, CreateUserDto, UpdateUserDto } from "@/features/groups/types/User";
 
 export const usersService = {
@@ -6,7 +7,12 @@ export const usersService = {
      * Create a new user in the database
      */
     create: async (userData: CreateUserDto): Promise<User> => {
-        const { data } = await apiClient.post<User>("/users", userData);
+        const accessToken = await getApiAccessToken();
+        const { data } = await apiClient.post<User>("/users", userData, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+        });
         return data;
     },
 
@@ -14,7 +20,12 @@ export const usersService = {
      * Get user by ID
      */
     getById: async (userId: number): Promise<User> => {
-        const { data } = await apiClient.get<User>(`/users/${userId}`);
+        const accessToken = await getApiAccessToken();
+        const { data } = await apiClient.get<User>(`/users/${userId}`, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+        });
         return data;
     },
 
@@ -22,7 +33,12 @@ export const usersService = {
      * Get user by Auth0 ID
      */
     getByAuth0Id: async (auth0Id: string): Promise<User> => {
-        const { data } = await apiClient.get<User>(`/users/auth0/${auth0Id}`);
+        const accessToken = await getApiAccessToken();
+        const { data } = await apiClient.get<User>(`/users/auth0/${auth0Id}`, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+        });
         return data;
     },
 
@@ -30,7 +46,12 @@ export const usersService = {
      * Update user profile
      */
     update: async (userId: number, userData: UpdateUserDto): Promise<User> => {
-        const { data } = await apiClient.put<User>(`/users/${userId}`, userData);
+        const accessToken = await getApiAccessToken();
+        const { data } = await apiClient.put<User>(`/users/${userId}`, userData, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+        });
         return data;
     },
 
@@ -47,6 +68,8 @@ export const usersService = {
             user_type?: string;
         };
     }): Promise<User> => {
+        const accessToken = await getApiAccessToken();
+
         // Split name into first and last name
         const nameParts = auth0User.name?.split(' ') || ['', ''];
         const firstName = nameParts[0] || auth0User.email.split('@')[0];
@@ -67,6 +90,11 @@ export const usersService = {
                 profilePictureUrl: auth0User.picture,
                 userType,
                 origin: 'signup',
+            },
+            {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                },
             }
         );
         return data;

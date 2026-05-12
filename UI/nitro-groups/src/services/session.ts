@@ -1,7 +1,22 @@
 import { cookies } from "next/headers";
-import { verifyNitroSessionToken, type NitroSession } from "@/services/session-token";
+import { jwtVerify } from "jose";
 
-export type { NitroSession } from "@/services/session-token";
+export interface NitroSession {
+    user: {
+        sub: string;
+        email: string;
+        name: string;
+        given_name?: string;
+        family_name?: string;
+        picture?: string;
+        email_verified?: boolean;
+        nickname?: string;
+    };
+    accessToken: string;
+    idToken: string;
+    refreshToken?: string;
+    expiresAt: number;
+}
 
 /**
  * Get the current session from our custom JWT cookie.
@@ -16,7 +31,12 @@ export async function getNitroSession(): Promise<NitroSession | null> {
             return null;
         }
 
-        return await verifyNitroSessionToken(sessionCookie.value);
+        const secret = new TextEncoder().encode(
+            process.env.AUTH0_SECRET || "default-secret-change-me"
+        );
+
+        const { payload } = await jwtVerify(sessionCookie.value, secret);
+        return (payload as { session: NitroSession }).session;
     } catch {
         return null;
     }

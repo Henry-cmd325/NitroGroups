@@ -1,4 +1,5 @@
 import { apiClient } from "@/lib/api-client";
+import { getApiAccessToken } from "@/services/auth.service";
 
 export interface CreateMusicianRequest {
     userInfo: {
@@ -35,11 +36,13 @@ export const musiciansService = {
      * Backend: CreateMusicianRequest -> CreateMusicianCommand -> MusicianDto
      */
     create: async (request: CreateMusicianRequest): Promise<MusicianDto> => {
+        const accessToken = await getApiAccessToken();
         const { data } = await apiClient.post<MusicianDto>(
             "/musicians",
             request,
             {
                 headers: {
+                    Authorization: `Bearer ${accessToken}`,
                     "Idempotency-Key": crypto.randomUUID(),
                 },
             }

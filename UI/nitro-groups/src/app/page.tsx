@@ -1,15 +1,7 @@
 import Badge from "@/components/ui/Badge";
 import { PlayIcon, CrowdIcon, CalendarIcon } from "@/components/icons";
-import { getNitroSession } from "@/services/session";
-import { redirect } from "next/navigation";
 
-export default async function Home() {
-  const session = await getNitroSession();
-
-  if (session?.user) {
-    redirect("/dashboard");
-  }
-
+export default function Home() {
   return (
     <section className="relative overflow-hidden bg-linear-to-b from-muted/20 to-background">
       <div className="container mx-auto px-4 py-15 lg:py-18">

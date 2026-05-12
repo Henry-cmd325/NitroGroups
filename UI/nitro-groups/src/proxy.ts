@@ -1,12 +1,11 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
-import { verifyNitroSessionToken } from "@/services/session-token";
+import { jwtVerify } from "jose";
 
 // Backend API routes that should be proxied directly (via next.config.ts rewrites)
 const BACKEND_API_PREFIXES = [
   "/api/musicians",
   "/api/groups",
-  "/api/genres",
   "/api/users",
   "/api/auth/sync",
 ];
@@ -16,60 +15,32 @@ const CUSTOM_AUTH_ROUTES = [
   "/api/auth/login",
   "/api/auth/signup",
   "/api/auth/logout",
+  "/api/auth/token",
   "/api/auth/profile",
 ];
 
-const AUTH_PAGES = ["/login", "/signup"];
-
-const PROTECTED_ROUTE_PREFIXES = [
-  "/dashboard",
-  "/onboarding",
-  "/groupmedia",
-  "/groupavailability",
-];
-
-async function getSessionFromRequest(request: NextRequest) {
-  const sessionCookie = request.cookies.get("nitro_session");
-
-  if (!sessionCookie?.value) {
-    return null;
-  }
-
-  try {
-    return await verifyNitroSessionToken(sessionCookie.value);
-  } catch {
-    return null;
-  }
-}
-
-function redirectToLogin(request: NextRequest) {
-  const loginUrl = request.nextUrl.clone();
-  loginUrl.pathname = "/login";
-  loginUrl.search = "";
-  loginUrl.searchParams.set("returnTo", `${request.nextUrl.pathname}${request.nextUrl.search}`);
-  return NextResponse.redirect(loginUrl);
-}
-
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const session = await getSessionFromRequest(request);
 
-  if (pathname === "/" && session?.user) {
-    const dashboardUrl = request.nextUrl.clone();
-    dashboardUrl.pathname = "/dashboard";
-    dashboardUrl.search = "";
-    return NextResponse.redirect(dashboardUrl);
-  }
+  // Intercept /api/auth/profile to serve user from our custom session
+  if (pathname === "/api/auth/profile") {
+    try {
+      const sessionCookie = request.cookies.get("nitro_session");
+      if (!sessionCookie?.value) {
+        return NextResponse.json(null, { status: 401 });
+      }
 
-  if (AUTH_PAGES.includes(pathname) && session?.user) {
-    const dashboardUrl = request.nextUrl.clone();
-    dashboardUrl.pathname = "/dashboard";
-    dashboardUrl.search = "";
-    return NextResponse.redirect(dashboardUrl);
-  }
+      const secret = new TextEncoder().encode(
+        process.env.AUTH0_SECRET || "default-secret-change-me"
+      );
 
-  if (PROTECTED_ROUTE_PREFIXES.some(prefix => pathname === prefix || pathname.startsWith(`${prefix}/`)) && !session?.user) {
-    return redirectToLogin(request);
+      const { payload } = await jwtVerify(sessionCookie.value, secret);
+      const session = (payload as { session: { user: Record<string, unknown> } }).session;
+
+      return NextResponse.json(session.user);
+    } catch {
+      return NextResponse.json(null, { status: 401 });
+    }
   }
 
   // Custom auth routes: let Next.js route handlers serve them
@@ -77,20 +48,9 @@ export async function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Backend API routes: keep tokens server-side and attach them before Next rewrites to .NET.
+  // Backend API routes: pass through to Next.js rewrites → .NET backend
   if (BACKEND_API_PREFIXES.some(prefix => pathname.startsWith(prefix))) {
-    if (!session?.accessToken) {
-      return NextResponse.next();
-    }
-
-    const requestHeaders = new Headers(request.headers);
-    requestHeaders.set("Authorization", `Bearer ${session.accessToken}`);
-
-    return NextResponse.next({
-      request: {
-        headers: requestHeaders,
-      },
-    });
+    return NextResponse.next();
   }
 
   // All other routes (pages, static assets, etc.): pass through normally
