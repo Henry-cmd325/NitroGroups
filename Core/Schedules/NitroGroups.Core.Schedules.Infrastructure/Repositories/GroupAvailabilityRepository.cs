@@ -10,7 +10,7 @@ internal sealed class GroupAvailabilityRepository(NitroGroupsContext dbContext) 
 {
     public async Task<List<GroupAvailability>> GetAvailabilitiesByGroupIdAsync(long groupId, DateTimeOffset start, DateTimeOffset end, CancellationToken cancellationToken = default)
     {
-        return await dbContext.GroupAvailabilities
+        return await _context.GroupAvailabilities
             .Where(x => x.GroupId == groupId && x.StartAt < end && x.EndAt > start)
             .OrderBy(x => x.StartAt)
             .ToListAsync(cancellationToken);

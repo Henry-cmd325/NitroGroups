@@ -8,6 +8,7 @@ namespace NitroGroups.Shared.Infrastructure.Repository
 {
     public class GenericRepository<TEntity, TKey>(NitroGroupsContext context) : IGenericRepository<TEntity, TKey> where TEntity : class
     {
+        protected readonly NitroGroupsContext _context = context;
         private readonly DbSet<TEntity> _dbSet = context.Set<TEntity>();
         public async Task CreateAsync(TEntity entity)
         {
