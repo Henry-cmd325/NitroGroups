@@ -7,7 +7,7 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import type { DateSelectArg, EventChangeArg, EventInput, DatesSetArg, EventClickArg } from "@fullcalendar/core";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { schedulesService } from "@/services/schedules.service";
+import { groupAvailabilityService as schedulesService } from "../services/groupAvailability.service";
 
 import Card from "@/components/ui/Card";
 import Badge from "@/components/ui/Badge";

@@ -10,7 +10,7 @@ import { Alert, AlertDescription } from "@/components/ui/Alert";
 import Loader from "@/components/ui/Loader";
 import { ProgressSteps } from "@/components/ui/ProgressSteps";
 import PhoneInput from "@/components/ui/PhoneInput";
-import { groupsService, generateSlug } from "@/services/groups.service";
+import { groupsService, generateSlug } from "@/features/groups/services/groups.service";
 
 interface ManagerFormData {
     // Group info

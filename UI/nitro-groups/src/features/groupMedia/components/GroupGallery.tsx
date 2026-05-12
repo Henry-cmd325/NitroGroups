@@ -4,11 +4,11 @@ import { useRef, useState } from "react";
 import { Plus, Play, Image as ImageIcon, Film, MoreHorizontal, Music, Trash2, X } from "lucide-react";
 import { useQueryClient, useMutation, useQuery } from "@tanstack/react-query";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
-import { groupsService } from "@/services/groups.service";
+import { groupsService } from "@/features/groups/services/groups.service";
 import { uploadGroupMediaFile } from "@/lib/groupMediaUpload";
 import { Loader } from "@/components/ui";
-import type { GroupMediaResponse } from "@/types/GroupMedia";
-import type { MusicGroup } from "@/types/MusicGroup";
+import type { GroupMediaResponse } from "../types/GroupMedia";
+import type { MusicGroup } from "@/features/groups/types/MusicGroup";
 
 type GroupGalleryProps = {
     media?: GroupMediaResponse[];

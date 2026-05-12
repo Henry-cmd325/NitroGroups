@@ -1,9 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import { groupAvailabilityService } from "../services/groupAvailability.service";
-import type { ListScheduleRequest, ListScheduleResponse } from "../types/groupAvailability.types";
+import type { ScheduleEventDto } from "../services/groupAvailability.service";
 
-export const useGroupAvailability = (params: ListScheduleRequest) => {
-  const query = useQuery<ListScheduleResponse, Error>({
+export const useGroupAvailability = (params: { groupId: number; start: string; end: string }) => {
+  const query = useQuery<ScheduleEventDto[], Error>({
     queryKey: ["groupAvailability", params],
     queryFn: () => groupAvailabilityService.listSchedule(params),
     staleTime: 1000 * 60 * 5,
