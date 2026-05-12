@@ -29,9 +29,13 @@ export function resolveBackendApiBaseUrl(): string {
 }
 
 /**
- * Base de la API en el navegador. Siempre mismo origen para mantener el access token
- * en el servidor y dejar que el proxy de Next lo adjunte al backend.
+ * Base de la API en el navegador: `/api` o `NEXT_PUBLIC_API_BASE_URL` normalizado.
+ * Alineado con `apiClient` (mismo origen que el rewrite de Next).
  */
 export function getBrowserApiBase(): string {
-  return "/api";
+  if (typeof window === "undefined") {
+    return "/api";
+  }
+  const env = process.env.NEXT_PUBLIC_API_BASE_URL?.trim();
+  return env ? normalizeBackendApiBaseUrl(env) : "/api";
 }

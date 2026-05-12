@@ -2,7 +2,7 @@
 
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { LogoutButton } from "@/components/auth";
-import { UserTypeEnum } from "@/types/User";
+import { UserTypeEnum } from "@/features/groups/types/User";
 import Link from "next/link";
 
 export function UserMenu() {

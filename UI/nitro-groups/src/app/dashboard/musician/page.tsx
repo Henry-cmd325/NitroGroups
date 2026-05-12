@@ -1,11 +1,13 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { GroupCalendar, GroupProfile, GroupGallery } from "@/components/groups";
 import { Protector } from "@/components/auth";
 import { TabItem, TabbedSection } from "@/components/ui";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
-import { groupsService } from "@/services/groups.service";
+import { groupsService } from "@/features/groups/services/groups.service";
+import GroupProfile from "@/features/groups/components/GroupProfile";
+import GroupCalendar from "@/features/groupAvailability/components/GroupCalendar";
+import GroupGallery from "@/features/groupMedia/components/GroupGallery";
 
 export default function MusicianDashboardPage() {
   const { user } = useCurrentUser();

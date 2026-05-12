@@ -7,16 +7,6 @@ import { Button } from "@/components/ui/Button";
 import { Alert, AlertDescription } from "@/components/ui/Alert";
 import Loader from "@/components/ui/Loader";
 
-function getSafeReturnTo(): string {
-    const returnTo = new URLSearchParams(window.location.search).get("returnTo");
-
-    if (!returnTo?.startsWith("/") || returnTo.startsWith("//")) {
-        return "/dashboard";
-    }
-
-    return returnTo;
-}
-
 export default function LoginPage() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -43,7 +33,10 @@ export default function LoginPage() {
                 return;
             }
 
-            window.location.href = getSafeReturnTo();
+            // Login successful - set session flag and redirect
+            localStorage.setItem("nitro_logged_in", "true");
+            const returnTo = new URLSearchParams(window.location.search).get("returnTo") || "/dashboard/musician";
+            window.location.href = returnTo;
         } catch (err) {
             console.error("Login error:", err);
             setError("Error al conectar con el servidor");

@@ -6,7 +6,7 @@ import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { Button } from "@/components/ui/Button";
 import { ROUTES } from "@/config/routes";
 import { LogoutButton } from "@/components/auth";
-import { UserTypeEnum } from "@/types/User";
+import { UserTypeEnum } from "@/features/groups/types/User";
 
 export function MobileMenu() {
     const { user, auth0User, isLoading } = useCurrentUser();
