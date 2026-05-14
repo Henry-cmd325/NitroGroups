@@ -10,14 +10,9 @@ import Loader from "@/components/ui/Loader";
  */
 export default function OnboardingPage() {
     const router = useRouter();
-    const { user: authUser, isLoading, isAuthenticated } = useAuth();
+    const { isLoading, isAuthenticated } = useAuth();
 
     useEffect(() => {
-        if (!isLoading && !isAuthenticated) {
-            router.push("/login");
-            return;
-        }
-
         if (!isLoading && isAuthenticated) {
             // Check session storage for signup user type
             const signupUserType = typeof window !== 'undefined'
@@ -41,7 +36,7 @@ export default function OnboardingPage() {
                     router.push("/onboarding/musician");
             }
         }
-    }, [authUser, isLoading, isAuthenticated, router]);
+    }, [isLoading, isAuthenticated, router]);
 
     return (
         <div className="min-h-screen flex flex-col items-center justify-center gap-4">

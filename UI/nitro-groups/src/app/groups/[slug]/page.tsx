@@ -1,5 +1,5 @@
-import type { MusicGroup } from "@/types/MusicGroup";
-import GroupProfile from "@/components/groups/GroupProfile";
+import type { MusicGroup } from "@/features/groups/types/MusicGroup";
+import GroupProfile from "@/features/groups/components/GroupProfile";
 import { normalizeBackendApiBaseUrl } from "@/lib/backendBaseUrl";
 import { notFound } from "next/navigation";
 

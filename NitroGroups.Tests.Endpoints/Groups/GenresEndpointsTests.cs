@@ -35,4 +35,3 @@ public class GenresEndpointsTests(NitroGroupsWebAppFactory factory) : IClassFixt
         Assert.Empty(result!);
     }
 }
-

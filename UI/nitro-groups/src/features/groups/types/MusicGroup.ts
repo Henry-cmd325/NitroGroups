@@ -1,5 +1,5 @@
 import type { GenreResponse } from "./Genre";
-import type { GroupMediaResponse } from "./GroupMedia";
+import type { GroupMediaResponse } from "@/features/groupMedia/types/GroupMedia";
 
 export interface MusicGroup {
   id: number;

@@ -1,6 +1,6 @@
 import { apiClient } from "@/lib/api-client";
 import { getApiAccessToken } from "@/services/auth.service";
-import { User, CreateUserDto, UpdateUserDto } from "@/types/User";
+import { User, CreateUserDto, UpdateUserDto } from "@/features/groups/types/User";
 
 export const usersService = {
     /**

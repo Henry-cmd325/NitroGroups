@@ -1,9 +1,9 @@
 "use client";
 
 import { useAuth } from "@/hooks/useAuth";
-import { useQuery } from "@tanstack/react-query";
+import type { User } from "@/features/groups/types/User";
 import { usersService } from "@/services/users.service";
-import type { User } from "@/types/User";
+import { useQuery } from "@tanstack/react-query";
 
 export interface CurrentUserData {
     user: User | null;

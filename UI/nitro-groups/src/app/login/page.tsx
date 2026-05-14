@@ -33,8 +33,7 @@ export default function LoginPage() {
                 return;
             }
 
-            // Login successful - set session flag and redirect
-            localStorage.setItem("nitro_logged_in", "true");
+            // Login successful - redirect to the current default dashboard flow.
             const returnTo = new URLSearchParams(window.location.search).get("returnTo") || "/dashboard/musician";
             window.location.href = returnTo;
         } catch (err) {

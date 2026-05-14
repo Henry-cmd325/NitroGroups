@@ -61,4 +61,3 @@ public class AuthEndpointsTests(NitroGroupsWebAppFactory factory) : IClassFixtur
             $"Status inesperado: {response.StatusCode}");
     }
 }
-
