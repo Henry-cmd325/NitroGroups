@@ -42,8 +42,8 @@
   </Folder>
   <Folder Name="/Tests/">
     <Project Path="Tests/NitroGroups.Orchestrator.Gate/NitroGroups.Orchestrator.Gate.csproj" />
-    <Project Path="Tests/NitroGroups.Tests.Application/NitroGroups.Tests.Integration.csproj" Id="1859700f-aa59-40c9-9911-c4bd35f275ba" />
     <Project Path="Tests/NitroGroups.Tests.Endpoints/NitroGroups.Tests.Endpoints.csproj" />
+    <Project Path="Tests/NitroGroups.Tests.Integration/NitroGroups.Tests.Integration.csproj" />
   </Folder>
   <Project Path="AppHost/AppHost.AppHost/NitroGroups.AppHost.csproj" />
   <Project Path="AppHost/AppHost.ServiceDefaults/NitroGroups.ServiceDefaults.csproj" />
