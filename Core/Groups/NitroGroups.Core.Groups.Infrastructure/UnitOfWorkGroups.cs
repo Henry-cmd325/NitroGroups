@@ -14,12 +14,14 @@ namespace NitroGroups.Core.Groups.Infrastructure
         IGenericRepository<GroupMember, long> groupMembers,
         IGenericRepository<MusicGenre, long> musicGenres,
         IGenericRepository<GroupGenre, long> groupGenres,
-        IGenericRepository<GroupMedia, long> groupMedia) : UnitOfWork(context, outboxService), IUnitOfWorkGroups
+        IGenericRepository<GroupMedia, long> groupMedia,
+        IGenericRepository<GroupSong, long> groupSongs) : UnitOfWork(context, outboxService), IUnitOfWorkGroups
     {
         public IGenericRepository<Group, long> Groups { get; } = groups;
         public IGenericRepository<GroupMember, long> GroupMembers { get; } = groupMembers;
         public IGenericRepository<MusicGenre, long> MusicGenres { get; } = musicGenres;
         public IGenericRepository<GroupGenre, long> GroupGenres { get; } = groupGenres;
         public IGenericRepository<GroupMedia, long> GroupMedia { get; } = groupMedia;
+        public IGenericRepository<GroupSong, long> GroupSongs { get; } = groupSongs;
     }
 }

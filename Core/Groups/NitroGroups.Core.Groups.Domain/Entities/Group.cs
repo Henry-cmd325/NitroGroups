@@ -37,4 +37,5 @@ public class Group : AuditableModel
     public virtual ICollection<GroupMember> Members { get; set; } = [];
     public virtual ICollection<GroupGenre> Genres { get; set; } = [];
     public virtual ICollection<GroupMedia> Media { get; set; } = [];
+    public virtual ICollection<GroupSong> Songs { get; set; } = [];
 }

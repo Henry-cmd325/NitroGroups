@@ -10,5 +10,6 @@ namespace NitroGroups.Core.Groups.Application.Abstractions
         IGenericRepository<MusicGenre, long> MusicGenres { get; }
         IGenericRepository<GroupGenre, long> GroupGenres { get; }
         IGenericRepository<GroupMedia, long> GroupMedia { get; }
+        IGenericRepository<GroupSong, long> GroupSongs { get; }
     }
 }

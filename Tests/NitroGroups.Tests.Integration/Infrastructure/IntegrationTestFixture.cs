@@ -75,8 +75,9 @@ public sealed class IntegrationTestFixture : IDisposable
         var genres = new GenericRepository<MusicGenre, long>(context);
         var groupGenres = new GenericRepository<GroupGenre, long>(context);
         var media = new GenericRepository<GroupMedia, long>(context);
+        var songs = new GenericRepository<GroupSong, long>(context);
 
-        return new UnitOfWorkGroups(context, outbox, groups, members, genres, groupGenres, media);
+        return new UnitOfWorkGroups(context, outbox, groups, members, genres, groupGenres, media, songs);
     }
 
     public IUnitOfWorkSchedules CreateSchedulesUnitOfWork(NitroGroupsContext context)
