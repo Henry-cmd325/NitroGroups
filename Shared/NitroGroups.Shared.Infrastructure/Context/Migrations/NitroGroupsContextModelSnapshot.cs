@@ -406,6 +406,33 @@ namespace NitroGroups.Shared.Infrastructure.Context.Migrations
                     b.ToTable("group_members", (string)null);
                 });
 
+            modelBuilder.Entity("NitroGroups.Core.Groups.Domain.Entities.GroupSong", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<long>("GroupId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("group_id");
+
+                    b.Property<string>("TrackId")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("track_id");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GroupId", "TrackId")
+                        .IsUnique();
+
+                    b.ToTable("group_songs", (string)null);
+                });
+
             modelBuilder.Entity("NitroGroups.Core.Groups.Domain.Entities.MusicGenre", b =>
                 {
                     b.Property<long>("Id")
@@ -843,6 +870,17 @@ namespace NitroGroups.Shared.Infrastructure.Context.Migrations
                     b.Navigation("Group");
                 });
 
+            modelBuilder.Entity("NitroGroups.Core.Groups.Domain.Entities.GroupSong", b =>
+                {
+                    b.HasOne("NitroGroups.Core.Groups.Domain.Entities.Group", "Group")
+                        .WithMany("Songs")
+                        .HasForeignKey("GroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Group");
+                });
+
             modelBuilder.Entity("NitroGroups.Core.Users.Domain.Entities.Musician", b =>
                 {
                     b.HasOne("NitroGroups.Core.Users.Domain.Entities.User", "User")
@@ -861,6 +899,8 @@ namespace NitroGroups.Shared.Infrastructure.Context.Migrations
                     b.Navigation("Media");
 
                     b.Navigation("Members");
+
+                    b.Navigation("Songs");
                 });
 
             modelBuilder.Entity("NitroGroups.Core.Groups.Domain.Entities.MusicGenre", b =>

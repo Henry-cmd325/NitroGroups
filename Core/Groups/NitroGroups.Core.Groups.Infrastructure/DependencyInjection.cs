@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using NitroGroups.Core.Groups.Application.Abstractions;
 using NitroGroups.Core.Groups.Application.EventHandlers;
 using NitroGroups.Core.Groups.Application.Events;
+using NitroGroups.Core.Groups.Infrastructure.Services;
 using NitroGroups.Shared.EndpointMapping;
 
 namespace NitroGroups.Core.Groups.Infrastructure
@@ -14,6 +15,11 @@ namespace NitroGroups.Core.Groups.Infrastructure
             services.AddScoped<IUnitOfWorkGroups, UnitOfWorkGroups>();
             
             services.AddScoped<INotificationHandler<UsersEvents.SoloMusicianCreatedEvent>, SoloMusicianCreatedEventHandler>();
+
+            services.AddHttpClient<IMusicService, DeezerMusicService>(client =>
+            {
+                client.BaseAddress = new Uri("https://api.deezer.com/");
+            });
 
             services.AddEndpoints(typeof(DependencyInjection).Assembly);
 
