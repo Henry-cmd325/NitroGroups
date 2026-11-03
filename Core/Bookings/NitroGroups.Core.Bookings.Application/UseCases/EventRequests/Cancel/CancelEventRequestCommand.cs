@@ -46,7 +46,7 @@ public sealed class CancelEventRequestCommandHandler(
         catch (ConcurrencyConflictException)
         {
             // Otra persona respondió o canceló al mismo tiempo: solo gana el primer guardado.
-            return BookingResult<EventRequestResponse>.Failure(BookingErrorKind.Conflict, "La solicitud cambió mientras la respondías. Recarga para ver su estado actual.");
+            return BookingResult<EventRequestResponse>.Failure(BookingErrorKind.Conflict, "La solicitud cambió mientras la cancelabas. Recarga para ver su estado actual.");
         }
 
         var response = await EventRequestResponses.BuildAsync(request, groups, users, includeMessages: true, cancellationToken);

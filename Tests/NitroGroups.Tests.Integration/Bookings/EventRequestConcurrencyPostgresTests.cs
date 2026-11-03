@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using NitroGroups.Core.Bookings.Application;
+using NitroGroups.Core.Bookings.Application.UseCases.EventRequests.Cancel;
 using NitroGroups.Core.Bookings.Application.UseCases.EventRequests.Respond;
 using NitroGroups.Core.Bookings.Domain.Entities;
 using NitroGroups.Core.Bookings.Infrastructure.Persistence;
@@ -92,6 +93,52 @@ public class EventRequestConcurrencyPostgresTests(IntegrationTestFixture fixture
             await using var check = Context(db.ConnectionString);
             var statusEvents = await check.OutboxEvents.CountAsync(e => e.EventData.Contains($"\"EventRequestId\":{id},"));
             Assert.Equal(1, statusEvents); // (la semilla no emite "created": solo cuenta el cambio de estado)
+        }
+    }
+
+    [PostgresFact]
+    public async Task CancelarYAceptarALaVez_SoloUnoGana()
+    {
+        await using var db = await PostgresTestDatabase.CreateAsync();
+        await using (var ctx = Context(db.ConnectionString)) await ctx.Database.MigrateAsync();
+
+        var groups = Substitute.For<IGroupsModuleApi>();
+        groups.CanManageGroupAsync(GroupId, 1, Arg.Any<CancellationToken>()).Returns(true);
+        groups.GetGroupAsync(GroupId, Arg.Any<CancellationToken>()).Returns(new GroupSummary(GroupId, "grupo", "Grupo", "g@x.com", 1, true, null));
+        groups.GetGroupsAsync(Arg.Any<IEnumerable<long>>(), Arg.Any<CancellationToken>())
+            .Returns(new Dictionary<long, GroupSummary> { [GroupId] = new(GroupId, "grupo", "Grupo", "g@x.com", 1, true, null) });
+        var users = Substitute.For<IUsersModuleApi>();
+        users.GetUsersAsync(Arg.Any<IEnumerable<long>>(), Arg.Any<CancellationToken>()).Returns(new Dictionary<long, UserSummary>());
+
+        for (var i = 0; i < 10; i++)
+        {
+            var id = await SeedPendingAsync(db.ConnectionString);
+
+            async Task<bool> Accept()
+            {
+                await using var ctx = Context(db.ConnectionString);
+                var uow = fixture.CreateBookingsUnitOfWork(ctx, fixture.CreateBookingsOutbox(ctx));
+                return (await new RespondToEventRequestCommandHandler(uow, groups, users, TimeProvider.System)
+                    .Handle(new RespondToEventRequestCommand(id, 1, EventRequestDecision.Accept, null), default)).IsSuccess;
+            }
+
+            async Task<bool> Cancel()
+            {
+                await using var ctx = Context(db.ConnectionString);
+                var uow = fixture.CreateBookingsUnitOfWork(ctx, fixture.CreateBookingsOutbox(ctx));
+                var result = await new CancelEventRequestCommandHandler(uow, groups, users)
+                    .Handle(new CancelEventRequestCommand(id, 3), default); // 3 = el cliente de la semilla
+                Assert.True(result.IsSuccess || result.ErrorKind == BookingErrorKind.Conflict, result.Error);
+                return result.IsSuccess;
+            }
+
+            var results = await Task.WhenAll(Accept(), Cancel());
+
+            await using var check = Context(db.ConnectionString);
+            var events = await check.OutboxEvents.CountAsync(e => e.EventData.Contains($"\"EventRequestId\":{id},"));
+            // Aceptar y luego cancelar es una secuencia válida (2 eventos); lo que no puede pasar es
+            // que ambos guarden sobre la misma versión y se pierda una transición.
+            Assert.Equal(results.Count(ok => ok), events);
         }
     }
 }
