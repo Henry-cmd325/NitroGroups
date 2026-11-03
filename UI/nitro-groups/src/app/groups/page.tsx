@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ROUTES } from "@/config/routes";
 import { serverGet } from "@/lib/serverApi";
 import { formatEventDate, formatPrice } from "@/lib/format";
+import { buildApiQuery, pageHref, parseFilters, toUrlFilters, type ParsedFilters } from "@/features/search/searchParams";
 import { SearchForm } from "@/features/search/components/SearchForm";
 import { GroupResult } from "@/features/search/components/GroupResult";
 import type { GenreOption, GroupSearchItem, PagedResult, SearchFilters } from "@/features/search/types";
@@ -11,7 +12,7 @@ const PAGE_SIZE = 12;
 
 type Props = { searchParams: Promise<SearchFilters> };
 
-function headline(f: SearchFilters, genreName?: string) {
+function headline(f: ParsedFilters, genreName?: string) {
     const what = genreName ?? "Grupos en vivo";
     return f.ciudad ? `${what} en ${f.ciudad}` : `${what} para tu evento`;
 }
@@ -21,34 +22,22 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
     return { title: f.ciudad ? `Grupos en ${f.ciudad}` : "Explorar grupos" };
 }
 
-function toQuery(f: SearchFilters, page: number) {
-    const p = new URLSearchParams();
-    for (const [k, v] of Object.entries({ ...f, pagina: String(page) })) if (v) p.set(k, v);
-    return `${ROUTES.GROUPS.SEARCH}?${p.toString()}`;
-}
-
 export default async function SearchPage({ searchParams }: Props) {
-    const filters = await searchParams;
-    const page = Math.max(1, Number(filters.pagina) || 1);
-    const budget = Number(filters.presupuesto);
-
-    const api = new URLSearchParams({ page: String(page), size: String(PAGE_SIZE) });
-    if (filters.q) api.set("q", filters.q);
-    if (filters.genero) api.set("genre", filters.genero);
-    if (filters.ciudad) api.set("city", filters.ciudad);
-    if (filters.fecha && /^\d{4}-\d{2}-\d{2}$/.test(filters.fecha)) api.set("date", filters.fecha);
-    if (budget > 0) api.set("maxPrice", String(budget));
+    const filters = parseFilters(await searchParams);
+    const page = filters.page;
+    const budget = filters.budget ?? 0;
+    const api = buildApiQuery(filters, PAGE_SIZE);
 
     const [genres, results] = await Promise.all([
         serverGet<GenreOption[]>("/genres", 3600),
-        serverGet<PagedResult<GroupSearchItem>>(`/groups/search?${api.toString()}`, 30),
+        serverGet<PagedResult<GroupSearchItem>>(`/groups/search?${api}`, 30),
     ]);
 
     const genreName = genres?.find((g) => g.slug === filters.genero)?.name;
     const items = results?.items ?? [];
     const summary = [
         results ? `${results.totalCount} ${results.totalCount === 1 ? "grupo" : "grupos"}` : null,
-        filters.fecha ? `libres el ${formatEventDate(filters.fecha)}` : null,
+        filters.fecha ? `libres el ${formatEventDate(filters.fecha)}` : null, // fecha ya validada
         budget > 0 ? `hasta ${formatPrice(budget)}` : null,
     ].filter(Boolean).join(", ");
 
@@ -57,7 +46,7 @@ export default async function SearchPage({ searchParams }: Props) {
             <h1 className="type-poster text-[clamp(3rem,8vw,7rem)] max-w-[16ch]">{headline(filters, genreName)}</h1>
 
             <div className="mt-10 md:mt-14">
-                <SearchForm genres={genres ?? []} values={filters} showBudget id="resultados" submitLabel="Actualizar" />
+                <SearchForm genres={genres ?? []} values={toUrlFilters(filters)} showBudget id="resultados" submitLabel="Actualizar" />
             </div>
 
             {results === null ? (
@@ -91,11 +80,11 @@ export default async function SearchPage({ searchParams }: Props) {
                     {results.totalPages > 1 && (
                         <nav aria-label="Páginas de resultados" className="mt-20 flex items-center justify-between gap-6 text-lg">
                             {results.hasPreviousPage ? (
-                                <Link href={toQuery(filters, page - 1)} className="text-papel underline decoration-tungsteno decoration-2">Anteriores</Link>
+                                <Link href={pageHref(filters, page - 1)} className="text-papel underline decoration-tungsteno decoration-2">Anteriores</Link>
                             ) : <span />}
                             <span className="text-papel-2 tabular">Página {page} de {results.totalPages}</span>
                             {results.hasNextPage ? (
-                                <Link href={toQuery(filters, page + 1)} className="text-papel underline decoration-tungsteno decoration-2">Siguientes</Link>
+                                <Link href={pageHref(filters, page + 1)} className="text-papel underline decoration-tungsteno decoration-2">Siguientes</Link>
                             ) : <span />}
                         </nav>
                     )}

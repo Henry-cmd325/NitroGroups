@@ -1,4 +1,5 @@
 import { ROUTES } from "@/config/routes";
+import { todayInMexico } from "@/lib/format";
 import type { GenreOption, SearchFilters } from "../types";
 
 interface SearchFormProps {
@@ -18,7 +19,7 @@ const label = "block text-sm font-medium text-papel-2 mb-2";
  * búsqueda en la URL para compartirla o volver atrás.
  */
 export function SearchForm({ genres, values = {}, showBudget = false, submitLabel = "Buscar grupos", id = "buscar" }: SearchFormProps) {
-    const today = new Date().toISOString().slice(0, 10);
+    const today = todayInMexico();
 
     return (
         <form action={ROUTES.GROUPS.SEARCH} method="get" role="search" aria-label="Buscar grupos" className="w-full">

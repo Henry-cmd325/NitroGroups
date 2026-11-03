@@ -99,6 +99,8 @@ exports.onExecutePostLogin = async (event, api) => {
 
 Si cambias el namespace de los roles, configura `Auth0:RolesClaim` en la API.
 
+**Frontend:** `AUTH0_SECRET` firma la cookie de sesión y es obligatorio, con al menos 32 caracteres (`openssl rand -hex 32`). Sin él no se emite ni se acepta ninguna sesión.
+
 ## Base de datos y migraciones
 
 Cada módulo tiene su propio `DbContext`, su esquema de PostgreSQL (`users`, `groups`, `schedules`), su tabla de historial `__ef_migrations_history` y su `outbox_events`. Las migraciones viven en `Core/<Modulo>/NitroGroups.Core.<Modulo>.Infrastructure/Persistence/Migrations`.

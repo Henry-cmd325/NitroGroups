@@ -4,6 +4,7 @@ export const ROUTES = {
         LOGIN: "/login",
         LOGOUT: "/auth/logout",
         SIGNUP: "/signup",
+        SIGNUP_MUSICIAN: "/signup?tipo=musico",
         ONBOARDING: "/onboarding",
     },
     DASHBOARD: {

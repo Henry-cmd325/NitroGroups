@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ROUTES } from "@/config/routes";
 import { serverGet } from "@/lib/serverApi";
-import { formatPrice } from "@/lib/format";
+import { priceLabel } from "@/lib/format";
 import { Photo } from "@/components/ui/Photo";
 import { SearchForm } from "@/features/search/components/SearchForm";
 import type { GenreOption, GroupSearchItem, PagedResult } from "@/features/search/types";
@@ -20,11 +20,6 @@ const STEPS = [
         body: "El grupo acepta o te propone otra opción. Todo queda por escrito en la misma conversación.",
     },
 ];
-
-function priceOf(g: GroupSearchItem) {
-    const base = formatPrice(g.basePrice, g.currency);
-    return base ? `Desde ${base}` : "Precio a cotizar";
-}
 
 function Headliner({ group, size }: { group: GroupSearchItem; size: "lead" | "support" }) {
     const lead = size === "lead";
@@ -46,7 +41,7 @@ function Headliner({ group, size }: { group: GroupSearchItem; size: "lead" | "su
                 </Link>
             </h3>
             <p className="mt-2 text-papel-2">{[group.genres[0], group.locationText].filter(Boolean).join(" en ")}</p>
-            <p className="mt-1 text-papel font-semibold tabular">{priceOf(group)}</p>
+            <p className="mt-1 text-papel font-semibold tabular">{priceLabel(group)}</p>
         </article>
     );
 }
@@ -129,7 +124,7 @@ export default async function Home() {
                             solicitudes con fecha, horario y presupuesto. Tú decides cuáles aceptas.
                         </p>
                         <Link
-                            href={`${ROUTES.AUTH.SIGNUP}?tipo=musico`}
+                            href={ROUTES.AUTH.SIGNUP_MUSICIAN}
                             className="self-start inline-flex h-14 items-center px-7 bg-telon text-papel font-semibold no-underline hover:bg-telon-2 transition-colors"
                         >
                             Publicar mi grupo

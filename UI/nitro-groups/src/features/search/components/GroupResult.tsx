@@ -1,21 +1,13 @@
 import Link from "next/link";
 import { BadgeCheck, Star } from "lucide-react";
 import { Photo } from "@/components/ui/Photo";
-import { ROUTES } from "@/config/routes";
-import { formatPrice } from "@/lib/format";
+import { priceLabel } from "@/lib/format";
+import { profileHref } from "../searchParams";
 import type { GroupSearchItem } from "../types";
-
-function priceLine(g: GroupSearchItem) {
-    const base = formatPrice(g.basePrice, g.currency);
-    if (base) return `Desde ${base}`;
-    const hourly = formatPrice(g.hourlyRate, g.currency);
-    if (hourly) return `${hourly} por hora`;
-    return "Precio a cotizar";
-}
 
 /** Un grupo en los resultados: la foto manda, el nombre en voz de cartel. */
 export function GroupResult({ group, date, priority = false }: { group: GroupSearchItem; date?: string; priority?: boolean }) {
-    const href = date ? `${ROUTES.GROUPS.PUBLIC_PROFILE(group.slug)}?fecha=${date}` : ROUTES.GROUPS.PUBLIC_PROFILE(group.slug);
+    const href = profileHref(group.slug, date);
 
     return (
         <article className="group/result relative grid md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] gap-x-10 gap-y-5">
@@ -37,7 +29,7 @@ export function GroupResult({ group, date, priority = false }: { group: GroupSea
                 </p>
                 {group.description && <p className="text-papel max-w-[56ch] line-clamp-2">{group.description}</p>}
                 <div className="flex flex-wrap items-center gap-x-6 gap-y-2 pt-1">
-                    <span className="text-xl font-semibold text-papel tabular">{priceLine(group)}</span>
+                    <span className="text-xl font-semibold text-papel tabular">{priceLabel(group)}</span>
                     {group.totalReviews > 0 && (
                         <span className="inline-flex items-center gap-1.5 text-papel-2 tabular">
                             <Star className="size-4 fill-tungsteno text-tungsteno" aria-hidden />

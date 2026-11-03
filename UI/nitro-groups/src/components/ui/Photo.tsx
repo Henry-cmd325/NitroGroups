@@ -3,15 +3,15 @@ import { cn } from "@/lib/utils";
 interface PhotoProps {
     src: string | null | undefined;
     alt: string;
-    /** Texto del cartel cuando no hay foto (normalmente el nombre del grupo). */
+    /** Nombre del grupo: sin foto, el cartel de respaldo muestra su inicial. */
     fallbackTitle: string;
     className?: string;
     priority?: boolean;
 }
 
 /**
- * Foto de un grupo, recortada y con esquinas rectas. Sin foto, un cartel tipográfico con
- * el nombre: nunca una imagen genérica que finja ser el grupo.
+ * Foto de un grupo, recortada y con esquinas rectas. Sin foto, un cartel con la inicial
+ * del grupo: nunca una imagen genérica que finja ser el grupo.
  */
 export function Photo({ src, alt, fallbackTitle, className, priority = false }: PhotoProps) {
     if (!src) {

@@ -7,7 +7,8 @@
     "dev:turbo": "set NODE_TLS_REJECT_UNAUTHORIZED=0 && next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test": "vitest run"
   },
   "dependencies": {
     "@auth0/nextjs-auth0": "^4.14.0",
@@ -37,6 +38,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.1.4",
     "tailwindcss": "^4.1.18",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^3.2.7"
   }
 }
