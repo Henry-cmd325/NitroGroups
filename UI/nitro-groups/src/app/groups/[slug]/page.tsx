@@ -1,32 +1,36 @@
-import type { MusicGroup } from "@/features/groups/types/MusicGroup";
-import GroupProfile from "@/features/groups/components/GroupProfile";
-import { normalizeBackendApiBaseUrl } from "@/lib/backendBaseUrl";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import type { MusicGroup } from "@/features/groups/types/MusicGroup";
+import { PublicGroupProfile } from "@/features/groups/components/PublicGroupProfile";
+import { serverGet } from "@/lib/serverApi";
+import { isIsoDate } from "@/lib/format";
 
-type GroupPublicPageProps = {
+type Props = {
     params: Promise<{ slug: string }>;
+    searchParams: Promise<{ fecha?: string }>;
 };
 
-export default async function GroupPublicPage({ params }: GroupPublicPageProps) {
-    const { slug } = await params;
+async function loadGroup(slug: string) {
+    return serverGet<MusicGroup>(`/groups/slug/${encodeURIComponent(slug)}`, 60);
+}
 
-    if (!slug) {
-        notFound();
-    }
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+    const group = await loadGroup((await params).slug);
+    if (!group) return { title: "Grupo no encontrado" };
+    const genres = (group.genres ?? []).map((g) => g.name).join(", ");
+    const description = group.description || `${genres} en ${group.locationText}`;
+    const image = group.coverImageUrl ?? group.profilePictureUrl;
+    return {
+        title: group.groupName,
+        description,
+        openGraph: { title: group.groupName, description, images: image ? [image] : undefined },
+    };
+}
 
-    const apiRoot = normalizeBackendApiBaseUrl(
-        process.env.NEXT_PUBLIC_API_BASE_URL || process.env.BACKEND_API_URL
-    );
-    const response = await fetch(
-        `${apiRoot}/groups/slug/${encodeURIComponent(slug)}`,
-        { cache: "no-store" },
-    );
+export default async function GroupPublicPage({ params, searchParams }: Props) {
+    const [{ slug }, { fecha }] = await Promise.all([params, searchParams]);
+    const group = await loadGroup(slug);
+    if (!group) notFound();
 
-    if (!response.ok) {
-        notFound();
-    }
-
-    const group = (await response.json()) as MusicGroup;
-
-    return <GroupProfile mode="public" slug={slug} initialGroup={group} />;
+    return <PublicGroupProfile group={group} requestedDate={isIsoDate(fecha) ? fecha : undefined} />;
 }
