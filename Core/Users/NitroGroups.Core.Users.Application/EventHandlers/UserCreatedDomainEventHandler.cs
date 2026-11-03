@@ -1,7 +1,6 @@
 using Cortex.Mediator.Notifications;
 using Microsoft.Extensions.Logging;
 using NitroGroups.Core.Users.Application.Events;
-using NitroGroups.Shared.Domain.DomainEvents.Users.Enums;
 
 namespace NitroGroups.Core.Users.Application.EventHandlers
 {
@@ -9,20 +8,15 @@ namespace NitroGroups.Core.Users.Application.EventHandlers
     {
         private readonly ILogger<UserCreatedDomainEventHandler> _logger = logger;
 
-        public async Task Handle(UserEvents.UserCreatedDomainEvent domainEvent, CancellationToken cancellationToken)
+        public Task Handle(UserEvents.UserCreatedDomainEvent domainEvent, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Processing UserCreated domain event: UserId={UserId}, Email={Email}, Type={UserType}", 
                 domainEvent.UserId, domainEvent.Email, domainEvent.UserType);
 
-            
-            if (domainEvent.UserType == UserType.BandMember)
-            {
-                _logger.LogInformation("Band member created, triggering additional profile creation logic for UserId: {UserId}", 
-                    domainEvent.UserId);
-            }
-            
             _logger.LogInformation("UserCreated domain event processed successfully for UserId: {UserId}", 
                 domainEvent.UserId);
+
+            return Task.CompletedTask;
         }
     }
 }

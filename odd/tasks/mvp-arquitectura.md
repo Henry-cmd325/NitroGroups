@@ -22,7 +22,7 @@ Rama de trabajo: `claude/practical-keller-qzzaaq` (a partir de `develop`).
 - [x] T1 (S1) Eliminar `ai/`, workflow y test del orquestador, archivos raíz huérfanos, `Core/Availability` y Supabase.
 - [x] T2 (S5, S6) `ModuleDbContext`, outbox por módulo, DbContexts de Users/Groups/Schedules, contratos de módulo, nuevas migraciones y script de upgrade para bases existentes.
 - [x] T3 (S6) Tests de arquitectura de fronteras entre módulos.
-- [ ] T4 (S7) Modelo de roles y migración de datos.
+- [x] T4 (S7) Modelo de roles y migración de datos.
 - [ ] T5 (S2, S3, S4) FallbackPolicy, claims transformation, filtro `RequireGroupManager`, identidad desde el token, exception handler.
 - [ ] T6 (S8) Rutas de Schedules uniformes y frontend actualizado.
 - [ ] T7 (S9) Búsqueda (API + página `/groups`).
@@ -37,3 +37,4 @@ Rama de trabajo: `claude/practical-keller-qzzaaq` (a partir de `develop`).
 - Decisión: Gentle-AI 4.1.1 y engram v1.20.0 se instalan de forma efímera en el contenedor (pedido del usuario). Las decisiones se exportan a `.engram/`.
 - RDD sobre `4176b40`: `review assess` → riesgo medio, `review_due=false` (`under_budget`). Se cierra con `consent=declined`, sin review, siguiendo la regla del orquestador.
 - T3: `ModuleBoundariesTests` (4 tests: ensamblados sin referencias entre módulos, Shared sin Core, Domain sin Application/Infrastructure/EF, `.csproj` sin referencias que crucen fronteras salvo Bootstrap). Verificación: 85/85 en verde; al inyectar a propósito `Groups.Infrastructure -> Users.Application` el test falla con el mensaje esperado.
+- T4: `UserType` = Client(0) | Musician(1) y `GroupMemberRole` = Owner(0) | Member(1) | Manager(2). Migraciones `SimplifyRoleModel` (Users: BandMember→Musician, Admin→Client; Groups: Guest→Member y garantiza al dueño como Owner). El frontend mapea el flujo `band_member` a cuenta Musician. Verificación: 91/91 tests (incluye 6 nuevos de `GroupsModuleApi`), `tsc --noEmit` OK, migración probada sobre `nitro_old` con datos BandMember/Admin/Guest.

@@ -118,10 +118,11 @@ export async function POST(request: NextRequest) {
                 || idTokenPayload["https://nitrogroups.com/user_metadata"]?.user_type
                 || idTokenPayload.user_metadata?.user_type
                 || "client";
+            // "band_member" es solo el flujo de onboarding de manager: la cuenta es de músico.
             const userTypeMap: Record<string, number> = {
                 client: 0,
                 musician: 1,
-                band_member: 2,
+                band_member: 1,
             };
             const mappedType = userTypeMap[rawType] ?? 0;
 

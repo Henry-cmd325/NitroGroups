@@ -8,7 +8,7 @@ export interface CreateMusicianRequest {
         firstName: string;
         lastName: string;
         phone?: string;
-        userType: number;  // Backend enum: Client=0, Musician=1, BandMember=2
+        userType: number;  // Backend enum: Client=0, Musician=1
         origin: number;    // Backend enum: SignUp=0, GroupContact=1
     };
     musicianProfile: {

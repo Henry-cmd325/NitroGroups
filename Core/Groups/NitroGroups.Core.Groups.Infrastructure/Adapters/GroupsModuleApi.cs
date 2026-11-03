@@ -8,7 +8,7 @@ namespace NitroGroups.Core.Groups.Infrastructure.Adapters
     /// <summary>Implementación in-process de la API pública del módulo Groups.</summary>
     internal sealed class GroupsModuleApi(GroupsDbContext context) : IGroupsModuleApi
     {
-        private static readonly GroupMemberRole[] ManagerRoles = [GroupMemberRole.Leader];
+        private static readonly GroupMemberRole[] ManagerRoles = [GroupMemberRole.Owner, GroupMemberRole.Manager];
 
         public Task<bool> GroupExistsAsync(long groupId, CancellationToken cancellationToken = default)
             => context.Groups.AsNoTracking().AnyAsync(g => g.Id == groupId, cancellationToken);

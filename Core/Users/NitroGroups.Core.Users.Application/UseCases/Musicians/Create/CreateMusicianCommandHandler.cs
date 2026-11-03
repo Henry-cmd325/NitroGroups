@@ -81,7 +81,7 @@ namespace NitroGroups.Core.Users.Application.UseCases.Musicians.Create
 
             try 
             {
-                await _authService.ActualizarTipoUsuario(newMusician.User.Auth0Id, UserType.BandMember);
+                await _authService.ActualizarTipoUsuario(newMusician.User.Auth0Id, UserType.Musician);
             }
             catch (Exception)
             {

@@ -1,9 +1,8 @@
 // Backend enum values (API serializes as strings via JsonStringEnumConverter)
+// Tipo de cuenta. El rol dentro de un grupo (Owner/Manager/Member) va aparte.
 export const UserTypeEnum = {
     Client: "Client",
     Musician: "Musician",
-    BandMember: "BandMember",
-    Admin: "Admin",
 } as const;
 
 // Create a type from the object values

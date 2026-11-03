@@ -62,7 +62,7 @@ public class CreateMusicianCommandHandlerIntegrationTests(IntegrationTestFixture
         Assert.Equal("Bajista", persistedMusician!.ShortBio);
         Assert.True(persistedMusician.IsOpenToJoin);
 
-        await authService.Received(1).ActualizarTipoUsuario(existingUser.Auth0Id, UserType.BandMember);
+        await authService.Received(1).ActualizarTipoUsuario(existingUser.Auth0Id, UserType.Musician);
     }
 
     [Fact]

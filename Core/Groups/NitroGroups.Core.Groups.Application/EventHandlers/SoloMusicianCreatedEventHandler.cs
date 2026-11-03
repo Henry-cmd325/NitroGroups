@@ -61,7 +61,7 @@ namespace NitroGroups.Core.Groups.Application.EventHandlers
             {
                 GroupId = group.Id,
                 UserId = notification.IdUser,
-                Role = GroupMemberRole.Leader,
+                Role = GroupMemberRole.Owner,
                 IsActive = true,
                 JoinedAt = DateTime.UtcNow,
                 JoinedVia = JoinedVia.Manual

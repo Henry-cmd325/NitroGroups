@@ -56,7 +56,7 @@ namespace NitroGroups.Core.Groups.Application.UseCases.Groups.Create
             {
                 GroupId = group.Id,
                 UserId = command.OwnerUserId,
-                Role = GroupMemberRole.Leader,
+                Role = GroupMemberRole.Owner,
                 IsActive = true,
                 JoinedAt = DateTime.UtcNow,
                 JoinedVia = JoinedVia.Manual
