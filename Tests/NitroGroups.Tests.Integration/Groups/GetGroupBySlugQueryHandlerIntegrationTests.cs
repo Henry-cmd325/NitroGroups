@@ -11,7 +11,7 @@ public class GetGroupBySlugQueryHandlerIntegrationTests(IntegrationTestFixture f
     [Fact]
     public async Task Handle_CuandoExiste_DeberiaRetornarGrupoConGenresYMedia()
     {
-        await using var context = _fixture.CreateContext();
+        await using var context = _fixture.CreateGroupsContext();
         var mapper = _fixture.CreateMapper();
         var unitOfWork = _fixture.CreateGroupsUnitOfWork(context);
         var handler = new GetGroupBySlugQueryHandler(unitOfWork, mapper);
@@ -70,7 +70,7 @@ public class GetGroupBySlugQueryHandlerIntegrationTests(IntegrationTestFixture f
     [Fact]
     public async Task Handle_CuandoNoExiste_DeberiaRetornarFailure()
     {
-        await using var context = _fixture.CreateContext();
+        await using var context = _fixture.CreateGroupsContext();
         var mapper = _fixture.CreateMapper();
         var unitOfWork = _fixture.CreateGroupsUnitOfWork(context);
         var handler = new GetGroupBySlugQueryHandler(unitOfWork, mapper);

@@ -21,6 +21,7 @@ namespace NitroGroups.Core.Groups.Application.EventHandlers
                 IsActive = true,
                 JoinedVia = JoinedVia.Invitation
             });
+            await _unitOfWork.CompleteAsync();
 
             _logger.LogInformation("Usuario agregado al grupo con id: {0}", notification.GroupId);
         }

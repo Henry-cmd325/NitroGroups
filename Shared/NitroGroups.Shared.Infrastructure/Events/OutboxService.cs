@@ -4,20 +4,25 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NitroGroups.Shared.Abstractions.Events;
 using NitroGroups.Shared.Domain;
-using NitroGroups.Shared.Infrastructure.Context;
+using NitroGroups.Shared.Infrastructure.Persistence;
 using NitroGroups.Shared.Infrastructure.Context.Entities;
 using System.Text.Json;
 
 namespace NitroGroups.Shared.Infrastructure.Events
 {
-    public class OutboxService(
-        NitroGroupsContext context,
-        ILogger<OutboxService> logger,
+    /// <summary>
+    /// Outbox de un módulo: guarda los eventos en la tabla <c>outbox_events</c> del esquema
+    /// del módulo (misma transacción que sus datos) y los despacha a los handlers.
+    /// </summary>
+    public class OutboxService<TContext>(
+        TContext context,
+        ILogger<OutboxService<TContext>> logger,
         IServiceProvider serviceProvider,
         IEventProvider eventProvider) : IOutboxService
+        where TContext : ModuleDbContext
     {
-        private readonly NitroGroupsContext _context = context;
-        private readonly ILogger<OutboxService> _logger = logger;
+        private readonly TContext _context = context;
+        private readonly ILogger<OutboxService<TContext>> _logger = logger;
         private readonly IServiceProvider _serviceProvider = serviceProvider;
         private readonly IEventProvider _eventProvider = eventProvider;
         

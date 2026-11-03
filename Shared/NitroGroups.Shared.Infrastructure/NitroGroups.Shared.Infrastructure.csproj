@@ -16,15 +16,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Core\Groups\NitroGroups.Core.Groups.Domain\NitroGroups.Core.Groups.Domain.csproj" />
-    <ProjectReference Include="..\..\Core\Users\NitroGroups.Core.Users.Domain\NitroGroups.Core.Users.Domain.csproj" />
     <ProjectReference Include="..\NitroGroups.Shared.Abstractions\NitroGroups.Shared.Abstractions.csproj" />
     <ProjectReference Include="..\NitroGroups.Shared.Domain\NitroGroups.Shared.Domain.csproj" />
-    <ProjectReference Include="..\..\Core\Schedules\NitroGroups.Core.Schedules.Domain\NitroGroups.Core.Schedules.Domain.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Context\Migrations\" />
   </ItemGroup>
 
 </Project>

@@ -12,7 +12,7 @@ public class SyncUserCommandHandlerIntegrationTests(IntegrationTestFixture fixtu
     [Fact]
     public async Task Handle_CuandoUsuarioNoExiste_DeberiaCrearloConProfilePicture()
     {
-        await using var context = _fixture.CreateContext();
+        await using var context = _fixture.CreateUsersContext();
         var mapper = _fixture.CreateMapper();
         var unitOfWork = _fixture.CreateUsersUnitOfWork(context);
         var handler = new SyncUserCommandHandler(unitOfWork, mapper);
@@ -42,7 +42,7 @@ public class SyncUserCommandHandlerIntegrationTests(IntegrationTestFixture fixtu
     [Fact]
     public async Task Handle_CuandoUsuarioExiste_DeberiaActualizarLastLoginYSinDuplicar()
     {
-        await using var context = _fixture.CreateContext();
+        await using var context = _fixture.CreateUsersContext();
         var existingUser = new User("auth0|sync-existing", "existing@example.com", "Luis", "Ramírez", UserType.Client);
         context.Users.Add(existingUser);
         await context.SaveChangesAsync();

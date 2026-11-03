@@ -12,7 +12,7 @@ public class GetByAuth0IdHandlerIntegrationTests(IntegrationTestFixture fixture)
     [Fact]
     public async Task Handle_CuandoExiste_DeberiaRetornarUsuario()
     {
-        await using var context = _fixture.CreateContext();
+        await using var context = _fixture.CreateUsersContext();
         var user = new User("auth0|lookup", "lookup@example.com", "Marco", "Díaz", UserType.Client);
         context.Users.Add(user);
         await context.SaveChangesAsync();
@@ -31,7 +31,7 @@ public class GetByAuth0IdHandlerIntegrationTests(IntegrationTestFixture fixture)
     [Fact]
     public async Task Handle_CuandoNoExiste_DeberiaRetornarNull()
     {
-        await using var context = _fixture.CreateContext();
+        await using var context = _fixture.CreateUsersContext();
         var mapper = _fixture.CreateMapper();
         var unitOfWork = _fixture.CreateUsersUnitOfWork(context);
         var handler = new GetByAuth0IdHandler(unitOfWork, mapper);

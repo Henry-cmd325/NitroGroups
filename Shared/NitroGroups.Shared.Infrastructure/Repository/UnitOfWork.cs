@@ -1,13 +1,13 @@
 ﻿using NitroGroups.Shared.Abstractions.Events;
 using NitroGroups.Shared.Abstractions.Repository;
-using NitroGroups.Shared.Infrastructure.Context;
+using Microsoft.EntityFrameworkCore;
 using NitroGroups.Shared.Infrastructure.Repository.Adapters;
 
 namespace NitroGroups.Shared.Infrastructure.Repository
 {
-    public class UnitOfWork(NitroGroupsContext context, IOutboxService outboxService) : IUnitOfWork
+    public class UnitOfWork(DbContext context, IOutboxService outboxService) : IUnitOfWork
     {
-        private readonly NitroGroupsContext _context = context;
+        private readonly DbContext _context = context;
         public IOutboxService OutboxService { get; set; } = outboxService;
 
         public async Task<ITransaction> BeginTransactionAsync()

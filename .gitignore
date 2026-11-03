@@ -572,3 +572,6 @@ ai/.sandbox/
 
 # Logs de verdicts por run.
 ai/logs/
+
+# Gentle-AI (índice local de skills, rutas de la máquina)
+.atl/

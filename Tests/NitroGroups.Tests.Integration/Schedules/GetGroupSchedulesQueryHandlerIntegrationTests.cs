@@ -11,7 +11,7 @@ public class GetGroupSchedulesQueryHandlerIntegrationTests(IntegrationTestFixtur
     [Fact]
     public async Task Handle_DeberiaRetornarDisponibilidadesYOcupadosDelRango()
     {
-        await using var context = _fixture.CreateContext();
+        await using var context = _fixture.CreateSchedulesContext();
         var unitOfWork = _fixture.CreateSchedulesUnitOfWork(context);
         var handler = new GetGroupSchedulesQueryHandler(unitOfWork);
 
@@ -72,7 +72,7 @@ public class GetGroupSchedulesQueryHandlerIntegrationTests(IntegrationTestFixtur
     [Fact]
     public async Task Handle_NoDebeRetornarEventosFueraDelRangoONiDeOtroGrupo()
     {
-        await using var context = _fixture.CreateContext();
+        await using var context = _fixture.CreateSchedulesContext();
         var unitOfWork = _fixture.CreateSchedulesUnitOfWork(context);
         var handler = new GetGroupSchedulesQueryHandler(unitOfWork);
 
