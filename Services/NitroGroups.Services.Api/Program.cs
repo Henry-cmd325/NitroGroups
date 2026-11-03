@@ -1,9 +1,11 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using NitroGroups.Core.Bootstrap;
 using NitroGroups.Shared.Abstractions.Events;
+using NitroGroups.Shared.Abstractions.Services;
 using NitroGroups.Shared.EndpointMapping;
 using NitroGroups.Shared.Infrastructure;
 using Serilog;
@@ -53,7 +55,18 @@ builder.Services.AddAuthentication(options =>
 {
     builder.Configuration.Bind("Auth0", options);
 });
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(options =>
+{
+    // Deny-by-default: todo endpoint exige un usuario autenticado salvo que se marque
+    // explícitamente con .AllowAnonymous() (perfil público, búsqueda, géneros, salud).
+    options.FallbackPolicy = new AuthorizationPolicyBuilder()
+        .RequireAuthenticatedUser()
+        .Build();
+
+    options.AddPolicy(NitroClaimTypes.AdminPolicy, policy => policy
+        .RequireAuthenticatedUser()
+        .RequireRole(NitroClaimTypes.AdminRole));
+});
 
 builder.Services.AddProblemDetails(options =>
 {
@@ -131,33 +144,6 @@ if (app.Environment.IsDevelopment())
     }
 }
 
-// Register Event Types
-var eventProvider = app.Services.GetRequiredService<IEventProvider>();
-eventProvider.RegisterEventsFromAssembly(typeof(NitroGroups.Core.Users.Application.Events.UserEvents).Assembly);
-eventProvider.RegisterEventsFromAssembly(typeof(NitroGroups.Core.Groups.Application.Events.UsersEvents).Assembly);
-
-app.MapDefaultEndpoints();
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi();
-    app.UseSwaggerUI(c => c.SwaggerEndpoint("/openapi/v1.json", "v1"));
-}
-else
-{
-    app.UseHsts();
-}
-
-app.UseHttpsRedirection();
-
-app.UseCors("DefaultCorsPolicy");
-
-app.UseAuthentication();
-app.UseAuthorization();
-
-app.MapEndpoints();
-
 app.UseExceptionHandler(errorApp =>
 {
     errorApp.Run(async context =>
@@ -175,7 +161,8 @@ app.UseExceptionHandler(errorApp =>
             {
                 Status = StatusCodes.Status500InternalServerError,
                 Title = "Error inesperado",
-                Detail = feature?.Error.Message,
+                // El detalle de la excepción solo se expone en Development.
+                Detail = app.Environment.IsDevelopment() ? feature?.Error.Message : null,
                 Type = "https://httpstatuses.io/500"
             }
         };
@@ -183,6 +170,33 @@ app.UseExceptionHandler(errorApp =>
         await problemDetailsService.WriteAsync(problemDetailsContext);
     });
 });
+
+// Register Event Types
+var eventProvider = app.Services.GetRequiredService<IEventProvider>();
+eventProvider.RegisterEventsFromAssembly(typeof(NitroGroups.Core.Users.Application.Events.UserEvents).Assembly);
+eventProvider.RegisterEventsFromAssembly(typeof(NitroGroups.Core.Groups.Application.Events.UsersEvents).Assembly);
+
+app.MapDefaultEndpoints();
+
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
+    app.MapOpenApi().AllowAnonymous();
+    app.UseSwaggerUI(c => c.SwaggerEndpoint("/openapi/v1.json", "v1"));
+}
+else
+{
+    app.UseHsts();
+}
+
+app.UseHttpsRedirection();
+
+app.UseCors("DefaultCorsPolicy");
+
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.MapEndpoints();
 
 Log.Information("Starting NitroGroups API");
 app.Run();

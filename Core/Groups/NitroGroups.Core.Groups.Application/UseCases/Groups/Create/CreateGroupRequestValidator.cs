@@ -7,10 +7,6 @@ public class CreateGroupRequestValidator : AbstractValidator<CreateGroupRequest>
 {
     public CreateGroupRequestValidator()
     {
-        RuleFor(x => x.OwnerUserId)
-            .GreaterThan(0)
-            .WithMessage("OwnerUserId is required.");
-
         RuleFor(x => x.Slug)
             .NotEmpty()
             .WithMessage("Slug cannot be empty.")

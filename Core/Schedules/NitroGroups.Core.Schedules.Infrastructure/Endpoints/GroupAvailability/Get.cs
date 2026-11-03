@@ -25,6 +25,7 @@ public class Get : IEndpoint
             var result = await mediator.SendQueryAsync<GetGroupAvailabilityQuery, Result<ListScheduleResponse>>(query);
             return result.IsFailure ? Results.BadRequest(result.Error) : Results.Ok(result.Value);
         })
-        .WithTags("GroupAvailability");
+        .AllowAnonymous()
+            .WithTags("GroupAvailability");
     }
 }

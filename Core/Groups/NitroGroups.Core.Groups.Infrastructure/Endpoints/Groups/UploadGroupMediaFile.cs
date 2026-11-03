@@ -1,4 +1,3 @@
-using System.Security.Claims;
 using Cortex.Mediator;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -6,8 +5,8 @@ using Microsoft.AspNetCore.Routing;
 using NitroGroups.Shared.Abstractions.Services;
 using NitroGroups.Shared.Contracts;
 using NitroGroups.Shared.Contracts.Groups.Responses;
-using NitroGroups.Shared.Contracts.Modules;
 using NitroGroups.Shared.EndpointMapping;
+using NitroGroups.Shared.EndpointMapping.Filters;
 using static Microsoft.AspNetCore.Http.Results;
 
 namespace NitroGroups.Core.Groups.Infrastructure.Endpoints.Groups
@@ -24,17 +23,9 @@ namespace NitroGroups.Core.Groups.Infrastructure.Endpoints.Groups
             app.MapPost("api/groups/{groupId:long}/media/upload", async (
                 HttpContext http,
                 long groupId,
-                IUsersModuleApi usersModule,
-                IGroupsModuleApi groupsModule,
                 IGroupMediaObjectStorage groupMediaStorage,
                 CancellationToken cancellationToken) =>
             {
-                var auth0 = Auth0IdFromClaims(http.User);
-                if (string.IsNullOrEmpty(auth0))
-                {
-                    return Unauthorized();
-                }
-
                 if (!http.Request.HasFormContentType)
                 {
                     return Results.Json(
@@ -56,21 +47,6 @@ namespace NitroGroups.Core.Groups.Infrastructure.Endpoints.Groups
                     return Results.Json(
                         new { error = $"Tamaño máximo {MaxBytes / 1024 / 1024} MB." },
                         statusCode: StatusCodes.Status400BadRequest);
-                }
-
-                var userId = await usersModule.GetUserIdByAuth0IdAsync(auth0, cancellationToken);
-                if (userId is null)
-                {
-                    return Results.Json(
-                        new { error = "Usuario no registrado" },
-                        statusCode: StatusCodes.Status403Forbidden);
-                }
-
-                if (!await groupsModule.CanManageGroupAsync(groupId, userId.Value, cancellationToken))
-                {
-                    return Results.Json(
-                        new { error = "Este contenido no pertenece a tu grupo" },
-                        statusCode: StatusCodes.Status403Forbidden);
                 }
 
                 var mime = EffectiveMime(file);
@@ -107,19 +83,8 @@ namespace NitroGroups.Core.Groups.Infrastructure.Endpoints.Groups
 
                 return Ok(new { url = publicUrl, mediaType });
             })
-            .WithTags("Groups")
-            .RequireAuthorization();
-        }
-
-        private static string? Auth0IdFromClaims(ClaimsPrincipal user)
-        {
-            var id = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (!string.IsNullOrEmpty(id))
-            {
-                return id;
-            }
-
-            return user.FindFirst("sub")?.Value;
+            .RequireGroupManager()
+            .WithTags("Groups");
         }
 
         private static string EffectiveMime(IFormFile file)

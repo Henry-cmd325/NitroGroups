@@ -16,6 +16,7 @@ namespace NitroGroups.Core.Groups.Infrastructure.Persistence.Migrations
             migrationBuilder.Sql("UPDATE groups.group_members SET role = 1 WHERE role = 2;");
 
             // El dueño del grupo siempre figura como Owner activo en group_members.
+            // Literales: role 0 = GroupMemberRole.Owner, joined_via 2 = JoinedVia.Manual (enums guardados como int).
             migrationBuilder.Sql(@"
                 INSERT INTO groups.group_members (group_id, user_id, role, is_active, joined_at, joined_via, approved_by)
                 SELECT g.id, g.owner_user_id, 0, TRUE, now(), 2, 0

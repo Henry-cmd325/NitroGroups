@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using NitroGroups.Shared.Contracts.Modules;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using NitroGroups.Core.Groups.Application.Abstractions;
@@ -24,6 +26,20 @@ public class NitroGroupsWebAppFactory : WebApplicationFactory<Program>
 {
     public IMediator Mediator { get; } = Substitute.For<IMediator>();
     public IUnitOfWorkGroups UnitOfWorkGroups { get; } = BuildUnitOfWorkGroupsMock();
+
+    /// <summary>
+    /// Permisos de grupo simulados. Por defecto el usuario de test administra cualquier grupo;
+    /// los tests de seguridad lo reconfiguran para devolver false.
+    /// </summary>
+    public IGroupsModuleApi GroupsModule { get; } = BuildGroupsModuleMock();
+
+    private static IGroupsModuleApi BuildGroupsModuleMock()
+    {
+        var api = Substitute.For<IGroupsModuleApi>();
+        api.GroupExistsAsync(Arg.Any<long>(), Arg.Any<CancellationToken>()).Returns(true);
+        api.CanManageGroupAsync(Arg.Any<long>(), Arg.Any<long>(), Arg.Any<CancellationToken>()).Returns(true);
+        return api;
+    }
 
     private static IUnitOfWorkGroups BuildUnitOfWorkGroupsMock()
     {
@@ -53,6 +69,10 @@ public class NitroGroupsWebAppFactory : WebApplicationFactory<Program>
             services.RemoveAll<IUnitOfWorkGroups>();
             services.AddScoped(_ => UnitOfWorkGroups);
 
+            // Reemplazar la API pública de Groups (usada por el filtro RequireGroupManager)
+            services.RemoveAll<IGroupsModuleApi>();
+            services.AddSingleton(GroupsModule);
+
             // Reemplazar los DbContext de cada módulo por bases de datos en memoria
             ReplaceWithInMemory<UsersDbContext>(services);
             ReplaceWithInMemory<GroupsDbContext>(services);
@@ -76,6 +96,7 @@ public class NitroGroupsWebAppFactory : WebApplicationFactory<Program>
     private static void ReplaceWithInMemory<TContext>(IServiceCollection services) where TContext : DbContext
     {
         services.RemoveAll<DbContextOptions<TContext>>();
+        services.RemoveAll<IDbContextOptionsConfiguration<TContext>>(); // EF 10 guarda aquí la config de Npgsql
         services.RemoveAll<TContext>();
         services.AddDbContext<TContext>(options => options.UseInMemoryDatabase($"NitroGroupsTestDb_{typeof(TContext).Name}"));
     }

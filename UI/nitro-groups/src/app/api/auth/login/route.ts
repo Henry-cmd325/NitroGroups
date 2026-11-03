@@ -131,7 +131,11 @@ export async function POST(request: NextRequest) {
 
             const syncResponse = await fetch(`${backendUrl}/auth/sync`, {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                // La API toma la identidad del access token, no del body.
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${tokenData.access_token}`,
+                },
                 body: JSON.stringify({
                     auth0Id: idTokenPayload.sub,
                     email: idTokenPayload.email,

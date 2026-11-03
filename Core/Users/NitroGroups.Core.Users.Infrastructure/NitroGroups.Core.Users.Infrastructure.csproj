@@ -21,4 +21,8 @@
     <ProjectReference Include="..\NitroGroups.Core.Users.Application\NitroGroups.Core.Users.Application.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <InternalsVisibleTo Include="NitroGroups.Tests.Integration" />
+  </ItemGroup>
+
 </Project>

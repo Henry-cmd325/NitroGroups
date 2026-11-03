@@ -17,6 +17,33 @@ export const apiClient = axios.create({
     },
 });
 
+// La API es deny-by-default: en el navegador adjuntamos siempre el access token de la
+// sesión, salvo que la llamada ya traiga su propio Authorization. Sin sesión, la petición
+// sale anónima (sirve para los endpoints públicos: búsqueda, perfil de grupo, géneros).
+let cachedToken: { value: string; expiresAt: number } | null = null;
+
+async function getBrowserAccessToken(): Promise<string | null> {
+    if (cachedToken && cachedToken.expiresAt > Date.now()) return cachedToken.value;
+    try {
+        const response = await fetch('/api/auth/token');
+        if (!response.ok) return null;
+        const data = (await response.json()) as { accessToken?: string };
+        if (!data.accessToken) return null;
+        cachedToken = { value: data.accessToken, expiresAt: Date.now() + 60_000 };
+        return data.accessToken;
+    } catch {
+        return null;
+    }
+}
+
+apiClient.interceptors.request.use(async (config) => {
+    if (typeof window !== 'undefined' && !config.headers.Authorization) {
+        const token = await getBrowserAccessToken();
+        if (token) config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+});
+
 apiClient.interceptors.response.use(
     (response) => response,
     (error) => {

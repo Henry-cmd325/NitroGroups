@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using NitroGroups.Core.Schedules.Application.UseCases.GroupAvailability.Update;
 using NitroGroups.Shared.Contracts;
 using NitroGroups.Shared.EndpointMapping;
+using NitroGroups.Shared.EndpointMapping.Filters;
 
 namespace NitroGroups.Core.Schedules.Infrastructure.Endpoints.GroupAvailability;
 
@@ -29,6 +30,7 @@ public class Update : IEndpoint
             var result = await mediator.SendCommandAsync<UpdateGroupAvailabilityCommand, Result<UpdateScheduleItemResponse>>(command);
             return result.IsFailure ? Results.BadRequest(result.Error) : Results.Ok(result.Value);
         })
-        .WithTags("GroupAvailability");
+        .RequireGroupManager()
+            .WithTags("GroupAvailability");
     }
 }

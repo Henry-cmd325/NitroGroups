@@ -23,7 +23,7 @@ Rama de trabajo: `claude/practical-keller-qzzaaq` (a partir de `develop`).
 - [x] T2 (S5, S6) `ModuleDbContext`, outbox por módulo, DbContexts de Users/Groups/Schedules, contratos de módulo, nuevas migraciones y script de upgrade para bases existentes.
 - [x] T3 (S6) Tests de arquitectura de fronteras entre módulos.
 - [x] T4 (S7) Modelo de roles y migración de datos.
-- [ ] T5 (S2, S3, S4) FallbackPolicy, claims transformation, filtro `RequireGroupManager`, identidad desde el token, exception handler.
+- [x] T5 (S2, S3, S4) FallbackPolicy, claims transformation, filtro `RequireGroupManager`, identidad desde el token, exception handler.
 - [ ] T6 (S8) Rutas de Schedules uniformes y frontend actualizado.
 - [ ] T7 (S9) Búsqueda (API + página `/groups`).
 - [ ] T8 (S10) Módulo Bookings (API + emails + UI).
@@ -43,3 +43,4 @@ Rama de trabajo: `claude/practical-keller-qzzaaq` (a partir de `develop`).
   - R3-owner-not-seeded-as-member: el test no cubre al Owner como `GroupMember` con rol Owner. → se resuelve en T5.
   - R3-removed-enum-names-deserialization: los clientes que envíen "BandMember"/"Admin" como string reciben 400. Mitigado en el frontend; se documenta en el changelog del PR.
   - R3-migration-magic-joinedvia: el backfill usa `joined_via = 2` literal (Manual). → se agrega un comentario en la migración en T5.
+- T5: `FallbackPolicy` autenticada + política `Admin` (rol de Auth0); `NitroClaimsTransformation` (sub → `nitro:user_id`, roles de Auth0 → `ClaimTypes.Role`); `ICurrentUserService` lee solo claims; filtro `RequireGroupManager` (401 sin registrar, 404 sin grupo, 403 sin permiso) en todas las escrituras de grupo, media, géneros y horarios; `POST api/groups`, `auth/sync` y `musicians` toman la identidad del token antes de validar; `GET/POST api/users` solo admin; `users/auth0/{id}` solo el propio usuario o un admin. El exception handler queda primero en el pipeline y sin detalle fuera de Development; health y OpenAPI anónimos. Frontend: interceptor que adjunta el token en `apiClient` (`groupAvailability.service` no lo enviaba) y `login/route.ts` envía Bearer a `/auth/sync`. Bug latente de tests corregido: `IDbContextOptionsConfiguration<T>` dejaba Npgsql junto a InMemory. Se resuelven los WARNING R3-fixed-slug-seed, R3-owner-not-seeded-as-member y R3-migration-magic-joinedvia. Verificación: 126/126 tests (26 de seguridad + 4 de claims); sabotaje: un `.AllowAnonymous()` no declarado hace fallar la allowlist; runtime contra Postgres: públicos 200/404, privados 401 (también con token inválido); `tsc` OK.

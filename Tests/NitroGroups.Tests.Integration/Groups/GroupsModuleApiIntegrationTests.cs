@@ -31,6 +31,18 @@ public class GroupsModuleApiIntegrationTests(IntegrationTestFixture fixture) : I
     }
 
     [Fact]
+    public async Task CanManageGroupAsync_OwnerRegistradoComoMiembroOwner()
+    {
+        await using var context = fixture.CreateGroupsContext();
+        const long memberOwnerId = 20;
+        var groupId = await SeedGroupAsync(context);
+        context.GroupMembers.Add(new GroupMember { GroupId = groupId, UserId = memberOwnerId, Role = GroupMemberRole.Owner, IsActive = true });
+        await context.SaveChangesAsync();
+
+        Assert.True(await new GroupsModuleApi(context).CanManageGroupAsync(groupId, memberOwnerId));
+    }
+
+    [Fact]
     public async Task GetManagerUserIdsAsync_IncluyeOwnerYManagersActivos()
     {
         await using var context = fixture.CreateGroupsContext();
@@ -44,7 +56,7 @@ public class GroupsModuleApiIntegrationTests(IntegrationTestFixture fixture) : I
 
     private static async Task<long> SeedGroupAsync(Core.Groups.Infrastructure.Persistence.GroupsDbContext context)
     {
-        var group = new Group { OwnerUserId = OwnerId, Slug = "los-test", GroupName = "Los Test", Active = true };
+        var group = new Group { OwnerUserId = OwnerId, Slug = $"los-test-{Guid.NewGuid():N}", GroupName = "Los Test", Active = true };
         context.Groups.Add(group);
         await context.SaveChangesAsync();
 
