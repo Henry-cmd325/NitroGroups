@@ -122,4 +122,32 @@ public class SearchGroupsQueryHandlerIntegrationTests(IntegrationTestFixture fix
         Assert.Equal(SearchGroupsQueryHandler.MaxPageSize, result.PageSize);
         Assert.Equal(1, result.PageNumber);
     }
+
+    [Fact]
+    public async Task PaginaEnorme_DevuelvePaginaVacia_SinError()
+    {
+        var (context, _) = await SeedAsync();
+
+        var result = await Handler(context).Handle(new SearchGroupsQuery(null, null, null, null, null, Page: int.MaxValue, Size: 48), default);
+
+        Assert.Empty(result.Items);
+        Assert.Equal(3, result.TotalCount);
+    }
+
+    [Fact]
+    public async Task Empates_SeOrdenanDeFormaEstablePorId()
+    {
+        await using var context = fixture.CreateGroupsContext();
+        for (var i = 0; i < 4; i++)
+            context.Groups.Add(new Group { Slug = $"igual-{i}", GroupName = "Mismo Nombre", Active = true, IsAcceptingBookings = true });
+        await context.SaveChangesAsync();
+        var handler = Handler(context);
+
+        var paginas = new List<long>();
+        for (var p = 1; p <= 4; p++)
+            paginas.AddRange((await handler.Handle(new SearchGroupsQuery(null, null, null, null, null, p, 1), default)).Items.Select(i => i.Id));
+
+        Assert.Equal(paginas.Order(), paginas);
+        Assert.Equal(4, paginas.Distinct().Count());
+    }
 }

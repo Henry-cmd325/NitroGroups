@@ -28,12 +28,18 @@ namespace NitroGroups.Core.Groups.Infrastructure.Repositories
 
             var total = await query.CountAsync(cancellationToken);
 
+            // El offset se calcula en long: una página enorme da una página vacía, no un overflow.
+            var skip = (long)(page - 1) * size;
+            if (skip >= total)
+                return new PagedResult<GroupSearchItem>([], total, page, size);
+
             var rows = await query
                 .OrderByDescending(g => g.IsFeatured)
                 .ThenByDescending(g => g.AverageRating)
                 .ThenByDescending(g => g.TotalReviews)
                 .ThenBy(g => g.GroupName)
-                .Skip((page - 1) * size)
+                .ThenBy(g => g.Id) // desempate estable entre páginas
+                .Skip((int)skip)
                 .Take(size)
                 .Select(g => new
                 {

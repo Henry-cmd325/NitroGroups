@@ -20,8 +20,15 @@ namespace NitroGroups.Core.Groups.Application.UseCases.Groups.Search
     {
         public const int MaxPageSize = 48;
 
-        /// <summary>El día del evento se interpreta en hora de México (la plataforma opera en MXN).</summary>
-        private static readonly TimeZoneInfo EventTimeZone = TimeZoneInfo.FindSystemTimeZoneById("America/Mexico_City");
+        /// <summary>
+        /// El día del evento se interpreta en hora de México (la plataforma opera en MXN).
+        /// Si el host no trae tzdata (contenedores mínimos) se usa UTC-6, que es la hora del
+        /// centro de México todo el año desde que se eliminó el horario de verano en 2022.
+        /// </summary>
+        private static readonly Lazy<TimeZoneInfo> EventTimeZone = new(() =>
+            TimeZoneInfo.TryFindSystemTimeZoneById("America/Mexico_City", out var tz)
+                ? tz
+                : TimeZoneInfo.CreateCustomTimeZone("Mexico/Central", TimeSpan.FromHours(-6), "Mexico Central", "Mexico Central"));
 
         public async Task<PagedResult<GroupSearchItem>> Handle(SearchGroupsQuery query, CancellationToken cancellationToken)
         {
@@ -47,8 +54,8 @@ namespace NitroGroups.Core.Groups.Application.UseCases.Groups.Search
         {
             var start = date.ToDateTime(TimeOnly.MinValue);
             var end = date.AddDays(1).ToDateTime(TimeOnly.MinValue);
-            return (new DateTimeOffset(start, EventTimeZone.GetUtcOffset(start)),
-                    new DateTimeOffset(end, EventTimeZone.GetUtcOffset(end)));
+            return (new DateTimeOffset(start, EventTimeZone.Value.GetUtcOffset(start)),
+                    new DateTimeOffset(end, EventTimeZone.Value.GetUtcOffset(end)));
         }
 
         private static string? Normalize(string? value) =>
