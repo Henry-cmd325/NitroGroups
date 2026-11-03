@@ -22,6 +22,8 @@ export function availableActions(request: Pick<EventRequest, "status">, viewer: 
         decline: viewer === "Group" && status === "Pending",
         cancel: viewer === "Client" ? status === "Pending" || status === "Accepted" : status === "Accepted",
         message: status === "Pending" || status === "Accepted",
+        // Una solicitud cerrada no se reabre: otra fecha es una solicitud nueva.
+        requestAgain: viewer === "Client" && (status === "Declined" || status === "Cancelled"),
     };
 }
 

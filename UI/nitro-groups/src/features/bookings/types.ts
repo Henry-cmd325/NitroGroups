@@ -26,6 +26,7 @@ export interface EventRequest {
     currency: string;
     message: string;
     status: EventRequestStatus;
+    isSelfBooked: boolean;
     createdAt: string;
     respondedAt: string | null;
     responseMessage: string | null;

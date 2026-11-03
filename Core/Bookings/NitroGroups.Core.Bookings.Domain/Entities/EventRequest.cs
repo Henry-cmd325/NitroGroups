@@ -14,6 +14,12 @@ public class EventRequest : AuditableModel
 {
     public long GroupId { get; set; }
     public long ClientUserId { get; set; }
+
+    /// <summary>
+    /// La pidió alguien que administra el grupo (un evento acordado fuera de la plataforma).
+    /// Se permite, pero no debe contar en las métricas públicas del grupo.
+    /// </summary>
+    public bool IsSelfBooked { get; set; }
     public DateOnly EventDate { get; set; }
     public TimeOnly? StartTime { get; set; }
     public int DurationHours { get; set; }
@@ -93,6 +99,11 @@ public class EventRequest : AuditableModel
     /// <summary>Agrega un mensaje de una de las partes y avisa a la otra.</summary>
     public EventRequestMessage PostMessage(long senderUserId, EventRequestParty senderParty, string body, DateTime nowUtc)
     {
+        // Rechazada o cancelada es un estado final: otra fecha es otra solicitud, con su propia respuesta.
+        if (Status is EventRequestStatus.Declined or EventRequestStatus.Cancelled)
+            throw new InvalidEventRequestTransitionException(
+                $"Esta solicitud está {Describe(Status)}. Para hablar de otra fecha, envía una nueva solicitud.");
+
         var message = new EventRequestMessage
         {
             EventRequestId = Id,
@@ -135,7 +146,8 @@ public class EventRequest : AuditableModel
             EventDate = EventDate,
             OldStatus = old,
             NewStatus = newStatus,
-            ChangedBy = by
+            ChangedBy = by,
+            IsSelfBooked = IsSelfBooked
         });
     }
 

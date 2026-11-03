@@ -32,6 +32,9 @@ public sealed class CreateEventRequestCommandHandler(
         if (group is null)
             return BookingResult<EventRequestResponse>.Failure(BookingErrorKind.NotFound, "Grupo no encontrado.");
 
+        if (!group.IsActive)
+            return BookingResult<EventRequestResponse>.Failure(BookingErrorKind.Conflict, "Este grupo no está activo en la plataforma.");
+
         if (!group.IsAcceptingBookings)
             return BookingResult<EventRequestResponse>.Failure(BookingErrorKind.Conflict, "Este grupo no está recibiendo solicitudes por ahora.");
 
@@ -55,7 +58,9 @@ public sealed class CreateEventRequestCommandHandler(
             GuestCount = command.GuestCount,
             Budget = command.Budget,
             Currency = "MXN",
-            Message = command.Message.Trim()
+            Message = command.Message.Trim(),
+            // Permitido (decisión de producto), pero marcado para excluirlo de las métricas públicas.
+            IsSelfBooked = await groups.CanManageGroupAsync(command.GroupId, command.ClientUserId, cancellationToken)
         };
 
         await unitOfWork.EventRequests.CreateAsync(request);

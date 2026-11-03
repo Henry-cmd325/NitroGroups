@@ -23,6 +23,8 @@ namespace NitroGroups.Shared.Contracts.Bookings.Responses
         public string Currency { get; set; } = "MXN";
         public string Message { get; set; } = string.Empty;
         public EventRequestStatus Status { get; set; }
+        /// <summary>La cargó el propio grupo (no cuenta en métricas públicas).</summary>
+        public bool IsSelfBooked { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? RespondedAt { get; set; }
         public string? ResponseMessage { get; set; }

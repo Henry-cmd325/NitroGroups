@@ -89,6 +89,12 @@ namespace NitroGroups.Core.Bookings.Infrastructure.Persistence.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("guest_count");
 
+                    b.Property<bool>("IsSelfBooked")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false)
+                        .HasColumnName("is_self_booked");
+
                     b.Property<string>("LocationText")
                         .IsRequired()
                         .HasMaxLength(300)

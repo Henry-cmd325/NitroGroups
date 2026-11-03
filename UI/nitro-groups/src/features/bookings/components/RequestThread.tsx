@@ -68,6 +68,9 @@ export function RequestThread({ requestId, viewer }: { requestId: number; viewer
                     ) : title}
                 </h1>
                 <p className="mt-3 text-xl text-papel capitalize">{formatEventDate(r.eventDate)}</p>
+                {viewer === "Group" && r.isSelfBooked && (
+                    <p className="mt-2 text-sm text-papel-2">Cargada por el grupo: no cuenta en las reservas públicas.</p>
+                )}
             </header>
 
             <dl className="md:col-span-4 grid grid-cols-2 md:grid-cols-1 gap-6 content-start">
@@ -108,6 +111,15 @@ export function RequestThread({ requestId, viewer }: { requestId: number; viewer
                             {send.isPending ? "Enviando…" : "Enviar mensaje"}
                         </button>
                     </form>
+                )}
+
+                {actions.requestAgain && (
+                    <div className="bg-telon-2 p-5">
+                        <p className="text-papel">Esta solicitud está cerrada. Si quieres otra fecha con {r.groupName}, envíale una solicitud nueva.</p>
+                        <Link href={`${ROUTES.GROUPS.PUBLIC_PROFILE(r.groupSlug)}#solicitar`} className="mt-4 inline-flex h-12 items-center px-6 bg-tungsteno text-telon font-semibold no-underline hover:bg-tungsteno-press">
+                            Pedir otra fecha
+                        </Link>
+                    </div>
                 )}
 
                 {failed && <p role="alert" className="text-error">{apiErrorMessage(failed.error, "No se pudo completar la acción. Inténtalo de nuevo.")}</p>}

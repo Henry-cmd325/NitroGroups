@@ -1,3 +1,4 @@
+using NitroGroups.Core.Bookings.Domain.Entities;
 using NitroGroups.Shared.Abstractions.Repository;
 using Cortex.Mediator.Commands;
 using NitroGroups.Core.Bookings.Application.Abstractions;
@@ -28,7 +29,15 @@ public sealed class PostEventRequestMessageCommandHandler(
             return BookingResult<EventRequestMessageResponse>.NotFound();
 
         var party = participation.IsClient ? EventRequestParty.Client : EventRequestParty.Group;
-        var message = request.PostMessage(command.UserId, party, command.Body.Trim(), time.GetUtcNow().UtcDateTime);
+        EventRequestMessage message;
+        try
+        {
+            message = request.PostMessage(command.UserId, party, command.Body.Trim(), time.GetUtcNow().UtcDateTime);
+        }
+        catch (InvalidEventRequestTransitionException ex)
+        {
+            return BookingResult<EventRequestMessageResponse>.Failure(BookingErrorKind.Conflict, ex.Message);
+        }
 
         try
         {

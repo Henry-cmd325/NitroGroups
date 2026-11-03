@@ -20,7 +20,10 @@ export function RequestList({ requests, viewer }: { requests: EventRequest[]; vi
                             <Link href={`/solicitudes/${r.id}${viewer === "Group" ? "?como=grupo" : ""}`} className="no-underline text-papel font-semibold hover:text-tungsteno after:absolute after:inset-0">
                                 {who}
                             </Link>
-                            <p className="text-papel-2">{r.eventType} en {r.locationText}</p>
+                            <p className="text-papel-2">
+                                {r.eventType} en {r.locationText}
+                                {viewer === "Group" && r.isSelfBooked && <span className="block text-sm">Cargada por el grupo</span>}
+                            </p>
                         </div>
                         <p className="md:col-span-2 text-papel-2 tabular">{r.budget ? formatPrice(r.budget, r.currency) : `${r.durationHours} h`}</p>
                         <p className={`md:col-span-2 md:text-right text-sm ${needsAction ? "text-tungsteno font-semibold" : "text-papel-2"}`}>

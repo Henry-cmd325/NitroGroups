@@ -71,6 +71,7 @@ public static class EventRequestResponses
             Currency = r.Currency,
             Message = r.Message,
             Status = r.Status,
+            IsSelfBooked = r.IsSelfBooked,
             CreatedAt = r.CreatedAt,
             RespondedAt = r.RespondedAt,
             ResponseMessage = r.ResponseMessage,

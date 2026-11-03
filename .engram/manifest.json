@@ -104,6 +104,14 @@
       "sessions": 0,
       "memories": 1,
       "prompts": 0
+    },
+    {
+      "id": "4e0c8dc9",
+      "created_by": "vm",
+      "created_at": "2026-11-03T10:09:15Z",
+      "sessions": 0,
+      "memories": 1,
+      "prompts": 0
     }
   ]
 }

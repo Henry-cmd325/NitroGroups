@@ -16,6 +16,15 @@ describe("availableActions", () => {
     });
 });
 
+describe("pedir otra fecha", () => {
+    it("solo el cliente, y solo con la solicitud cerrada", () => {
+        expect(availableActions({ status: "Declined" }, "Client").requestAgain).toBe(true);
+        expect(availableActions({ status: "Cancelled" }, "Client").requestAgain).toBe(true);
+        expect(availableActions({ status: "Pending" }, "Client").requestAgain).toBe(false);
+        expect(availableActions({ status: "Declined" }, "Group").requestAgain).toBe(false);
+    });
+});
+
 describe("statusLabel", () => {
     it("nombra el pendiente según quién mira", () => {
         expect(statusLabel("Pending", "Client")).toBe("Esperando respuesta del grupo");

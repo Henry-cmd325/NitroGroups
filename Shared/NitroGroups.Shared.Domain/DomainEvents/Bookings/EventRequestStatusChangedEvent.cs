@@ -16,5 +16,8 @@ namespace NitroGroups.Shared.Domain.DomainEvents.Bookings
         public EventRequestStatus OldStatus { get; set; }
         public EventRequestStatus NewStatus { get; set; }
         public EventRequestParty ChangedBy { get; set; }
+
+        /// <summary>Solicitud cargada por el propio grupo: las métricas públicas deben ignorarla.</summary>
+        public bool IsSelfBooked { get; set; }
     }
 }

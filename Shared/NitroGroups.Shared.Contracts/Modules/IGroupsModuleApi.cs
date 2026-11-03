@@ -8,7 +8,8 @@ namespace NitroGroups.Shared.Contracts.Modules
         string Email,
         long OwnerUserId,
         bool IsAcceptingBookings,
-        string? ProfilePictureUrl);
+        string? ProfilePictureUrl,
+        bool IsActive = true);
 
     /// <summary>
     /// API pública del módulo Groups. Es la única forma en que otros módulos

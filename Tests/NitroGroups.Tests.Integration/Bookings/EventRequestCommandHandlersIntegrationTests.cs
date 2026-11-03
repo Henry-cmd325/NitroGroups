@@ -89,6 +89,42 @@ public class EventRequestCommandHandlersIntegrationTests : IClassFixture<Integra
     }
 
     [Fact]
+    public async Task Crear_GrupoInactivo_FallaYNoGuarda()
+    {
+        // Aunque "acepte reservas", un grupo inactivo no opera: gana el estado más restrictivo.
+        _scenario.Groups.GetGroupAsync(GroupId, Arg.Any<CancellationToken>()).Returns(Vargas with { IsActive = false });
+        await using var context = _fixture.CreateBookingsContext();
+
+        var result = await CreateHandler(context).Handle(CreateCommand(), CancellationToken.None);
+
+        Assert.Equal(BookingErrorKind.Conflict, result.ErrorKind);
+        Assert.Equal("Este grupo no está activo en la plataforma.", result.Error);
+        Assert.Empty(context.EventRequests);
+    }
+
+    [Fact]
+    public async Task Crear_PorUnManagerDelGrupo_SeMarcaComoAutosolicitud()
+    {
+        _scenario.Groups.CanManageGroupAsync(GroupId, ClientId, Arg.Any<CancellationToken>()).Returns(true);
+        await using var context = _fixture.CreateBookingsContext();
+
+        var result = await CreateHandler(context).Handle(CreateCommand(), CancellationToken.None);
+
+        Assert.True(result.IsSuccess);
+        Assert.True(Assert.Single(context.EventRequests).IsSelfBooked);
+    }
+
+    [Fact]
+    public async Task Crear_PorUnCliente_NoEsAutosolicitud()
+    {
+        await using var context = _fixture.CreateBookingsContext();
+
+        await CreateHandler(context).Handle(CreateCommand(), CancellationToken.None);
+
+        Assert.False(Assert.Single(context.EventRequests).IsSelfBooked);
+    }
+
+    [Fact]
     public async Task Crear_GrupoInexistente_DevuelveNotFound()
     {
         await using var context = _fixture.CreateBookingsContext();
@@ -346,5 +382,38 @@ public class EventRequestCommandHandlersIntegrationTests : IClassFixture<Integra
         Assert.Equal(BookingErrorKind.NotFound, result.ErrorKind);
         Assert.Empty(context.EventRequestMessages);
         Assert.Empty(context.OutboxEvents);
+    }
+
+    [Theory]
+    [InlineData("rechazada")]
+    [InlineData("cancelada")]
+    public async Task Mensaje_EnSolicitudCerrada_ConflictYNoGuarda(string estado)
+    {
+        await using var context = _fixture.CreateBookingsContext();
+        var request = await SeedAsync(context, configure: r =>
+        {
+            if (estado == "rechazada") r.Decline(null, DateTime.UtcNow);
+            else r.Cancel(EventRequestParty.Client);
+        });
+
+        var result = await MessageHandler(context).Handle(
+            new PostEventRequestMessageCommand(request.Id, ClientId, "¿Y si lo movemos al sábado?"), CancellationToken.None);
+
+        Assert.Equal(BookingErrorKind.Conflict, result.ErrorKind);
+        Assert.Contains("nueva solicitud", result.Error);
+        Assert.Empty(context.EventRequestMessages);
+        Assert.Empty(context.OutboxEvents);
+    }
+
+    [Fact]
+    public async Task Mensaje_EnSolicitudAceptada_SePermite()
+    {
+        await using var context = _fixture.CreateBookingsContext();
+        var request = await SeedAsync(context, configure: r => r.Accept(null, DateTime.UtcNow));
+
+        var result = await MessageHandler(context).Handle(
+            new PostEventRequestMessageCommand(request.Id, ClientId, "¿A qué hora llegan a montar?"), CancellationToken.None);
+
+        Assert.True(result.IsSuccess, result.Error);
     }
 }
