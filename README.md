@@ -89,7 +89,10 @@ Los access tokens de Auth0 no traen email ni roles por defecto. Agrega esta Acti
 ```js
 exports.onExecutePostLogin = async (event, api) => {
   const ns = 'https://nitrogroups.com';
-  api.accessToken.setCustomClaim(`${ns}/email`, event.user.email);
+  // Solo emails verificados: un email sin verificar no identifica a nadie.
+  if (event.user.email_verified) {
+    api.accessToken.setCustomClaim(`${ns}/email`, event.user.email);
+  }
   api.accessToken.setCustomClaim(`${ns}/roles`, event.authorization?.roles ?? []);
 };
 ```

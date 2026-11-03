@@ -13,8 +13,8 @@ public class NitroClaimsTransformationTests
     private static ClaimsPrincipal Authenticated(params Claim[] claims) =>
         new(new ClaimsIdentity([new Claim(ClaimTypes.NameIdentifier, "auth0|abc"), .. claims], "jwt"));
 
-    private static NitroClaimsTransformation Create(IUsersModuleApi users) =>
-        new(users, new MemoryCache(new MemoryCacheOptions()), new ConfigurationBuilder().Build());
+    private static NitroClaimsTransformation Create(IUsersModuleApi users, IMemoryCache? cache = null) =>
+        new(users, cache ?? new MemoryCache(new MemoryCacheOptions()), new ConfigurationBuilder().Build());
 
     [Fact]
     public async Task AgregaElIdInternoCuandoElUsuarioEstaSincronizado()
@@ -28,17 +28,23 @@ public class NitroClaimsTransformationTests
     }
 
     [Fact]
-    public async Task NoAgregaIdSiElUsuarioNoExiste_NiCacheaElFaltante()
+    public async Task UsuarioSinSincronizar_NoRecibeId_YElSyncInvalidaElCache()
     {
         var users = Substitute.For<IUsersModuleApi>();
         users.GetUserIdByAuth0IdAsync("auth0|abc", Arg.Any<CancellationToken>()).Returns((long?)null);
-        var transformation = Create(users);
+        var cache = new MemoryCache(new MemoryCacheOptions());
+        var transformation = Create(users, cache);
 
         var principal = await transformation.TransformAsync(Authenticated());
         Assert.Null(principal.FindFirst(NitroClaimTypes.UserId));
 
-        // Se sincroniza: como el faltante no se cacheó, la petición siguiente ya ve el id.
+        // El "no existe" se cachea: una segunda petición no vuelve a consultar.
+        await transformation.TransformAsync(Authenticated());
+        await users.Received(1).GetUserIdByAuth0IdAsync("auth0|abc", Arg.Any<CancellationToken>());
+
+        // POST api/auth/sync crea el usuario e invalida la entrada.
         users.GetUserIdByAuth0IdAsync("auth0|abc", Arg.Any<CancellationToken>()).Returns(7L);
+        cache.Remove(NitroClaimsTransformation.CacheKey("auth0|abc"));
         principal = await transformation.TransformAsync(Authenticated());
         Assert.Equal("7", principal.FindFirst(NitroClaimTypes.UserId)?.Value);
     }

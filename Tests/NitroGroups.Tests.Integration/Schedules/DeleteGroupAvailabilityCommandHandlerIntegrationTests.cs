@@ -70,6 +70,6 @@ public class DeleteGroupAvailabilityCommandHandlerIntegrationTests : IClassFixtu
         var result = await handler.Handle(new DeleteGroupAvailabilityCommand(55, ajeno.Id), CancellationToken.None);
 
         Assert.True(result.IsFailure);
-        Assert.Single(context.GroupAvailabilities);
+        Assert.Contains(context.GroupAvailabilities, a => a.Id == ajeno.Id);
     }
 }

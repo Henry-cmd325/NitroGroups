@@ -51,3 +51,4 @@ Rama de trabajo: `claude/practical-keller-qzzaaq` (a partir de `develop`).
   - R3-timing-dependent-cache-test → el "no existe" ya no se cachea; test determinista + test de caché.
   - R3-admin-bypass-untested / getbyauth0-admin → el admin pasa antes del chequeo de sincronización; 3 tests.
   - R1-browser-token-cache / R3-anon-token-fetch → caché por `exp` del JWT, se limpia con 401 y logout, el anónimo se cachea 5 s.
+- RDD sobre `a92293f` (fix security): riesgo alto, consentimiento: revisar → **APROBADA** (acknowledged). Se atienden en la unidad siguiente: R1-001 (la Action de Auth0 solo agrega el email si `email_verified`), R1-002 (el "no existe" se cachea 30 s y `POST api/auth/sync` invalida la entrada), R3 (los tests de admin afirman 200 real; el test del IDOR verifica por id; tests de precedencia del claim de email).

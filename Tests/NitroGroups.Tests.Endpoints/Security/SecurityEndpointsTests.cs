@@ -130,28 +130,28 @@ public class SecurityEndpointsTests : IClassFixture<NitroGroupsWebAppFactory>
         Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
     }
 
-    [Fact]
-    public async Task Admin_PuedeAdministrarUnGrupoAjeno()
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task Admin_PuedeAdministrarUnGrupoAjeno_AunSinSincronizar(bool unregistered)
     {
-        using var request = new HttpRequestMessage(HttpMethod.Post, $"api/groups/{ForeignGroupId}/genres") { Content = JsonContent.Create(new AssignGenresRequest()) };
+        _mediator
+            .SendCommandAsync<NitroGroups.Core.Groups.Application.UseCases.Groups.Update.UpdateGroupCommand, Result<GroupResponse>>(
+                Arg.Is<NitroGroups.Core.Groups.Application.UseCases.Groups.Update.UpdateGroupCommand>(c => c.Id == ForeignGroupId))
+            .Returns(Result<GroupResponse>.Success(new GroupResponse { Id = ForeignGroupId, Slug = "ajeno" }));
+
+        using var request = new HttpRequestMessage(HttpMethod.Put, $"api/groups/{ForeignGroupId}")
+        {
+            Content = JsonContent.Create(new UpdateGroupRequest { Slug = "ajeno", GroupName = "Ajeno", Email = "a@b.com", Currency = "MXN" })
+        };
         request.Headers.Add(TestAuthHandler.AdminHeader, "1");
+        if (unregistered) request.Headers.Add(TestAuthHandler.UnregisteredHeader, "1");
 
         var response = await _client.SendAsync(request);
 
-        Assert.NotEqual(HttpStatusCode.Forbidden, response.StatusCode);
-        Assert.NotEqual(HttpStatusCode.Unauthorized, response.StatusCode);
-    }
-
-    [Fact]
-    public async Task Admin_SinSincronizar_PuedeAdministrarGrupos()
-    {
-        using var request = new HttpRequestMessage(HttpMethod.Post, $"api/groups/{ForeignGroupId}/genres") { Content = JsonContent.Create(new AssignGenresRequest()) };
-        request.Headers.Add(TestAuthHandler.AdminHeader, "1");
-        request.Headers.Add(TestAuthHandler.UnregisteredHeader, "1");
-
-        var response = await _client.SendAsync(request);
-
-        Assert.NotEqual(HttpStatusCode.Unauthorized, response.StatusCode);
+        // 200 prueba que el filtro dejó pasar y que el handler se ejecutó.
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Equal("ajeno", (await response.Content.ReadFromJsonAsync<GroupResponse>(ApiJsonOptions.Default))!.Slug);
     }
 
     [Fact]
@@ -160,9 +160,14 @@ public class SecurityEndpointsTests : IClassFixture<NitroGroupsWebAppFactory>
         using var request = new HttpRequestMessage(HttpMethod.Get, $"api/users/auth0/{Uri.EscapeDataString("auth0|otro")}");
         request.Headers.Add(TestAuthHandler.AdminHeader, "1");
 
+        _mediator
+            .SendQueryAsync<NitroGroups.Core.Users.Application.UseCases.Users.GetByAuth0Id.GetByAuth0IdQuery, UserDto?>(
+                Arg.Is<NitroGroups.Core.Users.Application.UseCases.Users.GetByAuth0Id.GetByAuth0IdQuery>(q => q.Auth0Id == "auth0|otro"))
+            .Returns(new UserDto { Id = 50, Auth0Id = "auth0|otro" });
+
         var response = await _client.SendAsync(request);
 
-        Assert.NotEqual(HttpStatusCode.Forbidden, response.StatusCode);
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
     }
 
     [Fact]
