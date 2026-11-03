@@ -38,6 +38,7 @@ namespace NitroGroups.Core.Groups.Infrastructure
             services.AddModuleRepository<GroupsDbContext, MusicGenre>();
             services.AddModuleRepository<GroupsDbContext, GroupGenre>();
             services.AddModuleRepository<GroupsDbContext, GroupMedia>();
+            services.AddScoped<IGroupSearchRepository, Repositories.GroupSearchRepository>();
             services.AddModuleUnitOfWork<IUnitOfWorkGroups, UnitOfWorkGroups, GroupsDbContext>();
             return services;
         }

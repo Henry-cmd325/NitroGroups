@@ -15,6 +15,7 @@ Rama de trabajo: `claude/practical-keller-qzzaaq` (a partir de `develop`).
 - **S8 — Rutas REST consistentes.** `api/groups/{groupId:long}/...` en plural y con nombres uniformes.
 - **S9 — Búsqueda pública de grupos** por texto, género, ciudad y rango de precio, paginada.
 - **S10 — Solicitudes de evento.** Un cliente envía una solicitud a un grupo. El grupo la acepta o la rechaza y el cliente puede cancelarla. Ambas partes intercambian mensajes dentro de la solicitud y reciben un aviso por email (vía outbox).
+- **S12 — Rediseño profesional.** Pedido textual: "mejores el diseño horrible qu etiene todo generico y que s eve hecho por inexpertos con IA, quiero que instales estas skills y le saques el mejor provecho para hacer algo con mucha experiencia de usuario, comodo, que se sienta profesional a niveles exorbitantes". Dirección elegida por el usuario: **"Escenario nocturno premium"** (fondo oscuro profundo, acento cálido tipo luz de escenario, tipografía editorial grande, fotos de los grupos como protagonistas). Skills: frontend-design (Anthropic), ui-ux-pro-max, web-design-guidelines + react-best-practices (Vercel), impeccable + taste-skill. Huashu Design no se instala (decisión del usuario, licencia ambigua).
 - **S11 — CI.** Cada PR compila y prueba el backend (con PostgreSQL) y hace lint y build del frontend.
 
 ## Tasks
@@ -28,6 +29,8 @@ Rama de trabajo: `claude/practical-keller-qzzaaq` (a partir de `develop`).
 - [ ] T7 (S9) Búsqueda (API + página `/groups`).
 - [ ] T8 (S10) Módulo Bookings (API + emails + UI).
 - [ ] T9 (S11) Workflow de CI + lint del frontend en verde + docs.
+- [ ] T10 (S12) Sistema de diseño (tokens, tipografía, componentes base) + landing + navegación.
+- [ ] T11 (S12) Rediseño de perfil de grupo, dashboards, onboarding y auth sobre el sistema nuevo.
 
 ## Log
 
@@ -53,3 +56,5 @@ Rama de trabajo: `claude/practical-keller-qzzaaq` (a partir de `develop`).
   - R1-browser-token-cache / R3-anon-token-fetch → caché por `exp` del JWT, se limpia con 401 y logout, el anónimo se cachea 5 s.
 - RDD sobre `a92293f` (fix security): riesgo alto, consentimiento: revisar → **APROBADA** (acknowledged). Se atienden en la unidad siguiente: R1-001 (la Action de Auth0 solo agrega el email si `email_verified`), R1-002 (el "no existe" se cachea 30 s y `POST api/auth/sync` invalida la entrada), R3 (los tests de admin afirman 200 real; el test del IDOR verifica por id; tests de precedencia del claim de email).
 - RDD sobre `6285111`: riesgo alto, revisar → **APROBADA** (acknowledged), risk sin hallazgos. Follow-up registrado (reliability, no bloqueante): el caché negativo puede tener una carrera con `cache.Remove` del sync y es local a cada instancia. Con varias instancias, conviene cachear el "no existe" ≤ 5 s o pasar a un caché distribuido con invalidación por evento `UserSynced`. No bloquea el MVP (una sola instancia).
+- Skills de diseño instaladas en `~/.claude/skills` (frontend-design, web-design-guidelines, react-best-practices, ui-ux-pro-max, impeccable, taste-skill). El launcher binario de impeccable fue bloqueado por el entorno (código externo): se usa su camino degradado (lectura directa de las referencias).
+- T7 (API): `GET api/groups/search` público (q, genre, city, maxPrice, date, page, size≤48). Solo grupos activos que aceptan reservas; orden: destacado, calificación, reseñas, nombre; imagen = portada → perfil → foto principal. La fecha se interpreta en `America/Mexico_City` y la disponibilidad se consulta a Schedules por `ISchedulesModuleApi` (busy schedules + bloques no disponibles). Migración `SeedMusicGenres` (14 géneros, idempotente). Verificación: 76 + 73 tests en verde (10 nuevos de búsqueda/disponibilidad); runtime contra Postgres: texto, género, ciudad, presupuesto y fecha devuelven lo esperado (una boda de 20:00 a 01:00 bloquea ambos días).

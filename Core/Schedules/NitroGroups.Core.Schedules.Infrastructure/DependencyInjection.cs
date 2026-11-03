@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using NitroGroups.Core.Schedules.Application.Abstractions;
 using NitroGroups.Core.Schedules.Infrastructure.Persistence;
 using NitroGroups.Core.Schedules.Infrastructure.Repositories;
+using NitroGroups.Shared.Contracts.Modules;
 using NitroGroups.Shared.EndpointMapping;
 using NitroGroups.Shared.Infrastructure.Persistence;
 
@@ -14,6 +15,7 @@ public static class DependencyInjection
     {
         services.AddModuleDbContext<SchedulesDbContext>(configuration, SchedulesDbContext.SchemaName);
         services.AddSchedulesRepositories();
+        services.AddScoped<ISchedulesModuleApi, Adapters.SchedulesModuleApi>();
 
         services.AddEndpoints(typeof(DependencyInjection).Assembly);
 
