@@ -26,11 +26,12 @@ Rama de trabajo: `claude/practical-keller-qzzaaq` (a partir de `develop`).
 - [x] T4 (S7) Modelo de roles y migración de datos.
 - [x] T5 (S2, S3, S4) FallbackPolicy, claims transformation, filtro `RequireGroupManager`, identidad desde el token, exception handler.
 - [ ] T6 (S8) Rutas de Schedules uniformes y frontend actualizado.
-- [ ] T7 (S9) Búsqueda (API + página `/groups`).
-- [ ] T8 (S10) Módulo Bookings (API + emails + UI).
+- [x] T7 (S9) Búsqueda (API + página `/groups`). Inline. `8eb3520`, `68e5ee3`, `f86345a`, `52957e0`.
+- [ ] T8a (S10) Módulo Bookings, backend (API + emails vía outbox). Ruta: **delegado** (motivo: backstop de contexto del orquestador + unidad paralela con superficie disjunta de T11).
+- [ ] T8b (S10) UI de solicitudes (formulario en perfil, bandejas en dashboards). Inline, después de T8a.
 - [ ] T9 (S11) Workflow de CI + lint del frontend en verde + docs.
 - [ ] T10 (S12) Sistema de diseño (tokens, tipografía, componentes base) + landing + navegación.
-- [ ] T11 (S12) Rediseño de perfil de grupo, dashboards, onboarding y auth sobre el sistema nuevo.
+- [ ] T11 (S12) Rediseño de perfil de grupo, dashboards, onboarding y auth sobre el sistema nuevo. Inline, en paralelo a T8a (solo `UI/`).
 
 ## Log
 
