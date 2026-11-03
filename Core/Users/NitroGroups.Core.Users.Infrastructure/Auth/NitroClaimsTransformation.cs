@@ -10,7 +10,7 @@ namespace NitroGroups.Core.Users.Infrastructure.Auth
     /// <summary>
     /// Enriquece el principal autenticado con:
     /// - <see cref="NitroClaimTypes.UserId"/>: id interno del usuario, resuelto a partir de <c>sub</c>
-    ///   (cacheado unos minutos; si el usuario todavía no se sincronizó, no se agrega).
+    ///   (cacheado 5 minutos; si el usuario todavía no se sincronizó, no se agrega ni se cachea).
     /// - <see cref="ClaimTypes.Role"/> a partir del claim de roles de Auth0 (configurable en
     ///   <c>Auth0:RolesClaim</c>), para poder usar <c>IsInRole("admin")</c>.
     /// </summary>
@@ -42,16 +42,18 @@ namespace NitroGroups.Core.Users.Infrastructure.Auth
             if (string.IsNullOrEmpty(auth0Id))
                 return principal;
 
-            var userId = await cache.GetOrCreateAsync($"nitro:uid:{auth0Id}", async entry =>
+            var cacheKey = $"nitro:uid:{auth0Id}";
+            if (!cache.TryGetValue(cacheKey, out long userId))
             {
-                var id = await usersModule.GetUserIdByAuth0IdAsync(auth0Id);
-                // No cacheamos el "no existe": el usuario puede sincronizarse en la siguiente petición.
-                entry.AbsoluteExpirationRelativeToNow = id is null ? TimeSpan.FromSeconds(1) : CacheDuration;
-                return id;
-            });
+                var found = await usersModule.GetUserIdByAuth0IdAsync(auth0Id);
+                if (found is null)
+                    return principal; // Sin sincronizar: no se cachea, la próxima petición vuelve a consultar.
 
-            if (userId is not null)
-                identity.AddClaim(new Claim(NitroClaimTypes.UserId, userId.Value.ToString()));
+                userId = found.Value;
+                cache.Set(cacheKey, userId, CacheDuration);
+            }
+
+            identity.AddClaim(new Claim(NitroClaimTypes.UserId, userId.ToString()));
 
             return principal;
         }

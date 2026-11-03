@@ -23,8 +23,14 @@ namespace NitroGroups.Shared.Infrastructure.Services
             return User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? User.FindFirst("sub")?.Value;
         }
 
+        /// <summary>
+        /// Los access tokens de Auth0 no incluyen "email": hay que agregarlo con una Action como
+        /// claim con namespace (<see cref="NitroClaimTypes.Auth0EmailClaim"/>). Ver README.
+        /// </summary>
         public string? GetEmail() =>
-            User?.FindFirst(ClaimTypes.Email)?.Value ?? User?.FindFirst("email")?.Value;
+            User?.FindFirst(NitroClaimTypes.Auth0EmailClaim)?.Value
+            ?? User?.FindFirst(ClaimTypes.Email)?.Value
+            ?? User?.FindFirst("email")?.Value;
 
         public bool IsAdmin() => User?.IsInRole(NitroClaimTypes.AdminRole) == true;
     }

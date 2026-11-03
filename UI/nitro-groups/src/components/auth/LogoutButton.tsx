@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { clearCachedAccessToken } from "@/lib/api-client";
 
 export default function LogoutButton() {
   const [isLoading, setIsLoading] = useState(false);
@@ -9,6 +10,7 @@ export default function LogoutButton() {
     setIsLoading(true);
     try {
       await fetch("/api/auth/logout", { method: "POST" });
+      clearCachedAccessToken();
       window.location.href = "/";
     } catch {
       setIsLoading(false);

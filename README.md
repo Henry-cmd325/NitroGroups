@@ -76,6 +76,26 @@ Asegúrate de que `BACKEND_API_URL` en `UI/nitro-groups/.env.local` apunte a `ht
    npm run dev
    ```
 
+## Autenticación y permisos (Auth0)
+
+La API es **deny-by-default**: todo endpoint exige un access token válido de Auth0, salvo los públicos declarados con `.AllowAnonymous()` (perfil de grupo, galería, disponibilidad, géneros, salud). `Tests/NitroGroups.Tests.Endpoints/Security` fija esa lista: un endpoint público nuevo hace fallar el test hasta que se declara.
+
+- La identidad **siempre** sale del token. `ownerUserId` o `auth0Id` en el body se ignoran.
+- Las escrituras sobre un grupo exigen ser **Owner o Manager** del grupo (`RequireGroupManager`).
+- El **admin** de la plataforma es el rol `admin` de Auth0.
+
+Los access tokens de Auth0 no traen email ni roles por defecto. Agrega esta Action (*Login / Post Login*):
+
+```js
+exports.onExecutePostLogin = async (event, api) => {
+  const ns = 'https://nitrogroups.com';
+  api.accessToken.setCustomClaim(`${ns}/email`, event.user.email);
+  api.accessToken.setCustomClaim(`${ns}/roles`, event.authorization?.roles ?? []);
+};
+```
+
+Si cambias el namespace de los roles, configura `Auth0:RolesClaim` en la API.
+
 ## Base de datos y migraciones
 
 Cada módulo tiene su propio `DbContext`, su esquema de PostgreSQL (`users`, `groups`, `schedules`), su tabla de historial `__ef_migrations_history` y su `outbox_events`. Las migraciones viven en `Core/<Modulo>/NitroGroups.Core.<Modulo>.Infrastructure/Persistence/Migrations`.

@@ -37,11 +37,23 @@ public class NitroClaimsTransformationTests
         var principal = await transformation.TransformAsync(Authenticated());
         Assert.Null(principal.FindFirst(NitroClaimTypes.UserId));
 
-        // Se sincroniza: tras la ventana corta de caché del "no existe", aparece el id.
+        // Se sincroniza: como el faltante no se cacheó, la petición siguiente ya ve el id.
         users.GetUserIdByAuth0IdAsync("auth0|abc", Arg.Any<CancellationToken>()).Returns(7L);
-        await Task.Delay(TimeSpan.FromSeconds(1.2));
         principal = await transformation.TransformAsync(Authenticated());
         Assert.Equal("7", principal.FindFirst(NitroClaimTypes.UserId)?.Value);
+    }
+
+    [Fact]
+    public async Task CacheaElIdEncontrado()
+    {
+        var users = Substitute.For<IUsersModuleApi>();
+        users.GetUserIdByAuth0IdAsync("auth0|abc", Arg.Any<CancellationToken>()).Returns(42L);
+        var transformation = Create(users);
+
+        await transformation.TransformAsync(Authenticated());
+        await transformation.TransformAsync(Authenticated());
+
+        await users.Received(1).GetUserIdByAuth0IdAsync("auth0|abc", Arg.Any<CancellationToken>());
     }
 
     [Fact]

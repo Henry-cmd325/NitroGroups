@@ -131,6 +131,49 @@ public class SecurityEndpointsTests : IClassFixture<NitroGroupsWebAppFactory>
     }
 
     [Fact]
+    public async Task Admin_PuedeAdministrarUnGrupoAjeno()
+    {
+        using var request = new HttpRequestMessage(HttpMethod.Post, $"api/groups/{ForeignGroupId}/genres") { Content = JsonContent.Create(new AssignGenresRequest()) };
+        request.Headers.Add(TestAuthHandler.AdminHeader, "1");
+
+        var response = await _client.SendAsync(request);
+
+        Assert.NotEqual(HttpStatusCode.Forbidden, response.StatusCode);
+        Assert.NotEqual(HttpStatusCode.Unauthorized, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task Admin_SinSincronizar_PuedeAdministrarGrupos()
+    {
+        using var request = new HttpRequestMessage(HttpMethod.Post, $"api/groups/{ForeignGroupId}/genres") { Content = JsonContent.Create(new AssignGenresRequest()) };
+        request.Headers.Add(TestAuthHandler.AdminHeader, "1");
+        request.Headers.Add(TestAuthHandler.UnregisteredHeader, "1");
+
+        var response = await _client.SendAsync(request);
+
+        Assert.NotEqual(HttpStatusCode.Unauthorized, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task Admin_PuedeLeerOtroUsuarioPorAuth0Id()
+    {
+        using var request = new HttpRequestMessage(HttpMethod.Get, $"api/users/auth0/{Uri.EscapeDataString("auth0|otro")}");
+        request.Headers.Add(TestAuthHandler.AdminHeader, "1");
+
+        var response = await _client.SendAsync(request);
+
+        Assert.NotEqual(HttpStatusCode.Forbidden, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task CrearMusico_SinUserInfo_Returns400()
+    {
+        var response = await _client.PostAsync("api/musicians", JsonContent.Create(new { userInfo = (object?)null, musicianProfile = new { } }));
+
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+    }
+
+    [Fact]
     public async Task CrearGrupo_IgnoraOwnerUserIdDelBody_YUsaElDelToken()
     {
         _mediator

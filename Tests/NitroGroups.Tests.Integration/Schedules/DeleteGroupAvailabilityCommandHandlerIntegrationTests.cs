@@ -50,4 +50,26 @@ public class DeleteGroupAvailabilityCommandHandlerIntegrationTests : IClassFixtu
         Assert.True(result.IsFailure);
         Assert.Equal("GroupAvailability no encontrado.", result.Error);
     }
+
+    [Fact]
+    public async Task Handle_CuandoElItemEsDeOtroGrupo_NoDeberiaEliminarlo()
+    {
+        // Un manager del grupo 55 no puede borrar la disponibilidad del grupo 77 usando su id.
+        await using var context = _fixture.CreateSchedulesContext();
+        var ajeno = new GroupAvailability
+        {
+            GroupId = 77,
+            StartAt = new DateTimeOffset(2025, 7, 1, 10, 0, 0, TimeSpan.Zero),
+            EndAt = new DateTimeOffset(2025, 7, 1, 12, 0, 0, TimeSpan.Zero),
+        };
+        context.GroupAvailabilities.Add(ajeno);
+        await context.SaveChangesAsync();
+
+        var handler = new DeleteGroupAvailabilityCommandHandler(_fixture.CreateSchedulesUnitOfWork(context));
+
+        var result = await handler.Handle(new DeleteGroupAvailabilityCommand(55, ajeno.Id), CancellationToken.None);
+
+        Assert.True(result.IsFailure);
+        Assert.Single(context.GroupAvailabilities);
+    }
 }

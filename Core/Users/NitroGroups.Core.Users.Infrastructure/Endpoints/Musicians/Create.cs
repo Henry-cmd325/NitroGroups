@@ -40,7 +40,7 @@ namespace NitroGroups.Core.Users.Infrastructure.Endpoints.Musicians
                 if (string.IsNullOrEmpty(auth0Id))
                     return Unauthorized();
 
-                if (context.Arguments.OfType<CreateMusicianRequest>().FirstOrDefault() is { } request)
+                if (context.Arguments.OfType<CreateMusicianRequest>().FirstOrDefault() is { UserInfo: not null } request)
                 {
                     request.UserInfo.Auth0Id = auth0Id;
                     request.UserInfo.Email = currentUser.GetEmail() ?? request.UserInfo.Email;
