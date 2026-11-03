@@ -161,7 +161,7 @@ export function PublicGroupProfile({ group, requestedDate }: { group: MusicGroup
                     Cuéntale a {group.groupName} qué celebras, el día y cuántas horas necesitas. Te responde por escrito aquí mismo.
                 </p>
                 <Link
-                    href={`${ROUTES.AUTH.LOGIN}?volver=${encodeURIComponent(ROUTES.GROUPS.PUBLIC_PROFILE(group.slug))}`}
+                    href={`${ROUTES.AUTH.LOGIN}?returnTo=${encodeURIComponent(`${ROUTES.GROUPS.PUBLIC_PROFILE(group.slug)}#solicitar`)}`}
                     className="mt-8 inline-flex h-14 items-center px-7 bg-tungsteno text-telon font-semibold no-underline hover:bg-tungsteno-press transition-colors"
                 >
                     Entrar para enviar la solicitud
