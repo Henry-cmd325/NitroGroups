@@ -9,6 +9,10 @@ import GroupCalendar from "@/features/groupAvailability/components/GroupCalendar
 import GroupGallery from "@/features/groupMedia/components/GroupGallery";
 import { GroupInbox } from "@/features/bookings/components/GroupInbox";
 
+/**
+ * Panel del grupo. Arriba, quién es y en qué estado está; abajo, el trabajo diario:
+ * responder solicitudes primero, después la galería y el calendario.
+ */
 export default function MusicianDashboardPage() {
   const { user } = useCurrentUser();
   const userId = user?.id;
@@ -24,29 +28,23 @@ export default function MusicianDashboardPage() {
   });
 
   return (
-    <div className="min-h-screen pb-20">
+    <div className="page-frame pb-24">
       <GroupProfile />
 
-      <div className="max-w-6xl mx-auto px-6 mt-10">
-        <TabbedSection>
+      {/* Sin grupo no hay nada que gestionar: la cabecera ya explica la carga o el error. */}
+      {group?.id ? (
+        <TabbedSection label="Gestión del grupo" className="mt-16 md:mt-20">
           <TabItem title="Solicitudes" tabKey="solicitudes">
-            {group?.id ? <GroupInbox groupId={group.id} /> : <p className="text-papel-2 py-10">Cargando…</p>}
+            <GroupInbox groupId={group.id} />
           </TabItem>
           <TabItem title="Galería" tabKey="galeria">
             <GroupGallery />
           </TabItem>
-
           <TabItem title="Calendario" tabKey="calendario">
-            <div className="py-6">
-              {group?.id ? (
-                <GroupCalendar groupId={group.id} mode="private" />
-              ) : (
-                <p className="text-papel-2 py-10">Cargando calendario…</p>
-              )}
-            </div>
+            <GroupCalendar groupId={group.id} mode="private" />
           </TabItem>
         </TabbedSection>
-      </div>
+      ) : null}
     </div>
   );
 }

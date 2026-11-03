@@ -3,18 +3,20 @@ import * as React from "react"
 
 import { cn } from "@/lib/utils"
 
+/**
+ * Etiqueta pequeña en minúsculas de oración sobre telon-3. Sin píldora: solo un estado lleva
+ * punto de color, y el texto siempre dice el estado (el color nunca va solo).
+ */
 const badgeVariants = cva(
-  "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
+  "inline-flex items-center gap-1.5 bg-telon-3 px-2 py-0.5 text-sm font-medium leading-6",
   {
     variants: {
       variant: {
-        default:
-          "border-transparent bg-primary text-primary-foreground hover:bg-primary/80",
-        secondary:
-          "border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80",
-        destructive:
-          "border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80",
-        outline: "text-foreground",
+        default: "text-papel",
+        secondary: "text-papel-2",
+        destructive: "text-error",
+        ok: "text-ok",
+        outline: "bg-transparent px-0 text-papel-2",
       },
     },
     defaultVariants: {
@@ -24,12 +26,18 @@ const badgeVariants = cva(
 )
 
 export interface BadgeProps
-  extends React.HTMLAttributes<HTMLDivElement>,
-  VariantProps<typeof badgeVariants> { }
+  extends React.HTMLAttributes<HTMLSpanElement>,
+  VariantProps<typeof badgeVariants> {
+  /** Muestra un punto del color del texto: úsalo solo para estados. */
+  status?: boolean
+}
 
-function Badge({ className, variant, ...props }: BadgeProps) {
+function Badge({ className, variant, status = false, children, ...props }: BadgeProps) {
   return (
-    <div className={cn(badgeVariants({ variant }), className)} {...props} />
+    <span className={cn(badgeVariants({ variant }), className)} {...props}>
+      {status && <span aria-hidden className="size-2 shrink-0 rounded-full bg-current" />}
+      {children}
+    </span>
   )
 }
 

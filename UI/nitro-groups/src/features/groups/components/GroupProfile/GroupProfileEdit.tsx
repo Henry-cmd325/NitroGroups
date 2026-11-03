@@ -1,6 +1,8 @@
-import { X, Save, Music2, DollarSign } from "lucide-react";
-import { Loader } from "@/components/ui";
-import { Field } from "./Common";
+import { useId } from "react";
+import { Check } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/Alert";
+import { Button } from "@/components/ui/Button";
+import { Field, fieldClass, hintId } from "./Common";
 import type { MusicGroup } from "../../types/MusicGroup";
 import type { GenreListItem } from "../../services/groups.service";
 
@@ -10,6 +12,8 @@ type GroupProfileEditProps = {
   selectedGenres: number[];
   setSelectedGenres: React.Dispatch<React.SetStateAction<number[]>>;
   isPending: boolean;
+  /** Mensaje si el último guardado falló. */
+  saveError?: string | null;
   genres: GenreListItem[];
   isGenresLoading: boolean;
   handleSave: (e: React.FormEvent) => void;
@@ -17,194 +21,225 @@ type GroupProfileEditProps = {
   set: <K extends keyof MusicGroup>(k: K, v: MusicGroup[K]) => void;
 };
 
+/** Campo numérico con un prefijo de moneda dentro del control. */
+function MoneyInput({ id, value, onChange }: { id: string; value: number | undefined; onChange: (v: number | undefined) => void }) {
+  return (
+    <div className="relative">
+      <span aria-hidden className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-papel-2">$</span>
+      <input
+        id={id}
+        type="number"
+        inputMode="numeric"
+        min={0}
+        value={value || ""}
+        onChange={(e) => onChange(Number(e.target.value) || undefined)}
+        className={`${fieldClass} pl-8 tabular`}
+      />
+    </div>
+  );
+}
+
 export default function GroupProfileEdit({
   group,
   selectedGenres,
   setSelectedGenres,
   isPending,
+  saveError,
   genres,
   isGenresLoading,
   handleSave,
   handleCancel,
   set,
 }: GroupProfileEditProps) {
+  const uid = useId();
+  const id = (name: string) => `${uid}-${name}`;
+  const genresLabelId = id("genres-label");
+
+  const toggleGenre = (genreId: number) =>
+    setSelectedGenres((prev) => (prev.includes(genreId) ? prev.filter((g) => g !== genreId) : [...prev, genreId]));
+
   return (
-    <div className="w-full text-white">
-      {/* top bar */}
-      <div className="sticky top-0 z-30 bg-background/80 backdrop-blur-xl border-b border-white/5">
-        <div className="max-w-6xl mx-auto flex items-center justify-between px-6 py-4">
-          <h2 className="text-lg font-semibold">Editar perfil</h2>
-          <div className="flex gap-3">
-            <button type="button" onClick={handleCancel}
-              className="flex items-center gap-2 px-5 py-2 rounded-xl border border-white/10 hover:bg-white/5 text-sm transition-colors">
-              <X size={16} /> Cancelar
+    <form onSubmit={handleSave} aria-labelledby={id("title")} className="pt-10 md:pt-14">
+      <div className="max-w-[64ch]">
+        <h1 id={id("title")} className="type-heading text-4xl md:text-5xl">Editar perfil</h1>
+        <p className="mt-3 text-papel-2">
+          Así te ven los clientes en tu perfil público. Los cambios se publican al guardar.
+        </p>
+      </div>
+
+      <div className="mt-12 grid grid-cols-1 gap-x-16 gap-y-14 lg:grid-cols-12">
+        {/* Cómo se presenta el grupo */}
+        <fieldset className="min-w-0 space-y-6 lg:col-span-7">
+          <legend className="type-heading mb-6 text-2xl">Cómo te presentas</legend>
+
+          <Field label="Nombre del grupo" htmlFor={id("name")} required>
+            <input id={id("name")} value={group.groupName} onChange={(e) => set("groupName", e.target.value)}
+              className={fieldClass} placeholder="Ej. Los Relámpagos" required autoComplete="organization" />
+          </Field>
+
+          <Field label="Descripción corta" htmlFor={id("description")} hint={`${group.description?.length ?? 0} de 150`}>
+            <input id={id("description")} value={group.description} onChange={(e) => set("description", e.target.value)}
+              className={fieldClass} placeholder="Una frase que defina a tu grupo" maxLength={150}
+              aria-describedby={hintId(id("description"))} />
+          </Field>
+
+          <Field label="Biografía" htmlFor={id("biography")}>
+            <textarea id={id("biography")} rows={6} value={group.biography} onChange={(e) => set("biography", e.target.value)}
+              className={`${fieldClass} h-auto resize-y py-3 leading-relaxed`} placeholder="Historia, estilo, dónde han tocado…" />
+          </Field>
+
+          <div role="group" aria-labelledby={genresLabelId} aria-describedby={id("genres-hint")}>
+            <p id={genresLabelId} className="mb-1 text-sm font-medium text-papel">Géneros</p>
+            <p id={id("genres-hint")} className="mb-3 text-sm text-papel-2">Elige los que mejor describen lo que tocas.</p>
+            {isGenresLoading ? (
+              <p className="text-papel-2" aria-busy>Cargando géneros…</p>
+            ) : genres.length === 0 ? (
+              <p className="text-papel-2">No pudimos cargar la lista de géneros. Puedes guardar el resto de cambios.</p>
+            ) : (
+              <div className="flex flex-wrap gap-1.5">
+                {genres.map((genre) => {
+                  const isSelected = selectedGenres.includes(genre.id);
+                  return (
+                    <button
+                      key={genre.id}
+                      type="button"
+                      aria-pressed={isSelected}
+                      onClick={() => toggleGenre(genre.id)}
+                      className={`inline-flex h-10 items-center gap-1.5 px-3.5 text-[0.95rem] font-medium transition-colors duration-150 ${
+                        // Seleccionado en tinta invertida: el tungsteno queda para la acción de guardar.
+                        isSelected ? "bg-papel text-telon hover:bg-papel-2" : "bg-telon-2 text-papel hover:bg-telon-3"
+                      }`}
+                    >
+                      {isSelected && <Check aria-hidden className="size-4" />}
+                      {genre.name}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+            <Field label="Foto de perfil (URL)" htmlFor={id("avatar")}>
+              <input id={id("avatar")} value={group.profilePictureUrl || ""} onChange={(e) => set("profilePictureUrl", e.target.value)}
+                className={fieldClass} placeholder="https://…" type="url" inputMode="url" />
+            </Field>
+            <Field label="Portada (URL)" htmlFor={id("cover")}>
+              <input id={id("cover")} value={group.coverImageUrl || ""} onChange={(e) => set("coverImageUrl", e.target.value)}
+                className={fieldClass} placeholder="https://…" type="url" inputMode="url" />
+            </Field>
+          </div>
+          <p className="-mt-3 text-sm text-papel-2">Sin portada, tu perfil usa la primera foto de la galería.</p>
+        </fieldset>
+
+        {/* Cómo se contrata */}
+        <fieldset className="min-w-0 space-y-6 lg:col-span-5">
+          <legend className="type-heading mb-6 text-2xl">Cómo te contratan</legend>
+
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+            <Field label="Precio base" htmlFor={id("base")}>
+              <MoneyInput id={id("base")} value={group.basePrice} onChange={(v) => set("basePrice", v)} />
+            </Field>
+            <Field label="Precio por hora" htmlFor={id("hourly")}>
+              <MoneyInput id={id("hourly")} value={group.hourlyRate} onChange={(v) => set("hourlyRate", v)} />
+            </Field>
+          </div>
+
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+            <Field label="Moneda" htmlFor={id("currency")}>
+              <select id={id("currency")} value={group.currency || "MXN"} onChange={(e) => set("currency", e.target.value)}
+                className={fieldClass}>
+                <option value="MXN">Pesos (MXN)</option>
+                <option value="USD">Dólares (USD)</option>
+              </select>
+            </Field>
+            <Field label="Viaja hasta" htmlFor={id("radius")} hint="km">
+              <input id={id("radius")} type="number" inputMode="numeric" min={0} value={group.serviceRadiusKm}
+                onChange={(e) => set("serviceRadiusKm", Number(e.target.value))}
+                className={`${fieldClass} tabular`} aria-describedby={hintId(id("radius"))} />
+            </Field>
+          </div>
+
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+            <Field label="Contratación mínima" htmlFor={id("min-hours")} hint="horas">
+              <input id={id("min-hours")} type="number" inputMode="numeric" min={1} value={group.minimumDurationHours || 1}
+                onChange={(e) => set("minimumDurationHours", Number(e.target.value))}
+                className={`${fieldClass} tabular`} aria-describedby={hintId(id("min-hours"))} />
+            </Field>
+            <Field label="Montaje" htmlFor={id("setup")} hint="minutos">
+              <input id={id("setup")} type="number" inputMode="numeric" min={0} step={15} value={group.setupTimeMinutes || 0}
+                onChange={(e) => set("setupTimeMinutes", Number(e.target.value))}
+                className={`${fieldClass} tabular`} aria-describedby={hintId(id("setup"))} />
+            </Field>
+          </div>
+
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+            <Field label="Ciudad" htmlFor={id("location")}>
+              <input id={id("location")} value={group.locationText} onChange={(e) => set("locationText", e.target.value)}
+                className={fieldClass} placeholder="Ciudad, estado" autoComplete="address-level2" />
+            </Field>
+            <Field label="Integrantes" htmlFor={id("members")}>
+              <input id={id("members")} type="number" inputMode="numeric" min={1} value={group.numMembers || ""}
+                onChange={(e) => set("numMembers", parseInt(e.target.value) || 0)} className={`${fieldClass} tabular`} />
+            </Field>
+          </div>
+
+          <Field label="Años de experiencia" htmlFor={id("years")}>
+            <input id={id("years")} type="number" inputMode="numeric" min={0} value={group.yearsExperience || 0}
+              onChange={(e) => set("yearsExperience", Number(e.target.value))} className={`${fieldClass} tabular sm:max-w-[calc(50%-0.75rem)]`} />
+          </Field>
+
+          {/* Interruptor accesible: el estado se lee en el texto, no solo en el color. */}
+          <div className="flex items-start justify-between gap-6 bg-telon-2 px-4 py-4">
+            <div>
+              <p id={id("accepting-label")} className="font-medium text-papel">Recibir solicitudes</p>
+              <p id={id("accepting-hint")} className="mt-1 text-sm text-papel-2">
+                {group.isAcceptingBookings
+                  ? "Los clientes pueden pedirte fechas."
+                  : "En pausa: tu perfil sigue visible, pero nadie puede pedirte una fecha."}
+              </p>
+            </div>
+            <button
+              type="button"
+              role="switch"
+              aria-checked={group.isAcceptingBookings}
+              aria-labelledby={id("accepting-label")}
+              aria-describedby={id("accepting-hint")}
+              onClick={() => set("isAcceptingBookings", !group.isAcceptingBookings)}
+              className={`relative mt-0.5 h-7 w-12 shrink-0 transition-colors duration-150 ${group.isAcceptingBookings ? "bg-tungsteno" : "bg-telon-3"}`}
+            >
+              <span
+                aria-hidden
+                className={`absolute left-0 top-1 size-5 transition-transform duration-150 ${group.isAcceptingBookings ? "translate-x-6 bg-telon" : "translate-x-1 bg-papel-2"}`}
+              />
             </button>
-            <button type="submit" form="edit-form" disabled={isPending}
-              className="flex items-center gap-2 bg-primary hover:bg-primary/85 text-white px-6 py-2 rounded-xl text-sm font-semibold transition-colors disabled:opacity-50">
-              {isPending ? <Loader /> : <Save size={16} />} Guardar
-            </button>
+          </div>
+        </fieldset>
+      </div>
+
+      {/* Barra de acciones fija al pie: guardar siempre a la vista en formularios largos. */}
+      <div className="sticky bottom-0 z-30 mt-14 -mx-[var(--gutter)] bg-telon px-[var(--gutter)] pb-4 pt-3">
+        <div className="flex flex-col gap-3 bg-telon-2 p-3 sm:flex-row sm:items-center sm:justify-between">
+          <div aria-live="polite" className="min-w-0 sm:px-2">
+            {saveError ? (
+              <Alert variant="destructive" className="bg-transparent p-0">
+                <AlertDescription>{saveError}</AlertDescription>
+              </Alert>
+            ) : (
+              <p className="text-sm text-papel-2">{isPending ? "Guardando cambios…" : "Nada se publica hasta que guardes."}</p>
+            )}
+          </div>
+          <div className="flex shrink-0 gap-2">
+            <Button type="button" variant="ghost" onClick={handleCancel} disabled={isPending}>
+              Descartar cambios
+            </Button>
+            <Button type="submit" disabled={isPending}>
+              {isPending && <span aria-hidden className="spinner !size-[1em] !border-2" />}
+              {isPending ? "Guardando…" : "Guardar cambios"}
+            </Button>
           </div>
         </div>
       </div>
-
-      <form id="edit-form" onSubmit={handleSave} className="max-w-6xl mx-auto px-6 py-10">
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
-          {/* left column — 3/5 */}
-          <div className="lg:col-span-3 space-y-8">
-            {/* general */}
-            <section className="bg-card border border-border rounded-2xl p-8 space-y-6">
-              <div className="flex items-center gap-3 mb-2">
-                <Music2 size={20} className="text-primary" />
-                <h3 className="text-base font-semibold">Información General</h3>
-              </div>
-
-              <Field label="Nombre del Grupo" required>
-                <input value={group.groupName} onChange={(e) => set("groupName", e.target.value)}
-                  className="input-field" placeholder="Ej. Los Relámpagos" required />
-              </Field>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                <Field label="Ubicación">
-                  <input value={group.locationText} onChange={(e) => set("locationText", e.target.value)}
-                    className="input-field" placeholder="Ciudad, Estado" />
-                </Field>
-                <Field label="Integrantes">
-                  <input type="number" min={1} value={group.numMembers || ""} onChange={(e) => set("numMembers", parseInt(e.target.value) || 0)}
-                    className="input-field" />
-                </Field>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                <Field label="URL Foto de Perfil">
-                  <input value={group.profilePictureUrl || ""} onChange={(e) => set("profilePictureUrl", e.target.value)}
-                    className="input-field" placeholder="https://..." type="url" />
-                </Field>
-                <Field label="URL Portada">
-                  <input value={group.coverImageUrl || ""} onChange={(e) => set("coverImageUrl", e.target.value)}
-                    className="input-field" placeholder="https://..." type="url" />
-                </Field>
-              </div>
-
-              <Field label="Descripción corta">
-                <input value={group.description} onChange={(e) => set("description", e.target.value)}
-                  className="input-field" placeholder="Frase que defina tu grupo" maxLength={150} />
-              </Field>
-
-              <Field label="Biografía">
-                <textarea rows={5} value={group.biography} onChange={(e) => set("biography", e.target.value)}
-                  className="input-field resize-none" placeholder="Historia, estilo, trayectoria…" />
-              </Field>
-
-              <div className="pt-2">
-                <label className="block text-sm text-gray-400 mb-2">Géneros Musicales</label>
-                <div className="flex flex-wrap gap-2">
-                  {isGenresLoading ? (
-                    <span className="text-sm text-gray-500">Cargando géneros...</span>
-                  ) : genres?.map(genre => {
-                    const isSelected = selectedGenres.includes(genre.id);
-                    return (
-                      <button
-                        key={genre.id}
-                        type="button"
-                        onClick={() => {
-                          if (isSelected) {
-                            setSelectedGenres(prev => prev.filter(id => id !== genre.id));
-                          } else {
-                            setSelectedGenres(prev => [...prev, genre.id]);
-                          }
-                        }}
-                        className={`text-xs font-medium px-4 py-2 rounded-full border transition-colors ${
-                          isSelected
-                            ? 'bg-primary/20 border-primary text-primary'
-                            : 'bg-white/5 border-white/10 text-gray-300 hover:bg-white/10 hover:border-white/20'
-                        }`}
-                      >
-                        {genre.name}
-                      </button>
-                    );
-                  })}
-                </div>
-                <p className="text-xs text-gray-500 mt-2">Selecciona los géneros que mejor describan tu estilo musical.</p>
-              </div>
-            </section>
-          </div>
-
-          {/* right column — 2/5 */}
-          <div className="lg:col-span-2 space-y-8">
-            <section className="bg-card border border-border rounded-2xl p-8 space-y-6">
-              <div className="flex items-center gap-3 mb-2">
-                <DollarSign size={20} className="text-emerald-400" />
-                <h3 className="text-base font-semibold">Contratación</h3>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                <Field label="Precio base">
-                  <div className="relative">
-                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">$</span>
-                    <input type="number" value={group.basePrice || ""} onChange={(e) => set("basePrice", Number(e.target.value) || undefined)}
-                      className="input-field pl-8" />
-                  </div>
-                </Field>
-                <Field label="Costo por hora">
-                  <div className="relative">
-                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">$</span>
-                    <input type="number" value={group.hourlyRate || ""} onChange={(e) => set("hourlyRate", Number(e.target.value) || undefined)}
-                      className="input-field pl-8" />
-                  </div>
-                </Field>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                <Field label="Moneda">
-                  <select value={group.currency || "MXN"} onChange={(e) => set("currency", e.target.value)}
-                    className="input-field">
-                    <option value="MXN">MXN</option>
-                    <option value="USD">USD</option>
-                  </select>
-                </Field>
-                <Field label="Radio de servicio (km)">
-                  <input type="number" value={group.serviceRadiusKm} onChange={(e) => set("serviceRadiusKm", Number(e.target.value))}
-                    className="input-field" placeholder="Distancia máxima" />
-                </Field>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                <Field label="Horas mínimas">
-                  <input type="number" min={1} value={group.minimumDurationHours || 1} onChange={(e) => set("minimumDurationHours", Number(e.target.value))}
-                    className="input-field" />
-                </Field>
-                <Field label="Min. de instalación">
-                  <input type="number" min={0} step={15} value={group.setupTimeMinutes || 0} onChange={(e) => set("setupTimeMinutes", Number(e.target.value))}
-                    className="input-field" />
-                </Field>
-              </div>
-
-              <Field label="Años de experiencia">
-                <input type="number" min={0} value={group.yearsExperience || 0} onChange={(e) => set("yearsExperience", Number(e.target.value))}
-                  className="input-field" />
-              </Field>
-
-              <div className="pt-2">
-                <label className="flex items-center gap-3 cursor-pointer">
-                  <div className="relative">
-                    <input type="checkbox" className="sr-only" checked={group.isAcceptingBookings}
-                      onChange={(e) => set("isAcceptingBookings", e.target.checked)} />
-                    <div className={`block w-10 h-6 rounded-full transition-colors ${group.isAcceptingBookings ? 'bg-emerald-500' : 'bg-gray-600'}`}></div>
-                    <div className={`absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform ${group.isAcceptingBookings ? 'translate-x-4' : 'translate-x-0'}`}></div>
-                  </div>
-                  <span className="text-sm text-gray-300 font-medium">Aceptando eventos</span>
-                </label>
-              </div>
-            </section>
-
-            {/* save mobile */}
-            <button type="submit" disabled={isPending}
-              className="w-full flex items-center justify-center gap-2 bg-primary hover:bg-primary/85 text-white py-3.5 rounded-xl font-semibold transition-colors disabled:opacity-50 lg:hidden">
-              {isPending ? <Loader /> : <Save size={18} />} Guardar Cambios
-            </button>
-          </div>
-        </div>
-      </form>
-    </div>
+    </form>
   );
 }

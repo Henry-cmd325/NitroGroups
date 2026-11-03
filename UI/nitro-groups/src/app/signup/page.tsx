@@ -547,7 +547,7 @@ export default function SignupPage() {
 
                             {currentStep === STEPS.length && isLoading && (
                                 <div className="flex-1 flex items-center justify-center gap-2 py-3">
-                                    <Loader />
+                                    <Loader inline />
                                     <span className="text-sm text-muted-foreground">Creando cuenta...</span>
                                 </div>
                             )}

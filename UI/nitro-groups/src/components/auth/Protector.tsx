@@ -17,7 +17,7 @@ export default function Protector({ children }: { children: React.ReactNode }) {
     }
   }, [isLoading, isAuthenticated, router]);
 
-  if (isLoading) return <div className="p-8 text-white"><Loader /></div>;
+  if (isLoading) return <div className="page-frame py-16"><Loader inline /></div>;
   if (!isAuthenticated) return null; // Wait for redirect
 
   return <>{children}</>;

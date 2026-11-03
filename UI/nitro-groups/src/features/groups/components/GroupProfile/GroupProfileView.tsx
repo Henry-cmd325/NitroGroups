@@ -1,6 +1,10 @@
-import { Edit3, Camera, Award, Star, MapPin, Users, Zap } from "lucide-react";
-import { StatCard } from "./Common";
+import Link from "next/link";
+import { ArrowUpRight, BadgeCheck, Pencil } from "lucide-react";
+import { Button } from "@/components/ui/Button";
+import { Photo } from "@/components/ui/Photo";
+import { ROUTES } from "@/config/routes";
 import GroupCalendar from "@/features/groupAvailability/components/GroupCalendar";
+import { joinSpanish, ownerFacts, profileGaps } from "../../lib/ownerSummary";
 import type { MusicGroup } from "../../types/MusicGroup";
 
 type GroupProfileViewProps = {
@@ -9,161 +13,105 @@ type GroupProfileViewProps = {
   toggleEdit: () => void;
 };
 
-const FALLBACK_COVER = "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?q=80&w=2070&auto=format&fit=crop";
-const FALLBACK_AVATAR = "https://images.unsplash.com/photo-1544598256-fc4016e12325?q=80&w=400&auto=format&fit=crop";
-
+/**
+ * Cabecera del panel del grupo: quién es (foto y nombre en voz de cartel), si recibe
+ * solicitudes, los datos con los que un cliente decide y lo que le falta al perfil.
+ * Compacta a propósito: debajo vive la bandeja, que es el trabajo diario.
+ */
 export default function GroupProfileView({ group, isPublic, toggleEdit }: GroupProfileViewProps) {
-  const cover = group.coverImageUrl || FALLBACK_COVER;
-  const avatar = group.profilePictureUrl || FALLBACK_AVATAR;
+  const name = group.groupName.trim() || "Tu grupo";
+  const photo = group.profilePictureUrl || group.coverImageUrl;
+  const genres = (group.genres ?? []).map((g) => g.name);
+  const facts = ownerFacts(group);
+  const gaps = isPublic ? [] : profileGaps(group);
 
   return (
-    <div className="w-full text-white">
-      {/* ─ Cover ─ */}
-      <div className="relative w-full h-56 sm:h-64 md:h-72 lg:h-80 overflow-hidden rounded-b-3xl">
-        <img src={cover} alt="Cover" className="absolute inset-0 w-full h-full object-cover" />
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
+    <header className="pt-10 md:pt-14">
+      <div className="grid grid-cols-[auto_minmax(0,1fr)] items-end gap-x-5 gap-y-6 md:grid-cols-[auto_minmax(0,1fr)_auto] md:gap-x-8">
+        <Photo
+          src={photo}
+          alt={`Foto de ${name}`}
+          fallbackTitle={name}
+          priority
+          className="size-20 md:size-32"
+        />
 
-        {/* edit button on cover */}
-        {!isPublic && (
-          <button onClick={toggleEdit}
-            className="absolute top-5 right-5 z-20 flex items-center gap-2 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/10 text-white text-sm px-4 py-2 rounded-full transition-all">
-            <Edit3 size={15} /> Editar Perfil
-          </button>
-        )}
+        <div className="min-w-0">
+          <h1 className="type-poster text-[2.75rem] break-words md:text-[4.5rem]">{name}</h1>
+          <p className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-1 text-[0.95rem]">
+            {group.isAcceptingBookings ? (
+              <span className="inline-flex items-center gap-2 text-ok">
+                <span aria-hidden className="size-2 rounded-full bg-current" />
+                Recibiendo solicitudes
+              </span>
+            ) : (
+              <span className="inline-flex items-center gap-2 text-papel-2">
+                <span aria-hidden className="size-2 rounded-full border-2 border-current" />
+                Solicitudes en pausa
+              </span>
+            )}
+            {group.isVerified && (
+              <span className="inline-flex items-center gap-1.5 text-papel">
+                <BadgeCheck aria-hidden className="size-4 text-tungsteno" />
+                Verificado
+              </span>
+            )}
+          </p>
+        </div>
 
-        {/* cover change hint */}
         {!isPublic && (
-          <button className="absolute bottom-5 right-5 z-20 flex items-center gap-2 bg-black/40 hover:bg-black/60 backdrop-blur-md border border-white/10 text-white text-xs px-3 py-1.5 rounded-full transition-all opacity-0 hover:opacity-100 group-hover:opacity-100">
-            <Camera size={14} /> Cambiar portada
-          </button>
+          <div className="col-span-2 flex flex-wrap gap-2 md:col-span-1 md:justify-end">
+            <Button variant="secondary" onClick={toggleEdit}>
+              <Pencil aria-hidden /> Editar perfil
+            </Button>
+            {group.slug && (
+              <Button variant="ghost" asChild>
+                <Link href={ROUTES.GROUPS.PUBLIC_PROFILE(group.slug)}>
+                  Ver perfil público <ArrowUpRight aria-hidden />
+                </Link>
+              </Button>
+            )}
+          </div>
         )}
       </div>
 
-      {/* ─ Profile header ─ */}
-      <div className="max-w-6xl mx-auto px-6">
-        <div className="flex flex-col sm:flex-row items-start gap-6 -mt-16 relative z-10">
-          {/* avatar */}
-          <div className="shrink-0">
-            <div className="w-28 h-28 sm:w-32 sm:h-32 rounded-full ring-4 ring-background overflow-hidden bg-card shadow-xl">
-              <img src={avatar} alt={group.groupName} className="w-full h-full object-cover" />
-            </div>
-          </div>
-
-          {/* name + meta */}
-          <div className="pt-2 sm:pt-8 flex-1 min-w-0">
-            <div className="flex items-center gap-3 flex-wrap">
-              <h1 className="text-3xl sm:text-4xl font-bold truncate">
-                {group.groupName || "Tu Grupo"}
-              </h1>
-              {group.isVerified && (
-                <span className="flex items-center gap-1 bg-primary/20 text-primary text-xs font-semibold px-2.5 py-1 rounded-full">
-                  <Award size={14} /> Verificado
-                </span>
-              )}
-            </div>
-
-            {group.description && (
-              <p className="mt-2 text-gray-400 text-base line-clamp-2 max-w-2xl">{group.description}</p>
-            )}
-
-            {/* genre pills */}
-            <div className="flex flex-wrap gap-2 mt-4">
-              {(group.genres && group.genres.length > 0) ? group.genres.map((g) => (
-                <span key={g.id} className="bg-primary/10 text-primary border border-primary/20 text-xs font-medium px-3 py-1 rounded-full">
-                  {g.name}
-                </span>
-              )) : (
-                <span className="text-xs text-gray-500 italic">Sin géneros asignados</span>
-              )}
-            </div>
-          </div>
+      {(group.description || genres.length > 0) && (
+        <div className="mt-6 max-w-[64ch] space-y-1">
+          {group.description && <p className="text-papel">{group.description}</p>}
+          {genres.length > 0 && <p className="text-papel-2">{joinSpanish(genres)}</p>}
         </div>
+      )}
 
-        {/* ─ Stats row ─ */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-8">
-          <StatCard icon={<Star size={18} className="text-amber-400" />}
-            label="Calificación" value={group.averageRating ? `${group.averageRating}` : "Nuevo"}
-            sub={`${group.totalReviews} reseñas`} />
-          <StatCard icon={<MapPin size={18} className="text-rose-400" />}
-            label="Ubicación" value={group.locationText || "—"} />
-          <StatCard icon={<Users size={18} className="text-sky-400" />}
-            label="Integrantes" value={`${group.numMembers || 1}`} />
-          <StatCard icon={<Zap size={18} className="text-primary" />}
-            label="Experiencia" value={group.yearsExperience ? `${group.yearsExperience} años` : "—"} />
+      <dl className="mt-8 grid grid-cols-2 gap-x-8 gap-y-5 bg-telon-2 px-5 py-5 sm:grid-cols-3 md:px-6 xl:grid-cols-6">
+        {facts.map((fact) => (
+          <div key={fact.label} className="min-w-0">
+            <dt className="text-sm text-papel-2">{fact.label}</dt>
+            <dd className={`mt-1 tabular ${fact.missing ? "text-papel-2" : "type-heading text-xl text-papel"}`}>
+              {fact.value}
+            </dd>
+          </div>
+        ))}
+      </dl>
+
+      {gaps.length > 0 && (
+        <div className="mt-0.5 flex flex-col gap-3 bg-telon-2 px-5 py-4 sm:flex-row sm:items-center sm:justify-between md:px-6">
+          <p className="text-papel">
+            <span className="text-papel-2">A tu perfil le falta </span>
+            {joinSpanish(gaps)}.
+            <span className="text-papel-2"> Con esos datos un cliente se decide sin tener que escribirte.</span>
+          </p>
+          <Button size="sm" variant="link" onClick={toggleEdit} className="self-start px-0 sm:self-auto">
+            Completar perfil
+          </Button>
         </div>
+      )}
 
-        {/* ─ Main grid: bio + pricing ─ */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-8">
-          {/* biography */}
-          <div className="lg:col-span-2 bg-card border border-border rounded-2xl p-8">
-            <h3 className="text-lg font-semibold mb-4">Acerca del grupo</h3>
-            <p className="text-gray-300 leading-relaxed whitespace-pre-wrap text-sm">
-              {group.biography || "Aún no has escrito una biografía. Cuéntale al mundo sobre tu música y trayectoria."}
-            </p>
-          </div>
-
-          {/* pricing sidebar */}
-          <div className="bg-card border border-border rounded-2xl p-8 relative overflow-hidden">
-            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary via-violet-500 to-indigo-500" />
-            <h3 className="text-lg font-semibold mb-6">Contratación</h3>
-
-            <div className="space-y-5">
-              {group.basePrice ? (
-                <div>
-                  <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">Desde</p>
-                  <p className="text-2xl font-bold text-emerald-400">
-                    ${group.basePrice.toLocaleString()} <span className="text-sm text-gray-500 font-normal">{group.currency || "MXN"}</span>
-                  </p>
-                </div>
-              ) : group.hourlyRate ? (
-                <div>
-                  <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">Costo por Hora</p>
-                  <p className="text-2xl font-bold text-emerald-400">
-                    ${group.hourlyRate.toLocaleString()} <span className="text-sm text-gray-500 font-normal">{group.currency || "MXN"}</span>
-                  </p>
-                </div>
-              ) : null}
-
-              <div className="h-px bg-border" />
-
-              <div>
-                <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">Disponibilidad</p>
-                {group.isAcceptingBookings ? (
-                  <span className="inline-flex items-center gap-1.5 bg-emerald-500/10 text-emerald-400 text-sm font-medium px-3 py-1 rounded-full">
-                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                    Aceptando eventos
-                  </span>
-                ) : (
-                  <span className="inline-flex items-center gap-1.5 bg-red-500/10 text-red-400 text-sm font-medium px-3 py-1 rounded-full">
-                    <span className="w-2 h-2 rounded-full bg-red-500" />
-                    No disponible
-                  </span>
-                )}
-              </div>
-
-              <div className="h-px bg-border" />
-
-              <div>
-                <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">Cobertura</p>
-                <p className="text-sm text-gray-300">Hasta {group.serviceRadiusKm || 50} km</p>
-              </div>
-            </div>
-
-            {isPublic && (
-              <button className="mt-8 w-full bg-primary hover:bg-primary/85 text-white font-semibold py-3.5 rounded-xl transition-colors">
-                Solicitar Presupuesto
-              </button>
-            )}
-          </div>
-        </div>
-
-        {isPublic && (
-          <div className="mt-12">
-            <h3 className="text-xl font-semibold mb-6">Disponibilidad</h3>
-            <GroupCalendar groupId={group.id} mode="public" />
-          </div>
-        )}
-      </div>
-    </div>
+      {isPublic && (
+        <section className="mt-16" aria-labelledby="disponibilidad">
+          <h2 id="disponibilidad" className="type-heading mb-6 text-3xl">Disponibilidad</h2>
+          <GroupCalendar groupId={group.id} mode="public" />
+        </section>
+      )}
+    </header>
   );
 }

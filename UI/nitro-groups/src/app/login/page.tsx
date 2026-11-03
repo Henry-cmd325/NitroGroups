@@ -140,7 +140,7 @@ export default function LoginPage() {
                         >
                             {isLoading ? (
                                 <>
-                                    <Loader />
+                                    <Loader inline />
                                     <span>Iniciando sesión...</span>
                                 </>
                             ) : (

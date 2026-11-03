@@ -207,7 +207,10 @@
     --fc-page-bg-color: transparent;
     --fc-border-color: var(--telon-3);
     --fc-neutral-bg-color: var(--telon-2);
-    --fc-today-bg-color: rgba(245, 165, 36, 0.12);
+    --fc-today-bg-color: color-mix(in srgb, var(--tungsteno) 9%, transparent);
+    --fc-highlight-color: color-mix(in srgb, var(--tungsteno) 28%, transparent);
+    --fc-now-indicator-color: var(--tungsteno);
+    --fc-small-font-size: 0.875rem;
     --fc-event-bg-color: var(--tungsteno);
     --fc-event-border-color: var(--tungsteno);
     --fc-event-text-color: var(--telon);
@@ -229,12 +232,83 @@
 .fc .fc-button {
     border-radius: 0;
     box-shadow: none;
+    font-weight: 600;
+    font-size: 0.9375rem;
+    padding: 0.5rem 0.875rem;
+    text-transform: none;
+}
+
+.fc .fc-button:focus-visible,
+.fc .fc-button-primary:focus {
+    box-shadow: none;
+    outline: 2px solid var(--tungsteno);
+    outline-offset: 2px;
+}
+
+.fc .fc-button-group > .fc-button + .fc-button {
+    margin-left: 2px;
+}
+
+.fc .fc-toolbar.fc-header-toolbar {
+    margin-bottom: 1.25rem;
+    flex-wrap: wrap;
+    gap: 0.75rem;
 }
 
 .fc .fc-toolbar-title {
     color: var(--papel);
     font-weight: 700;
     font-stretch: 75%;
+    letter-spacing: -0.02em;
+    font-size: 1.5rem;
+}
+
+.fc .fc-toolbar-title::first-letter {
+    text-transform: uppercase;
+}
+
+/* Bloques: "no disponible" en la luz tungsteno; "disponible" marcado, contorno y texto ok. */
+.fc .fc-event {
+    border-radius: 0;
+    box-shadow: none;
+    font-weight: 600;
+}
+
+.fc .ng-busy {
+    background-color: var(--tungsteno);
+    border-color: var(--tungsteno);
+    color: var(--telon);
+}
+
+.fc .ng-busy .fc-event-main {
+    color: var(--telon);
+}
+
+.fc .ng-available,
+.ng-swatch-available {
+    background-color: var(--telon-3);
+    border: 1px solid var(--ok);
+}
+
+.fc .ng-available .fc-event-main {
+    color: var(--ok);
+}
+
+.fc .fc-daygrid-dot-event.ng-busy .fc-daygrid-event-dot { border-color: var(--telon); }
+.fc .fc-daygrid-dot-event.ng-available .fc-daygrid-event-dot { border-color: var(--ok); }
+
+.fc .fc-col-header-cell {
+    background: var(--telon-2);
+}
+
+.fc .fc-col-header-cell-cushion {
+    padding: 0.625rem 0.25rem;
+    font-weight: 600;
+}
+
+.fc .fc-day-today .fc-col-header-cell-cushion,
+.fc .fc-day-today .fc-daygrid-day-number {
+    color: var(--tungsteno);
 }
 
 .fc .fc-col-header-cell-cushion,
