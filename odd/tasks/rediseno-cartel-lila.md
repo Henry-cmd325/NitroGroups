@@ -13,12 +13,12 @@ Objetivo: rehacer el diseño de la UI con la skill taste-skill (dirección `name
 ## Tasks
 | ID | Specs | Ruta | Estado | Commit |
 |---|---|---|---|---|
-| T1 | S1, S2 | inline | pendiente | |
-| T2 | S2, S3 | inline | pendiente | |
-| T3 | S2, S5, S6 | por decidir | pendiente | |
-| T4 | S2, S5, S6 | por decidir | pendiente | |
+| T1 | S1, S2 | inline | hecho | 77b6a0e |
+| T2 | S2, S3 | inline | hecho (falta foto) | 77b6a0e |
+| T3 | S2, S5, S6 | inline | parcial: tokens y perfil | 77b6a0e |
+| T4 | S2, S5, S6 | inline | parcial: hoja clara y títulos | 77b6a0e |
 | T5 | S4 | inline | bloqueada por la red | |
-| T6 | S7 | inline | pendiente | |
+| T6 | S7 | inline | hecho | 77b6a0e |
 | T7 | S2 | inline | pendiente | |
 
 - T1: tokens, tipografía (Unbounded + Onest), DESIGN.md.
@@ -33,3 +33,5 @@ Objetivo: rehacer el diseño de la UI con la skill taste-skill (dirección `name
 - L1 (2026-11-03, usuario): "fijate que bo me encanta el diseño ni la paleta de colores, inicialmente nos gustaba el lila y morados, la ptra es que se ve como una pagina generica hecha con IA, te pedí que usaras skills para eso"
 - L2: taste-skill repartió 3 direcciones (name-as-monument, contact-sheet, pinned-poster). El usuario eligió "Cartel de baile" (name-as-monument) y habilitar la red para las fotos. La regla de la skill que prohíbe el violeta se levanta con `--allow` porque la marca lo pide (SKILL.md, Special cases).
 - L3: assets.mjs no llega a ninguna fuente: el proxy rechaza la conexión. Se avisó al usuario para que agregue los dominios.
+- L4: portada con inspect.mjs: 0 FAIL salvo few-pictures (red bloqueada). vitest 66/66, tsc y eslint limpios. Commit local 77b6a0e. El push al fork lo bloqueó el clasificador de permisos ("Remote Repoint"); queda pendiente de autorización del usuario.
+- L5: los verbos de "cómo se contrata" se ajustan al 86% del ancho para no encimarse con el papel picado.

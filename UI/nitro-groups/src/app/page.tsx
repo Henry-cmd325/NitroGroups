@@ -121,8 +121,8 @@ export default async function Home() {
             <section className="mt-[var(--section-gap)]" aria-label="Cómo se contrata un grupo">
                 {VERBS.map((v) => (
                     <div key={v.verb} className={`relative min-h-[100svh] overflow-hidden ${v.field}`}>
-                        <PapelPicado colors={v.flags} count={10} sway className="absolute inset-x-0 top-0 w-full h-[34svh]" />
-                        <h2 className="absolute inset-x-[var(--gutter)] top-1/2 -translate-y-1/2">
+                        <PapelPicado colors={v.flags} count={10} sway className="absolute inset-x-0 top-0 w-full h-[22svh]" />
+                        <h2 className="absolute left-1/2 top-[56%] w-[min(86%,72rem)] -translate-x-1/2 -translate-y-1/2">
                             <Monument name={v.verb} />
                         </h2>
                         <p className="absolute left-[var(--gutter)] right-[var(--gutter)] bottom-10 max-w-[36ch] text-[clamp(1.0625rem,1.3vw,1.25rem)]">
