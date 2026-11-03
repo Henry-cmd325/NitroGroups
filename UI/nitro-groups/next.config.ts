@@ -35,6 +35,14 @@ const nextConfig: NextConfig = {
         destination: `${backendUrl}/groups/:path*`,
       },
       {
+        source: "/api/event-requests/:path*",
+        destination: `${backendUrl}/event-requests/:path*`,
+      },
+      {
+        source: "/api/event-requests",
+        destination: `${backendUrl}/event-requests`,
+      },
+      {
         source: "/api/genres",
         destination: `${backendUrl}/genres`,
       },

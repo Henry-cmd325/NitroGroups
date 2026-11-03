@@ -4,6 +4,7 @@ import type { MusicGroup } from "@/features/groups/types/MusicGroup";
 import { PublicGroupProfile } from "@/features/groups/components/PublicGroupProfile";
 import { serverGetResult } from "@/lib/serverApi";
 import { isIsoDate } from "@/lib/format";
+import { getNitroSession } from "@/services/session";
 
 type Props = {
     params: Promise<{ slug: string }>;
@@ -33,8 +34,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function GroupPublicPage({ params, searchParams }: Props) {
     const [{ slug }, { fecha }] = await Promise.all([params, searchParams]);
-    const group = await loadGroup(slug);
+    const [group, session] = await Promise.all([loadGroup(slug), getNitroSession()]);
     if (!group) notFound();
 
-    return <PublicGroupProfile group={group} requestedDate={isIsoDate(fecha) ? fecha : undefined} />;
+    return (
+        <PublicGroupProfile
+            group={group}
+            requestedDate={isIsoDate(fecha) ? fecha : undefined}
+            signedIn={Boolean(session?.user)}
+        />
+    );
 }

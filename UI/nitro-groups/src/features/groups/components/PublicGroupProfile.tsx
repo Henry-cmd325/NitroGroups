@@ -5,6 +5,7 @@ import { ROUTES } from "@/config/routes";
 import { formatEventDate, priceLabel } from "@/lib/format";
 import type { MusicGroup } from "../types/MusicGroup";
 import type { GroupMediaResponse } from "@/features/groupMedia/types/GroupMedia";
+import { RequestForm } from "@/features/bookings/components/RequestForm";
 
 const kind = (m: GroupMediaResponse) => m.type.toLowerCase();
 
@@ -25,7 +26,7 @@ function Fact({ label, value }: { label: string; value: string }) {
  * Perfil público de un grupo. La primera foto manda; el nombre en voz de cartel; la acción
  * principal es pedir una fecha. Server Component: no necesita JavaScript para leerse.
  */
-export function PublicGroupProfile({ group, requestedDate }: { group: MusicGroup; requestedDate?: string }) {
+export function PublicGroupProfile({ group, requestedDate, signedIn = false }: { group: MusicGroup; requestedDate?: string; signedIn?: boolean }) {
     const media = [...(group.media ?? [])].sort(byOrder);
     const photos = media.filter((m) => kind(m) === "photo");
     const videos = media.filter((m) => kind(m) === "video");
@@ -155,18 +156,24 @@ export function PublicGroupProfile({ group, requestedDate }: { group: MusicGroup
                 </section>
             )}
 
-            <section id="solicitar" className="page-frame mt-[var(--section-gap)] scroll-mt-24" aria-labelledby="solicitar-titulo">
-                <h2 id="solicitar-titulo" className="type-poster text-[clamp(2.5rem,5vw,4.5rem)]">Pedir una fecha</h2>
-                <p className="mt-4 max-w-[52ch] text-lg text-papel">
-                    Cuéntale a {group.groupName} qué celebras, el día y cuántas horas necesitas. Te responde por escrito aquí mismo.
-                </p>
-                <Link
-                    href={`${ROUTES.AUTH.LOGIN}?returnTo=${encodeURIComponent(`${ROUTES.GROUPS.PUBLIC_PROFILE(group.slug)}#solicitar`)}`}
-                    className="mt-8 inline-flex h-14 items-center px-7 bg-tungsteno text-telon font-semibold no-underline hover:bg-tungsteno-press transition-colors"
-                >
-                    Entrar para enviar la solicitud
-                </Link>
-            </section>
+            {group.isAcceptingBookings && (
+                <section id="solicitar" className="page-frame mt-[var(--section-gap)] scroll-mt-24" aria-labelledby="solicitar-titulo">
+                    <h2 id="solicitar-titulo" className="type-poster text-[clamp(2.5rem,5vw,4.5rem)]">Pedir una fecha</h2>
+                    <p className="mt-4 mb-10 max-w-[52ch] text-lg text-papel">
+                        Cuéntale a {group.groupName} qué celebras, el día y cuántas horas necesitas. Te responde por escrito.
+                    </p>
+                    {signedIn ? (
+                        <RequestForm groupId={group.id} groupName={group.groupName} minimumHours={group.minimumDurationHours} defaultDate={requestedDate} />
+                    ) : (
+                        <Link
+                            href={`${ROUTES.AUTH.LOGIN}?returnTo=${encodeURIComponent(`${ROUTES.GROUPS.PUBLIC_PROFILE(group.slug)}${requestedDate ? `?fecha=${requestedDate}` : ""}#solicitar`)}`}
+                            className="inline-flex h-14 items-center px-7 bg-tungsteno text-telon font-semibold no-underline hover:bg-tungsteno-press transition-colors"
+                        >
+                            Entrar para enviar la solicitud
+                        </Link>
+                    )}
+                </section>
+            )}
         </article>
     );
 }

@@ -7,6 +7,7 @@ import { groupsService } from "@/features/groups/services/groups.service";
 import GroupProfile from "@/features/groups/components/GroupProfile";
 import GroupCalendar from "@/features/groupAvailability/components/GroupCalendar";
 import GroupGallery from "@/features/groupMedia/components/GroupGallery";
+import { GroupInbox } from "@/features/bookings/components/GroupInbox";
 
 export default function MusicianDashboardPage() {
   const { user } = useCurrentUser();
@@ -28,17 +29,11 @@ export default function MusicianDashboardPage() {
 
       <div className="max-w-6xl mx-auto px-6 mt-10">
         <TabbedSection>
+          <TabItem title="Solicitudes" tabKey="solicitudes">
+            {group?.id ? <GroupInbox groupId={group.id} /> : <p className="text-papel-2 py-10">Cargando…</p>}
+          </TabItem>
           <TabItem title="Galería" tabKey="galeria">
             <GroupGallery />
-          </TabItem>
-
-          <TabItem title="Eventos" tabKey="eventos">
-            <div className="text-center py-16">
-              <h3 className="text-lg font-semibold text-white mb-2">Próximos Eventos</h3>
-              <p className="text-sm text-gray-500 max-w-md mx-auto">
-                Las solicitudes aceptadas y eventos confirmados aparecerán aquí.
-              </p>
-            </div>
           </TabItem>
 
           <TabItem title="Calendario" tabKey="calendario">
@@ -46,17 +41,8 @@ export default function MusicianDashboardPage() {
               {group?.id ? (
                 <GroupCalendar groupId={group.id} mode="private" />
               ) : (
-                <div className="text-center text-sm text-gray-500 py-10">Cargando calendario...</div>
+                <p className="text-papel-2 py-10">Cargando calendario…</p>
               )}
-            </div>
-          </TabItem>
-
-          <TabItem title="Cotizaciones" tabKey="cotizaciones">
-            <div className="text-center py-16">
-              <h3 className="text-lg font-semibold text-white mb-2">Cotizaciones</h3>
-              <p className="text-sm text-gray-500 max-w-md mx-auto">
-                Aquí gestionarás los presupuestos solicitados por clientes potenciales.
-              </p>
             </div>
           </TabItem>
         </TabbedSection>
