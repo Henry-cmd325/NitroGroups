@@ -14,7 +14,7 @@ namespace NitroGroups.Tests.Integration.Architecture;
 /// </summary>
 public class ModuleBoundariesTests
 {
-    private static readonly string[] Modules = ["Users", "Groups", "Schedules"];
+    private static readonly string[] Modules = ["Users", "Groups", "Schedules", "Bookings"];
 
     private static readonly Assembly[] CoreAssemblies =
     [
@@ -27,6 +27,9 @@ public class ModuleBoundariesTests
         typeof(Core.Schedules.Domain.Entities.BusySchedule).Assembly,
         typeof(Core.Schedules.Application.DependencyInjection).Assembly,
         typeof(Core.Schedules.Infrastructure.DependencyInjection).Assembly,
+        typeof(Core.Bookings.Domain.Entities.EventRequest).Assembly,
+        typeof(Core.Bookings.Application.DependencyInjection).Assembly,
+        typeof(Core.Bookings.Infrastructure.DependencyInjection).Assembly,
     ];
 
     private static readonly Assembly[] SharedAssemblies =

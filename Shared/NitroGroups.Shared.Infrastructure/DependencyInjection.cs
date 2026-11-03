@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using NitroGroups.Shared.Abstractions.Events;
 using NitroGroups.Shared.Abstractions.Services;
 using NitroGroups.Shared.Infrastructure.Configuration;
@@ -56,6 +57,15 @@ namespace NitroGroups.Shared.Infrastructure
             services.AddScoped<IGroupMediaObjectStorage, R2GroupMediaStorage>();
 
             services.AddScoped<ICurrentUserService, CurrentUserService>();
+
+            // Emails: por SMTP si hay host configurado; si no, solo al log (desarrollo y tests).
+            services.Configure<EmailOptions>(configuration.GetSection(EmailOptions.SectionName));
+            if (!string.IsNullOrWhiteSpace(configuration["Email:Smtp:Host"]))
+                services.AddSingleton<IEmailSender, SmtpEmailSender>();
+            else
+                services.AddSingleton<IEmailSender, LoggingEmailSender>();
+
+            services.TryAddSingleton(TimeProvider.System);
 
             services.AddScoped<AuditInterceptor>();
 

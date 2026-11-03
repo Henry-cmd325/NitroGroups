@@ -1,6 +1,10 @@
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging.Abstractions;
+using NitroGroups.Core.Bookings.Application.Abstractions;
+using NitroGroups.Core.Bookings.Infrastructure.Persistence;
+using NitroGroups.Core.Bookings.Infrastructure.Repositories;
 using NitroGroups.Core.Groups.Application.Abstractions;
 using NitroGroups.Core.Groups.Application.Mappings;
 using NitroGroups.Core.Groups.Domain.Entities;
@@ -15,6 +19,7 @@ using NitroGroups.Core.Users.Domain.Entities;
 using NitroGroups.Core.Users.Infrastructure;
 using NitroGroups.Core.Users.Infrastructure.Persistence;
 using NitroGroups.Shared.Abstractions.Events;
+using NitroGroups.Shared.Infrastructure.Events;
 using NitroGroups.Shared.Infrastructure.Repository;
 using NSubstitute;
 
@@ -25,6 +30,7 @@ public sealed class IntegrationTestFixture : IDisposable
     public UsersDbContext CreateUsersContext() => CreateContext<UsersDbContext>(o => new UsersDbContext(o));
     public GroupsDbContext CreateGroupsContext() => CreateContext<GroupsDbContext>(o => new GroupsDbContext(o));
     public SchedulesDbContext CreateSchedulesContext() => CreateContext<SchedulesDbContext>(o => new SchedulesDbContext(o));
+    public BookingsDbContext CreateBookingsContext() => CreateContext<BookingsDbContext>(o => new BookingsDbContext(o));
 
     private static TContext CreateContext<TContext>(Func<DbContextOptions<TContext>, TContext> factory)
         where TContext : DbContext
@@ -83,6 +89,20 @@ public sealed class IntegrationTestFixture : IDisposable
 
         return services.BuildServiceProvider().GetRequiredService<IUnitOfWorkSchedules>();
     }
+
+    public IUnitOfWorkBookings CreateBookingsUnitOfWork(BookingsDbContext context)
+        => CreateBookingsUnitOfWork(context, Substitute.For<IOutboxService>());
+
+    public IUnitOfWorkBookings CreateBookingsUnitOfWork(BookingsDbContext context, IOutboxService outbox)
+        => new UnitOfWorkBookings(context, outbox, new EventRequestRepository(context));
+
+    /// <summary>Outbox real sobre el contexto de Bookings: guarda los eventos en outbox_events.</summary>
+    public IOutboxService CreateBookingsOutbox(BookingsDbContext context)
+        => new OutboxService<BookingsDbContext>(
+            context,
+            NullLogger<OutboxService<BookingsDbContext>>.Instance,
+            Substitute.For<IServiceProvider>(),
+            Substitute.For<IEventProvider>());
 
     public void Dispose()
     {

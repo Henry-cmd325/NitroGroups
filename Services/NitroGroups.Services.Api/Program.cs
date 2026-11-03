@@ -87,6 +87,7 @@ builder.Services.AddSharedInfrastructure(builder.Configuration);
 builder.Services.AddUsersModule(builder.Configuration);
 builder.Services.AddGroupsModule(builder.Configuration);
 builder.Services.AddSchedulesModule(builder.Configuration);
+builder.Services.AddBookingsModule(builder.Configuration);
 
 builder.Services.Configure<NitroGroups.Shared.Infrastructure.Configuration.Auth0ManagementApiSettings>(
     builder.Configuration.GetSection("Auth0ManagementApi"));
@@ -175,6 +176,7 @@ app.UseExceptionHandler(errorApp =>
 var eventProvider = app.Services.GetRequiredService<IEventProvider>();
 eventProvider.RegisterEventsFromAssembly(typeof(NitroGroups.Core.Users.Application.Events.UserEvents).Assembly);
 eventProvider.RegisterEventsFromAssembly(typeof(NitroGroups.Core.Groups.Application.Events.UsersEvents).Assembly);
+eventProvider.RegisterEventsFromAssembly(typeof(NitroGroups.Core.Bookings.Application.Events.BookingEvents).Assembly);
 
 app.MapDefaultEndpoints();
 

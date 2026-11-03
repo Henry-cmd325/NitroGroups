@@ -103,12 +103,12 @@ Si cambias el namespace de los roles, configura `Auth0:RolesClaim` en la API.
 
 ## Base de datos y migraciones
 
-Cada módulo tiene su propio `DbContext`, su esquema de PostgreSQL (`users`, `groups`, `schedules`), su tabla de historial `__ef_migrations_history` y su `outbox_events`. Las migraciones viven en `Core/<Modulo>/NitroGroups.Core.<Modulo>.Infrastructure/Persistence/Migrations`.
+Cada módulo tiene su propio `DbContext`, su esquema de PostgreSQL (`users`, `groups`, `schedules`, `bookings`), su tabla de historial `__ef_migrations_history` y su `outbox_events`. Las migraciones viven en `Core/<Modulo>/NitroGroups.Core.<Modulo>.Infrastructure/Persistence/Migrations`.
 
 Para aplicar las migraciones de todos los módulos:
 
 ```bash
-for m in Users Groups Schedules; do
+for m in Users Groups Schedules Bookings; do
   dotnet ef database update --context ${m}DbContext \
     --project Core/$m/NitroGroups.Core.$m.Infrastructure \
     --startup-project Services/NitroGroups.Services.Api
@@ -129,6 +129,20 @@ dotnet ef migrations add <Nombre> --context GroupsDbContext \
 ```bash
 psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f scripts/db/2026-11-upgrade-to-module-schemas.sql
 ```
+
+## Emails
+
+Los avisos de las solicitudes de evento (`api/event-requests`: nueva solicitud, aceptada, rechazada, cancelada y mensajes nuevos) salen del outbox del módulo Bookings. Si un envío falla, el outbox reintenta el evento más tarde. Los emails no incluyen el texto de los mensajes.
+
+Sin configuración, los emails **no se envían**: solo se registran en el log el destinatario y el asunto (útil en desarrollo y tests). Para enviarlos por SMTP, define `Email:Smtp:Host`:
+
+| Clave | Por defecto | Descripción |
+| --- | --- | --- |
+| `Email:From` | `NitroGroups <no-reply@nitrogroups.com>` | Remitente |
+| `Email:Smtp:Host` | (vacío: solo log) | Servidor SMTP; activa el envío real |
+| `Email:Smtp:Port` | `587` | Puerto |
+| `Email:Smtp:Username` / `Email:Smtp:Password` | (vacíos) | Credenciales; guárdalas en User Secrets o variables de entorno (`Email__Smtp__Password`) |
+| `Email:Smtp:EnableSsl` | `true` | TLS |
 
 ## Tailwind CSS
 

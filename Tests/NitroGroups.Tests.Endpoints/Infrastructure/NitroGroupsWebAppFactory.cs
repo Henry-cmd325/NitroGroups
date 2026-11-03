@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using NitroGroups.Core.Groups.Application.Abstractions;
 using NitroGroups.Core.Groups.Domain.Entities;
 using NitroGroups.Shared.Abstractions.Repository;
+using NitroGroups.Core.Bookings.Infrastructure.Persistence;
 using NitroGroups.Core.Groups.Infrastructure.Persistence;
 using NitroGroups.Core.Schedules.Infrastructure.Persistence;
 using NitroGroups.Core.Users.Infrastructure.Persistence;
@@ -77,6 +78,7 @@ public class NitroGroupsWebAppFactory : WebApplicationFactory<Program>
             ReplaceWithInMemory<UsersDbContext>(services);
             ReplaceWithInMemory<GroupsDbContext>(services);
             ReplaceWithInMemory<SchedulesDbContext>(services);
+            ReplaceWithInMemory<BookingsDbContext>(services);
 
             // Autenticación que aprueba toda petición (bypass de JWT):
             // registrar el esquema y sobreescribir los defaults DESPUÉS de que

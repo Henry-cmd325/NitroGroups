@@ -23,6 +23,8 @@
     <ProjectReference Include="..\..\Core\Groups\NitroGroups.Core.Groups.Infrastructure\NitroGroups.Core.Groups.Infrastructure.csproj" />
     <ProjectReference Include="..\..\Core\Schedules\NitroGroups.Core.Schedules.Application\NitroGroups.Core.Schedules.Application.csproj" />
     <ProjectReference Include="..\..\Core\Schedules\NitroGroups.Core.Schedules.Infrastructure\NitroGroups.Core.Schedules.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\Core\Bookings\NitroGroups.Core.Bookings.Application\NitroGroups.Core.Bookings.Application.csproj" />
+    <ProjectReference Include="..\..\Core\Bookings\NitroGroups.Core.Bookings.Infrastructure\NitroGroups.Core.Bookings.Infrastructure.csproj" />
     <ProjectReference Include="..\..\Shared\NitroGroups.Shared.Infrastructure\NitroGroups.Shared.Infrastructure.csproj" />
     <ProjectReference Include="..\..\Shared\NitroGroups.Shared.Contracts\NitroGroups.Shared.Contracts.csproj" />
     <ProjectReference Include="..\..\Shared\NitroGroups.Shared.Abstractions\NitroGroups.Shared.Abstractions.csproj" />
