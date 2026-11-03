@@ -4,26 +4,24 @@ import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
 
+// Botones planos, esquinas rectas, un relleno por variante (DESIGN.md → Components).
 const buttonVariants = cva(
-    "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+    "inline-flex items-center justify-center gap-2 whitespace-nowrap font-semibold transition-colors duration-150 disabled:pointer-events-none disabled:opacity-45 [&_svg]:pointer-events-none [&_svg]:size-[1.1em] [&_svg]:shrink-0",
     {
         variants: {
             variant: {
-                default: "bg-primary text-primary-foreground hover:bg-primary/90",
-                destructive:
-                    "bg-destructive text-destructive-foreground hover:bg-destructive/90",
-                outline:
-                    "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
-                secondary:
-                    "bg-secondary text-secondary-foreground hover:bg-secondary/80",
-                ghost: "hover:bg-accent hover:text-accent-foreground",
-                link: "text-primary underline-offset-4 hover:underline",
+                default: "bg-tungsteno text-telon hover:bg-tungsteno-press active:bg-tungsteno-press",
+                destructive: "bg-error text-telon hover:brightness-95",
+                outline: "bg-transparent text-papel shadow-[inset_0_0_0_2px_var(--telon-3)] hover:bg-telon-3",
+                secondary: "bg-telon-2 text-papel hover:bg-telon-3",
+                ghost: "text-papel hover:bg-telon-2",
+                link: "text-papel underline decoration-tungsteno decoration-2 underline-offset-4 hover:text-tungsteno px-0",
             },
             size: {
-                default: "h-10 px-4 py-2",
-                sm: "h-9 rounded-md px-3",
-                lg: "h-11 rounded-md px-8",
-                icon: "h-10 w-10",
+                default: "h-11 px-5 text-[0.95rem]",
+                sm: "h-9 px-3.5 text-sm",
+                lg: "h-14 px-7 text-base",
+                icon: "h-11 w-11",
             },
         },
         defaultVariants: {

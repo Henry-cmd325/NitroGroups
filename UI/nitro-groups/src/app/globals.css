@@ -1,44 +1,58 @@
 @import "tailwindcss";
 
+/*
+ * NitroGroups design system — "Escenario nocturno". See DESIGN.md.
+ * Ground: telón (oxblood). Light: tungsteno (amber). Ink: papel.
+ * Surfaces step in tone; no hairlines, no shadows at rest, no gradients.
+ */
 :root {
-    --background: #020617;
-    --foreground: #f8fafc;
-    --card: #0f172a;
-    --card-foreground: #f8fafc;
-    --popover: #0f172a;
-    --popover-foreground: #f8fafc;
-    --primary: #a855f7;
-    --primary-foreground: #020617;
-    --secondary: #1e293b;
-    --secondary-foreground: #f8fafc;
-    --muted: #1e293b;
-    --muted-foreground: #c4b5fd;
-    --accent: #7c3aed;
-    --accent-foreground: #f8fafc;
-    --destructive: #f87171;
-    --destructive-foreground: #020617;
-    --border: rgba(196, 181, 253, 0.15);
-    --input: #1e293b;
-    --ring: #a855f7;
-    --font-weight-medium: 500;
-    --font-weight-normal: 400;
-    --chart-1: #a855f7;
-    --chart-2: #7c3aed;
-    --chart-3: #06b6d4;
-    --chart-4: #34d399;
-    --chart-5: #fbbf24;
-    --sidebar: #0f172a;
-    --sidebar-foreground: #f8fafc;
-    --sidebar-primary: #a855f7;
-    --sidebar-primary-foreground: #020617;
-    --sidebar-accent: #1e293b;
-    --sidebar-accent-foreground: #f8fafc;
-    --sidebar-border: rgba(196, 181, 253, 0.15);
-    --sidebar-ring: #a855f7;
-    --back-purple: #241335
+    --telon: #1C0B0E;
+    --telon-2: #2A1216;
+    --telon-3: #3A1A1F;
+    --papel: #F4EADF;
+    --papel-2: #D9C7B8;
+    --tungsteno: #F5A524;
+    --tungsteno-press: #E08F0C;
+    --error: #FF8A7A;
+    --ok: #9BD3A8;
+
+    /* Semantic aliases kept for existing components. */
+    --background: var(--telon);
+    --foreground: var(--papel);
+    --card: var(--telon-2);
+    --card-foreground: var(--papel);
+    --popover: var(--telon-2);
+    --popover-foreground: var(--papel);
+    --primary: var(--tungsteno);
+    --primary-foreground: var(--telon);
+    --secondary: var(--telon-2);
+    --secondary-foreground: var(--papel);
+    --muted: var(--telon-2);
+    --muted-foreground: var(--papel-2);
+    --accent: var(--telon-3);
+    --accent-foreground: var(--papel);
+    --destructive: var(--error);
+    --destructive-foreground: var(--telon);
+    --border: var(--telon-3);
+    --input: var(--telon-2);
+    --ring: var(--tungsteno);
+
+    --gutter: clamp(1rem, 4vw, 3rem);
+    --section-gap: clamp(6rem, 14vw, 13rem);
+    --radius: 0px;
 }
 
 @theme {
+    --color-telon: var(--telon);
+    --color-telon-2: var(--telon-2);
+    --color-telon-3: var(--telon-3);
+    --color-papel: var(--papel);
+    --color-papel-2: var(--papel-2);
+    --color-tungsteno: var(--tungsteno);
+    --color-tungsteno-press: var(--tungsteno-press);
+    --color-error: var(--error);
+    --color-ok: var(--ok);
+
     --color-background: var(--background);
     --color-foreground: var(--foreground);
     --color-card: var(--card);
@@ -58,192 +72,175 @@
     --color-border: var(--border);
     --color-input: var(--input);
     --color-ring: var(--ring);
-    --color-chart-1: var(--chart-1);
-    --color-chart-2: var(--chart-2);
-    --color-chart-3: var(--chart-3);
-    --color-chart-4: var(--chart-4);
-    --color-chart-5: var(--chart-5);
-    --radius-sm: calc(var(--radius) - 4px);
-    --radius-md: calc(var(--radius) - 2px);
-    --radius-lg: var(--radius);
-    --radius-xl: calc(var(--radius) + 4px);
-    --color-sidebar: var(--sidebar);
-    --color-sidebar-foreground: var(--sidebar-foreground);
-    --color-sidebar-primary: var(--sidebar-primary);
-    --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-    --color-sidebar-accent: var(--sidebar-accent);
-    --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-    --color-sidebar-border: var(--sidebar-border);
-    --color-sidebar-ring: var(--sidebar-ring);
-    --font-sans: var(--font-geist-sans);
-    --font-mono: var(--font-geist-mono);
+
+    --radius-sm: 0px;
+    --radius-md: 0px;
+    --radius-lg: 0px;
+    --radius-xl: 0px;
+
+    --font-sans: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+    --font-display: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
 }
 
 @layer base {
     * {
-        @apply border-border outline-ring/50;
+        @apply border-border;
+    }
+
+    html {
+        color-scheme: dark;
+        scrollbar-color: var(--telon-3) var(--telon);
+        -webkit-text-size-adjust: 100%;
     }
 
     body {
         @apply bg-background text-foreground;
+        font-family: var(--font-sans);
+        font-size: 1.0625rem;
+        line-height: 1.55;
+        font-stretch: 100%;
+        caret-color: var(--tungsteno);
+        text-rendering: optimizeLegibility;
+    }
+
+    ::selection {
+        background: var(--tungsteno);
+        color: var(--telon);
+    }
+
+    :focus-visible {
+        outline: 2px solid var(--tungsteno);
+        outline-offset: 3px;
+    }
+
+    a {
+        text-underline-offset: 0.2em;
+        text-decoration-thickness: 1px;
+    }
+
+    h1, h2, h3, h4 {
+        font-weight: 700;
+        font-stretch: 75%;
+        letter-spacing: -0.02em;
+        word-spacing: 0.06em;
+        line-height: 1.05;
+        text-wrap: balance;
+    }
+
+    p {
+        text-wrap: pretty;
+    }
+
+    input, select, textarea, button {
+        font: inherit;
+    }
+
+    ::-webkit-scrollbar { width: 12px; height: 12px; }
+    ::-webkit-scrollbar-track { background: var(--telon); }
+    ::-webkit-scrollbar-thumb { background: var(--telon-3); border: 3px solid var(--telon); }
+}
+
+@layer components {
+    /* Poster voice: the cartel headline. */
+    .type-poster {
+        font-family: var(--font-display);
+        font-weight: 800;
+        font-stretch: 62%;
+        letter-spacing: -0.03em;
+        word-spacing: 0.1em;
+        line-height: 0.9;
+        text-wrap: balance;
+    }
+
+    .type-heading {
+        font-weight: 700;
+        font-stretch: 75%;
+        letter-spacing: -0.02em;
+        word-spacing: 0.06em;
+        line-height: 1.05;
+    }
+
+    .tabular {
+        font-variant-numeric: tabular-nums;
+    }
+
+    .page-frame {
+        width: 100%;
+        max-width: 90rem;
+        margin-inline: auto;
+        padding-inline: var(--gutter);
+    }
+
+    /* The one authored moment: the poster headline tightens on first paint. */
+    @media (prefers-reduced-motion: no-preference) {
+        .poster-tighten {
+            animation: poster-tighten 900ms cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
     }
 }
 
-@layer base {
-    :where(:not(:has([class*=" text-"]), :not(:has([class^="text-"])))) {  
-        h1 {
-            font-size: var(--text-2xl);
-            font-weight: var(--font-weight-medium);
-            line-height: 1.5;
-        }
-
-        h2 {
-            font-size: var(--text-xl);
-            font-weight: var(--font-weight-medium);
-            line-height: 1.5;
-        }
-
-        h3 {
-            font-size: var(--text-lg);
-            font-weight: var(--font-weight-medium);
-            line-height: 1.5;
-        }
-
-        h4 {
-            font-size: var(--text-base);
-            font-weight: var(--font-weight-medium);
-            line-height: 1.5;
-        }
-
-        p {
-            font-size: var(--text-base);
-            font-weight: var(--font-weight-normal);
-            line-height: 1.5;
-        }
-
-        label {
-            font-size: var(--text-base);
-            font-weight: var(--font-weight-medium);
-            line-height: 1.5;
-        }
-
-        button {
-            font-size: var(--text-base);
-            font-weight: var(--font-weight-medium);
-            line-height: 1.5;
-        }
-
-        input {
-            font-size: var(--text-base);
-            font-weight: var(--font-weight-normal);
-            line-height: 1.5;
-        }
-    }
+@keyframes poster-tighten {
+    from { font-stretch: 100%; letter-spacing: 0; }
+    to { font-stretch: 62%; letter-spacing: -0.03em; }
 }
 
-/* Validation styles */
-.valid.modified:not([type=checkbox]) {
-    outline: 1px solid #26b050;
-}
-
-.invalid {
-    outline: 1px solid red;
-}
-
-.validation-message {
-    color: red;
-}
-
-/* Loader animation */
-.loader-logo {
-    animation: pulse 1.5s infinite ease-in-out;
-    width: 150px;
-    height: auto;
-}
-
-@keyframes pulse {
-    0% {
-        transform: scale(1);
-        opacity: 1;
-    }
-    50% {
-        transform: scale(1.05);
-        opacity: 0.8;
-    }
-    100% {
-        transform: scale(1);
-        opacity: 1;
-    }
-}
-
-/* Spinner animation */
+/* Spinner (loading states) */
 .spinner {
-    border: 4px solid var(--secondary);
-    border-left-color: var(--primary);
+    border: 3px solid var(--telon-3);
+    border-left-color: var(--tungsteno);
     border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    animation: spin 1s linear infinite;
+    width: 32px;
+    height: 32px;
+    animation: spin 0.9s linear infinite;
 }
 
 @keyframes spin {
-    to {
-        transform: rotate(360deg);
-    }
+    to { transform: rotate(360deg); }
 }
 
-/* FullCalendar theme overrides */
+@media (prefers-reduced-motion: reduce) {
+    .spinner { animation-duration: 2.4s; }
+}
+
+/* FullCalendar, themed from the palette */
 .fc {
     --fc-page-bg-color: transparent;
-    --fc-border-color: rgba(196, 181, 253, 0.15);
-    --fc-neutral-bg-color: rgba(15, 23, 42, 0.75);
-    --fc-today-bg-color: rgba(168, 85, 247, 0.15);
-    --fc-event-text-color: #0f172a;
-    --fc-button-bg-color: var(--primary);
-    --fc-button-border-color: var(--primary);
-    --fc-button-text-color: #0f172a;
-    --fc-button-hover-bg-color: #9333ea;
-    --fc-button-hover-border-color: #9333ea;
-    --fc-button-active-bg-color: #7c3aed;
-    --fc-button-active-border-color: #7c3aed;
+    --fc-border-color: var(--telon-3);
+    --fc-neutral-bg-color: var(--telon-2);
+    --fc-today-bg-color: rgba(245, 165, 36, 0.12);
+    --fc-event-bg-color: var(--tungsteno);
+    --fc-event-border-color: var(--tungsteno);
+    --fc-event-text-color: var(--telon);
+    --fc-button-bg-color: var(--telon-2);
+    --fc-button-border-color: var(--telon-2);
+    --fc-button-text-color: var(--papel);
+    --fc-button-hover-bg-color: var(--telon-3);
+    --fc-button-hover-border-color: var(--telon-3);
+    --fc-button-active-bg-color: var(--tungsteno);
+    --fc-button-active-border-color: var(--tungsteno);
+    font-variant-numeric: tabular-nums;
+}
+
+.fc .fc-button-primary:not(:disabled).fc-button-active,
+.fc .fc-button-primary:not(:disabled):active {
+    color: var(--telon);
+}
+
+.fc .fc-button {
+    border-radius: 0;
+    box-shadow: none;
 }
 
 .fc .fc-toolbar-title {
-    color: #f8fafc;
-    font-weight: 600;
+    color: var(--papel);
+    font-weight: 700;
+    font-stretch: 75%;
 }
 
 .fc .fc-col-header-cell-cushion,
 .fc .fc-daygrid-day-number,
-.fc .fc-timegrid-axis-cushion {
-    color: #e2e8f0;
-}
-
-.fc .fc-timegrid-slot-label,
-.fc .fc-timegrid-axis-frame {
-    color: #cbd5f5;
-}
-
-.fc .fc-button {
-    box-shadow: none;
-}
-
-/* ── Shared form field style ── */
-.input-field {
-    width: 100%;
-    background: var(--input);
-    border: 1px solid var(--border);
-    border-radius: 0.75rem;
-    padding: 0.6875rem 1rem;
-    color: var(--foreground);
-    font-size: 0.875rem;
-    transition: border-color 0.2s, box-shadow 0.2s;
-}
-.input-field:focus {
-    outline: none;
-    border-color: var(--primary);
-    box-shadow: 0 0 0 2px rgba(168, 85, 247, 0.15);
-}
-.input-field::placeholder {
-    color: #64748b;
+.fc .fc-timegrid-axis-cushion,
+.fc .fc-timegrid-slot-label-cushion {
+    color: var(--papel-2);
+    text-decoration: none;
 }

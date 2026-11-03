@@ -12,6 +12,7 @@ export const ROUTES = {
         CLIENT: "/dashboard/client",
     },
     GROUPS: {
+        SEARCH: "/groups",
         PUBLIC_PROFILE: (slug: string) => `/groups/${slug}`,
     },
 } as const;
