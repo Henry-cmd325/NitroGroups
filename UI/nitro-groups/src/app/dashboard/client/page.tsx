@@ -12,21 +12,21 @@ export default function ClientDashboardPage() {
     return (
         <div className="page-frame pt-12 md:pt-16">
             <div className="flex flex-wrap items-end justify-between gap-6">
-                <h1 className="type-poster text-[clamp(3rem,8vw,6.5rem)]">Mis solicitudes</h1>
-                <Link href={ROUTES.GROUPS.SEARCH} className="h-12 inline-flex items-center px-6 bg-tungsteno text-telon font-semibold no-underline hover:bg-tungsteno-press">
+                <h1 className="type-heading text-[clamp(2rem,3.4vw,3rem)]">Mis solicitudes</h1>
+                <Link href={ROUTES.GROUPS.SEARCH} className="h-12 inline-flex items-center px-6 bg-acento text-fondo font-semibold no-underline hover:bg-acento-press">
                     Buscar otro grupo
                 </Link>
             </div>
 
             <div className="mt-12">
-                {requests.isPending && <p className="text-papel-2" aria-busy>Cargando tus solicitudes…</p>}
+                {requests.isPending && <p className="text-tinta-2" aria-busy>Cargando tus solicitudes…</p>}
                 {requests.isError && (
                     <p role="alert" className="text-error">No pudimos cargar tus solicitudes. Recarga la página en un momento.</p>
                 )}
                 {requests.data?.length === 0 && (
                     <div className="max-w-[56ch]">
                         <p className="type-heading text-3xl">Todavía no pediste ninguna fecha</p>
-                        <p className="mt-3 text-lg text-papel">
+                        <p className="mt-3 text-lg text-tinta">
                             Busca un grupo por música, ciudad y fecha, y envíale tu solicitud desde su perfil. Aquí vas a ver sus respuestas.
                         </p>
                     </div>

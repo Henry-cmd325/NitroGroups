@@ -16,7 +16,7 @@ interface ProgressStepsProps {
 
 /**
  * Pasos de un flujo: cada paso es una barra con su nombre debajo. El actual se ilumina en
- * tungsteno; los completados llevan una marca. Sin círculos ni halos (DESIGN.md).
+ * acento; los completados llevan una marca. Sin círculos ni halos (DESIGN.md).
  */
 export function ProgressSteps({ steps, currentStep, className }: ProgressStepsProps) {
     return (
@@ -33,10 +33,10 @@ export function ProgressSteps({ steps, currentStep, className }: ProgressStepsPr
                                 aria-hidden
                                 className={cn(
                                     "block h-1 transition-colors duration-300",
-                                    isCurrent ? "bg-tungsteno" : isCompleted ? "bg-papel-2" : "bg-telon-3"
+                                    isCurrent ? "bg-acento" : isCompleted ? "bg-tinta-2" : "bg-fondo-3"
                                 )}
                             />
-                            <span className={cn("mt-3 flex items-center gap-1.5 text-sm", isCurrent ? "text-papel font-semibold" : "text-papel-2")}>
+                            <span className={cn("mt-3 flex items-center gap-1.5 text-sm", isCurrent ? "text-tinta font-semibold" : "text-tinta-2")}>
                                 {isCompleted && <Check className="size-3.5" aria-hidden />}
                                 {step.label}
                                 <span className="sr-only">

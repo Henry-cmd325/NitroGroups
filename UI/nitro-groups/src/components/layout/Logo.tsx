@@ -6,7 +6,7 @@ export function Logo({ className = "" }: { className?: string }) {
     return (
         <Link
             href={ROUTES.HOME}
-            className={`type-poster text-[1.75rem] leading-none text-papel no-underline ${className}`}
+            className={`type-poster text-[1.75rem] leading-none text-tinta no-underline ${className}`}
             aria-label="NitroGroups, inicio"
         >
             NitroGroups

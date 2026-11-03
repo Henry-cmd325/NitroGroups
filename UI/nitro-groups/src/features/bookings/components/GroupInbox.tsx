@@ -8,7 +8,7 @@ import { RequestList } from "./RequestList";
 export function GroupInbox({ groupId }: { groupId: number }) {
     const requests = useQuery({ queryKey: ["event-requests", "group", groupId], queryFn: () => bookingsService.forGroup(groupId) });
 
-    if (requests.isPending) return <p className="text-papel-2 py-10" aria-busy>Cargando solicitudes…</p>;
+    if (requests.isPending) return <p className="text-tinta-2 py-10" aria-busy>Cargando solicitudes…</p>;
     if (requests.isError) return <p role="alert" className="text-error py-10">No pudimos cargar las solicitudes. Recarga la página en un momento.</p>;
 
     const pending = requests.data.filter((r) => r.status === "Pending");
@@ -18,7 +18,7 @@ export function GroupInbox({ groupId }: { groupId: number }) {
         return (
             <div className="py-10 max-w-[56ch]">
                 <p className="type-heading text-2xl">Aún no tienes solicitudes</p>
-                <p className="mt-2 text-papel">Cuando un cliente te pida una fecha, aparece aquí y te avisamos por email.</p>
+                <p className="mt-2 text-tinta">Cuando un cliente te pida una fecha, aparece aquí y te avisamos por email.</p>
             </div>
         );
     }
@@ -33,7 +33,7 @@ export function GroupInbox({ groupId }: { groupId: number }) {
             )}
             {rest.length > 0 && (
                 <section aria-labelledby="historial">
-                    <h3 id="historial" className="type-heading text-2xl text-papel-2">Historial</h3>
+                    <h3 id="historial" className="type-heading text-2xl text-tinta-2">Historial</h3>
                     <RequestList requests={rest} viewer="Group" />
                 </section>
             )}

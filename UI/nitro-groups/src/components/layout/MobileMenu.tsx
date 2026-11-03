@@ -32,7 +32,7 @@ export function MobileMenu() {
     if (isLoading) return null;
 
     const dashboard = dashboardFor(user?.userType === UserTypeEnum.Musician);
-    const linkClass = "block py-3 text-2xl type-heading text-papel no-underline";
+    const linkClass = "block py-3 text-2xl type-heading text-tinta no-underline";
 
     return (
         <div className="md:hidden">
@@ -48,7 +48,7 @@ export function MobileMenu() {
             </button>
 
             {open && (
-                <div id="menu-movil" onClick={(e) => { if ((e.target as HTMLElement).closest("a")) setOpen(false); }} className="fixed inset-x-0 top-16 bottom-0 z-40 bg-telon px-[var(--gutter)] py-6 overflow-y-auto">
+                <div id="menu-movil" onClick={(e) => { if ((e.target as HTMLElement).closest("a")) setOpen(false); }} className="fixed inset-x-0 top-16 bottom-0 z-40 bg-fondo px-[var(--gutter)] py-6 overflow-y-auto">
                     <nav aria-label="Principal">
                         <Link href={ROUTES.GROUPS.SEARCH} className={linkClass}>Explorar grupos</Link>
                         {auth0User ? (

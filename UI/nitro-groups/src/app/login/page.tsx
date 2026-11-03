@@ -161,7 +161,7 @@ export default function LoginPage() {
                 </p>
             </div>
             <aside className="hidden md:flex md:col-span-5 md:col-start-8 items-center">
-                <p className="text-[clamp(1.5rem,2.4vw,2.25rem)] leading-snug text-papel-2 max-w-[22ch]">
+                <p className="text-[clamp(1.5rem,2.4vw,2.25rem)] leading-snug text-tinta-2 max-w-[22ch]">
                     Tus solicitudes, tus fechas y cada conversación con los grupos, en un solo lugar.
                 </p>
             </aside>

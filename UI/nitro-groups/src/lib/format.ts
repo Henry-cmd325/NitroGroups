@@ -42,3 +42,28 @@ const mexicoDay = new Intl.DateTimeFormat("en-CA", { timeZone: "America/Mexico_C
 export function todayInMexico(now: Date = new Date()): string {
     return mexicoDay.format(now);
 }
+
+/** Próximos viernes, sábados y domingos (días de fiesta) a partir de hoy, como YYYY-MM-DD. */
+export function upcomingPartyDates(today: string, count: number): string[] {
+    if (!isIsoDate(today)) return [];
+    const [y, m, d] = today.split("-").map(Number);
+    const cursor = new Date(Date.UTC(y, m - 1, d));
+    const out: string[] = [];
+    while (out.length < count) {
+        const day = cursor.getUTCDay();
+        if (day === 5 || day === 6 || day === 0) out.push(cursor.toISOString().slice(0, 10));
+        cursor.setUTCDate(cursor.getUTCDate() + 1);
+    }
+    return out;
+}
+
+const dayParts = new Intl.DateTimeFormat("es-MX", { weekday: "short", day: "numeric", month: "short", timeZone: "UTC" });
+
+/** Partes cortas de una fecha para el cartel: { weekday: "sáb", day: "14", month: "mar" }. */
+export function shortDateParts(isoDate: string): { weekday: string; day: string; month: string } | null {
+    if (!isIsoDate(isoDate)) return null;
+    const [y, m, d] = isoDate.split("-").map(Number);
+    const parts = dayParts.formatToParts(new Date(Date.UTC(y, m - 1, d)));
+    const get = (t: string) => (parts.find((p) => p.type === t)?.value ?? "").replace(".", "");
+    return { weekday: get("weekday"), day: get("day"), month: get("month") };
+}

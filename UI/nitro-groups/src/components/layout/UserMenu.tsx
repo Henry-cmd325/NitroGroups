@@ -19,10 +19,10 @@ export function UserMenu() {
     return (
         <div className="hidden md:flex items-center gap-7">
             <nav aria-label="Principal" className="flex items-center gap-7">
-                <Link href={ROUTES.GROUPS.SEARCH} className="text-papel-2 no-underline hover:text-papel transition-colors">
+                <Link href={ROUTES.GROUPS.SEARCH} className="text-tinta-2 no-underline hover:text-tinta transition-colors">
                     Explorar grupos
                 </Link>
-                <Link href={dashboard.href} className="text-papel no-underline font-semibold hover:text-tungsteno transition-colors">
+                <Link href={dashboard.href} className="text-tinta no-underline font-semibold hover:text-acento transition-colors">
                     {dashboard.label}
                 </Link>
             </nav>
@@ -31,11 +31,11 @@ export function UserMenu() {
                     // eslint-disable-next-line @next/next/no-img-element -- avatar de Auth0/R2 con dominio variable
                     <img src={picture} alt="" className="size-9 rounded-full object-cover" />
                 ) : (
-                    <span aria-hidden className="size-9 rounded-full bg-telon-3 grid place-items-center font-semibold">
+                    <span aria-hidden className="size-9 rounded-full bg-fondo-3 grid place-items-center font-semibold">
                         {displayName?.charAt(0).toUpperCase()}
                     </span>
                 )}
-                <span className="text-papel-2 text-sm">{displayName}</span>
+                <span className="text-tinta-2 text-sm">{displayName}</span>
             </div>
             <LogoutButton />
         </div>

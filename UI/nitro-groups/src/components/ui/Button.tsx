@@ -10,12 +10,12 @@ const buttonVariants = cva(
     {
         variants: {
             variant: {
-                default: "bg-tungsteno text-telon hover:bg-tungsteno-press active:bg-tungsteno-press",
-                destructive: "bg-error text-telon hover:brightness-95",
-                outline: "bg-transparent text-papel shadow-[inset_0_0_0_2px_var(--telon-3)] hover:bg-telon-3",
-                secondary: "bg-telon-2 text-papel hover:bg-telon-3",
-                ghost: "text-papel hover:bg-telon-2",
-                link: "text-papel underline decoration-tungsteno decoration-2 underline-offset-4 hover:text-tungsteno px-0",
+                default: "bg-acento text-fondo hover:bg-acento-press active:bg-acento-press",
+                destructive: "bg-error text-fondo hover:brightness-95",
+                outline: "bg-transparent text-tinta shadow-[inset_0_0_0_2px_var(--fondo-3)] hover:bg-fondo-3",
+                secondary: "bg-fondo-2 text-tinta hover:bg-fondo-3",
+                ghost: "text-tinta hover:bg-fondo-2",
+                link: "text-tinta underline decoration-acento decoration-2 underline-offset-4 hover:text-acento px-0",
             },
             size: {
                 default: "h-11 px-5 text-[0.95rem]",

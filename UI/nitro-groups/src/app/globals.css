@@ -1,55 +1,78 @@
 @import "tailwindcss";
 
 /*
- * NitroGroups design system — "Escenario nocturno". See DESIGN.md.
- * Ground: telón (oxblood). Light: tungsteno (amber). Ink: papel.
+ * NitroGroups design system — "Cartel de baile". See DESIGN.md.
+ * Ground: papel lila (the fluorescent paper of a Mexican dance poster).
+ * Ink: tinta morada, almost black. Accent: morado de imprenta, only on the action.
  * Surfaces step in tone; no hairlines, no shadows at rest, no gradients.
  */
 :root {
-    --telon: #1C0B0E;
-    --telon-2: #2A1216;
-    --telon-3: #3A1A1F;
-    --papel: #F4EADF;
-    --papel-2: #D9C7B8;
-    --tungsteno: #F5A524;
-    --tungsteno-press: #E08F0C;
-    --error: #FF8A7A;
-    --ok: #9BD3A8;
+    --fondo: #D6BEFF;
+    --fondo-2: #C8A9FB;
+    --fondo-3: #B591F4;
+    --tinta: #1D0736;
+    --tinta-2: #4A2C72;
+    --acento: #4B12B8;
+    --acento-press: #3A0C93;
+    --error: #860A31;
+    --ok: #0A4A29;
 
-    /* Semantic aliases kept for existing components. */
-    --background: var(--telon);
-    --foreground: var(--papel);
-    --card: var(--telon-2);
-    --card-foreground: var(--papel);
-    --popover: var(--telon-2);
-    --popover-foreground: var(--papel);
-    --primary: var(--tungsteno);
-    --primary-foreground: var(--telon);
-    --secondary: var(--telon-2);
-    --secondary-foreground: var(--papel);
-    --muted: var(--telon-2);
-    --muted-foreground: var(--papel-2);
-    --accent: var(--telon-3);
-    --accent-foreground: var(--papel);
-    --destructive: var(--error);
-    --destructive-foreground: var(--telon);
-    --border: var(--telon-3);
-    --input: var(--telon-2);
-    --ring: var(--tungsteno);
-
-    --gutter: clamp(1rem, 4vw, 3rem);
-    --section-gap: clamp(6rem, 14vw, 13rem);
+    --gutter: clamp(1.25rem, 2.5vw, 2rem);
+    --section-gap: clamp(7.5rem, 14vw, 15rem);
     --radius: 0px;
 }
 
-@theme {
-    --color-telon: var(--telon);
-    --color-telon-2: var(--telon-2);
-    --color-telon-3: var(--telon-3);
-    --color-papel: var(--papel);
-    --color-papel-2: var(--papel-2);
-    --color-tungsteno: var(--tungsteno);
-    --color-tungsteno-press: var(--tungsteno-press);
+/* Semantic aliases, re-resolved on every sheet so inverted and pale fields recolour them too. */
+:root, .hoja-clara, .campo-tinta {
+    --background: var(--fondo);
+    --foreground: var(--tinta);
+    --card: var(--fondo-2);
+    --card-foreground: var(--tinta);
+    --popover: var(--fondo-2);
+    --popover-foreground: var(--tinta);
+    --primary: var(--acento);
+    --primary-foreground: var(--fondo);
+    --secondary: var(--fondo-2);
+    --secondary-foreground: var(--tinta);
+    --muted: var(--fondo-2);
+    --muted-foreground: var(--tinta-2);
+    --accent: var(--fondo-3);
+    --accent-foreground: var(--tinta);
+    --destructive: var(--error);
+    --destructive-foreground: var(--fondo);
+    --border: var(--fondo-3);
+    --input: var(--fondo-2);
+    --ring: var(--acento);
+}
+
+/* Screens people work in (panels, threads, onboarding): the same inks on a paler sheet. */
+.hoja-clara {
+    --fondo: #F3ECFF;
+    --fondo-2: #E6D9FF;
+    --fondo-3: #D6BEFF;
+}
+
+/* The inverted field: ink becomes the ground (closing call, footer). */
+.campo-tinta {
+    --fondo: #1D0736;
+    --fondo-2: #2C1050;
+    --fondo-3: #3D1A69;
+    --tinta: #D6BEFF;
+    --tinta-2: #B9A0E6;
+    --acento: #D6BEFF;
+    --acento-press: #F3ECFF;
+    background: var(--fondo);
+    color: var(--tinta);
+}
+
+@theme inline {
+    --color-fondo: var(--fondo);
+    --color-fondo-2: var(--fondo-2);
+    --color-fondo-3: var(--fondo-3);
+    --color-tinta: var(--tinta);
+    --color-tinta-2: var(--tinta-2);
+    --color-acento: var(--acento);
+    --color-acento-press: var(--acento-press);
     --color-error: var(--error);
     --color-ok: var(--ok);
 
@@ -78,8 +101,8 @@
     --radius-lg: 0px;
     --radius-xl: 0px;
 
-    --font-sans: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
-    --font-display: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+    --font-sans: var(--font-onest), ui-sans-serif, system-ui, sans-serif;
+    --font-display: var(--font-unbounded), ui-sans-serif, system-ui, sans-serif;
 }
 
 @layer base {
@@ -88,28 +111,29 @@
     }
 
     html {
-        color-scheme: dark;
-        scrollbar-color: var(--telon-3) var(--telon);
+        color-scheme: light;
+        overflow-x: clip;
+        scrollbar-color: var(--fondo-3) var(--fondo);
         -webkit-text-size-adjust: 100%;
     }
 
     body {
         @apply bg-background text-foreground;
+        overflow-x: clip;
         font-family: var(--font-sans);
         font-size: 1.0625rem;
-        line-height: 1.55;
-        font-stretch: 100%;
-        caret-color: var(--tungsteno);
+        line-height: 1.5;
+        caret-color: var(--acento);
         text-rendering: optimizeLegibility;
     }
 
     ::selection {
-        background: var(--tungsteno);
-        color: var(--telon);
+        background: var(--acento);
+        color: var(--fondo);
     }
 
     :focus-visible {
-        outline: 2px solid var(--tungsteno);
+        outline: 2px solid var(--acento);
         outline-offset: 3px;
     }
 
@@ -119,11 +143,10 @@
     }
 
     h1, h2, h3, h4 {
-        font-weight: 700;
-        font-stretch: 75%;
-        letter-spacing: -0.02em;
-        word-spacing: 0.06em;
-        line-height: 1.05;
+        font-family: var(--font-display);
+        font-weight: 800;
+        letter-spacing: -0.03em;
+        line-height: 1.0;
         text-wrap: balance;
     }
 
@@ -136,8 +159,8 @@
     }
 
     ::-webkit-scrollbar { width: 12px; height: 12px; }
-    ::-webkit-scrollbar-track { background: var(--telon); }
-    ::-webkit-scrollbar-thumb { background: var(--telon-3); border: 3px solid var(--telon); }
+    ::-webkit-scrollbar-track { background: var(--fondo); }
+    ::-webkit-scrollbar-thumb { background: var(--fondo-3); border: 3px solid var(--fondo); }
 }
 
 @layer components {
@@ -145,19 +168,19 @@
     .type-poster {
         font-family: var(--font-display);
         font-weight: 800;
-        font-stretch: 62%;
-        letter-spacing: -0.03em;
-        word-spacing: 0.1em;
-        line-height: 0.9;
+        text-transform: uppercase;
+        letter-spacing: -0.04em;
+        line-height: 0.92;
+        font-kerning: normal;
         text-wrap: balance;
     }
 
+    /* Section headings: the same face, modest on purpose (28–40px). */
     .type-heading {
-        font-weight: 700;
-        font-stretch: 75%;
-        letter-spacing: -0.02em;
-        word-spacing: 0.06em;
-        line-height: 1.05;
+        font-family: var(--font-display);
+        font-weight: 800;
+        letter-spacing: -0.03em;
+        line-height: 1.0;
     }
 
     .tabular {
@@ -171,23 +194,23 @@
         padding-inline: var(--gutter);
     }
 
-    /* The one authored moment: the poster headline tightens on first paint. */
+    /* The monument settles on first paint (transform only). */
     @media (prefers-reduced-motion: no-preference) {
         .poster-tighten {
-            animation: poster-tighten 900ms cubic-bezier(0.16, 1, 0.3, 1) both;
+            animation: poster-settle 900ms cubic-bezier(0.16, 1, 0.3, 1) both;
         }
     }
 }
 
-@keyframes poster-tighten {
-    from { font-stretch: 100%; letter-spacing: 0; }
-    to { font-stretch: 62%; letter-spacing: -0.03em; }
+@keyframes poster-settle {
+    from { transform: translateY(0.12em) scale(1.04); opacity: 0; }
+    to { transform: none; opacity: 1; }
 }
 
 /* Spinner (loading states) */
 .spinner {
-    border: 3px solid var(--telon-3);
-    border-left-color: var(--tungsteno);
+    border: 3px solid var(--fondo-3);
+    border-left-color: var(--acento);
     border-radius: 50%;
     width: 32px;
     height: 32px;
@@ -205,28 +228,28 @@
 /* FullCalendar, themed from the palette */
 .fc {
     --fc-page-bg-color: transparent;
-    --fc-border-color: var(--telon-3);
-    --fc-neutral-bg-color: var(--telon-2);
-    --fc-today-bg-color: color-mix(in srgb, var(--tungsteno) 9%, transparent);
-    --fc-highlight-color: color-mix(in srgb, var(--tungsteno) 28%, transparent);
-    --fc-now-indicator-color: var(--tungsteno);
+    --fc-border-color: var(--fondo-3);
+    --fc-neutral-bg-color: var(--fondo-2);
+    --fc-today-bg-color: color-mix(in srgb, var(--acento) 9%, transparent);
+    --fc-highlight-color: color-mix(in srgb, var(--acento) 28%, transparent);
+    --fc-now-indicator-color: var(--acento);
     --fc-small-font-size: 0.875rem;
-    --fc-event-bg-color: var(--tungsteno);
-    --fc-event-border-color: var(--tungsteno);
-    --fc-event-text-color: var(--telon);
-    --fc-button-bg-color: var(--telon-2);
-    --fc-button-border-color: var(--telon-2);
-    --fc-button-text-color: var(--papel);
-    --fc-button-hover-bg-color: var(--telon-3);
-    --fc-button-hover-border-color: var(--telon-3);
-    --fc-button-active-bg-color: var(--tungsteno);
-    --fc-button-active-border-color: var(--tungsteno);
+    --fc-event-bg-color: var(--acento);
+    --fc-event-border-color: var(--acento);
+    --fc-event-text-color: var(--fondo);
+    --fc-button-bg-color: var(--fondo-2);
+    --fc-button-border-color: var(--fondo-2);
+    --fc-button-text-color: var(--tinta);
+    --fc-button-hover-bg-color: var(--fondo-3);
+    --fc-button-hover-border-color: var(--fondo-3);
+    --fc-button-active-bg-color: var(--acento);
+    --fc-button-active-border-color: var(--acento);
     font-variant-numeric: tabular-nums;
 }
 
 .fc .fc-button-primary:not(:disabled).fc-button-active,
 .fc .fc-button-primary:not(:disabled):active {
-    color: var(--telon);
+    color: var(--fondo);
 }
 
 .fc .fc-button {
@@ -241,7 +264,7 @@
 .fc .fc-button:focus-visible,
 .fc .fc-button-primary:focus {
     box-shadow: none;
-    outline: 2px solid var(--tungsteno);
+    outline: 2px solid var(--acento);
     outline-offset: 2px;
 }
 
@@ -256,18 +279,18 @@
 }
 
 .fc .fc-toolbar-title {
-    color: var(--papel);
-    font-weight: 700;
-    font-stretch: 75%;
-    letter-spacing: -0.02em;
-    font-size: 1.5rem;
+    color: var(--tinta);
+    font-family: var(--font-display);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    font-size: 1.25rem;
 }
 
 .fc .fc-toolbar-title::first-letter {
     text-transform: uppercase;
 }
 
-/* Bloques: "no disponible" en la luz tungsteno; "disponible" marcado, contorno y texto ok. */
+/* Bloques: "no disponible" en la luz acento; "disponible" marcado, contorno y texto ok. */
 .fc .fc-event {
     border-radius: 0;
     box-shadow: none;
@@ -275,18 +298,18 @@
 }
 
 .fc .ng-busy {
-    background-color: var(--tungsteno);
-    border-color: var(--tungsteno);
-    color: var(--telon);
+    background-color: var(--acento);
+    border-color: var(--acento);
+    color: var(--fondo);
 }
 
 .fc .ng-busy .fc-event-main {
-    color: var(--telon);
+    color: var(--fondo);
 }
 
 .fc .ng-available,
 .ng-swatch-available {
-    background-color: var(--telon-3);
+    background-color: var(--fondo-3);
     border: 1px solid var(--ok);
 }
 
@@ -294,11 +317,11 @@
     color: var(--ok);
 }
 
-.fc .fc-daygrid-dot-event.ng-busy .fc-daygrid-event-dot { border-color: var(--telon); }
+.fc .fc-daygrid-dot-event.ng-busy .fc-daygrid-event-dot { border-color: var(--fondo); }
 .fc .fc-daygrid-dot-event.ng-available .fc-daygrid-event-dot { border-color: var(--ok); }
 
 .fc .fc-col-header-cell {
-    background: var(--telon-2);
+    background: var(--fondo-2);
 }
 
 .fc .fc-col-header-cell-cushion {
@@ -308,13 +331,68 @@
 
 .fc .fc-day-today .fc-col-header-cell-cushion,
 .fc .fc-day-today .fc-daygrid-day-number {
-    color: var(--tungsteno);
+    color: var(--acento);
 }
 
 .fc .fc-col-header-cell-cushion,
 .fc .fc-daygrid-day-number,
 .fc .fc-timegrid-axis-cushion,
 .fc .fc-timegrid-slot-label-cushion {
-    color: var(--papel-2);
+    color: var(--tinta-2);
     text-decoration: none;
+}
+
+/* The cartel reprints when the date or the group changes (transform and opacity only). */
+@media (prefers-reduced-motion: no-preference) {
+    .cartel-swap {
+        animation: cartel-swap 520ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+}
+
+@keyframes cartel-swap {
+    from { opacity: 0; transform: translateY(0.4em); }
+    to { opacity: 1; transform: none; }
+}
+
+/* Motion layer (transform and opacity only; nothing moves with reduced motion). */
+@media (prefers-reduced-motion: no-preference) {
+    html.js [data-reveal] > * {
+        opacity: 0;
+        transform: translateY(24px);
+        transition: opacity 700ms cubic-bezier(0.16, 1, 0.3, 1), transform 700ms cubic-bezier(0.16, 1, 0.3, 1);
+        transition-delay: calc(var(--i, 0) * 80ms);
+    }
+
+    html.js [data-reveal].is-in > * {
+        opacity: 1;
+        transform: none;
+    }
+
+    /* Papel picado moved by a draught: each flag sways from its string. */
+    .papel-sway .bandera {
+        transform-box: fill-box;
+        transform-origin: 50% 0;
+        animation: papel-sway 5.5s ease-in-out infinite alternate;
+        animation-delay: calc(var(--n, 0) * -0.7s);
+    }
+
+    /* Signature move: the cartel's name settles back a few percent as the first screen leaves. */
+    @supports (animation-timeline: view()) {
+        .monument-scroll {
+            transform-origin: 50% 100%;
+            animation: monument-out linear both;
+            animation-timeline: view();
+            animation-range: exit 0% exit 100%;
+        }
+    }
+}
+
+@keyframes papel-sway {
+    from { transform: rotate(-2.2deg); }
+    to { transform: rotate(2.2deg); }
+}
+
+@keyframes monument-out {
+    from { transform: none; }
+    to { transform: scale(0.93) translateY(-2%); }
 }

@@ -308,10 +308,10 @@ export default function ManagerOnboardingPage() {
                         <StepHeading title="Como manager, llevas el grupo" focusOnMount={focusHeading}>
                             No necesitas tocar en el grupo. Te encargas de que lo encuentren, lo contraten y llegue a tiempo.
                         </StepHeading>
-                        <ul className="bg-telon-2 p-5 md:p-6 space-y-3">
+                        <ul className="bg-fondo-2 p-5 md:p-6 space-y-3">
                             {ROLE_ITEMS.map((item) => (
                                 <li key={item} className="flex gap-3">
-                                    <span aria-hidden className="mt-[0.6em] size-1.5 shrink-0 bg-tungsteno" />
+                                    <span aria-hidden className="mt-[0.6em] size-1.5 shrink-0 bg-acento" />
                                     <span>{item}</span>
                                 </li>
                             ))}
@@ -339,8 +339,8 @@ export default function ManagerOnboardingPage() {
                                 helperText={`Obligatorio, de 3 a ${GROUP_NAME_MAX} caracteres.`}
                             />
                             {formData.slug && (
-                                <p className="text-sm text-papel-2 break-all" aria-live="polite">
-                                    Dirección del perfil: <span className="text-papel">/groups/{formData.slug}</span>
+                                <p className="text-sm text-tinta-2 break-all" aria-live="polite">
+                                    Dirección del perfil: <span className="text-tinta">/groups/{formData.slug}</span>
                                     {slugStatus === "checking" && <span> (comprobando…)</span>}
                                     {slugStatus === "available" && <span className="text-ok"> (disponible)</span>}
                                     {slugStatus === "taken" && <span className="text-error"> (ya la usa otro grupo)</span>}
@@ -493,19 +493,19 @@ export default function ManagerOnboardingPage() {
 
                         {formData.inviteEmails.length > 0 ? (
                             <div className="space-y-3">
-                                <p className="text-sm text-papel-2" aria-live="polite">
+                                <p className="text-sm text-tinta-2" aria-live="polite">
                                     {formData.inviteEmails.length === 1
                                         ? "1 músico en la lista"
                                         : `${formData.inviteEmails.length} músicos en la lista`}
                                 </p>
                                 <ul className="flex flex-wrap gap-2">
                                     {formData.inviteEmails.map((email) => (
-                                        <li key={email} className="flex items-center bg-telon-2 pl-4 text-sm">
+                                        <li key={email} className="flex items-center bg-fondo-2 pl-4 text-sm">
                                             <span className="break-all py-2">{email}</span>
                                             <button
                                                 type="button"
                                                 onClick={() => removeEmail(email)}
-                                                className="ml-2 size-9 grid place-items-center text-papel-2 hover:bg-telon-3 hover:text-papel transition-colors"
+                                                className="ml-2 size-9 grid place-items-center text-tinta-2 hover:bg-fondo-3 hover:text-tinta transition-colors"
                                                 aria-label={`Quitar ${email}`}
                                             >
                                                 <svg aria-hidden width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="square">
@@ -517,10 +517,10 @@ export default function ManagerOnboardingPage() {
                                 </ul>
                             </div>
                         ) : (
-                            <p className="text-papel-2">Aún no hay músicos en la lista. Puedes agregarlos después desde tu panel.</p>
+                            <p className="text-tinta-2">Aún no hay músicos en la lista. Puedes agregarlos después desde tu panel.</p>
                         )}
 
-                        <p className="text-sm text-papel-2">
+                        <p className="text-sm text-tinta-2">
                             El envío de invitaciones todavía no está disponible: por ahora esta lista no se envía ni se guarda.
                         </p>
                     </div>

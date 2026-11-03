@@ -22,7 +22,7 @@ export default function Loader({ className, inline = false, label = "Cargando…
   }
 
   return (
-    <div role="status" className={cn("fixed inset-0 z-50 grid place-items-center bg-telon/75", className)}>
+    <div role="status" className={cn("fixed inset-0 z-50 grid place-items-center bg-fondo/75", className)}>
       <span aria-hidden className="spinner" />
       <span className="sr-only">{label}</span>
     </div>

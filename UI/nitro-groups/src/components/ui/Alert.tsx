@@ -4,17 +4,17 @@ import { CircleAlert, CircleCheck, Info, TriangleAlert, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 /**
- * Aviso en línea: icono y texto sobre telon-2. El color vive en el icono y, en errores, en el
+ * Aviso en línea: icono y texto sobre fondo-2. El color vive en el icono y, en errores, en el
  * texto; nunca en un borde lateral (DESIGN.md → Refused on purpose).
  */
-const alertVariants = cva("relative flex w-full items-start gap-3 bg-telon-2 px-4 py-3.5 text-papel", {
+const alertVariants = cva("relative flex w-full items-start gap-3 bg-fondo-2 px-4 py-3.5 text-tinta", {
     variants: {
         variant: {
-            default: "[&_[data-alert-icon]]:text-papel-2",
-            info: "[&_[data-alert-icon]]:text-papel-2",
+            default: "[&_[data-alert-icon]]:text-tinta-2",
+            info: "[&_[data-alert-icon]]:text-tinta-2",
             destructive: "text-error [&_[data-alert-icon]]:text-error",
             success: "[&_[data-alert-icon]]:text-ok",
-            warning: "[&_[data-alert-icon]]:text-tungsteno",
+            warning: "[&_[data-alert-icon]]:text-acento",
         },
     },
     defaultVariants: {
@@ -58,7 +58,7 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(
                     <button
                         type="button"
                         onClick={onClose}
-                        className="absolute right-2 top-2 grid size-9 place-items-center text-papel-2 transition-colors hover:bg-telon-3 hover:text-papel"
+                        className="absolute right-2 top-2 grid size-9 place-items-center text-tinta-2 transition-colors hover:bg-fondo-3 hover:text-tinta"
                         aria-label="Cerrar aviso"
                     >
                         <X aria-hidden className="size-4" />

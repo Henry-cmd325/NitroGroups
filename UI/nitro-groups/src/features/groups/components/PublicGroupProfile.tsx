@@ -6,6 +6,7 @@ import { formatEventDate, priceLabel } from "@/lib/format";
 import type { MusicGroup } from "../types/MusicGroup";
 import type { GroupMediaResponse } from "@/features/groupMedia/types/GroupMedia";
 import { RequestForm } from "@/features/bookings/components/RequestForm";
+import { Monument } from "@/features/cartel/Monument";
 
 const kind = (m: GroupMediaResponse) => m.type.toLowerCase();
 
@@ -16,7 +17,7 @@ function byOrder(a: GroupMediaResponse, b: GroupMediaResponse) {
 function Fact({ label, value }: { label: string; value: string }) {
     return (
         <div>
-            <dt className="text-sm text-papel-2">{label}</dt>
+            <dt className="text-sm text-tinta-2">{label}</dt>
             <dd className="mt-1 type-heading text-[1.75rem] tabular">{value}</dd>
         </div>
     );
@@ -59,21 +60,21 @@ export function PublicGroupProfile({ group, requestedDate, signedIn = false }: {
             )}
 
             <header className="page-frame mt-10 md:mt-16 grid md:grid-cols-12 gap-x-8 gap-y-8 items-end">
+                <h1 className="md:col-span-12"><Monument name={group.groupName} /></h1>
                 <div className="md:col-span-8">
-                    <h1 className="type-poster text-[clamp(3.25rem,9vw,8.5rem)]">{group.groupName}</h1>
-                    <p className="mt-4 text-lg text-papel-2">
+                    <p className="mt-4 text-lg text-tinta-2">
                         {[genres.slice(0, 3).join(", "), group.locationText].filter(Boolean).join(" en ")}
                     </p>
-                    <div className="mt-3 flex flex-wrap gap-x-6 gap-y-2 text-papel-2">
+                    <div className="mt-3 flex flex-wrap gap-x-6 gap-y-2 text-tinta-2">
                         {group.totalReviews > 0 && (
                             <span className="inline-flex items-center gap-1.5 tabular">
-                                <Star className="size-4 fill-tungsteno text-tungsteno" aria-hidden />
+                                <Star className="size-4 fill-acento text-acento" aria-hidden />
                                 {group.averageRating.toFixed(1)} <span className="sr-only">de 5,</span>({group.totalReviews} reseñas)
                             </span>
                         )}
                         {group.isVerified && (
                             <span className="inline-flex items-center gap-1.5">
-                                <BadgeCheck className="size-4 text-tungsteno" aria-hidden /> Verificado por NitroGroups
+                                <BadgeCheck className="size-4 text-acento" aria-hidden /> Verificado por NitroGroups
                             </span>
                         )}
                     </div>
@@ -81,11 +82,11 @@ export function PublicGroupProfile({ group, requestedDate, signedIn = false }: {
                 <div className="md:col-span-4 md:justify-self-end flex flex-col gap-3 md:items-end">
                     <p className="text-2xl font-semibold tabular">{price}</p>
                     {group.isAcceptingBookings ? (
-                        <Link href={requestHref} className="inline-flex h-14 items-center justify-center px-7 bg-tungsteno text-telon font-semibold no-underline hover:bg-tungsteno-press transition-colors">
+                        <Link href={requestHref} className="inline-flex h-14 items-center justify-center px-7 bg-acento text-fondo font-semibold no-underline hover:bg-acento-press transition-colors">
                             {dateText ? `Pedir el ${dateText}` : "Pedir una fecha"}
                         </Link>
                     ) : (
-                        <p className="text-papel-2 max-w-[28ch] md:text-right">Este grupo no está tomando nuevas fechas por ahora.</p>
+                        <p className="text-tinta-2 max-w-[28ch] md:text-right">Este grupo no está tomando nuevas fechas por ahora.</p>
                     )}
                 </div>
             </header>
@@ -100,8 +101,8 @@ export function PublicGroupProfile({ group, requestedDate, signedIn = false }: {
                 <section className="page-frame mt-[var(--section-gap)] grid md:grid-cols-12 gap-x-8 gap-y-8" aria-labelledby="sobre">
                     <h2 id="sobre" className="type-poster text-[clamp(2.5rem,5vw,4.5rem)] md:col-span-4">Sobre el grupo</h2>
                     <div className="md:col-span-7 md:col-start-6 flex flex-col gap-5 text-lg leading-relaxed max-w-[64ch]">
-                        {group.description && <p className="text-xl text-papel">{group.description}</p>}
-                        {group.biography?.split(/\n{2,}/).map((para, i) => <p key={i} className="text-papel">{para}</p>)}
+                        {group.description && <p className="text-xl text-tinta">{group.description}</p>}
+                        {group.biography?.split(/\n{2,}/).map((para, i) => <p key={i} className="text-tinta">{para}</p>)}
                     </div>
                 </section>
             )}
@@ -114,10 +115,10 @@ export function PublicGroupProfile({ group, requestedDate, signedIn = false }: {
                         <div className="mt-10 grid gap-8">
                             {videos.map((v) => (
                                 <figure key={v.id}>
-                                    <video controls preload="metadata" poster={v.thumbnailUrl} className="w-full aspect-video bg-telon-2">
+                                    <video controls preload="metadata" poster={v.thumbnailUrl} className="w-full aspect-video bg-fondo-2">
                                         <source src={v.url} />
                                     </video>
-                                    {v.title && <figcaption className="mt-3 text-papel-2">{v.title}</figcaption>}
+                                    {v.title && <figcaption className="mt-3 text-tinta-2">{v.title}</figcaption>}
                                 </figure>
                             ))}
                         </div>
@@ -159,7 +160,7 @@ export function PublicGroupProfile({ group, requestedDate, signedIn = false }: {
             {group.isAcceptingBookings && (
                 <section id="solicitar" className="page-frame mt-[var(--section-gap)] scroll-mt-24" aria-labelledby="solicitar-titulo">
                     <h2 id="solicitar-titulo" className="type-poster text-[clamp(2.5rem,5vw,4.5rem)]">Pedir una fecha</h2>
-                    <p className="mt-4 mb-10 max-w-[52ch] text-lg text-papel">
+                    <p className="mt-4 mb-10 max-w-[52ch] text-lg text-tinta">
                         Cuéntale a {group.groupName} qué celebras, el día y cuántas horas necesitas. Te responde por escrito.
                     </p>
                     {signedIn ? (
@@ -167,7 +168,7 @@ export function PublicGroupProfile({ group, requestedDate, signedIn = false }: {
                     ) : (
                         <Link
                             href={`${ROUTES.AUTH.LOGIN}?returnTo=${encodeURIComponent(`${ROUTES.GROUPS.PUBLIC_PROFILE(group.slug)}${requestedDate ? `?fecha=${requestedDate}` : ""}#solicitar`)}`}
-                            className="inline-flex h-14 items-center px-7 bg-tungsteno text-telon font-semibold no-underline hover:bg-tungsteno-press transition-colors"
+                            className="inline-flex h-14 items-center px-7 bg-acento text-fondo font-semibold no-underline hover:bg-acento-press transition-colors"
                         >
                             Entrar para enviar la solicitud
                         </Link>

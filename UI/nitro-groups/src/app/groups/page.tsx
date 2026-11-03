@@ -55,15 +55,15 @@ export default async function SearchPage({ searchParams }: Props) {
                 </p>
             ) : (
                 <>
-                    <p className="mt-12 text-papel-2" aria-live="polite">{summary}</p>
+                    <p className="mt-12 text-tinta-2" aria-live="polite">{summary}</p>
 
                     {items.length === 0 ? (
                         <div className="mt-10 max-w-[60ch]">
                             <h2 className="type-heading text-3xl">Ningún grupo coincide con todo lo que pediste</h2>
-                            <p className="mt-4 text-papel">
+                            <p className="mt-4 text-tinta">
                                 Prueba sin fecha o con otra ciudad: muchos grupos viajan a eventos fuera de su ciudad.
                             </p>
-                            <Link href={ROUTES.GROUPS.SEARCH} className="mt-6 inline-block text-papel underline decoration-tungsteno decoration-2">
+                            <Link href={ROUTES.GROUPS.SEARCH} className="mt-6 inline-block text-tinta underline decoration-acento decoration-2">
                                 Ver todos los grupos
                             </Link>
                         </div>
@@ -80,11 +80,11 @@ export default async function SearchPage({ searchParams }: Props) {
                     {results.totalPages > 1 && (
                         <nav aria-label="Páginas de resultados" className="mt-20 flex items-center justify-between gap-6 text-lg">
                             {results.hasPreviousPage ? (
-                                <Link href={pageHref(filters, page - 1)} className="text-papel underline decoration-tungsteno decoration-2">Anteriores</Link>
+                                <Link href={pageHref(filters, page - 1)} className="text-tinta underline decoration-acento decoration-2">Anteriores</Link>
                             ) : <span />}
-                            <span className="text-papel-2 tabular">Página {page} de {results.totalPages}</span>
+                            <span className="text-tinta-2 tabular">Página {page} de {results.totalPages}</span>
                             {results.hasNextPage ? (
-                                <Link href={pageHref(filters, page + 1)} className="text-papel underline decoration-tungsteno decoration-2">Siguientes</Link>
+                                <Link href={pageHref(filters, page + 1)} className="text-tinta underline decoration-acento decoration-2">Siguientes</Link>
                             ) : <span />}
                         </nav>
                     )}

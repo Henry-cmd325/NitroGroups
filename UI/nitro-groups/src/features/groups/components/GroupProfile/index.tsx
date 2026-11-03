@@ -139,13 +139,13 @@ export default function GroupProfile({ mode = "private", slug, initialGroup }: G
   if (!isPublic && !initialGroup && isUserError) return (
     <div role="alert" className="max-w-[56ch] pt-14">
       <p className="type-heading text-3xl">No pudimos cargar tu cuenta</p>
-      <p className="mt-3 text-papel-2">Recarga la página en un momento. Si sigue igual, vuelve a iniciar sesión.</p>
+      <p className="mt-3 text-tinta-2">Recarga la página en un momento. Si sigue igual, vuelve a iniciar sesión.</p>
     </div>
   );
   if (shouldFetch && groupQuery.isError) return (
     <div className="max-w-[56ch] pt-14">
       <p className="type-heading text-3xl">Todavía no encontramos tu grupo</p>
-      <p className="mt-3 text-papel-2">Crea el perfil de tu grupo para empezar a recibir solicitudes.</p>
+      <p className="mt-3 text-tinta-2">Crea el perfil de tu grupo para empezar a recibir solicitudes.</p>
       <Button asChild className="mt-6">
         <Link href={ROUTES.AUTH.ONBOARDING}>Crear mi grupo</Link>
       </Button>
@@ -185,13 +185,13 @@ function ProfileSkeleton() {
     <div aria-busy className="pt-10 md:pt-14">
       <span className="sr-only" role="status">Cargando tu grupo…</span>
       <div aria-hidden className="flex items-end gap-5 md:gap-8">
-        <div className="size-20 bg-telon-2 md:size-32" />
+        <div className="size-20 bg-fondo-2 md:size-32" />
         <div className="flex-1 space-y-4">
-          <div className="h-10 w-2/3 max-w-md bg-telon-2 md:h-16" />
-          <div className="h-4 w-44 bg-telon-2" />
+          <div className="h-10 w-2/3 max-w-md bg-fondo-2 md:h-16" />
+          <div className="h-4 w-44 bg-fondo-2" />
         </div>
       </div>
-      <div aria-hidden className="mt-8 h-[7.5rem] bg-telon-2 xl:h-[5.25rem]" />
+      <div aria-hidden className="mt-8 h-[7.5rem] bg-fondo-2 xl:h-[5.25rem]" />
     </div>
   );
 }

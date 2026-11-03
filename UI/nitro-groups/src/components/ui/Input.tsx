@@ -56,8 +56,8 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
                         id={inputId}
                         type={currentType}
                         className={cn(
-                            // DESIGN.md → Inputs: relleno telon-2, sin borde en reposo, anillo tungsteno al enfocar.
-                            "flex h-12 w-full bg-telon-2 px-4 text-base text-papel file:border-0 file:bg-transparent file:font-medium placeholder:text-papel-2/70 outline-none focus-visible:outline-2 focus-visible:outline-tungsteno focus-visible:-outline-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
+                            // DESIGN.md → Inputs: relleno fondo-2, sin borde en reposo, anillo acento al enfocar.
+                            "flex h-12 w-full bg-fondo-2 px-4 text-base text-tinta file:border-0 file:bg-transparent file:font-medium placeholder:text-tinta-2/70 outline-none focus-visible:outline-2 focus-visible:outline-acento focus-visible:-outline-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
                             icon && "pl-11",
                             isPasswordType && "pr-12",
                             hasError && "shadow-[inset_0_-2px_0_var(--error)]",

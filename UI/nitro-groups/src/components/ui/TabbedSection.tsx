@@ -21,7 +21,7 @@ interface TabbedSectionProps {
 }
 
 /**
- * Pestañas de texto con un subrayado tungsteno de 2px en la activa. Patrón WAI-ARIA: flechas
+ * Pestañas de texto con un subrayado acento de 2px en la activa. Patrón WAI-ARIA: flechas
  * izquierda/derecha, Inicio y Fin mueven el foco y activan; solo la pestaña activa entra en el
  * orden de tabulación.
  */
@@ -75,7 +75,7 @@ export default function TabbedSection({ children, label, className }: TabbedSect
         onKeyDown={onKeyDown}
         // La línea base va como sombra interior: un borde real quedaría fuera del área que recorta
         // overflow-x-auto y taparía el subrayado de la pestaña activa.
-        className="flex gap-8 overflow-x-auto shadow-[inset_0_-2px_0_var(--telon-2)]"
+        className="flex gap-8 overflow-x-auto shadow-[inset_0_-2px_0_var(--fondo-2)]"
       >
         {tabs.map((tab, i) => {
           const isSelected = tab.tabKey === selectedKey;
@@ -93,8 +93,8 @@ export default function TabbedSection({ children, label, className }: TabbedSect
               className={cn(
                 "shrink-0 whitespace-nowrap border-b-2 pb-3 pt-1 font-semibold transition-colors duration-150 focus-visible:-outline-offset-2",
                 isSelected
-                  ? "border-tungsteno text-papel"
-                  : "border-transparent text-papel-2 hover:border-telon-3 hover:text-papel",
+                  ? "border-acento text-tinta"
+                  : "border-transparent text-tinta-2 hover:border-fondo-3 hover:text-tinta",
               )}
             >
               {tab.title}

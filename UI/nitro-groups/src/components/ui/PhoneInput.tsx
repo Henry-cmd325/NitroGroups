@@ -42,7 +42,7 @@ interface PhoneInputProps {
     error?: string;
 }
 
-/** Teléfono con lada: mismo lenguaje que `Input` (relleno telon-2, sin borde, anillo al enfocar). */
+/** Teléfono con lada: mismo lenguaje que `Input` (relleno fondo-2, sin borde, anillo al enfocar). */
 export default function PhoneInput({ label, value, onChange, required, error }: PhoneInputProps) {
     const [selectedCountry, setSelectedCountry] = useState<CountryCode>(COUNTRY_CODES[0]); // Por defecto: México
     const [isOpen, setIsOpen] = useState(false);
@@ -123,24 +123,24 @@ export default function PhoneInput({ label, value, onChange, required, error }: 
                         aria-expanded={isOpen}
                         aria-controls={isOpen ? listId : undefined}
                         aria-label={`Lada: ${selectedCountry.name} ${selectedCountry.dial}. Cambiar país`}
-                        className="flex h-12 items-center gap-2 whitespace-nowrap bg-telon-2 px-3.5 text-papel tabular transition-colors hover:bg-telon-3 focus-visible:-outline-offset-2"
+                        className="flex h-12 items-center gap-2 whitespace-nowrap bg-fondo-2 px-3.5 text-tinta tabular transition-colors hover:bg-fondo-3 focus-visible:-outline-offset-2"
                     >
-                        <span className="text-sm text-papel-2">{selectedCountry.code}</span>
+                        <span className="text-sm text-tinta-2">{selectedCountry.code}</span>
                         <span>{selectedCountry.dial}</span>
-                        <ChevronDown aria-hidden className={`size-4 text-papel-2 transition-transform ${isOpen ? "rotate-180" : ""}`} />
+                        <ChevronDown aria-hidden className={`size-4 text-tinta-2 transition-transform ${isOpen ? "rotate-180" : ""}`} />
                     </button>
 
                     {isOpen && (
                         // Menú flotante: es lo único que lleva sombra (DESIGN.md → Tokens).
-                        <div className="absolute left-0 top-full z-50 mt-1 max-h-72 w-72 overflow-auto bg-telon-2 shadow-[0_12px_32px_-8px_var(--telon)]">
-                            <div className="sticky top-0 bg-telon-2 p-2">
+                        <div className="absolute left-0 top-full z-50 mt-1 max-h-72 w-72 overflow-auto bg-fondo-2 shadow-[0_12px_32px_-8px_var(--fondo)]">
+                            <div className="sticky top-0 bg-fondo-2 p-2">
                                 <input
                                     type="text"
                                     placeholder="Buscar país…"
                                     aria-label="Buscar país"
                                     value={search}
                                     onChange={(e) => setSearch(e.target.value)}
-                                    className="h-10 w-full bg-telon px-3 text-sm text-papel placeholder:text-papel-2/70 outline-none focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-tungsteno"
+                                    className="h-10 w-full bg-fondo px-3 text-sm text-tinta placeholder:text-tinta-2/70 outline-none focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-acento"
                                     autoFocus
                                 />
                             </div>
@@ -153,18 +153,18 @@ export default function PhoneInput({ label, value, onChange, required, error }: 
                                                 type="button"
                                                 onClick={() => handleSelectCountry(country)}
                                                 aria-current={isCurrent ? "true" : undefined}
-                                                className={`flex w-full items-center gap-3 px-3 py-2.5 text-left text-sm transition-colors hover:bg-telon-3 focus-visible:-outline-offset-2 ${isCurrent ? "text-tungsteno" : "text-papel"}`}
+                                                className={`flex w-full items-center gap-3 px-3 py-2.5 text-left text-sm transition-colors hover:bg-fondo-3 focus-visible:-outline-offset-2 ${isCurrent ? "text-acento" : "text-tinta"}`}
                                             >
-                                                <span className="w-7 text-papel-2">{country.code}</span>
+                                                <span className="w-7 text-tinta-2">{country.code}</span>
                                                 <span className="flex-1">{country.name}</span>
-                                                <span className="tabular text-papel-2">{country.dial}</span>
+                                                <span className="tabular text-tinta-2">{country.dial}</span>
                                             </button>
                                         </li>
                                     );
                                 })}
                             </ul>
                             {filteredCountries.length === 0 && (
-                                <p className="px-3 py-4 text-sm text-papel-2">Ningún país coincide con “{search}”.</p>
+                                <p className="px-3 py-4 text-sm text-tinta-2">Ningún país coincide con “{search}”.</p>
                             )}
                         </div>
                     )}
@@ -182,7 +182,7 @@ export default function PhoneInput({ label, value, onChange, required, error }: 
                     required={required}
                     aria-invalid={error ? true : undefined}
                     aria-describedby={error ? errorId : undefined}
-                    className={`h-12 min-w-0 flex-1 bg-telon-2 px-4 text-base text-papel tabular placeholder:text-papel-2/70 outline-none focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-tungsteno ${error ? "shadow-[inset_0_-2px_0_var(--error)]" : ""}`}
+                    className={`h-12 min-w-0 flex-1 bg-fondo-2 px-4 text-base text-tinta tabular placeholder:text-tinta-2/70 outline-none focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-acento ${error ? "shadow-[inset_0_-2px_0_var(--error)]" : ""}`}
                 />
             </div>
             {error && <p id={errorId} className="text-sm text-error">{error}</p>}

@@ -1,16 +1,23 @@
 import type { Metadata } from "next";
-import { Archivo } from "next/font/google";
+import { Onest, Unbounded } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import Providers from "./providers";
+import Reveal from "@/components/layout/Reveal";
 
-// Una sola familia variable: el eje de ancho (wdth 62–125) da la voz de cartel
-// (condensada) y la de lectura (normal). Ver DESIGN.md.
-const archivo = Archivo({
-  variable: "--font-archivo",
+// Voz de cartel (Unbounded, ancha y pesada) y voz de lectura (Onest). Ver DESIGN.md.
+const unbounded = Unbounded({
+  variable: "--font-unbounded",
   subsets: ["latin"],
-  axes: ["wdth"],
+  weight: ["800"],
+  display: "swap",
+});
+
+const onest = Onest({
+  variable: "--font-onest",
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
   display: "swap",
 });
 
@@ -24,8 +31,8 @@ export const metadata: Metadata = {
 };
 
 export const viewport = {
-  themeColor: "#1C0B0E",
-  colorScheme: "dark" as const,
+  themeColor: "#D6BEFF",
+  colorScheme: "light" as const,
 };
 
 export default function RootLayout({
@@ -34,7 +41,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es" className={archivo.variable}>
+    <html lang="es" className={`${unbounded.variable} ${onest.variable}`}>
       <body
         className="min-h-screen bg-background text-foreground antialiased"
       >
@@ -42,6 +49,7 @@ export default function RootLayout({
           <Header />
           <main id="contenido">{children}</main>
           <Footer />
+          <Reveal />
         </Providers>
       </body>
     </html>

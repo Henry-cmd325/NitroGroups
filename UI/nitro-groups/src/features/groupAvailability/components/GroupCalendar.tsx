@@ -172,22 +172,22 @@ export default function GroupCalendar({ groupId, mode = "public" }: GroupCalenda
   };
 
   const dialogPanel =
-    "w-full max-w-md bg-telon-2 p-6 text-papel shadow-[0_24px_64px_-16px_var(--telon)]";
+    "w-full max-w-md bg-fondo-2 p-6 text-tinta shadow-[0_24px_64px_-16px_var(--fondo)]";
 
   return (
     <section aria-labelledby="calendario-titulo" className="py-10">
       <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
         <div className="max-w-[62ch]">
           <h2 id="calendario-titulo" className="sr-only">Calendario</h2>
-          <p className="text-papel-2">
+          <p className="text-tinta-2">
             {isPrivate
               ? "Cuentas como disponible salvo en lo que marques. Arrastra sobre las horas para bloquearlas, mueve un bloque para ajustarlo o tócalo para quitarlo."
               : "El grupo está disponible salvo en los bloques marcados."}
           </p>
         </div>
-        <ul aria-label="Leyenda" className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-papel-2">
+        <ul aria-label="Leyenda" className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-tinta-2">
           <li className="inline-flex items-center gap-2">
-            <span aria-hidden className="size-3 bg-tungsteno" />
+            <span aria-hidden className="size-3 bg-acento" />
             No disponible
           </li>
           <li className="inline-flex items-center gap-2">
@@ -195,7 +195,7 @@ export default function GroupCalendar({ groupId, mode = "public" }: GroupCalenda
             Disponible (bloque marcado)
           </li>
           <li className="inline-flex items-center gap-2">
-            <span aria-hidden className="size-3 bg-telon-2" />
+            <span aria-hidden className="size-3 bg-fondo-2" />
             Sin marcar: disponible
           </li>
         </ul>
@@ -209,8 +209,8 @@ export default function GroupCalendar({ groupId, mode = "public" }: GroupCalenda
 
       <div className="mt-8">
         {isLoading ? (
-          <div aria-busy className="grid h-[480px] place-items-center bg-telon-2">
-            <p role="status" className="text-papel-2">Cargando calendario…</p>
+          <div aria-busy className="grid h-[480px] place-items-center bg-fondo-2">
+            <p role="status" className="text-tinta-2">Cargando calendario…</p>
           </div>
         ) : (
           <FullCalendar
@@ -245,7 +245,7 @@ export default function GroupCalendar({ groupId, mode = "public" }: GroupCalenda
 
       {pendingSelect && (
         <div
-          className="fixed inset-0 z-50 grid place-items-center bg-telon/85 p-4"
+          className="fixed inset-0 z-50 grid place-items-center bg-fondo/85 p-4"
           role="presentation"
           onClick={() => setPendingSelect(null)}
         >
@@ -260,10 +260,10 @@ export default function GroupCalendar({ groupId, mode = "public" }: GroupCalenda
             <h3 id="select-interval-title" className="type-heading text-2xl">
               Bloquear este horario
             </h3>
-            <p id="select-interval-range" className="mt-4 bg-telon px-4 py-3 font-medium tabular">
+            <p id="select-interval-range" className="mt-4 bg-fondo px-4 py-3 font-medium tabular">
               {formatRangeLabel(pendingSelect.startStr, pendingSelect.endStr)}
             </p>
-            <p className="mt-3 text-sm text-papel-2">
+            <p className="mt-3 text-sm text-tinta-2">
               Nadie podrá pedirte una fecha en ese horario. Puedes quitar el bloque cuando quieras.
             </p>
             <div className="mt-6 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
@@ -290,7 +290,7 @@ export default function GroupCalendar({ groupId, mode = "public" }: GroupCalenda
 
       {pendingDelete && (
         <div
-          className="fixed inset-0 z-50 grid place-items-center bg-telon/85 p-4"
+          className="fixed inset-0 z-50 grid place-items-center bg-fondo/85 p-4"
           role="presentation"
           onClick={() => setPendingDelete(null)}
         >
@@ -304,7 +304,7 @@ export default function GroupCalendar({ groupId, mode = "public" }: GroupCalenda
             <h3 id="delete-event-title" className="type-heading text-2xl">
               Quitar «{pendingDelete.title}»
             </h3>
-            <p className="mt-3 text-papel-2">
+            <p className="mt-3 text-tinta-2">
               {pendingDelete.kind === "busy"
                 ? "Ese horario vuelve a contar como disponible."
                 : "El bloque desaparece del calendario."}

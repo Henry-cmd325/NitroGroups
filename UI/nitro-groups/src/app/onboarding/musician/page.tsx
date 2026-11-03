@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import Link from "next/link";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/Button";
@@ -77,15 +77,7 @@ export default function MusicianOnboardingPage() {
         groupName: "",
     });
 
-    // Propone el nombre de la sesión como nombre artístico y de grupo (solo si sigue vacío).
-    const sessionName = authUser?.name;
-    useEffect(() => {
-        if (!sessionName) return;
-        setFormData((prev) =>
-            prev.stageName ? prev : { ...prev, stageName: sessionName, groupName: prev.groupName || sessionName }
-        );
-    }, [sessionName]);
-
+    // El nombre artístico empieza vacío: el nombre de la cuenta casi nunca es el del escenario.
     if (authLoading) return <OnboardingLoading label="Cargando tu cuenta…" />;
     if (!isAuthenticated) return null;
 

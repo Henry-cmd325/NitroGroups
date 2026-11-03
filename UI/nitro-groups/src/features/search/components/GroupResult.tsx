@@ -19,27 +19,27 @@ export function GroupResult({ group, date, priority = false }: { group: GroupSea
                 className="aspect-[4/3] w-full"
             />
             <div className="flex flex-col justify-center gap-4 md:py-4">
-                <h3 className="type-poster text-[clamp(2.25rem,4.5vw,3.75rem)] text-papel">
-                    <Link href={href} className="no-underline after:absolute after:inset-0 hover:text-tungsteno transition-colors">
+                <h3 className="type-poster text-[clamp(2.25rem,4.5vw,3.75rem)] text-tinta">
+                    <Link href={href} className="no-underline after:absolute after:inset-0 hover:text-acento transition-colors">
                         {group.groupName}
                     </Link>
                 </h3>
-                <p className="text-papel-2">
+                <p className="text-tinta-2">
                     {[group.genres.slice(0, 3).join(", "), group.locationText].filter(Boolean).join(" en ")}
                 </p>
-                {group.description && <p className="text-papel max-w-[56ch] line-clamp-2">{group.description}</p>}
+                {group.description && <p className="text-tinta max-w-[56ch] line-clamp-2">{group.description}</p>}
                 <div className="flex flex-wrap items-center gap-x-6 gap-y-2 pt-1">
-                    <span className="text-xl font-semibold text-papel tabular">{priceLabel(group)}</span>
+                    <span className="text-xl font-semibold text-tinta tabular">{priceLabel(group)}</span>
                     {group.totalReviews > 0 && (
-                        <span className="inline-flex items-center gap-1.5 text-papel-2 tabular">
-                            <Star className="size-4 fill-tungsteno text-tungsteno" aria-hidden />
+                        <span className="inline-flex items-center gap-1.5 text-tinta-2 tabular">
+                            <Star className="size-4 fill-acento text-acento" aria-hidden />
                             {group.averageRating.toFixed(1)}
                             <span className="sr-only">de 5,</span> ({group.totalReviews} reseñas)
                         </span>
                     )}
                     {group.isVerified && (
-                        <span className="inline-flex items-center gap-1.5 text-papel-2">
-                            <BadgeCheck className="size-4 text-tungsteno" aria-hidden />
+                        <span className="inline-flex items-center gap-1.5 text-tinta-2">
+                            <BadgeCheck className="size-4 text-acento" aria-hidden />
                             Verificado
                         </span>
                     )}

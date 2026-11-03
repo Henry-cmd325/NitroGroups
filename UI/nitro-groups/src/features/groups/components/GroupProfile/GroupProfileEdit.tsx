@@ -25,7 +25,7 @@ type GroupProfileEditProps = {
 function MoneyInput({ id, value, onChange }: { id: string; value: number | undefined; onChange: (v: number | undefined) => void }) {
   return (
     <div className="relative">
-      <span aria-hidden className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-papel-2">$</span>
+      <span aria-hidden className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-tinta-2">$</span>
       <input
         id={id}
         type="number"
@@ -62,7 +62,7 @@ export default function GroupProfileEdit({
     <form onSubmit={handleSave} aria-labelledby={id("title")} className="pt-10 md:pt-14">
       <div className="max-w-[64ch]">
         <h1 id={id("title")} className="type-heading text-4xl md:text-5xl">Editar perfil</h1>
-        <p className="mt-3 text-papel-2">
+        <p className="mt-3 text-tinta-2">
           Así te ven los clientes en tu perfil público. Los cambios se publican al guardar.
         </p>
       </div>
@@ -89,12 +89,12 @@ export default function GroupProfileEdit({
           </Field>
 
           <div role="group" aria-labelledby={genresLabelId} aria-describedby={id("genres-hint")}>
-            <p id={genresLabelId} className="mb-1 text-sm font-medium text-papel">Géneros</p>
-            <p id={id("genres-hint")} className="mb-3 text-sm text-papel-2">Elige los que mejor describen lo que tocas.</p>
+            <p id={genresLabelId} className="mb-1 text-sm font-medium text-tinta">Géneros</p>
+            <p id={id("genres-hint")} className="mb-3 text-sm text-tinta-2">Elige los que mejor describen lo que tocas.</p>
             {isGenresLoading ? (
-              <p className="text-papel-2" aria-busy>Cargando géneros…</p>
+              <p className="text-tinta-2" aria-busy>Cargando géneros…</p>
             ) : genres.length === 0 ? (
-              <p className="text-papel-2">No pudimos cargar la lista de géneros. Puedes guardar el resto de cambios.</p>
+              <p className="text-tinta-2">No pudimos cargar la lista de géneros. Puedes guardar el resto de cambios.</p>
             ) : (
               <div className="flex flex-wrap gap-1.5">
                 {genres.map((genre) => {
@@ -106,8 +106,8 @@ export default function GroupProfileEdit({
                       aria-pressed={isSelected}
                       onClick={() => toggleGenre(genre.id)}
                       className={`inline-flex h-10 items-center gap-1.5 px-3.5 text-[0.95rem] font-medium transition-colors duration-150 ${
-                        // Seleccionado en tinta invertida: el tungsteno queda para la acción de guardar.
-                        isSelected ? "bg-papel text-telon hover:bg-papel-2" : "bg-telon-2 text-papel hover:bg-telon-3"
+                        // Seleccionado en tinta invertida: el acento queda para la acción de guardar.
+                        isSelected ? "bg-tinta text-fondo hover:bg-tinta-2" : "bg-fondo-2 text-tinta hover:bg-fondo-3"
                       }`}
                     >
                       {isSelected && <Check aria-hidden className="size-4" />}
@@ -129,7 +129,7 @@ export default function GroupProfileEdit({
                 className={fieldClass} placeholder="https://…" type="url" inputMode="url" />
             </Field>
           </div>
-          <p className="-mt-3 text-sm text-papel-2">Sin portada, tu perfil usa la primera foto de la galería.</p>
+          <p className="-mt-3 text-sm text-tinta-2">Sin portada, tu perfil usa la primera foto de la galería.</p>
         </fieldset>
 
         {/* Cómo se contrata */}
@@ -190,10 +190,10 @@ export default function GroupProfileEdit({
           </Field>
 
           {/* Interruptor accesible: el estado se lee en el texto, no solo en el color. */}
-          <div className="flex items-start justify-between gap-6 bg-telon-2 px-4 py-4">
+          <div className="flex items-start justify-between gap-6 bg-fondo-2 px-4 py-4">
             <div>
-              <p id={id("accepting-label")} className="font-medium text-papel">Recibir solicitudes</p>
-              <p id={id("accepting-hint")} className="mt-1 text-sm text-papel-2">
+              <p id={id("accepting-label")} className="font-medium text-tinta">Recibir solicitudes</p>
+              <p id={id("accepting-hint")} className="mt-1 text-sm text-tinta-2">
                 {group.isAcceptingBookings
                   ? "Los clientes pueden pedirte fechas."
                   : "En pausa: tu perfil sigue visible, pero nadie puede pedirte una fecha."}
@@ -206,11 +206,11 @@ export default function GroupProfileEdit({
               aria-labelledby={id("accepting-label")}
               aria-describedby={id("accepting-hint")}
               onClick={() => set("isAcceptingBookings", !group.isAcceptingBookings)}
-              className={`relative mt-0.5 h-7 w-12 shrink-0 transition-colors duration-150 ${group.isAcceptingBookings ? "bg-tungsteno" : "bg-telon-3"}`}
+              className={`relative mt-0.5 h-7 w-12 shrink-0 transition-colors duration-150 ${group.isAcceptingBookings ? "bg-acento" : "bg-fondo-3"}`}
             >
               <span
                 aria-hidden
-                className={`absolute left-0 top-1 size-5 transition-transform duration-150 ${group.isAcceptingBookings ? "translate-x-6 bg-telon" : "translate-x-1 bg-papel-2"}`}
+                className={`absolute left-0 top-1 size-5 transition-transform duration-150 ${group.isAcceptingBookings ? "translate-x-6 bg-fondo" : "translate-x-1 bg-tinta-2"}`}
               />
             </button>
           </div>
@@ -218,15 +218,15 @@ export default function GroupProfileEdit({
       </div>
 
       {/* Barra de acciones fija al pie: guardar siempre a la vista en formularios largos. */}
-      <div className="sticky bottom-0 z-30 mt-14 -mx-[var(--gutter)] bg-telon px-[var(--gutter)] pb-4 pt-3">
-        <div className="flex flex-col gap-3 bg-telon-2 p-3 sm:flex-row sm:items-center sm:justify-between">
+      <div className="sticky bottom-0 z-30 mt-14 -mx-[var(--gutter)] bg-fondo px-[var(--gutter)] pb-4 pt-3">
+        <div className="flex flex-col gap-3 bg-fondo-2 p-3 sm:flex-row sm:items-center sm:justify-between">
           <div aria-live="polite" className="min-w-0 sm:px-2">
             {saveError ? (
               <Alert variant="destructive" className="bg-transparent p-0">
                 <AlertDescription>{saveError}</AlertDescription>
               </Alert>
             ) : (
-              <p className="text-sm text-papel-2">{isPending ? "Guardando cambios…" : "Nada se publica hasta que guardes."}</p>
+              <p className="text-sm text-tinta-2">{isPending ? "Guardando cambios…" : "Nada se publica hasta que guardes."}</p>
             )}
           </div>
           <div className="flex shrink-0 gap-2">

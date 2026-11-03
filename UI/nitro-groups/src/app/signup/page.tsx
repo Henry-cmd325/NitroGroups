@@ -566,7 +566,7 @@ export default function SignupPage() {
                 </p>
             </div>
             <aside className="hidden md:block md:col-span-4 md:col-start-9 md:pt-40">
-                <p className="text-[clamp(1.35rem,2vw,1.85rem)] leading-snug text-papel-2 max-w-[24ch]">
+                <p className="text-[clamp(1.35rem,2vw,1.85rem)] leading-snug text-tinta-2 max-w-[24ch]">
                     Una cuenta de cliente para contratar grupos, o de músico para publicar el tuyo. Lo eliges al final.
                 </p>
             </aside>

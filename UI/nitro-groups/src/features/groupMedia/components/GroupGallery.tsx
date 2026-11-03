@@ -142,9 +142,9 @@ export default function GroupGallery({ media: mediaProp }: GroupGalleryProps) {
         return () => window.removeEventListener("keydown", onKey);
     }, [isAdding]);
 
-    const field = "block h-12 w-full bg-telon px-4 text-base text-papel placeholder:text-papel-2/70 outline-none focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-tungsteno";
+    const field = "block h-12 w-full bg-fondo px-4 text-base text-tinta placeholder:text-tinta-2/70 outline-none focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-acento";
     const modeTab = (active: boolean) =>
-        `h-10 border-b-2 px-1 font-semibold transition-colors ${active ? "border-tungsteno text-papel" : "border-transparent text-papel-2 hover:text-papel"}`;
+        `h-10 border-b-2 px-1 font-semibold transition-colors ${active ? "border-acento text-tinta" : "border-transparent text-tinta-2 hover:text-tinta"}`;
 
     const items = media as GroupMediaResponse[];
 
@@ -153,7 +153,7 @@ export default function GroupGallery({ media: mediaProp }: GroupGalleryProps) {
             <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
                 <div className="max-w-[60ch]">
                     <h2 id="galeria-titulo" className="sr-only">Galería</h2>
-                    <p className="text-papel-2">
+                    <p className="text-tinta-2">
                         Fotos, videos y audio de tus presentaciones. Es lo primero que mira un cliente en tu perfil.
                     </p>
                 </div>
@@ -167,13 +167,13 @@ export default function GroupGallery({ media: mediaProp }: GroupGalleryProps) {
             {groupQuery.isLoading ? (
                 <div aria-busy className="mt-8 grid grid-cols-2 gap-0.5 lg:grid-cols-4">
                     <span className="sr-only" role="status">Cargando galería…</span>
-                    <div aria-hidden className="col-span-2 row-span-2 aspect-square bg-telon-2" />
-                    {[0, 1, 2, 3].map((n) => <div key={n} aria-hidden className="aspect-square bg-telon-2" />)}
+                    <div aria-hidden className="col-span-2 row-span-2 aspect-square bg-fondo-2" />
+                    {[0, 1, 2, 3].map((n) => <div key={n} aria-hidden className="aspect-square bg-fondo-2" />)}
                 </div>
             ) : items.length === 0 ? (
-                <div className="mt-8 flex flex-col items-start gap-5 bg-telon-2 px-6 py-12 md:px-10 md:py-16">
+                <div className="mt-8 flex flex-col items-start gap-5 bg-fondo-2 px-6 py-12 md:px-10 md:py-16">
                     <p className="type-heading text-2xl">Tu galería está vacía</p>
-                    <p className="max-w-[52ch] text-papel-2">
+                    <p className="max-w-[52ch] text-tinta-2">
                         Sube fotos de tus presentaciones. La primera hace de portada mientras no elijas una en tu perfil.
                     </p>
                     {groupId && (
@@ -194,17 +194,17 @@ export default function GroupGallery({ media: mediaProp }: GroupGalleryProps) {
                             <li key={item.id} className={index === 0 ? "col-span-2 lg:row-span-2" : undefined}>
                                 {/* La primera pieza manda: en escritorio llena dos filas para que su pie cierre con el de la segunda fila. */}
                                 <figure className="flex h-full flex-col">
-                                    <div className={`relative aspect-square overflow-hidden bg-telon-3 ${index === 0 ? "lg:aspect-auto lg:min-h-0 lg:flex-1" : ""}`}>
+                                    <div className={`relative aspect-square overflow-hidden bg-fondo-3 ${index === 0 ? "lg:aspect-auto lg:min-h-0 lg:flex-1" : ""}`}>
                                         {preview ? (
                                             // eslint-disable-next-line @next/next/no-img-element -- archivos de R2 o enlaces externos
                                             <img src={preview} alt={label} loading="lazy" decoding="async" className="absolute inset-0 size-full object-cover" />
                                         ) : (
-                                            <div className="absolute inset-0 grid place-items-center text-papel-2">
+                                            <div className="absolute inset-0 grid place-items-center text-tinta-2">
                                                 {kind === "audio" ? <Music aria-hidden className="size-10" /> : <Film aria-hidden className="size-10" />}
                                             </div>
                                         )}
                                         {kind !== "photo" && (
-                                            <span className="absolute left-0 top-0 inline-flex items-center gap-1.5 bg-telon px-2 py-1 text-sm text-papel">
+                                            <span className="absolute left-0 top-0 inline-flex items-center gap-1.5 bg-fondo px-2 py-1 text-sm text-tinta">
                                                 {kind === "audio" ? <Music aria-hidden className="size-4" /> : <Film aria-hidden className="size-4" />}
                                                 {kind === "audio" ? "Audio" : "Video"}
                                             </span>
@@ -213,7 +213,7 @@ export default function GroupGallery({ media: mediaProp }: GroupGalleryProps) {
                                     <figcaption className="mt-2 flex min-h-10 items-center justify-between gap-2">
                                         {isConfirming ? (
                                             <>
-                                                <span className="text-sm text-papel">¿Eliminar de la galería?</span>
+                                                <span className="text-sm text-tinta">¿Eliminar de la galería?</span>
                                                 <span className="flex shrink-0 gap-1">
                                                     <Button size="sm" variant="ghost" onClick={() => setConfirmingId(null)} disabled={isDeleting}>
                                                         Cancelar
@@ -230,12 +230,12 @@ export default function GroupGallery({ media: mediaProp }: GroupGalleryProps) {
                                             </>
                                         ) : (
                                             <>
-                                                <span className={`truncate text-sm ${item.title ? "text-papel" : "text-papel-2"}`}>{label}</span>
+                                                <span className={`truncate text-sm ${item.title ? "text-tinta" : "text-tinta-2"}`}>{label}</span>
                                                 <button
                                                     type="button"
                                                     onClick={() => setConfirmingId(item.id)}
                                                     aria-label={`Eliminar ${label}`}
-                                                    className="grid size-10 shrink-0 place-items-center text-papel-2 transition-colors hover:bg-telon-2 hover:text-papel"
+                                                    className="grid size-10 shrink-0 place-items-center text-tinta-2 transition-colors hover:bg-fondo-2 hover:text-tinta"
                                                 >
                                                     <Trash2 aria-hidden className="size-4" />
                                                 </button>
@@ -256,18 +256,18 @@ export default function GroupGallery({ media: mediaProp }: GroupGalleryProps) {
             )}
 
             {isAdding && (
-                <div className="fixed inset-0 z-50 grid place-items-center bg-telon/85 p-4" role="presentation" onClick={closeDialog}>
+                <div className="fixed inset-0 z-50 grid place-items-center bg-fondo/85 p-4" role="presentation" onClick={closeDialog}>
                     <div
                         ref={dialogRef}
                         role="dialog"
                         aria-modal="true"
                         aria-labelledby={titleId}
                         onClick={(e) => e.stopPropagation()}
-                        className="max-h-[calc(100dvh-2rem)] w-full max-w-lg overflow-y-auto bg-telon-2 shadow-[0_24px_64px_-16px_var(--telon)]"
+                        className="max-h-[calc(100dvh-2rem)] w-full max-w-lg overflow-y-auto bg-fondo-2 shadow-[0_24px_64px_-16px_var(--fondo)]"
                     >
                         <div className="flex items-center justify-between gap-4 px-6 pt-5">
                             <h3 id={titleId} className="type-heading text-2xl">Subir a la galería</h3>
-                            <button type="button" onClick={closeDialog} aria-label="Cerrar" className="grid size-10 place-items-center text-papel-2 transition-colors hover:bg-telon-3 hover:text-papel">
+                            <button type="button" onClick={closeDialog} aria-label="Cerrar" className="grid size-10 place-items-center text-tinta-2 transition-colors hover:bg-fondo-3 hover:text-tinta">
                                 <X aria-hidden className="size-5" />
                             </button>
                         </div>
@@ -311,9 +311,9 @@ export default function GroupGallery({ media: mediaProp }: GroupGalleryProps) {
                                                     : null
                                             );
                                         }}
-                                        className="block w-full min-w-0 bg-telon text-sm text-papel-2 file:mr-4 file:h-12 file:cursor-pointer file:border-0 file:bg-telon-3 file:px-4 file:font-semibold file:text-papel hover:file:bg-telon-3/80"
+                                        className="block w-full min-w-0 bg-fondo text-sm text-tinta-2 file:mr-4 file:h-12 file:cursor-pointer file:border-0 file:bg-fondo-3 file:px-4 file:font-semibold file:text-tinta hover:file:bg-fondo-3/80"
                                     />
-                                    <p id="group-media-file-hint" className={`mt-2 text-sm ${fileSelectionLabel ? "text-ok" : "text-papel-2"}`} aria-live="polite">
+                                    <p id="group-media-file-hint" className={`mt-2 text-sm ${fileSelectionLabel ? "text-ok" : "text-tinta-2"}`} aria-live="polite">
                                         {fileSelectionLabel ? `Elegido: ${fileSelectionLabel}` : "Imagen, video o audio, hasta 50 MB."}
                                     </p>
                                 </div>
@@ -346,7 +346,7 @@ export default function GroupGallery({ media: mediaProp }: GroupGalleryProps) {
                                             aria-describedby="group-media-url-hint"
                                             className={field}
                                         />
-                                        <p id="group-media-url-hint" className="mt-2 text-sm text-papel-2">Un enlace directo al archivo o a YouTube.</p>
+                                        <p id="group-media-url-hint" className="mt-2 text-sm text-tinta-2">Un enlace directo al archivo o a YouTube.</p>
                                     </div>
                                 </>
                             )}
@@ -354,7 +354,7 @@ export default function GroupGallery({ media: mediaProp }: GroupGalleryProps) {
                             <div>
                                 <div className="mb-2 flex items-baseline justify-between gap-3">
                                     <label className="text-sm font-medium" htmlFor="group-media-title">Título</label>
-                                    <span className="text-sm text-papel-2">Opcional</span>
+                                    <span className="text-sm text-tinta-2">Opcional</span>
                                 </div>
                                 <input
                                     id="group-media-title"
@@ -367,7 +367,7 @@ export default function GroupGallery({ media: mediaProp }: GroupGalleryProps) {
                             </div>
 
                             {addMutation.isError && (
-                                <Alert variant="destructive" className="bg-telon">
+                                <Alert variant="destructive" className="bg-fondo">
                                     <AlertDescription>
                                         {addMode === "upload"
                                             ? "No pudimos subir el archivo. Revisa que pese menos de 50 MB e inténtalo de nuevo."

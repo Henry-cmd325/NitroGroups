@@ -37,7 +37,7 @@ export default function GroupProfileView({ group, isPublic, toggleEdit }: GroupP
         />
 
         <div className="min-w-0">
-          <h1 className="type-poster text-[2.75rem] break-words md:text-[4.5rem]">{name}</h1>
+          <h1 className="type-heading text-[2rem] break-words md:text-[3rem]">{name}</h1>
           <p className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-1 text-[0.95rem]">
             {group.isAcceptingBookings ? (
               <span className="inline-flex items-center gap-2 text-ok">
@@ -45,14 +45,14 @@ export default function GroupProfileView({ group, isPublic, toggleEdit }: GroupP
                 Recibiendo solicitudes
               </span>
             ) : (
-              <span className="inline-flex items-center gap-2 text-papel-2">
+              <span className="inline-flex items-center gap-2 text-tinta-2">
                 <span aria-hidden className="size-2 rounded-full border-2 border-current" />
                 Solicitudes en pausa
               </span>
             )}
             {group.isVerified && (
-              <span className="inline-flex items-center gap-1.5 text-papel">
-                <BadgeCheck aria-hidden className="size-4 text-tungsteno" />
+              <span className="inline-flex items-center gap-1.5 text-tinta">
+                <BadgeCheck aria-hidden className="size-4 text-acento" />
                 Verificado
               </span>
             )}
@@ -77,16 +77,16 @@ export default function GroupProfileView({ group, isPublic, toggleEdit }: GroupP
 
       {(group.description || genres.length > 0) && (
         <div className="mt-6 max-w-[64ch] space-y-1">
-          {group.description && <p className="text-papel">{group.description}</p>}
-          {genres.length > 0 && <p className="text-papel-2">{joinSpanish(genres)}</p>}
+          {group.description && <p className="text-tinta">{group.description}</p>}
+          {genres.length > 0 && <p className="text-tinta-2">{joinSpanish(genres)}</p>}
         </div>
       )}
 
-      <dl className="mt-8 grid grid-cols-2 gap-x-8 gap-y-5 bg-telon-2 px-5 py-5 sm:grid-cols-3 md:px-6 xl:grid-cols-6">
+      <dl className="mt-8 grid grid-cols-2 gap-x-8 gap-y-5 bg-fondo-2 px-5 py-5 sm:grid-cols-3 md:px-6 xl:grid-cols-6">
         {facts.map((fact) => (
           <div key={fact.label} className="min-w-0">
-            <dt className="text-sm text-papel-2">{fact.label}</dt>
-            <dd className={`mt-1 tabular ${fact.missing ? "text-papel-2" : "type-heading text-xl text-papel"}`}>
+            <dt className="text-sm text-tinta-2">{fact.label}</dt>
+            <dd className={`mt-1 tabular ${fact.missing ? "text-tinta-2" : "type-heading text-xl text-tinta"}`}>
               {fact.value}
             </dd>
           </div>
@@ -94,11 +94,11 @@ export default function GroupProfileView({ group, isPublic, toggleEdit }: GroupP
       </dl>
 
       {gaps.length > 0 && (
-        <div className="mt-0.5 flex flex-col gap-3 bg-telon-2 px-5 py-4 sm:flex-row sm:items-center sm:justify-between md:px-6">
-          <p className="text-papel">
-            <span className="text-papel-2">A tu perfil le falta </span>
+        <div className="mt-0.5 flex flex-col gap-3 bg-fondo-2 px-5 py-4 sm:flex-row sm:items-center sm:justify-between md:px-6">
+          <p className="text-tinta">
+            <span className="text-tinta-2">A tu perfil le falta </span>
             {joinSpanish(gaps)}.
-            <span className="text-papel-2"> Con esos datos un cliente se decide sin tener que escribirte.</span>
+            <span className="text-tinta-2"> Con esos datos un cliente se decide sin tener que escribirte.</span>
           </p>
           <Button size="sm" variant="link" onClick={toggleEdit} className="self-start px-0 sm:self-auto">
             Completar perfil

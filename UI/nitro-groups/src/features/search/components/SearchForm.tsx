@@ -11,8 +11,8 @@ interface SearchFormProps {
     id?: string;
 }
 
-const field = "h-14 w-full bg-telon-2 px-4 text-papel placeholder:text-papel-2/70 outline-none focus-visible:outline-2 focus-visible:outline-tungsteno focus-visible:-outline-offset-2";
-const label = "block text-sm font-medium text-papel-2 mb-2";
+const field = "h-14 w-full bg-fondo-2 px-4 text-tinta placeholder:text-tinta-2/70 outline-none focus-visible:outline-2 focus-visible:outline-acento focus-visible:-outline-offset-2";
+const label = "block text-sm font-medium text-tinta-2 mb-2";
 
 /**
  * Buscador de grupos. Es un formulario GET normal: funciona sin JavaScript y deja la
@@ -39,18 +39,18 @@ export function SearchForm({ genres, values = {}, showBudget = false, submitLabe
                 </div>
                 <div>
                     <label htmlFor={`${id}-fecha`} className={label}>Fecha del evento</label>
-                    <input id={`${id}-fecha`} name="fecha" type="date" min={today} defaultValue={values.fecha ?? ""} className={`${field} [color-scheme:dark]`} />
+                    <input id={`${id}-fecha`} name="fecha" type="date" min={today} defaultValue={values.fecha ?? ""} className={`${field} [color-scheme:light]`} />
                 </div>
                 {showBudget && (
                     <div>
                         <label htmlFor={`${id}-presupuesto`} className={label}>Presupuesto máximo</label>
                         <div className="relative">
-                            <span aria-hidden className="absolute left-4 top-1/2 -translate-y-1/2 text-papel-2">$</span>
+                            <span aria-hidden className="absolute left-4 top-1/2 -translate-y-1/2 text-tinta-2">$</span>
                             <input id={`${id}-presupuesto`} name="presupuesto" type="number" inputMode="numeric" min={0} step={500} defaultValue={values.presupuesto ?? ""} placeholder="20000" className={`${field} pl-8 tabular`} />
                         </div>
                     </div>
                 )}
-                <button type="submit" className="h-14 px-7 bg-tungsteno text-telon font-semibold hover:bg-tungsteno-press transition-colors whitespace-nowrap">
+                <button type="submit" className="h-14 px-7 bg-acento text-fondo font-semibold hover:bg-acento-press transition-colors whitespace-nowrap">
                     {submitLabel}
                 </button>
             </div>

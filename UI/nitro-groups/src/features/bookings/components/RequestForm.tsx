@@ -7,8 +7,8 @@ import { todayInMexico } from "@/lib/format";
 import { bookingsService, apiErrorMessage } from "../bookings.service";
 import { EVENT_TYPES } from "../types";
 
-const field = "h-12 w-full bg-telon-2 px-4 text-papel placeholder:text-papel-2/70 outline-none focus-visible:outline-2 focus-visible:outline-tungsteno focus-visible:-outline-offset-2";
-const label = "block text-sm font-medium text-papel-2 mb-2";
+const field = "h-12 w-full bg-fondo-2 px-4 text-tinta placeholder:text-tinta-2/70 outline-none focus-visible:outline-2 focus-visible:outline-acento focus-visible:-outline-offset-2";
+const label = "block text-sm font-medium text-tinta-2 mb-2";
 const MESSAGE_MIN = 10;
 const MESSAGE_MAX = 2000;
 
@@ -31,10 +31,10 @@ export function RequestForm({ groupId, groupName, minimumHours, defaultDate }: R
         return (
             <div role="status" className="max-w-[56ch]">
                 <p className="type-heading text-[2rem]">Solicitud enviada</p>
-                <p className="mt-3 text-lg text-papel">
+                <p className="mt-3 text-lg text-tinta">
                     {groupName} recibió tu solicitud y te va a responder por escrito. Te avisamos por email cuando lo haga.
                 </p>
-                <Link href={`/solicitudes/${create.data.id}`} className="mt-6 inline-block text-papel underline decoration-tungsteno decoration-2 underline-offset-4">
+                <Link href={`/solicitudes/${create.data.id}`} className="mt-6 inline-block text-tinta underline decoration-acento decoration-2 underline-offset-4">
                     Ver la solicitud
                 </Link>
             </div>
@@ -64,11 +64,11 @@ export function RequestForm({ groupId, groupName, minimumHours, defaultDate }: R
         <form onSubmit={onSubmit} className="grid md:grid-cols-6 gap-x-4 gap-y-6 max-w-4xl" aria-describedby={create.isError ? `${id}-error` : undefined}>
             <div className="md:col-span-2">
                 <label htmlFor={`${id}-fecha`} className={label}>Fecha</label>
-                <input id={`${id}-fecha`} name="eventDate" type="date" required min={todayInMexico()} defaultValue={defaultDate} className={`${field} [color-scheme:dark]`} />
+                <input id={`${id}-fecha`} name="eventDate" type="date" required min={todayInMexico()} defaultValue={defaultDate} className={`${field} [color-scheme:light]`} />
             </div>
             <div className="md:col-span-2">
-                <label htmlFor={`${id}-hora`} className={label}>Hora de inicio <span className="text-papel-2/70">(opcional)</span></label>
-                <input id={`${id}-hora`} name="startTime" type="time" step={900} className={`${field} [color-scheme:dark]`} />
+                <label htmlFor={`${id}-hora`} className={label}>Hora de inicio <span className="text-tinta-2/70">(opcional)</span></label>
+                <input id={`${id}-hora`} name="startTime" type="time" step={900} className={`${field} [color-scheme:light]`} />
             </div>
             <div className="md:col-span-2">
                 <label htmlFor={`${id}-horas`} className={label}>Horas de música</label>
@@ -89,11 +89,11 @@ export function RequestForm({ groupId, groupName, minimumHours, defaultDate }: R
                 <input id={`${id}-lugar`} name="locationText" required maxLength={200} placeholder="Salón Los Arcos, Zapopan" className={field} />
             </div>
             <div className="md:col-span-2">
-                <label htmlFor={`${id}-invitados`} className={label}>Invitados <span className="text-papel-2/70">(opcional)</span></label>
+                <label htmlFor={`${id}-invitados`} className={label}>Invitados <span className="text-tinta-2/70">(opcional)</span></label>
                 <input id={`${id}-invitados`} name="guestCount" type="number" inputMode="numeric" min={1} max={5000} className={`${field} tabular`} />
             </div>
             <div className="md:col-span-2">
-                <label htmlFor={`${id}-presupuesto`} className={label}>Presupuesto en MXN <span className="text-papel-2/70">(opcional)</span></label>
+                <label htmlFor={`${id}-presupuesto`} className={label}>Presupuesto en MXN <span className="text-tinta-2/70">(opcional)</span></label>
                 <input id={`${id}-presupuesto`} name="budget" type="number" inputMode="numeric" min={0} step={500} className={`${field} tabular`} />
             </div>
             <div className="md:col-span-6">
@@ -108,9 +108,9 @@ export function RequestForm({ groupId, groupName, minimumHours, defaultDate }: R
                     rows={5}
                     aria-describedby={`${id}-mensaje-ayuda`}
                     placeholder="Es nuestra boda, queremos mariachi a la salida de la iglesia y una hora en la recepción."
-                    className="w-full bg-telon-2 px-4 py-3 text-papel placeholder:text-papel-2/70 outline-none focus-visible:outline-2 focus-visible:outline-tungsteno focus-visible:-outline-offset-2 resize-y leading-relaxed"
+                    className="w-full bg-fondo-2 px-4 py-3 text-tinta placeholder:text-tinta-2/70 outline-none focus-visible:outline-2 focus-visible:outline-acento focus-visible:-outline-offset-2 resize-y leading-relaxed"
                 />
-                <p id={`${id}-mensaje-ayuda`} className="mt-2 text-sm text-papel-2 tabular">
+                <p id={`${id}-mensaje-ayuda`} className="mt-2 text-sm text-tinta-2 tabular">
                     {tooShort ? `Al menos ${MESSAGE_MIN} caracteres.` : `${message.length} de ${MESSAGE_MAX}`}
                 </p>
             </div>
@@ -123,7 +123,7 @@ export function RequestForm({ groupId, groupName, minimumHours, defaultDate }: R
                 <button
                     type="submit"
                     disabled={create.isPending || tooShort}
-                    className="h-14 px-8 bg-tungsteno text-telon font-semibold hover:bg-tungsteno-press transition-colors disabled:opacity-45 disabled:pointer-events-none"
+                    className="h-14 px-8 bg-acento text-fondo font-semibold hover:bg-acento-press transition-colors disabled:opacity-45 disabled:pointer-events-none"
                 >
                     {create.isPending ? "Enviando…" : "Enviar solicitud"}
                 </button>

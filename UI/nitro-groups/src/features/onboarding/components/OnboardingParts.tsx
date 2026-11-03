@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 
 /**
  * Piezas compartidas por los dos flujos de onboarding. Siguen DESIGN.md: superficies separadas
- * por tono (telon → telon-2 → telon-3), esquinas rectas, sin sombras ni bordes en reposo,
+ * por tono (fondo → fondo-2 → fondo-3), esquinas rectas, sin sombras ni bordes en reposo,
  * etiqueta visible sobre cada campo y límites atados con aria-describedby.
  */
 
@@ -35,8 +35,8 @@ export function OnboardingFrame({
         <div className="page-frame py-16 md:py-24 grid md:grid-cols-12 gap-x-8 gap-y-10">
             <div className="md:col-span-7 w-full max-w-2xl space-y-10">
                 <header className="space-y-3">
-                    <h1 className="type-poster text-[clamp(3.25rem,8vw,6rem)]">{title}</h1>
-                    <p className="text-papel-2 max-w-[52ch]">{intro}</p>
+                    <h1 className="type-heading text-[clamp(2.25rem,4vw,3.5rem)]">{title}</h1>
+                    <p className="text-tinta-2 max-w-[52ch]">{intro}</p>
                 </header>
                 <ProgressSteps steps={steps} currentStep={currentStep} />
                 {children}
@@ -45,7 +45,7 @@ export function OnboardingFrame({
                 aria-label="Qué sigue"
                 className="md:col-span-4 md:col-start-9 md:pt-40"
             >
-                <div className="text-papel-2 space-y-3 max-md:bg-telon-2 max-md:p-5 md:text-[clamp(1.2rem,1.7vw,1.5rem)] md:leading-snug md:max-w-[26ch]">
+                <div className="text-tinta-2 space-y-3 max-md:bg-fondo-2 max-md:p-5 md:text-[clamp(1.2rem,1.7vw,1.5rem)] md:leading-snug md:max-w-[26ch]">
                     {aside}
                 </div>
             </aside>
@@ -73,7 +73,7 @@ export function StepHeading({
             <h2 ref={ref} tabIndex={-1} className="type-heading text-[1.75rem] md:text-[2rem] outline-none">
                 {title}
             </h2>
-            {children && <p className="text-papel-2 max-w-[60ch]">{children}</p>}
+            {children && <p className="text-tinta-2 max-w-[60ch]">{children}</p>}
         </div>
     );
 }
@@ -102,7 +102,7 @@ export function TextareaField({
         <div className="space-y-2">
             <div className="flex items-baseline justify-between gap-4">
                 <label htmlFor={id} className="text-sm font-medium">{label}</label>
-                <span id={`${id}-limit`} className={cn("text-sm tabular", left <= 40 ? "text-tungsteno" : "text-papel-2")}>
+                <span id={`${id}-limit`} className={cn("text-sm tabular", left <= 40 ? "text-acento" : "text-tinta-2")}>
                     {value.length} de {max}
                 </span>
             </div>
@@ -114,9 +114,9 @@ export function TextareaField({
                 maxLength={max}
                 placeholder={placeholder}
                 aria-describedby={hint ? `${id}-limit ${id}-hint` : `${id}-limit`}
-                className="block w-full bg-telon-2 px-4 py-3 text-base text-papel placeholder:text-papel-2/70 resize-y outline-none focus-visible:outline-2 focus-visible:outline-tungsteno focus-visible:-outline-offset-2"
+                className="block w-full bg-fondo-2 px-4 py-3 text-base text-tinta placeholder:text-tinta-2/70 resize-y outline-none focus-visible:outline-2 focus-visible:outline-acento focus-visible:-outline-offset-2"
             />
-            {hint && <p id={`${id}-hint`} className="text-sm text-papel-2">{hint}</p>}
+            {hint && <p id={`${id}-hint`} className="text-sm text-tinta-2">{hint}</p>}
         </div>
     );
 }
@@ -160,9 +160,9 @@ export function RangeField({
                 onChange={(e) => onChange(parseInt(e.target.value, 10))}
                 aria-valuetext={format(value)}
                 aria-describedby={`${id}-hint`}
-                className="block w-full h-11 cursor-pointer accent-tungsteno"
+                className="block w-full h-11 cursor-pointer accent-acento"
             />
-            <p id={`${id}-hint`} className="text-sm text-papel-2">{hint}</p>
+            <p id={`${id}-hint`} className="text-sm text-tinta-2">{hint}</p>
         </div>
     );
 }
@@ -181,10 +181,10 @@ export function SwitchField({
 }) {
     const id = useId();
     return (
-        <div className="flex items-start justify-between gap-6 bg-telon-2 p-5">
+        <div className="flex items-start justify-between gap-6 bg-fondo-2 p-5">
             <div className="space-y-1">
                 <p id={`${id}-label`} className="font-semibold">{label}</p>
-                <p id={`${id}-desc`} className="text-sm text-papel-2">{description}</p>
+                <p id={`${id}-desc`} className="text-sm text-tinta-2">{description}</p>
             </div>
             <button
                 type="button"
@@ -195,14 +195,14 @@ export function SwitchField({
                 onClick={() => onChange(!checked)}
                 className={cn(
                     "relative mt-0.5 h-7 w-12 shrink-0 transition-colors duration-150",
-                    checked ? "bg-tungsteno" : "bg-telon-3"
+                    checked ? "bg-acento" : "bg-fondo-3"
                 )}
             >
                 <span
                     aria-hidden
                     className={cn(
                         "absolute top-1 left-1 size-5 transition-transform duration-150",
-                        checked ? "translate-x-5 bg-telon" : "translate-x-0 bg-papel-2"
+                        checked ? "translate-x-5 bg-fondo" : "translate-x-0 bg-tinta-2"
                     )}
                 />
                 <span className="sr-only">{checked ? "Sí" : "No"}</span>
@@ -243,9 +243,9 @@ export function ChoiceGroup<V extends string>({
                         <label
                             key={option.value}
                             className={cn(
-                                "relative flex cursor-pointer gap-4 transition-colors duration-150 has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-3 has-[:focus-visible]:outline-tungsteno",
+                                "relative flex cursor-pointer gap-4 transition-colors duration-150 has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-3 has-[:focus-visible]:outline-acento",
                                 layout === "inline" ? "px-5 h-11 items-center font-semibold" : "p-5 items-start",
-                                selected ? "bg-telon-3" : "bg-telon-2 hover:bg-telon-3"
+                                selected ? "bg-fondo-3" : "bg-fondo-2 hover:bg-fondo-3"
                             )}
                         >
                             <input
@@ -261,18 +261,18 @@ export function ChoiceGroup<V extends string>({
                                     aria-hidden
                                     className={cn(
                                         "mt-1 size-4 shrink-0 grid place-items-center",
-                                        selected ? "bg-tungsteno" : "bg-papel-2"
+                                        selected ? "bg-acento" : "bg-tinta-2"
                                     )}
                                 >
-                                    <span className={cn(selected ? "size-1.5 bg-telon" : "size-3 bg-telon-2")} />
+                                    <span className={cn(selected ? "size-1.5 bg-fondo" : "size-3 bg-fondo-2")} />
                                 </span>
                             )}
                             <span className="space-y-1">
-                                <span className={cn("block", layout === "stack" && "font-semibold", selected && layout === "inline" && "text-tungsteno")}>
+                                <span className={cn("block", layout === "stack" && "font-semibold", selected && layout === "inline" && "text-acento")}>
                                     {option.label}
                                 </span>
                                 {option.description && (
-                                    <span className="block text-sm text-papel-2">{option.description}</span>
+                                    <span className="block text-sm text-tinta-2">{option.description}</span>
                                 )}
                             </span>
                         </label>
@@ -286,11 +286,11 @@ export function ChoiceGroup<V extends string>({
 /** Resumen antes de crear: pares etiqueta/valor sobre un escalón de tono. */
 export function ReviewList({ items }: { items: { label: string; value: ReactNode }[] }) {
     return (
-        <dl className="bg-telon-2 p-5 md:p-6 grid gap-4 sm:grid-cols-[minmax(10rem,auto)_1fr] sm:gap-x-8">
+        <dl className="bg-fondo-2 p-5 md:p-6 grid gap-4 sm:grid-cols-[minmax(10rem,auto)_1fr] sm:gap-x-8">
             {items.map((item) => (
                 <div key={item.label} className="contents">
-                    <dt className="text-sm text-papel-2 sm:pt-0.5">{item.label}</dt>
-                    <dd className="text-papel break-words -mt-3 sm:mt-0">{item.value}</dd>
+                    <dt className="text-sm text-tinta-2 sm:pt-0.5">{item.label}</dt>
+                    <dd className="text-tinta break-words -mt-3 sm:mt-0">{item.value}</dd>
                 </div>
             ))}
         </dl>
@@ -301,7 +301,7 @@ export function ReviewList({ items }: { items: { label: string; value: ReactNode
 export function FormError({ message }: { message: string }) {
     if (!message) return null;
     return (
-        <p role="alert" className="bg-telon-2 px-5 py-4 text-error">
+        <p role="alert" className="bg-fondo-2 px-5 py-4 text-error">
             {message}
         </p>
     );
@@ -316,7 +316,7 @@ export function StepActions({ children }: { children: ReactNode }) {
 export function OnboardingLoading({ label }: { label: string }) {
     return (
         <div className="page-frame min-h-[60vh] grid content-center py-16" role="status" aria-live="polite">
-            <p className="type-heading text-[2rem] text-papel-2">{label}</p>
+            <p className="type-heading text-[2rem] text-tinta-2">{label}</p>
         </div>
     );
 }
@@ -350,8 +350,8 @@ export function ArrivalView({
                 >
                     {name}
                 </h1>
-                <p className="type-heading text-[1.5rem] md:text-[2rem] text-tungsteno max-w-[44ch] text-balance">{lead}</p>
-                <div className="text-papel-2 max-w-[56ch] space-y-3 text-[1.0625rem]">{children}</div>
+                <p className="type-heading text-[1.5rem] md:text-[2rem] text-acento max-w-[44ch] text-balance">{lead}</p>
+                <div className="text-tinta-2 max-w-[56ch] space-y-3 text-[1.0625rem]">{children}</div>
                 <div className="flex flex-col gap-3 sm:flex-row pt-2">{actions}</div>
             </div>
         </div>
