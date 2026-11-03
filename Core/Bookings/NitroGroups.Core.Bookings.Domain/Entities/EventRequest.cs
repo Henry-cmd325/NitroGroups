@@ -24,6 +24,12 @@ public class EventRequest : AuditableModel
     public string Currency { get; set; } = "MXN";
     public string Message { get; set; } = string.Empty;
     public EventRequestStatus Status { get; private set; } = EventRequestStatus.Pending;
+
+    /// <summary>
+    /// Versión para concurrencia optimista (columna de sistema xmin de PostgreSQL): si dos
+    /// personas responden a la vez, solo el primer guardado gana y el otro recibe 409.
+    /// </summary>
+    public uint Version { get; private set; }
     public DateTime? RespondedAt { get; private set; }
     public string? ResponseMessage { get; private set; }
 

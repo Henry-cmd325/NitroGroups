@@ -1,3 +1,4 @@
+using NitroGroups.Shared.Abstractions.Repository;
 using Cortex.Mediator.Commands;
 using NitroGroups.Core.Bookings.Application.Abstractions;
 using NitroGroups.Core.Bookings.Domain.Entities;
@@ -50,9 +51,17 @@ public sealed class RespondToEventRequestCommandHandler(
             return BookingResult<EventRequestResponse>.Failure(BookingErrorKind.Conflict, ex.Message);
         }
 
-        await unitOfWork.OutboxService.SaveEventsAsync(request.DomainEvents); // guarda estado + evento juntos
-        request.ClearDomainEvents();
-        await unitOfWork.CompleteAsync();
+        try
+        {
+            await unitOfWork.OutboxService.SaveEventsAsync(request.DomainEvents); // guarda estado + evento juntos
+            request.ClearDomainEvents();
+            await unitOfWork.CompleteAsync();
+        }
+        catch (ConcurrencyConflictException)
+        {
+            // Otra persona respondió o canceló al mismo tiempo: solo gana el primer guardado.
+            return BookingResult<EventRequestResponse>.Failure(BookingErrorKind.Conflict, "La solicitud cambió mientras la respondías. Recarga para ver su estado actual.");
+        }
 
         var response = await EventRequestResponses.BuildAsync(request, groups, users, includeMessages: true, cancellationToken);
         return BookingResult<EventRequestResponse>.Success(response);

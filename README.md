@@ -101,6 +101,18 @@ Si cambias el namespace de los roles, configura `Auth0:RolesClaim` en la API.
 
 **Frontend:** `AUTH0_SECRET` firma la cookie de sesión y es obligatorio, con al menos 32 caracteres (`openssl rand -hex 32`). Sin él no se emite ni se acepta ninguna sesión.
 
+## Tests
+
+```bash
+dotnet test NitroGroups.slnx
+```
+
+Los tests de concurrencia necesitan PostgreSQL real (InMemory no los reproduce). Corren cuando existe `NITRO_TEST_POSTGRES`, una cadena de conexión a un servidor: cada test crea su propia base y la borra al terminar. En CI siempre está definida; en local, sin la variable, se saltan con su motivo visible.
+
+```bash
+NITRO_TEST_POSTGRES="Host=localhost;Username=postgres;Password=postgres" dotnet test Tests/NitroGroups.Tests.Integration
+```
+
 ## Base de datos y migraciones
 
 Cada módulo tiene su propio `DbContext`, su esquema de PostgreSQL (`users`, `groups`, `schedules`, `bookings`), su tabla de historial `__ef_migrations_history` y su `outbox_events`. Las migraciones viven en `Core/<Modulo>/NitroGroups.Core.<Modulo>.Infrastructure/Persistence/Migrations`.

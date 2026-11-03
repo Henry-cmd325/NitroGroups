@@ -26,6 +26,9 @@ public class EventRequestConfiguration : IEntityTypeConfiguration<EventRequest>
 
         // Se guarda como entero (ver EventRequestStatus: no reordenar).
         builder.Property(e => e.Status).HasColumnName("status").HasConversion<int>().IsRequired();
+
+        // xmin: token de concurrencia nativo de PostgreSQL (no es una columna nueva).
+        builder.Property(e => e.Version).IsRowVersion();
         builder.Property(e => e.RespondedAt).HasColumnName("responded_at");
         builder.Property(e => e.ResponseMessage).HasColumnName("response_message").HasColumnType("text");
 

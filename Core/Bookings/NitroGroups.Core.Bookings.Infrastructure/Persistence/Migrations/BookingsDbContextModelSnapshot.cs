@@ -124,6 +124,12 @@ namespace NitroGroups.Core.Bookings.Infrastructure.Persistence.Migrations
                         .HasColumnType("bigint")
                         .HasColumnName("updated_by");
 
+                    b.Property<uint>("Version")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ClientUserId", "CreatedAt");

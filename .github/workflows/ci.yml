@@ -45,7 +45,9 @@ jobs:
       - name: Tests de endpoints
         run: dotnet test Tests/NitroGroups.Tests.Endpoints --no-build --configuration Release
 
-      - name: Tests de integración y arquitectura
+      - name: Tests de integración y arquitectura (incluye los de PostgreSQL real)
+        env:
+          NITRO_TEST_POSTGRES: Host=localhost;Port=5432;Username=postgres;Password=postgres
         run: dotnet test Tests/NitroGroups.Tests.Integration --no-build --configuration Release
 
       - name: Aplicar las migraciones de cada módulo a una base vacía
