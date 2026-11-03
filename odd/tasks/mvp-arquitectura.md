@@ -21,7 +21,7 @@ Rama de trabajo: `claude/practical-keller-qzzaaq` (a partir de `develop`).
 
 - [x] T1 (S1) Eliminar `ai/`, workflow y test del orquestador, archivos raíz huérfanos, `Core/Availability` y Supabase.
 - [x] T2 (S5, S6) `ModuleDbContext`, outbox por módulo, DbContexts de Users/Groups/Schedules, contratos de módulo, nuevas migraciones y script de upgrade para bases existentes.
-- [ ] T3 (S6) Tests de arquitectura de fronteras entre módulos.
+- [x] T3 (S6) Tests de arquitectura de fronteras entre módulos.
 - [ ] T4 (S7) Modelo de roles y migración de datos.
 - [ ] T5 (S2, S3, S4) FallbackPolicy, claims transformation, filtro `RequireGroupManager`, identidad desde el token, exception handler.
 - [ ] T6 (S8) Rutas de Schedules uniformes y frontend actualizado.
@@ -32,6 +32,8 @@ Rama de trabajo: `claude/practical-keller-qzzaaq` (a partir de `develop`).
 ## Log
 
 - T1: hecho en `c9294fd`. Línea base antes de empezar: 81 tests en verde (40 de endpoints y 41 de integración).
-- Decisión: Gentle-AI no se instala en el contenedor de la sesión (reescribiría la configuración de Claude Code). Se adopta su protocolo ODD en este documento.
+- Decisión (reemplazada más abajo): al principio se adoptó solo el protocolo ODD sin instalar Gentle-AI.
 - T2: un DbContext por módulo (`users`, `groups`, `schedules`) con outbox y migraciones propias; contratos `IUsersModuleApi`/`IGroupsModuleApi`; se elimina el acceso de Users a las tablas de Groups. Verificación: `dotnet build` OK; 81/81 tests OK; migraciones aplicadas sobre una base vacía; script de upgrade probado contra una base creada con `Init` de `develop` (esquema resultante idéntico al nuevo según `pg_dump -s`; datos conservados; idempotente). Rollback: revertir el commit; las bases ya migradas necesitan restaurar el backup previo.
 - Decisión: Gentle-AI 4.1.1 y engram v1.20.0 se instalan de forma efímera en el contenedor (pedido del usuario). Las decisiones se exportan a `.engram/`.
+- RDD sobre `4176b40`: `review assess` → riesgo medio, `review_due=false` (`under_budget`). Se cierra con `consent=declined`, sin review, siguiendo la regla del orquestador.
+- T3: `ModuleBoundariesTests` (4 tests: ensamblados sin referencias entre módulos, Shared sin Core, Domain sin Application/Infrastructure/EF, `.csproj` sin referencias que crucen fronteras salvo Bootstrap). Verificación: 85/85 en verde; al inyectar a propósito `Groups.Infrastructure -> Users.Application` el test falla con el mensaje esperado.
