@@ -130,11 +130,14 @@ export default function GroupGallery({ media: mediaProp }: GroupGalleryProps) {
 
     const dialogRef = useRef<HTMLDivElement>(null);
     const titleId = useId();
+    // Escape cierra igual que el botón Cancelar (resetea archivo, modo y error).
+    const closeDialogRef = useRef(closeDialog);
+    useEffect(() => { closeDialogRef.current = closeDialog; });
     useEffect(() => {
         if (!isAdding) return;
         // Al abrir, el foco entra al diálogo; Escape lo cierra.
         dialogRef.current?.querySelector<HTMLElement>("input, select, button")?.focus();
-        const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setIsAdding(false); };
+        const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") closeDialogRef.current(); };
         window.addEventListener("keydown", onKey);
         return () => window.removeEventListener("keydown", onKey);
     }, [isAdding]);

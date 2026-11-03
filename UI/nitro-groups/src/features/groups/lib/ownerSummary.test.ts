@@ -61,3 +61,12 @@ describe("ownerFacts", () => {
         expect(facts[0].value).toBe("$2,500 por hora");
     });
 });
+
+describe("datos incompletos de la API", () => {
+    it("no rompe con calificación nula ni medios sin tipo", async () => {
+        const { ownerFacts, profileGaps } = await import("./ownerSummary");
+        const g = { totalReviews: 3, averageRating: null, media: [{ type: undefined }] } as unknown as Parameters<typeof ownerFacts>[0];
+        expect(() => ownerFacts(g)).not.toThrow();
+        expect(() => profileGaps(g)).not.toThrow();
+    });
+});

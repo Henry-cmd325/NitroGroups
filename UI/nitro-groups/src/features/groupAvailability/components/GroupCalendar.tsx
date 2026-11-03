@@ -7,6 +7,9 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import type { DateSelectArg, EventChangeArg, EventInput, DatesSetArg, EventClickArg } from "@fullcalendar/core";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+
+/** La API antepone "busy_" al id de los horarios ocupados (el resto son bloques de disponibilidad). */
+const BUSY_ID_PREFIX = "busy_";
 import { groupAvailabilityService as schedulesService, type CreateBusyScheduleRequest, type UpdateAvailabilityRequest, type UpdateBusyScheduleRequest } from "../services/groupAvailability.service";
 
 import esLocale from "@fullcalendar/core/locales/es";
@@ -75,13 +78,15 @@ export default function GroupCalendar({ groupId, mode = "public" }: GroupCalenda
         backgroundColor: undefined,
         borderColor: undefined,
         textColor: undefined,
-        classNames: [String(ev.id ?? "").startsWith("busy_") ? "ng-busy" : "ng-available"],
+        classNames: [String(ev.id ?? "").startsWith(BUSY_ID_PREFIX) ? "ng-busy" : "ng-available"],
       })),
     [serverEvents],
   );
 
-  const mutationFailed =
-    createBusy.isError || updateAvailability.isError || updateBusy.isError || deleteAvailability.isError || deleteBusy.isError;
+  // El aviso refleja solo el último cambio enviado: si el siguiente sale bien, desaparece.
+  const lastMutation = [createBusy, updateAvailability, updateBusy, deleteAvailability, deleteBusy]
+    .reduce((latest, m) => (m.submittedAt > latest.submittedAt ? m : latest));
+  const mutationFailed = lastMutation.isError;
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {

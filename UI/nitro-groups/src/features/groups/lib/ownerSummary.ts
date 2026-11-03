@@ -4,7 +4,7 @@ import type { MusicGroup } from "../types/MusicGroup";
 /** Lo que le falta al perfil para verse completo ante un cliente, en el orden en que pesa. */
 export function profileGaps(group: MusicGroup): string[] {
     const gaps: string[] = [];
-    const photos = (group.media ?? []).filter((m) => m.type.toLowerCase() === "photo");
+    const photos = (group.media ?? []).filter((m) => m.type?.toLowerCase() === "photo");
     if (!group.coverImageUrl && photos.length === 0) gaps.push("una foto de portada");
     if (!group.basePrice && !group.hourlyRate) gaps.push("un precio");
     if (!group.genres || group.genres.length === 0) gaps.push("tus géneros");
@@ -31,7 +31,7 @@ export function ownerFacts(group: MusicGroup): OwnerFact[] {
     const empty = "Sin definir";
     const hasPrice = Boolean(group.basePrice || group.hourlyRate);
     const rating =
-        group.totalReviews > 0
+        group.totalReviews > 0 && Number.isFinite(group.averageRating)
             ? `${group.averageRating.toFixed(1)} de 5 (${group.totalReviews} ${group.totalReviews === 1 ? "reseña" : "reseñas"})`
             : "Sin reseñas aún";
     return [

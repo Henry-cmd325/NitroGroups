@@ -45,8 +45,8 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(
         return (
             <div
                 ref={ref}
-                // Los errores interrumpen; el resto se anuncia sin cortar lo que se está leyendo.
-                role={v === "destructive" ? "alert" : "status"}
+                // Errores y advertencias interrumpen; el resto se anuncia sin cortar la lectura.
+                role={v === "destructive" || v === "warning" ? "alert" : "status"}
                 className={cn(alertVariants({ variant }), onClose && "pr-12", className)}
                 {...props}
             >
