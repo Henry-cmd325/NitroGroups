@@ -12,7 +12,7 @@ export default function ErrorPage({ reset }: { error: Error & { digest?: string 
                 El servicio no respondió a tiempo. Vuelve a intentarlo en un momento; si sigue fallando, busca el grupo desde el inicio.
             </p>
             <div className="mt-10 flex flex-wrap gap-4">
-                <button type="button" onClick={reset} className="h-14 px-7 bg-acento text-fondo font-semibold hover:bg-acento-press transition-colors">
+                <button type="button" onClick={reset} className="h-14 px-7 bg-acento text-acento-ink rounded-full font-semibold hover:bg-acento-press transition-colors">
                     Reintentar
                 </button>
                 <Link href={ROUTES.GROUPS.SEARCH} className="inline-flex h-14 items-center px-7 bg-fondo-2 text-tinta font-semibold no-underline hover:bg-fondo-3 transition-colors">

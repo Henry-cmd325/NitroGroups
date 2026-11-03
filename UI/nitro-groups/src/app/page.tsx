@@ -1,177 +1,175 @@
+import { Fragment } from "react";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { ROUTES } from "@/config/routes";
 import { serverGet } from "@/lib/serverApi";
-import { priceLabel, todayInMexico, upcomingPartyDates } from "@/lib/format";
-import { Photo } from "@/components/ui/Photo";
-import { Cartel } from "@/features/cartel/Cartel";
-import { PapelPicado } from "@/features/cartel/PapelPicado";
-import { Monument } from "@/features/cartel/Monument";
+import { priceLabel, shortDateParts, todayInMexico, upcomingPartyDates } from "@/lib/format";
+import { SearchForm } from "@/features/search/components/SearchForm";
+import { profileHref } from "@/features/search/searchParams";
+import { Ondas } from "@/features/home/Ondas";
+import { GroupCard } from "@/features/home/GroupCard";
+import { Pasos } from "@/features/home/Pasos";
 import type { GenreOption, GroupSearchItem, PagedResult } from "@/features/search/types";
 
-/** Las tres cosas que haces, cada una con su pantalla. Los verbos son el encabezado. */
-const VERBS = [
-    {
-        verb: "Busca",
-        body: "Elige el día de tu fiesta. Solo ves grupos que tienen esa fecha libre, con su precio a la vista.",
-        field: "bg-fondo-2 text-tinta",
-        flags: ["#4B12B8", "#1D0736", "#B591F4"],
-    },
-    {
-        verb: "Pide",
-        body: "Cuéntale al grupo qué celebras, dónde, cuántas horas y tu presupuesto. Todo en una sola solicitud.",
-        field: "bg-acento text-fondo",
-        flags: ["#D6BEFF", "#1D0736", "#B591F4"],
-    },
-    {
-        verb: "Confirma",
-        body: "El grupo acepta o te propone otra cosa. La conversación queda por escrito, con la fecha y el precio.",
-        field: "campo-tinta",
-        flags: ["#D6BEFF", "#4B12B8", "#B591F4"],
-    },
-];
-
-/** Los cuatro paneles de la banda, en el orden de una fiesta: llegada, baile, cena, madrugada. */
-const BAND = [
-    { slug: "mariachi", name: "Mariachi", line: "Para la salida de la iglesia y la serenata", grow: "md:grow-[5]", field: "bg-acento text-fondo", flags: ["#D6BEFF", "#B591F4"] },
-    { slug: "banda-sinaloense", name: "Banda", line: "Para que nadie se siente", grow: "md:grow-[2]", field: "bg-fondo-3", flags: ["#4B12B8", "#1D0736"] },
-    { slug: "cumbia", name: "Cumbia", line: "Para la pista llena", grow: "md:grow-[3]", field: "campo-tinta", flags: ["#D6BEFF", "#B591F4"] },
-    { slug: "trio-romantico", name: "Trío", line: "Para la cena", grow: "md:grow-[2]", field: "bg-fondo-2", flags: ["#4B12B8", "#1D0736"] },
-];
+/** Palabras del titular, cada una sube desde su máscara con un pequeño retraso. */
+function Palabras({ text }: { text: string }) {
+    return (
+        <span className="palabras">
+            {text.split(" ").map((w, i, all) => (
+                <Fragment key={i}>
+                    <span>
+                        <span style={{ ["--i" as string]: i }}>{w}</span>
+                    </span>
+                    {i < all.length - 1 && " "}
+                </Fragment>
+            ))}
+        </span>
+    );
+}
 
 export default async function Home() {
-    const dates = upcomingPartyDates(todayInMexico(), 5);
-    const firstDate = dates[0];
-    const [genres, free, listing] = await Promise.all([
+    const today = todayInMexico();
+    // El próximo sábado (o el día de fiesta más cercano) es la fecha que muestra la portada.
+    const party = upcomingPartyDates(today, 3);
+    const saturday = party.find((d) => new Date(`${d}T12:00:00Z`).getUTCDay() === 6) ?? party[0];
+    const [genres, free] = await Promise.all([
         serverGet<GenreOption[]>("/genres", 3600),
-        serverGet<PagedResult<GroupSearchItem>>(`/groups/search?${new URLSearchParams({ date: firstDate, size: "8" })}`, 60),
-        serverGet<PagedResult<GroupSearchItem>>("/groups/search?size=10", 120),
+        serverGet<PagedResult<GroupSearchItem>>(`/groups/search?${new URLSearchParams({ date: saturday, size: "6" })}`, 60),
     ]);
-    const rows = listing?.items ?? [];
-    const bandSlugs = new Set((genres ?? []).map((g) => g.slug));
+    const available = free?.items ?? [];
+    const featured = available[0];
+    const parts = shortDateParts(saturday);
+    const dayLabel = parts ? `${parts.weekday} ${parts.day} de ${parts.month}` : saturday;
 
     return (
         <>
-            {/* El cartel: eliges el día y el nombre del grupo libre va de margen a margen. */}
-            <section className="page-frame pt-6 pb-10" aria-labelledby="titulo">
-                {firstDate && (
-                    <Cartel
-                        dates={dates}
-                        initialDate={firstDate}
-                        initialGroups={free?.items ?? []}
-                        intro={
-                            <>
-                                <h1 id="titulo" className="type-heading text-[clamp(1.75rem,2.6vw,2.5rem)]">
-                                    Música en vivo para tu fecha
-                                </h1>
-                                <p className="mt-3 max-w-[40ch] text-[clamp(1.0625rem,1.3vw,1.25rem)]">
-                                    Mariachi, banda, cumbia y trío para tu boda, tus XV años o la fiesta de la empresa,
-                                    con su precio a la vista.
-                                </p>
-                            </>
-                        }
-                        action={
-                            <Link
-                                href={ROUTES.GROUPS.SEARCH}
-                                className="inline-flex h-14 items-center gap-3 px-7 bg-acento text-fondo font-semibold no-underline hover:bg-acento-press active:scale-[0.98] transition-[background-color,transform]"
-                            >
-                                Ver todos los grupos
-                                <ArrowRight className="size-5" aria-hidden />
-                            </Link>
-                        }
-                    />
-                )}
+            {/* Primera pantalla: el titular a la izquierda sobre ondas de sonido, la búsqueda en vidrio. */}
+            <section className="relative isolate overflow-hidden" aria-labelledby="titulo">
+                <div className="absolute inset-0 -z-10" aria-hidden>
+                    <div className="resplandor resplandor-vivo w-[60vw] aspect-square -right-[12vw] -top-[18vw]" />
+                    <Ondas className="absolute right-[-6%] top-[8%] h-[88%] w-[110%] md:w-[78%]" />
+                    <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-b from-transparent to-fondo" />
+                </div>
+
+                <div className="page-frame relative pt-[clamp(5rem,14vh,9rem)] pb-[clamp(4rem,10vh,7rem)]">
+                    <h1 id="titulo" className="type-poster text-[clamp(2.75rem,6.4vw,5.75rem)] max-w-[12ch]">
+                        <Palabras text="Música en vivo para tu fecha" />
+                    </h1>
+                    <p className="aparece mt-6 max-w-[44ch] text-[clamp(1.0625rem,1.4vw,1.25rem)] text-tinta-2" style={{ ["--d" as string]: "450ms" }}>
+                        Mariachi, banda, cumbia y trío para bodas, XV años y fiestas de empresa. Ves quién está libre y
+                        cuánto cuesta antes de escribirle a nadie.
+                    </p>
+
+                    <div className="aparece mt-10 md:mt-12" style={{ ["--d" as string]: "650ms" }}>
+                        <SearchForm genres={genres ?? []} id="portada" variant="glass" />
+                    </div>
+
+                    {featured && (
+                        <Link
+                            href={profileHref(featured.slug, saturday)}
+                            className="aparece group mt-10 lg:mt-0 lg:absolute lg:right-[var(--gutter)] lg:top-[clamp(5rem,14vh,9rem)] block w-full lg:w-80 vidrio rounded-3xl p-5 no-underline transition-transform duration-500 hover:-translate-y-1"
+                            style={{ ["--d" as string]: "900ms" }}
+                        >
+                            <span className="flex items-center gap-2 text-[0.8125rem] text-tinta-2">
+                                <span className="size-1.5 rounded-full bg-ok" aria-hidden />
+                                Libre el {dayLabel}
+                            </span>
+                            <span className="mt-3 block text-[1.25rem] font-medium tracking-[-0.02em]">{featured.groupName}</span>
+                            <span className="mt-1 block text-base text-tinta-2">{[featured.genres[0], featured.locationText].filter(Boolean).join(" en ")}</span>
+                            <span className="mt-5 flex items-end justify-between">
+                                <span>
+                                    <span className="block text-[0.8125rem] text-tinta-2">Precio</span>
+                                    <span className="block tabular text-[1.125rem]">{priceLabel(featured)}</span>
+                                </span>
+                                <ArrowRight className="size-5 text-tinta-2 transition-transform group-hover:translate-x-1 group-hover:text-acento" aria-hidden />
+                            </span>
+                        </Link>
+                    )}
+                </div>
             </section>
 
-            {/* Cartelera: el precio de cada grupo sin tener que cotizar. */}
-            {rows.length > 0 && (
-                <section className="page-frame mt-[var(--section-gap)]" aria-labelledby="cartelera" data-reveal>
-                    <h2 id="cartelera" className="type-poster text-[clamp(2.5rem,4.5vw,4.25rem)] md:pl-[3vw] max-w-[18ch]">
-                        Precio a la vista
-                    </h2>
-                    <div className="mt-24 grid lg:grid-cols-12 gap-x-6 gap-y-12">
-                        <div className="lg:col-span-4 lg:self-end order-2 lg:order-1 w-[60%] md:w-[40%] lg:w-auto justify-self-end lg:justify-self-auto">
-                            <Photo
-                                src={rows.find((r) => r.imageUrl)?.imageUrl}
-                                alt={rows[0].groupName}
-                                fallbackTitle={rows[0].groupName}
-                                className="aspect-[4/5] w-full"
-                            />
-                        </div>
-                        <p className="hidden lg:block lg:col-start-7 lg:col-span-1 text-sm text-tinta-2 pt-1">Cartelera</p>
-                        <ul className="lg:col-start-8 lg:col-span-5 order-1 lg:order-2">
-                            {rows.map((g, i) => (
-                                <li key={g.id} className={i > 0 && i % 4 === 0 ? "mt-11" : i > 0 ? "mt-6" : ""}>
-                                    <Link href={ROUTES.GROUPS.PUBLIC_PROFILE(g.slug)} className="group grid grid-cols-[1fr_auto] md:grid-cols-[30%_1fr_auto] gap-x-4 no-underline">
-                                        <span className="text-tinta-2 order-2 md:order-1 col-span-2 md:col-span-1">{g.genres[0] ?? "Música en vivo"}</span>
-                                        <span className="font-semibold group-hover:text-acento transition-colors order-1 md:order-2">{g.groupName}</span>
-                                        <span className="tabular text-right order-1 md:order-3 whitespace-nowrap">
-                                            {priceLabel(g).replace("Desde ", "")}
-                                            <ArrowRight className="inline size-4 ml-1.5 -mt-0.5 transition-transform group-hover:translate-x-0.5" aria-hidden />
-                                        </span>
-                                    </Link>
-                                </li>
-                            ))}
-                        </ul>
+            {/* Disponibles: tarjetas sobrias, la foto arriba y el precio a la vista. */}
+            {available.length > 0 && (
+                <section className="page-frame mt-[calc(var(--section-gap)*0.6)]" aria-labelledby="disponibles">
+                    <div data-reveal className="text-center">
+                        <h2 id="disponibles" className="type-heading text-[clamp(2rem,3.6vw,3rem)]">Libres este fin de semana</h2>
+                        <p className="mt-4 mx-auto max-w-[52ch] text-tinta-2">
+                            Grupos que tienen el {dayLabel} sin compromiso. Toca uno para ver su música, sus fotos y pedirle la fecha.
+                        </p>
                     </div>
+                    <div data-reveal className="mt-14 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {available.slice(0, 3).map((g) => (
+                            <GroupCard key={g.id} group={g} date={saturday} />
+                        ))}
+                    </div>
+                    <p data-reveal className="mt-10 text-center">
+                        <Link href={`${ROUTES.GROUPS.SEARCH}?fecha=${saturday}`} className="inline-flex items-center gap-2 text-tinta no-underline hover:text-acento transition-colors">
+                            Ver todos los grupos libres ese día <ArrowRight className="size-4" aria-hidden />
+                        </Link>
+                    </p>
                 </section>
             )}
 
-            {/* Busca, pide, confirma: un verbo por pantalla. */}
-            <section className="mt-[var(--section-gap)]" aria-label="Cómo se contrata un grupo">
-                {VERBS.map((v) => (
-                    <div key={v.verb} className={`relative min-h-[100svh] overflow-hidden ${v.field}`}>
-                        <PapelPicado colors={v.flags} count={10} sway className="absolute inset-x-0 top-0 w-full h-[22svh]" />
-                        <h2 className="absolute left-1/2 top-[56%] w-[min(86%,72rem)] -translate-x-1/2 -translate-y-1/2">
-                            <Monument name={v.verb} />
-                        </h2>
-                        <p className="absolute left-[var(--gutter)] right-[var(--gutter)] bottom-10 max-w-[36ch] text-[clamp(1.0625rem,1.3vw,1.25rem)]">
-                            {v.body}
-                        </p>
-                    </div>
-                ))}
+            {/* Una frase que se ilumina palabra por palabra al cruzar la pantalla. */}
+            <section className="page-frame mt-[var(--section-gap)]" aria-label="Por qué NitroGroups">
+                <p className="ilumina type-heading text-[clamp(1.375rem,2.5vw,2.25rem)] leading-[1.25] max-w-[30ch] mx-auto text-center">
+                    {"Sin llamadas de ida y vuelta. Eliges la fecha, ves el precio y le escribes al grupo. Todo queda por escrito."
+                        .split(" ")
+                        .map((w, i) => (
+                            <span key={i}>{w} </span>
+                        ))}
+                </p>
             </section>
 
-            {/* Toda la música de una fiesta: una banda de paneles desiguales. */}
-            <section className="mt-[var(--section-gap)]" aria-labelledby="musica" data-reveal>
-                <h2 id="musica" className="page-frame type-heading text-[clamp(1.75rem,3vw,2.75rem)] md:pl-[calc(var(--gutter)+16.6%)]">
-                    Toda la música de una fiesta
-                </h2>
-                <div className="mt-16 grid grid-cols-[64fr_36fr] grid-rows-2 md:flex h-[84svh] md:h-[68svh] overflow-hidden">
-                    {BAND.map((b) => (
-                        <Link
-                            key={b.slug}
-                            href={bandSlugs.has(b.slug) ? `${ROUTES.GROUPS.SEARCH}?genero=${b.slug}` : ROUTES.GROUPS.SEARCH}
-                            className={`relative overflow-hidden no-underline md:basis-0 ${b.grow} md:hover:grow-[6] transition-[flex-grow] duration-500 ${b.field}`}
-                        >
-                            <PapelPicado colors={b.flags} count={4} sway className="absolute inset-x-0 bottom-0 w-full h-1/2" />
-                            <span className="absolute left-6 top-6 right-6">
-                                <span className="block type-heading text-[clamp(1.5rem,2vw,1.75rem)]">{b.name}</span>
-                                <span className="block mt-1 max-w-[22ch]">{b.line}</span>
-                            </span>
-                        </Link>
-                    ))}
+            {/* Cómo funciona: lista que se despliega y el fragmento de la app al lado. */}
+            <section className="page-frame mt-[var(--section-gap)]" aria-labelledby="como">
+                <div data-reveal className="max-w-2xl">
+                    <h2 id="como" className="type-heading text-[clamp(2rem,3.6vw,3rem)]">Así se contrata un grupo</h2>
+                    <p className="mt-4 text-tinta-2 max-w-[48ch]">Cuatro pasos, todos en la misma pantalla y por escrito.</p>
                 </div>
-                <p className="page-frame mt-5 text-tinta-2">Toca un panel para ver los grupos de ese género.</p>
+                <div data-reveal className="mt-12">
+                    <Pasos groupName={featured?.groupName ?? "Mariachi Vargas"} price={featured ? priceLabel(featured) : "Desde $18,000"} />
+                </div>
             </section>
 
-            {/* El cierre: la idea otra vez, con los colores al revés. */}
-            <section className="campo-tinta mt-[var(--section-gap)] min-h-[80svh] md:min-h-[90svh] flex flex-col justify-between" aria-labelledby="musicos">
-                <h2 id="musicos" className="page-frame pt-[12svh] type-poster text-[clamp(3rem,10vw,10rem)] leading-[0.9] max-w-[11ch]">
-                    Tu grupo, en cartel
-                </h2>
-                <div className="page-frame pb-10 grid md:grid-cols-12 gap-6 items-end" data-reveal>
-                    <p className="md:col-span-5 text-[clamp(1.0625rem,1.5vw,1.25rem)] max-w-[42ch]">
-                        Publica tus precios y tus fechas ocupadas. Las solicitudes te llegan con fecha, lugar y presupuesto,
-                        y tú decides cuáles aceptas.
-                    </p>
-                    <Link
-                        href={ROUTES.AUTH.SIGNUP_MUSICIAN}
-                        className="md:col-start-10 md:col-span-3 inline-flex h-14 items-center justify-center gap-3 px-7 bg-acento text-fondo font-semibold no-underline hover:bg-acento-press transition-colors"
-                    >
-                        Publicar mi grupo
-                        <ArrowRight className="size-5" aria-hidden />
-                    </Link>
+            {/* Géneros: una línea tranquila de enlaces. */}
+            {genres && genres.length > 0 && (
+                <section className="page-frame mt-[var(--section-gap)] text-center" aria-labelledby="generos">
+                    <div data-reveal>
+                        <h2 id="generos" className="type-heading text-[clamp(2rem,3.6vw,3rem)]">La música de toda la fiesta</h2>
+                        <p className="mt-4 mx-auto max-w-[46ch] text-tinta-2">Del mariachi en la iglesia a la cumbia de la madrugada.</p>
+                    </div>
+                    <ul data-reveal className="mt-10 flex flex-wrap justify-center gap-2 max-w-4xl mx-auto">
+                        {genres.map((g) => (
+                            <li key={g.slug}>
+                                <Link
+                                    href={`${ROUTES.GROUPS.SEARCH}?genero=${g.slug}`}
+                                    className="inline-flex rounded-full superficie px-4 py-2 text-base text-tinta-2 no-underline transition-colors hover:text-tinta hover:border-[var(--linea-fuerte)]"
+                                >
+                                    {g.name}
+                                </Link>
+                            </li>
+                        ))}
+                    </ul>
+                </section>
+            )}
+
+            {/* Cierre: centrado, una sola acción para cada lado. */}
+            <section className="page-frame mt-[var(--section-gap)]" aria-labelledby="cierre">
+                <div className="relative isolate overflow-hidden superficie rounded-[32px] px-6 py-[clamp(4rem,10vw,7rem)] text-center">
+                    <div className="resplandor resplandor-vivo -z-10 w-[55%] aspect-square left-1/2 -translate-x-1/2 -bottom-[45%]" aria-hidden />
+                    <div data-reveal>
+                        <h2 id="cierre" className="type-heading text-[clamp(2rem,4.2vw,3.5rem)] max-w-[18ch] mx-auto">Encuentra quién toca en tu fecha</h2>
+                        <p className="mt-4 mx-auto max-w-[46ch] text-tinta-2">Y si tienes un grupo, publícalo y recibe solicitudes con todo lo que necesitas para responder.</p>
+                        <div className="mt-9 flex flex-wrap justify-center gap-3">
+                            <Link href={ROUTES.GROUPS.SEARCH} className="inline-flex h-12 items-center gap-2 rounded-full bg-acento px-6 text-acento-ink font-medium no-underline transition-[background-color,transform] hover:bg-acento-press active:scale-[0.98]">
+                                Buscar grupos
+                            </Link>
+                            <Link href={ROUTES.AUTH.SIGNUP_MUSICIAN} className="inline-flex h-12 items-center gap-2 rounded-full px-6 text-tinta no-underline shadow-[inset_0_0_0_1px_var(--linea-fuerte)] transition-colors hover:bg-white/[0.04]">
+                                Publicar mi grupo
+                            </Link>
+                        </div>
+                    </div>
                 </div>
             </section>
         </>

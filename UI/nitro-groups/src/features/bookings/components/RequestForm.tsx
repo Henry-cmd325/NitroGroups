@@ -64,11 +64,11 @@ export function RequestForm({ groupId, groupName, minimumHours, defaultDate }: R
         <form onSubmit={onSubmit} className="grid md:grid-cols-6 gap-x-4 gap-y-6 max-w-4xl" aria-describedby={create.isError ? `${id}-error` : undefined}>
             <div className="md:col-span-2">
                 <label htmlFor={`${id}-fecha`} className={label}>Fecha</label>
-                <input id={`${id}-fecha`} name="eventDate" type="date" required min={todayInMexico()} defaultValue={defaultDate} className={`${field} [color-scheme:light]`} />
+                <input id={`${id}-fecha`} name="eventDate" type="date" required min={todayInMexico()} defaultValue={defaultDate} className={`${field} [color-scheme:dark]`} />
             </div>
             <div className="md:col-span-2">
                 <label htmlFor={`${id}-hora`} className={label}>Hora de inicio <span className="text-tinta-2/70">(opcional)</span></label>
-                <input id={`${id}-hora`} name="startTime" type="time" step={900} className={`${field} [color-scheme:light]`} />
+                <input id={`${id}-hora`} name="startTime" type="time" step={900} className={`${field} [color-scheme:dark]`} />
             </div>
             <div className="md:col-span-2">
                 <label htmlFor={`${id}-horas`} className={label}>Horas de música</label>
@@ -123,7 +123,7 @@ export function RequestForm({ groupId, groupName, minimumHours, defaultDate }: R
                 <button
                     type="submit"
                     disabled={create.isPending || tooShort}
-                    className="h-14 px-8 bg-acento text-fondo font-semibold hover:bg-acento-press transition-colors disabled:opacity-45 disabled:pointer-events-none"
+                    className="h-14 px-8 bg-acento text-acento-ink rounded-full font-semibold hover:bg-acento-press transition-colors disabled:opacity-45 disabled:pointer-events-none"
                 >
                     {create.isPending ? "Enviando…" : "Enviar solicitud"}
                 </button>

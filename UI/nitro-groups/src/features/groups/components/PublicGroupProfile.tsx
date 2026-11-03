@@ -6,7 +6,6 @@ import { formatEventDate, priceLabel } from "@/lib/format";
 import type { MusicGroup } from "../types/MusicGroup";
 import type { GroupMediaResponse } from "@/features/groupMedia/types/GroupMedia";
 import { RequestForm } from "@/features/bookings/components/RequestForm";
-import { Monument } from "@/features/cartel/Monument";
 
 const kind = (m: GroupMediaResponse) => m.type.toLowerCase();
 
@@ -60,7 +59,7 @@ export function PublicGroupProfile({ group, requestedDate, signedIn = false }: {
             )}
 
             <header className="page-frame mt-10 md:mt-16 grid md:grid-cols-12 gap-x-8 gap-y-8 items-end">
-                <h1 className="md:col-span-12"><Monument name={group.groupName} /></h1>
+                <h1 className="md:col-span-12 type-poster text-[clamp(2.5rem,6vw,5rem)] max-w-[16ch]">{group.groupName}</h1>
                 <div className="md:col-span-8">
                     <p className="mt-4 text-lg text-tinta-2">
                         {[genres.slice(0, 3).join(", "), group.locationText].filter(Boolean).join(" en ")}
@@ -82,7 +81,7 @@ export function PublicGroupProfile({ group, requestedDate, signedIn = false }: {
                 <div className="md:col-span-4 md:justify-self-end flex flex-col gap-3 md:items-end">
                     <p className="text-2xl font-semibold tabular">{price}</p>
                     {group.isAcceptingBookings ? (
-                        <Link href={requestHref} className="inline-flex h-14 items-center justify-center px-7 bg-acento text-fondo font-semibold no-underline hover:bg-acento-press transition-colors">
+                        <Link href={requestHref} className="inline-flex h-14 items-center justify-center px-7 bg-acento text-acento-ink rounded-full font-semibold no-underline hover:bg-acento-press transition-colors">
                             {dateText ? `Pedir el ${dateText}` : "Pedir una fecha"}
                         </Link>
                     ) : (
@@ -168,7 +167,7 @@ export function PublicGroupProfile({ group, requestedDate, signedIn = false }: {
                     ) : (
                         <Link
                             href={`${ROUTES.AUTH.LOGIN}?returnTo=${encodeURIComponent(`${ROUTES.GROUPS.PUBLIC_PROFILE(group.slug)}${requestedDate ? `?fecha=${requestedDate}` : ""}#solicitar`)}`}
-                            className="inline-flex h-14 items-center px-7 bg-acento text-fondo font-semibold no-underline hover:bg-acento-press transition-colors"
+                            className="inline-flex h-14 items-center px-7 bg-acento text-acento-ink rounded-full font-semibold no-underline hover:bg-acento-press transition-colors"
                         >
                             Entrar para enviar la solicitud
                         </Link>

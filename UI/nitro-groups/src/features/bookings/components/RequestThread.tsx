@@ -116,7 +116,7 @@ export function RequestThread({ requestId, viewer }: { requestId: number; viewer
                 {actions.requestAgain && (
                     <div className="bg-fondo-2 p-5">
                         <p className="text-tinta">Esta solicitud está cerrada. Si quieres otra fecha con {r.groupName}, envíale una solicitud nueva.</p>
-                        <Link href={`${ROUTES.GROUPS.PUBLIC_PROFILE(r.groupSlug)}#solicitar`} className="mt-4 inline-flex h-12 items-center px-6 bg-acento text-fondo font-semibold no-underline hover:bg-acento-press">
+                        <Link href={`${ROUTES.GROUPS.PUBLIC_PROFILE(r.groupSlug)}#solicitar`} className="mt-4 inline-flex h-12 items-center px-6 bg-acento text-acento-ink rounded-full font-semibold no-underline hover:bg-acento-press">
                             Pedir otra fecha
                         </Link>
                     </div>
@@ -127,7 +127,7 @@ export function RequestThread({ requestId, viewer }: { requestId: number; viewer
                 {(actions.accept || actions.decline || actions.cancel) && (
                     <div className="flex flex-wrap gap-3 pt-2">
                         {actions.accept && (
-                            <button type="button" disabled={busy} onClick={() => accept.mutate()} className="h-14 px-7 bg-acento text-fondo font-semibold hover:bg-acento-press disabled:opacity-45">
+                            <button type="button" disabled={busy} onClick={() => accept.mutate()} className="h-14 px-7 bg-acento text-acento-ink rounded-full font-semibold hover:bg-acento-press disabled:opacity-45">
                                 Aceptar la fecha
                             </button>
                         )}

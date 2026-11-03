@@ -1,5 +1,4 @@
 import { cn } from "@/lib/utils";
-import { PapelPicado } from "@/features/cartel/PapelPicado";
 
 interface PhotoProps {
     src: string | null | undefined;
@@ -14,16 +13,28 @@ interface PhotoProps {
  * Foto de un grupo, recortada y con esquinas rectas. Sin foto, un cartel con la inicial
  * del grupo: nunca una imagen genérica que finja ser el grupo.
  */
-export function Photo({ src, alt, className, priority = false }: PhotoProps) {
+export function Photo({ src, alt, fallbackTitle, className, priority = false }: PhotoProps) {
     if (!src) {
-        // Sin foto: una banderita de papel picado, nunca una imagen genérica que finja ser el grupo.
+        // Sin foto: un fondo sereno con las iniciales del grupo y un poco de luz lila.
+        // Nunca una imagen genérica que finja ser el grupo.
+        const initials = (fallbackTitle ?? alt)
+            .split(/\s+/)
+            .filter((w) => w.length > 2)
+            .slice(0, 2)
+            .map((w) => w[0]!.toUpperCase())
+            .join("") || "N";
         return (
             <div
                 role="img"
                 aria-label={`${alt} (todavía sin fotos)`}
-                className={cn("relative overflow-hidden bg-fondo-2", className)}
+                className={cn("relative overflow-hidden bg-fondo-3 [container-type:size]", className)}
             >
-                <PapelPicado colors={["#B591F4"]} count={1} className="absolute left-1/2 top-[8%] h-[70%] -translate-x-1/2" />
+                <span aria-hidden className="absolute inset-0 bg-[radial-gradient(80%_70%_at_70%_20%,rgb(201_184_255/0.18),transparent_70%)]" />
+                <svg aria-hidden viewBox="0 0 100 60" className="absolute inset-0 size-full">
+                    <text x="50" y="38" textAnchor="middle" fontSize="22" fontWeight="600" letterSpacing="-1" fill="rgb(255 255 255 / 0.14)" style={{ fontFamily: "var(--font-display)" }}>
+                        {initials}
+                    </text>
+                </svg>
             </div>
         );
     }

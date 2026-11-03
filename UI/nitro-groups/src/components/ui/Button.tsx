@@ -4,15 +4,15 @@ import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
 
-// Botones planos, esquinas rectas, un relleno por variante (DESIGN.md → Components).
+// Botones en píldora, planos, un relleno por variante (DESIGN.md → Components).
 const buttonVariants = cva(
-    "inline-flex items-center justify-center gap-2 whitespace-nowrap font-semibold transition-colors duration-150 disabled:pointer-events-none disabled:opacity-45 [&_svg]:pointer-events-none [&_svg]:size-[1.1em] [&_svg]:shrink-0",
+    "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full font-medium transition-[background-color,color,transform,box-shadow] duration-200 active:scale-[0.98] disabled:pointer-events-none disabled:opacity-45 [&_svg]:pointer-events-none [&_svg]:size-[1.1em] [&_svg]:shrink-0",
     {
         variants: {
             variant: {
-                default: "bg-acento text-fondo hover:bg-acento-press active:bg-acento-press",
-                destructive: "bg-error text-fondo hover:brightness-95",
-                outline: "bg-transparent text-tinta shadow-[inset_0_0_0_2px_var(--fondo-3)] hover:bg-fondo-3",
+                default: "bg-acento text-acento-ink hover:bg-acento-press",
+                destructive: "bg-error text-acento-ink hover:brightness-95",
+                outline: "bg-transparent text-tinta shadow-[inset_0_0_0_1px_var(--linea-fuerte)] hover:bg-fondo-2",
                 secondary: "bg-fondo-2 text-tinta hover:bg-fondo-3",
                 ghost: "text-tinta hover:bg-fondo-2",
                 link: "text-tinta underline decoration-acento decoration-2 underline-offset-4 hover:text-acento px-0",

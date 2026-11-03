@@ -19,10 +19,10 @@ export function UserMenu() {
     return (
         <div className="hidden md:flex items-center gap-7">
             <nav aria-label="Principal" className="flex items-center gap-7">
-                <Link href={ROUTES.GROUPS.SEARCH} className="text-tinta-2 no-underline hover:text-tinta transition-colors">
+                <Link href={ROUTES.GROUPS.SEARCH} className="text-[0.875rem] text-tinta-2 no-underline hover:text-tinta transition-colors">
                     Explorar grupos
                 </Link>
-                <Link href={dashboard.href} className="text-tinta no-underline font-semibold hover:text-acento transition-colors">
+                <Link href={dashboard.href} className="text-[0.875rem] text-tinta no-underline font-medium hover:text-acento transition-colors">
                     {dashboard.label}
                 </Link>
             </nav>

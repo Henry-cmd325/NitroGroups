@@ -15,15 +15,15 @@ export function PublicNavigation() {
         <div className="hidden md:flex items-center gap-8">
             <nav aria-label="Principal" className="flex items-center gap-7">
                 {PUBLIC_LINKS.map((link) => (
-                    <Link key={link.href} href={link.href} className="text-tinta-2 no-underline hover:text-tinta transition-colors">
+                    <Link key={link.href} href={link.href} className="text-[0.875rem] text-tinta-2 no-underline hover:text-tinta transition-colors">
                         {link.label}
                     </Link>
                 ))}
-                <Link href={ROUTES.AUTH.LOGIN} className="text-tinta-2 no-underline hover:text-tinta transition-colors">
+                <Link href={ROUTES.AUTH.LOGIN} className="text-[0.875rem] text-tinta-2 no-underline hover:text-tinta transition-colors">
                     Entrar
                 </Link>
             </nav>
-            <Button asChild>
+            <Button asChild size="sm">
                 <Link href={ROUTES.AUTH.SIGNUP}>Crear cuenta</Link>
             </Button>
         </div>

@@ -1,23 +1,22 @@
 import type { Metadata } from "next";
-import { Onest, Unbounded } from "next/font/google";
+import { Inter, Inter_Tight } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import Providers from "./providers";
 import Reveal from "@/components/layout/Reveal";
 
-// Voz de cartel (Unbounded, ancha y pesada) y voz de lectura (Onest). Ver DESIGN.md.
-const unbounded = Unbounded({
-  variable: "--font-unbounded",
+// Inter para leer, Inter Tight para los títulos: sobria, de líneas limpias. Ver DESIGN.md.
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
-  weight: ["800"],
   display: "swap",
 });
 
-const onest = Onest({
-  variable: "--font-onest",
+const interTight = Inter_Tight({
+  variable: "--font-inter-tight",
   subsets: ["latin"],
-  weight: ["400", "500", "600"],
+  weight: ["500", "600"],
   display: "swap",
 });
 
@@ -31,8 +30,8 @@ export const metadata: Metadata = {
 };
 
 export const viewport = {
-  themeColor: "#D6BEFF",
-  colorScheme: "light" as const,
+  themeColor: "#0A090E",
+  colorScheme: "dark" as const,
 };
 
 export default function RootLayout({
@@ -41,7 +40,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es" className={`${unbounded.variable} ${onest.variable}`}>
+    <html lang="es" className={`${inter.variable} ${interTight.variable}`}>
       <body
         className="min-h-screen bg-background text-foreground antialiased"
       >

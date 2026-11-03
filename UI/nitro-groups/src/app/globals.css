@@ -1,28 +1,36 @@
 @import "tailwindcss";
 
 /*
- * NitroGroups design system — "Cartel de baile". See DESIGN.md.
- * Ground: papel lila (the fluorescent paper of a Mexican dance poster).
- * Ink: tinta morada, almost black. Accent: morado de imprenta, only on the action.
- * Surfaces step in tone; no hairlines, no shadows at rest, no gradients.
+ * NitroGroups design system — "Noche". See DESIGN.md.
+ * A near-black ground with a faint violet cast, warm white ink, one lilac accent.
+ * Quiet by default: space and type carry the page; glass only where something floats.
  */
 :root {
-    --fondo: #D6BEFF;
-    --fondo-2: #C8A9FB;
-    --fondo-3: #B591F4;
-    --tinta: #1D0736;
-    --tinta-2: #4A2C72;
-    --acento: #4B12B8;
-    --acento-press: #3A0C93;
-    --error: #860A31;
-    --ok: #0A4A29;
+    --fondo: #0A090E;
+    --fondo-2: #131119;
+    --fondo-3: #1D1A25;
+    --tinta: #F4F2F7;
+    --tinta-2: #A39DAF;
+    --acento: #C9B8FF;
+    --acento-press: #B6A0FA;
+    --acento-ink: #120B24;
+    --error: #FF8F8F;
+    --ok: #8FDCB2;
 
-    --gutter: clamp(1.25rem, 2.5vw, 2rem);
-    --section-gap: clamp(7.5rem, 14vw, 15rem);
-    --radius: 0px;
+    /* Edges and glass. */
+    --linea: rgb(255 255 255 / 0.08);
+    --linea-fuerte: rgb(255 255 255 / 0.14);
+    --vidrio: rgb(28 25 37 / 0.55);
+    --vidrio-borde: rgb(255 255 255 / 0.12);
+    --vidrio-brillo: rgb(255 255 255 / 0.18);
+
+    --gutter: clamp(1.25rem, 4vw, 3rem);
+    --section-gap: clamp(7rem, 14vw, 12rem);
+    --radius: 14px;
+    --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-/* Semantic aliases, re-resolved on every sheet so inverted and pale fields recolour them too. */
+/* Semantic aliases, re-resolved on every sheet. */
 :root, .hoja-clara, .campo-tinta {
     --background: var(--fondo);
     --foreground: var(--tinta);
@@ -31,7 +39,7 @@
     --popover: var(--fondo-2);
     --popover-foreground: var(--tinta);
     --primary: var(--acento);
-    --primary-foreground: var(--fondo);
+    --primary-foreground: var(--acento-ink);
     --secondary: var(--fondo-2);
     --secondary-foreground: var(--tinta);
     --muted: var(--fondo-2);
@@ -40,30 +48,14 @@
     --accent-foreground: var(--tinta);
     --destructive: var(--error);
     --destructive-foreground: var(--fondo);
-    --border: var(--fondo-3);
+    --border: var(--linea);
     --input: var(--fondo-2);
     --ring: var(--acento);
 }
 
-/* Screens people work in (panels, threads, onboarding): the same inks on a paler sheet. */
-.hoja-clara {
-    --fondo: #F3ECFF;
-    --fondo-2: #E6D9FF;
-    --fondo-3: #D6BEFF;
-}
-
-/* The inverted field: ink becomes the ground (closing call, footer). */
-.campo-tinta {
-    --fondo: #1D0736;
-    --fondo-2: #2C1050;
-    --fondo-3: #3D1A69;
-    --tinta: #D6BEFF;
-    --tinta-2: #B9A0E6;
-    --acento: #D6BEFF;
-    --acento-press: #F3ECFF;
-    background: var(--fondo);
-    color: var(--tinta);
-}
+/* Working screens and raised fields keep the same tokens; the classes stay as hooks. */
+.hoja-clara { }
+.campo-tinta { background: var(--fondo-2); color: var(--tinta); }
 
 @theme inline {
     --color-fondo: var(--fondo);
@@ -73,6 +65,8 @@
     --color-tinta-2: var(--tinta-2);
     --color-acento: var(--acento);
     --color-acento-press: var(--acento-press);
+    --color-acento-ink: var(--acento-ink);
+    --color-linea: var(--linea);
     --color-error: var(--error);
     --color-ok: var(--ok);
 
@@ -96,13 +90,14 @@
     --color-input: var(--input);
     --color-ring: var(--ring);
 
-    --radius-sm: 0px;
-    --radius-md: 0px;
-    --radius-lg: 0px;
-    --radius-xl: 0px;
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 22px;
+    --radius-2xl: 28px;
 
-    --font-sans: var(--font-onest), ui-sans-serif, system-ui, sans-serif;
-    --font-display: var(--font-unbounded), ui-sans-serif, system-ui, sans-serif;
+    --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, sans-serif;
+    --font-display: var(--font-inter-tight), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
 }
 
 @layer base {
@@ -111,7 +106,7 @@
     }
 
     html {
-        color-scheme: light;
+        color-scheme: dark;
         overflow-x: clip;
         scrollbar-color: var(--fondo-3) var(--fondo);
         -webkit-text-size-adjust: 100%;
@@ -122,14 +117,16 @@
         overflow-x: clip;
         font-family: var(--font-sans);
         font-size: 1.0625rem;
-        line-height: 1.5;
+        line-height: 1.55;
+        letter-spacing: -0.011em;
         caret-color: var(--acento);
+        -webkit-font-smoothing: antialiased;
         text-rendering: optimizeLegibility;
     }
 
     ::selection {
         background: var(--acento);
-        color: var(--fondo);
+        color: var(--acento-ink);
     }
 
     :focus-visible {
@@ -138,15 +135,15 @@
     }
 
     a {
-        text-underline-offset: 0.2em;
+        text-underline-offset: 0.22em;
         text-decoration-thickness: 1px;
     }
 
     h1, h2, h3, h4 {
         font-family: var(--font-display);
-        font-weight: 800;
+        font-weight: 600;
         letter-spacing: -0.03em;
-        line-height: 1.0;
+        line-height: 1.08;
         text-wrap: balance;
     }
 
@@ -156,31 +153,29 @@
 
     input, select, textarea, button {
         font: inherit;
+        letter-spacing: inherit;
     }
 
-    ::-webkit-scrollbar { width: 12px; height: 12px; }
+    ::-webkit-scrollbar { width: 10px; height: 10px; }
     ::-webkit-scrollbar-track { background: var(--fondo); }
-    ::-webkit-scrollbar-thumb { background: var(--fondo-3); border: 3px solid var(--fondo); }
+    ::-webkit-scrollbar-thumb { background: var(--fondo-3); border-radius: 10px; border: 2px solid var(--fondo); }
 }
 
 @layer components {
-    /* Poster voice: the cartel headline. */
+    /* Display voice: large, light-handed, tight. */
     .type-poster {
         font-family: var(--font-display);
-        font-weight: 800;
-        text-transform: uppercase;
-        letter-spacing: -0.04em;
-        line-height: 0.92;
-        font-kerning: normal;
+        font-weight: 600;
+        letter-spacing: -0.045em;
+        line-height: 1.0;
         text-wrap: balance;
     }
 
-    /* Section headings: the same face, modest on purpose (28–40px). */
     .type-heading {
         font-family: var(--font-display);
-        font-weight: 800;
+        font-weight: 600;
         letter-spacing: -0.03em;
-        line-height: 1.0;
+        line-height: 1.1;
     }
 
     .tabular {
@@ -189,31 +184,45 @@
 
     .page-frame {
         width: 100%;
-        max-width: 90rem;
+        max-width: 80rem;
         margin-inline: auto;
         padding-inline: var(--gutter);
     }
 
-    /* The monument settles on first paint (transform only). */
-    @media (prefers-reduced-motion: no-preference) {
-        .poster-tighten {
-            animation: poster-settle 900ms cubic-bezier(0.16, 1, 0.3, 1) both;
-        }
+    /* Liquid glass: a translucent pane with a lit top edge. Used only where something floats. */
+    .vidrio {
+        background: var(--vidrio);
+        -webkit-backdrop-filter: blur(24px) saturate(160%);
+        backdrop-filter: blur(24px) saturate(160%);
+        border: 1px solid var(--vidrio-borde);
+        box-shadow:
+            inset 0 1px 0 0 var(--vidrio-brillo),
+            0 24px 60px -24px rgb(0 0 0 / 0.6);
     }
-}
 
-@keyframes poster-settle {
-    from { transform: translateY(0.12em) scale(1.04); opacity: 0; }
-    to { transform: none; opacity: 1; }
+    /* Quiet surface for cards and panels. */
+    .superficie {
+        background: var(--fondo-2);
+        border: 1px solid var(--linea);
+    }
+
+    /* The one light in the room: a slow lilac glow behind the hero. */
+    .resplandor {
+        position: absolute;
+        pointer-events: none;
+        border-radius: 9999px;
+        background: radial-gradient(closest-side, rgb(201 184 255 / 0.22), rgb(201 184 255 / 0.07) 55%, transparent);
+        filter: blur(20px);
+    }
 }
 
 /* Spinner (loading states) */
 .spinner {
-    border: 3px solid var(--fondo-3);
+    border: 2px solid var(--fondo-3);
     border-left-color: var(--acento);
     border-radius: 50%;
-    width: 32px;
-    height: 32px;
+    width: 28px;
+    height: 28px;
     animation: spin 0.9s linear infinite;
 }
 
@@ -221,8 +230,88 @@
     to { transform: rotate(360deg); }
 }
 
-@media (prefers-reduced-motion: reduce) {
-    .spinner { animation-duration: 2.4s; }
+/* Motion. Transform, opacity and filter only; nothing travels with reduced motion. */
+@media (prefers-reduced-motion: no-preference) {
+    html.js [data-reveal] > * {
+        opacity: 0;
+        transform: translateY(28px);
+        filter: blur(6px);
+        transition:
+            opacity 900ms var(--ease-out),
+            transform 900ms var(--ease-out),
+            filter 900ms var(--ease-out);
+        transition-delay: calc(var(--i, 0) * 90ms);
+    }
+
+    html.js [data-reveal].is-in > * {
+        opacity: 1;
+        transform: none;
+        filter: none;
+    }
+
+    /* Hero headline: words rise out of a mask, one after another. */
+    .palabras > span {
+        display: inline-block;
+        overflow: hidden;
+        vertical-align: top;
+        padding-bottom: 0.08em;
+        margin-bottom: -0.08em;
+    }
+
+    .palabras > span > span {
+        display: inline-block;
+        animation: palabra 1100ms var(--ease-out) both;
+        animation-delay: calc(120ms + var(--i, 0) * 70ms);
+    }
+
+    .aparece {
+        animation: aparece 1000ms var(--ease-out) both;
+        animation-delay: var(--d, 0ms);
+    }
+
+    .resplandor-vivo {
+        animation: respira 14s ease-in-out infinite alternate;
+    }
+
+    /* Statement that lights up word by word as it crosses the screen. */
+    @supports (animation-timeline: view()) {
+        .ilumina > span {
+            animation: ilumina linear both;
+            animation-timeline: view();
+            animation-range: cover 18% cover 48%;
+        }
+
+        .deriva {
+            animation: deriva linear both;
+            animation-timeline: view();
+            animation-range: cover 0% cover 100%;
+        }
+    }
+}
+
+@keyframes palabra {
+    from { transform: translateY(105%); }
+    to { transform: none; }
+}
+
+@keyframes aparece {
+    from { opacity: 0; transform: translateY(16px); filter: blur(8px); }
+    to { opacity: 1; transform: none; filter: none; }
+}
+
+@keyframes respira {
+    from { transform: translate3d(-4%, -2%, 0) scale(1); opacity: 0.85; }
+    to { transform: translate3d(5%, 3%, 0) scale(1.12); opacity: 1; }
+}
+
+@keyframes ilumina {
+    from { opacity: 0.18; }
+    to { opacity: 1; }
+}
+
+@keyframes deriva {
+    from { transform: translateY(6%); }
+    to { transform: translateY(-6%); }
 }
 
 /* FullCalendar, themed from the palette */
@@ -253,7 +342,7 @@
 }
 
 .fc .fc-button {
-    border-radius: 0;
+    border-radius: 10px;
     box-shadow: none;
     font-weight: 600;
     font-size: 0.9375rem;
@@ -281,7 +370,7 @@
 .fc .fc-toolbar-title {
     color: var(--tinta);
     font-family: var(--font-display);
-    font-weight: 800;
+    font-weight: 600;
     letter-spacing: -0.03em;
     font-size: 1.25rem;
 }
@@ -292,7 +381,7 @@
 
 /* Bloques: "no disponible" en la luz acento; "disponible" marcado, contorno y texto ok. */
 .fc .fc-event {
-    border-radius: 0;
+    border-radius: 10px;
     box-shadow: none;
     font-weight: 600;
 }
@@ -342,57 +431,40 @@
     text-decoration: none;
 }
 
-/* The cartel reprints when the date or the group changes (transform and opacity only). */
+
+/* Form fields share one soft shape wherever they are written by hand. */
+@layer base {
+    input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+    select,
+    textarea {
+        border-radius: 12px;
+    }
+}
+
+@keyframes progreso {
+    from { transform: scaleX(0); }
+    to { transform: scaleX(1); }
+}
+
+/* Sound waves: the hero's moving picture. */
 @media (prefers-reduced-motion: no-preference) {
-    .cartel-swap {
-        animation: cartel-swap 520ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    .onda {
+        stroke-dasharray: 340 60;
+        animation: onda-fluye 18s linear infinite;
+        animation-delay: calc(var(--n, 0) * -0.9s);
+    }
+
+    .ondas {
+        animation: ondas-mece 16s ease-in-out infinite alternate;
+        transform-origin: 50% 50%;
     }
 }
 
-@keyframes cartel-swap {
-    from { opacity: 0; transform: translateY(0.4em); }
-    to { opacity: 1; transform: none; }
+@keyframes onda-fluye {
+    to { stroke-dashoffset: -800; }
 }
 
-/* Motion layer (transform and opacity only; nothing moves with reduced motion). */
-@media (prefers-reduced-motion: no-preference) {
-    html.js [data-reveal] > * {
-        opacity: 0;
-        transform: translateY(24px);
-        transition: opacity 700ms cubic-bezier(0.16, 1, 0.3, 1), transform 700ms cubic-bezier(0.16, 1, 0.3, 1);
-        transition-delay: calc(var(--i, 0) * 80ms);
-    }
-
-    html.js [data-reveal].is-in > * {
-        opacity: 1;
-        transform: none;
-    }
-
-    /* Papel picado moved by a draught: each flag sways from its string. */
-    .papel-sway .bandera {
-        transform-box: fill-box;
-        transform-origin: 50% 0;
-        animation: papel-sway 5.5s ease-in-out infinite alternate;
-        animation-delay: calc(var(--n, 0) * -0.7s);
-    }
-
-    /* Signature move: the cartel's name settles back a few percent as the first screen leaves. */
-    @supports (animation-timeline: view()) {
-        .monument-scroll {
-            transform-origin: 50% 100%;
-            animation: monument-out linear both;
-            animation-timeline: view();
-            animation-range: exit 0% exit 100%;
-        }
-    }
-}
-
-@keyframes papel-sway {
-    from { transform: rotate(-2.2deg); }
-    to { transform: rotate(2.2deg); }
-}
-
-@keyframes monument-out {
-    from { transform: none; }
-    to { transform: scale(0.93) translateY(-2%); }
+@keyframes ondas-mece {
+    from { transform: translateY(-1.5%) scaleY(0.94); }
+    to { transform: translateY(1.5%) scaleY(1.06); }
 }

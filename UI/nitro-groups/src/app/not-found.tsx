@@ -8,7 +8,7 @@ export default function NotFound() {
             <p className="mt-6 text-lg text-tinta max-w-[52ch]">
                 Puede que el grupo haya cambiado su dirección o que el enlace esté incompleto. Búscalo por su nombre o su música.
             </p>
-            <Link href={ROUTES.GROUPS.SEARCH} className="mt-10 inline-flex h-14 items-center px-7 bg-acento text-fondo font-semibold no-underline hover:bg-acento-press transition-colors">
+            <Link href={ROUTES.GROUPS.SEARCH} className="mt-10 inline-flex h-14 items-center px-7 bg-acento text-acento-ink rounded-full font-semibold no-underline hover:bg-acento-press transition-colors">
                 Explorar grupos
             </Link>
         </section>
