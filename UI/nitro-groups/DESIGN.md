@@ -1,71 +1,63 @@
-# NitroGroups: "Cartel de baile"
+# NitroGroups: "Noche"
 
-The page is a Mexican dance poster. The name of the group that has your date free runs from margin to
-margin, as big as the ink allows; the date and the place sit next to it; the price is in plain sight.
-Built with the taste-skill direction `name-as-monument` (seed 1020026138), chosen by the owner from
-three dealt directions.
-
-**The idea:** on this page, the dance poster (the group's name huge, the date and the place) becomes the
-monument: you pick the day of your party and the poster reprints itself with a group that has that day
-free. It is the real search, not an animation (`src/features/cartel/Cartel.tsx`).
+Sober, dark and calm, in the spirit of Apple's product pages and corva.ai: a lot of space, quiet type,
+one accent, glass only where something floats, and motion that eases in rather than jumps. It
+replaces the "Cartel de baile" direction at the owner's request ("minimalista, profesional, sobrio,
+elegante, tipo Apple, liquid glass solo si logra armonía").
 
 ## Colour
 
-Lilac paper, purple ink. The lilac is the fluorescent paper of a dance poster and the colour of a
-XV años invitation. The house rule against violet is lifted on purpose: the brand asked for lilac and
-purple (inspector run with `--allow palette-purple`).
+A near-black ground with a faint violet cast, warm white ink, one lilac accent (the brand colour,
+kept as an accent only).
 
 | Token | Value | Role |
 | --- | --- | --- |
-| `fondo` | `#D6BEFF` | Ground: papel lila |
-| `fondo-2` | `#C8A9FB` | One tone step: fields, inputs, panels |
-| `fondo-3` | `#B591F4` | Second step: pressed, hover |
-| `tinta` | `#1D0736` | Ink: all running text (11:1 on `fondo`) |
-| `tinta-2` | `#4A2C72` | Secondary notes only (6.7:1 on `fondo`) |
-| `acento` | `#4B12B8` | Morado de imprenta: the primary action, one per screen |
-| `error` / `ok` | `#860A31` / `#0A4A29` | States |
-
-Two sheets change the tokens for a whole area, so every component recolours itself:
-
-- `.campo-tinta`: ink becomes the ground (the closing call, the footer, one "how it works" panel).
-- `.hoja-clara`: the same inks on a paler sheet (`#F3ECFF`) for the screens people work in: panels,
-  request threads, onboarding.
-
-Tailwind reads the tokens with `@theme inline`, so a sheet that redefines `--fondo` also changes
-`bg-fondo`, `text-tinta` and the rest inside it.
+| `fondo` | `#0A090E` | Ground |
+| `fondo-2` | `#131119` | Raised surfaces: cards, panels, inputs |
+| `fondo-3` | `#1D1A25` | Pressed, chips, photo fallback |
+| `tinta` | `#F4F2F7` | Ink: all running text |
+| `tinta-2` | `#A39DAF` | Secondary text |
+| `acento` | `#C9B8FF` | Lilac: the primary action, links on hover, focus ring |
+| `acento-ink` | `#120B24` | Text on the accent |
+| `linea` | `rgb(255 255 255 / 0.08)` | Hairline edges of surfaces |
+| `error` / `ok` | `#FF8F8F` / `#8FDCB2` | States |
 
 ## Type
 
-- **Unbounded 800**, uppercase, tracking -0.04em, leading 0.86–0.92: the poster voice (`.type-poster`)
-  and headings (`.type-heading`, sentence case, -0.03em).
-- **Onest 400/500/600**: everything people read. Body 17–19px, leading 1.5.
-- The monument (`Monument`) is real text fitted to the width of its container: one line up to about 12
-  characters, two balanced lines beyond. Group names, the verbs and the footer wordmark use it.
+Inter for reading, Inter Tight for headings (`.type-poster`, `.type-heading`): weight 600, tracking
+-0.03 to -0.038em. Body 17px, secondary 16px, labels 13px. Headlines are big but never heavy.
 
-## Pictures
+## Glass
 
-Real photographs of each group come from its own gallery. Until a group has photos, it shows a flag of
-papel picado drawn in code (`PapelPicado`): never a stock photo pretending to be the group. Archival
-pictures of the world around the groups (open collections, credited) are pending: the environment's
-network blocks those sources for now.
+`.vidrio`: translucent `rgb(28 25 37 / 0.55)`, `blur(24px) saturate(160%)`, a 1px light edge and a lit
+top edge. Used only where something floats over content: the sticky navigation, the hero search, the
+floating "free this Saturday" card and the step panel. Never on content blocks.
 
-## Rules
+## Shapes
 
-- Headlines two lines or fewer at every width. No eyebrows above headings, no monospace, no index
-  numbers, no hairlines, no gradients, no shadows at rest, no glass.
-- Surfaces are separated by a step in tone, never by a line.
-- Square corners everywhere; buttons are flat rectangles, 56px tall for the primary action.
-- Running text is in the full ink; `tinta-2` is for secondary notes.
-- Working screens (`.hoja-clara`) keep headings at 32–48px and put colour on data, not chrome.
+Pill buttons (`rounded-full`), 12px fields, 16–28px cards and panels with a `linea` edge. No shadows
+except under glass.
 
 ## Motion
 
-Transform and opacity only, and nothing travels under `prefers-reduced-motion`.
+Transform, opacity and filter only; nothing travels with `prefers-reduced-motion`.
 
-- The signature move: the poster's name settles back a few percent as the first screen leaves
-  (`.monument-scroll`, a scroll-driven animation with a static fallback).
-- The poster reprints with a short rise when the date or the group changes (`.cartel-swap`).
-- Sections enter part by part (`data-reveal`, staggered 80ms). Content is only hidden once the script
-  has run, so it never stays invisible.
-- Papel picado sways from its string (`.papel-sway`).
-- Every control answers press, hover and focus.
+- Hero headline: each word rises out of its own mask, 70ms apart (`.palabras`).
+- Hero visual: sound waves drawn in code, flowing slowly (`Ondas`, `.onda`), with a breathing lilac
+  glow (`.resplandor-vivo`).
+- Sections enter part by part with a soft blur-to-sharp rise (`data-reveal`, 90ms stagger).
+- One statement lights up word by word as it crosses the screen (`.ilumina`, scroll-driven).
+- "How it works" advances on its own every 6.5s with a progress line, pauses on hover or focus, and
+  never advances with reduced motion (`Pasos`).
+- Cards lift 4px on hover; buttons press to 98%.
+
+## Pictures
+
+Each group's own photos come from its gallery. Without photos a group shows its initials on a quiet
+surface with a faint lilac light: never a stock photo pretending to be the group. Archival pictures
+from open collections are pending: Wikimedia answers this environment with HTTP 429.
+
+## Inspector exceptions
+
+`inspect.mjs` runs with `--allow palette-purple,glass,gradient,shadow,hairline,outlined-box`: the owner
+asked for this look (lilac brand, liquid glass, Corva-style edges). Every other house rule holds.

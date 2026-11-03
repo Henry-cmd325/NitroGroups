@@ -108,7 +108,7 @@ export function RequestForm({ groupId, groupName, minimumHours, defaultDate }: R
                     rows={5}
                     aria-describedby={`${id}-mensaje-ayuda`}
                     placeholder="Es nuestra boda, queremos mariachi a la salida de la iglesia y una hora en la recepción."
-                    className="w-full bg-fondo-2 px-4 py-3 text-tinta placeholder:text-tinta-2/70 outline-none focus-visible:outline-2 focus-visible:outline-acento focus-visible:-outline-offset-2 resize-y leading-relaxed"
+                    className="w-full bg-fondo-2 rounded-2xl px-4 py-3 text-tinta placeholder:text-tinta-2/70 outline-none focus-visible:outline-2 focus-visible:outline-acento focus-visible:-outline-offset-2 resize-y leading-relaxed"
                 />
                 <p id={`${id}-mensaje-ayuda`} className="mt-2 text-sm text-tinta-2 tabular">
                     {tooShort ? `Al menos ${MESSAGE_MIN} caracteres.` : `${message.length} de ${MESSAGE_MAX}`}

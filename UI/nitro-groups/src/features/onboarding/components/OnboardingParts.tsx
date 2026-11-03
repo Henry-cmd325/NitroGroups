@@ -45,7 +45,7 @@ export function OnboardingFrame({
                 aria-label="Qué sigue"
                 className="md:col-span-4 md:col-start-9 md:pt-40"
             >
-                <div className="text-tinta-2 space-y-3 max-md:bg-fondo-2 max-md:p-5 md:text-[clamp(1.2rem,1.7vw,1.5rem)] md:leading-snug md:max-w-[26ch]">
+                <div className="text-tinta-2 space-y-3 max-md:bg-fondo-2 rounded-2xl max-md:p-5 md:text-[clamp(1.2rem,1.7vw,1.5rem)] md:leading-snug md:max-w-[26ch]">
                     {aside}
                 </div>
             </aside>
@@ -114,7 +114,7 @@ export function TextareaField({
                 maxLength={max}
                 placeholder={placeholder}
                 aria-describedby={hint ? `${id}-limit ${id}-hint` : `${id}-limit`}
-                className="block w-full bg-fondo-2 px-4 py-3 text-base text-tinta placeholder:text-tinta-2/70 resize-y outline-none focus-visible:outline-2 focus-visible:outline-acento focus-visible:-outline-offset-2"
+                className="block w-full bg-fondo-2 rounded-2xl px-4 py-3 text-base text-tinta placeholder:text-tinta-2/70 resize-y outline-none focus-visible:outline-2 focus-visible:outline-acento focus-visible:-outline-offset-2"
             />
             {hint && <p id={`${id}-hint`} className="text-sm text-tinta-2">{hint}</p>}
         </div>
@@ -181,7 +181,7 @@ export function SwitchField({
 }) {
     const id = useId();
     return (
-        <div className="flex items-start justify-between gap-6 bg-fondo-2 p-5">
+        <div className="flex items-start justify-between gap-6 bg-fondo-2 rounded-2xl p-5">
             <div className="space-y-1">
                 <p id={`${id}-label`} className="font-semibold">{label}</p>
                 <p id={`${id}-desc`} className="text-sm text-tinta-2">{description}</p>
@@ -286,7 +286,7 @@ export function ChoiceGroup<V extends string>({
 /** Resumen antes de crear: pares etiqueta/valor sobre un escalón de tono. */
 export function ReviewList({ items }: { items: { label: string; value: ReactNode }[] }) {
     return (
-        <dl className="bg-fondo-2 p-5 md:p-6 grid gap-4 sm:grid-cols-[minmax(10rem,auto)_1fr] sm:gap-x-8">
+        <dl className="bg-fondo-2 rounded-2xl p-5 md:p-6 grid gap-4 sm:grid-cols-[minmax(10rem,auto)_1fr] sm:gap-x-8">
             {items.map((item) => (
                 <div key={item.label} className="contents">
                     <dt className="text-sm text-tinta-2 sm:pt-0.5">{item.label}</dt>
@@ -301,7 +301,7 @@ export function ReviewList({ items }: { items: { label: string; value: ReactNode
 export function FormError({ message }: { message: string }) {
     if (!message) return null;
     return (
-        <p role="alert" className="bg-fondo-2 px-5 py-4 text-error">
+        <p role="alert" className="bg-fondo-2 rounded-2xl px-5 py-4 text-error">
             {message}
         </p>
     );

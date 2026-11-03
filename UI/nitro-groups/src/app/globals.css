@@ -166,8 +166,8 @@
     .type-poster {
         font-family: var(--font-display);
         font-weight: 600;
-        letter-spacing: -0.045em;
-        line-height: 1.0;
+        letter-spacing: -0.038em;
+        line-height: 1.02;
         text-wrap: balance;
     }
 

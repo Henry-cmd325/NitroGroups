@@ -82,7 +82,7 @@ export default function GroupProfileView({ group, isPublic, toggleEdit }: GroupP
         </div>
       )}
 
-      <dl className="mt-8 grid grid-cols-2 gap-x-8 gap-y-5 bg-fondo-2 px-5 py-5 sm:grid-cols-3 md:px-6 xl:grid-cols-6">
+      <dl className="mt-8 grid grid-cols-2 gap-x-8 gap-y-5 bg-fondo-2 rounded-2xl px-5 py-5 sm:grid-cols-3 md:px-6 xl:grid-cols-6">
         {facts.map((fact) => (
           <div key={fact.label} className="min-w-0">
             <dt className="text-sm text-tinta-2">{fact.label}</dt>
@@ -94,7 +94,7 @@ export default function GroupProfileView({ group, isPublic, toggleEdit }: GroupP
       </dl>
 
       {gaps.length > 0 && (
-        <div className="mt-0.5 flex flex-col gap-3 bg-fondo-2 px-5 py-4 sm:flex-row sm:items-center sm:justify-between md:px-6">
+        <div className="mt-0.5 flex flex-col gap-3 bg-fondo-2 rounded-2xl px-5 py-4 sm:flex-row sm:items-center sm:justify-between md:px-6">
           <p className="text-tinta">
             <span className="text-tinta-2">A tu perfil le falta </span>
             {joinSpanish(gaps)}.
