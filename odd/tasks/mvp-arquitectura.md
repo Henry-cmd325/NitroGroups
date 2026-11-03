@@ -82,3 +82,23 @@ Rama de trabajo: `claude/practical-keller-qzzaaq` (a partir de `develop`).
 - RDD sobre `ffab884` (T11a, candidato acotado para no exceder el contexto del revisor): riesgo alto, revisar → **APROBADA** (acknowledged). Corregido: Escape cierra con el mismo reseteo que Cancelar; calificación nula y medios sin tipo no rompen la cabecera (test); el aviso de error del calendario refleja solo el último cambio; `BUSY_ID_PREFIX` documentado; advertencias con `role="alert"`. Quedan como sugerencias: tests de componente para las pestañas y unificar el estilo de campos de la galería con `fieldClass`.
 - 2026-11-03: el usuario pide recomendaciones profesionales para las decisiones pendientes y las aprueba ("adelante"): (1) un grupo inactivo no recibe solicitudes aunque "acepte reservas" (409); (2) en rechazadas o canceladas no se escribe (409, "envía una nueva solicitud") y la UI ofrece "Pedir otra fecha"; en aceptadas sí; (3) la autosolicitud se mantiene permitida pero se marca `IsSelfBooked`, viaja en el evento de cambio de estado para que las métricas públicas la excluyan, y el grupo la ve como "Cargada por el grupo".
 - Implementación: `GroupSummary.IsActive` (default true), validación en la creación, regla en el dominio `PostMessage`, columna `is_self_booked` (migración `EventRequestSelfBooked`). Tests RED → GREEN: 4 nuevos de backend (inactivo, autosolicitud, mensaje en rechazada y en cancelada) más 2 que fijan el comportamiento conservado; 1 de UI (`requestAgain`). Verificación: integración 122/122 con Postgres, endpoints 108/108, vitest 60/60.
+
+### L-PRs (2026-11-03): entrega en PRs encadenadas
+Estrategia elegida por el usuario: "Stacked a develop (Recomendado)", "En tu fork (Recomendado)". 12 PRs en lagunes-dev/NitroGroupsFork, cada una con base en la rama anterior; se mergean en orden.
+
+| PR | Rama | Commits | Líneas |
+|---|---|---|---|
+| #1 | stack/01-limpieza | c9294fd | 24,349 (borrados) |
+| #2 | stack/02-persistencia-modulos | 4176b40..f5487fc | 3,328 |
+| #3 | stack/03-roles | 1eb515e..3848537 | 1,063 |
+| #4 | stack/04-seguridad-base | 7f9b2c2 | 816 |
+| #5 | stack/05-seguridad-review | a92293f..7065a3b | 300 |
+| #6 | stack/06-busqueda-api | 8eb3520..68e5ee3 | 1,244 |
+| #7 | stack/07-diseno-portada | 0a6790c..fd5430b | 4,035 |
+| #8 | stack/08-perfil-login-ci | e12469b..942b108 | 710 |
+| #9 | stack/09-solicitudes-api | 30f1cc4 | 3,286 |
+| #10 | stack/10-solicitudes-ui | e1c3949..acf0c15 | 1,312 |
+| #11 | stack/11-onboarding | bd14387..6fc0658 | 2,198 |
+| #12 | stack/12-panel-reglas | ffab884..fb399da | 2,645 |
+
+11 de 12 superan 400 líneas: se pide `size:exception` en cada PR con su motivo (migraciones generadas, módulo nuevo completo, reescritura de pantallas). Pendiente: T6 (rutas de schedules).

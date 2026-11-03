@@ -112,6 +112,14 @@
       "sessions": 0,
       "memories": 1,
       "prompts": 0
+    },
+    {
+      "id": "bdc7fb55",
+      "created_by": "vm",
+      "created_at": "2026-11-03T10:14:14Z",
+      "sessions": 0,
+      "memories": 1,
+      "prompts": 0
     }
   ]
 }
