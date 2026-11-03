@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { resolveBackendApiBaseUrl } from "@/lib/backendBaseUrl";
+import { getSessionSecret } from "@/lib/sessionSecret";
 
 interface LoginRequest {
     email: string;
@@ -164,9 +165,7 @@ export async function POST(request: NextRequest) {
 
         // Encrypt and set session cookie
         const { SignJWT } = await import("jose");
-        const secret = new TextEncoder().encode(
-            process.env.AUTH0_SECRET || "default-secret-change-me"
-        );
+        const secret = getSessionSecret();
 
         const jwt = await new SignJWT({ session: sessionData })
             .setProtectedHeader({ alg: "HS256" })

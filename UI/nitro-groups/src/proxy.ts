@@ -1,6 +1,7 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import { jwtVerify } from "jose";
+import { getSessionSecret } from "./lib/sessionSecret";
 
 // Backend API routes that should be proxied directly (via next.config.ts rewrites)
 const BACKEND_API_PREFIXES = [
@@ -30,9 +31,7 @@ export async function proxy(request: NextRequest) {
         return NextResponse.json(null, { status: 401 });
       }
 
-      const secret = new TextEncoder().encode(
-        process.env.AUTH0_SECRET || "default-secret-change-me"
-      );
+      const secret = getSessionSecret();
 
       const { payload } = await jwtVerify(sessionCookie.value, secret);
       const session = (payload as { session: { user: Record<string, unknown> } }).session;
