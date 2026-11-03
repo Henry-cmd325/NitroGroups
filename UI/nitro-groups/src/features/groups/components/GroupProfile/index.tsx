@@ -107,7 +107,9 @@ export default function GroupProfile({ mode = "private", slug, initialGroup }: G
   // Sincroniza el formulario cuando cambia la fuente (props o query) ajustando el estado
   // durante el render, sin un efecto que dispare renders en cascada.
   const source = initialGroup ?? groupQuery.data;
-  const [syncedSource, setSyncedSource] = useState(source);
+  // Arranca con initialGroup (el estado inicial ya lo usa); si en el primer render la
+  // fuente es la caché de React Query, la condición de abajo sincroniza el formulario.
+  const [syncedSource, setSyncedSource] = useState<MusicGroup | undefined>(initialGroup);
   if (source && source !== syncedSource) {
     setSyncedSource(source);
     setGroup(source);

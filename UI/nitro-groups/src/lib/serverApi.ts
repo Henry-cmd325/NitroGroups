@@ -17,3 +17,16 @@ export async function serverGet<T>(path: string, revalidateSeconds = 60): Promis
         return null;
     }
 }
+
+export type ServerResult<T> = { ok: true; data: T } | { ok: false; status: number };
+
+/** Como serverGet, pero conserva el estado: 404 no es lo mismo que una API caída (status 0). */
+export async function serverGetResult<T>(path: string, revalidateSeconds = 60): Promise<ServerResult<T>> {
+    try {
+        const response = await fetch(`${resolveBackendApiBaseUrl()}${path}`, { next: { revalidate: revalidateSeconds } });
+        if (!response.ok) return { ok: false, status: response.status };
+        return { ok: true, data: (await response.json()) as T };
+    } catch {
+        return { ok: false, status: 0 };
+    }
+}

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import type { MusicGroup } from "@/features/groups/types/MusicGroup";
 import { PublicGroupProfile } from "@/features/groups/components/PublicGroupProfile";
-import { serverGet } from "@/lib/serverApi";
+import { serverGetResult } from "@/lib/serverApi";
 import { isIsoDate } from "@/lib/format";
 
 type Props = {
@@ -10,8 +10,12 @@ type Props = {
     searchParams: Promise<{ fecha?: string }>;
 };
 
-async function loadGroup(slug: string) {
-    return serverGet<MusicGroup>(`/groups/slug/${encodeURIComponent(slug)}`, 60);
+/** null solo si el grupo no existe; una caída de la API lanza (página de error, no 404). */
+async function loadGroup(slug: string): Promise<MusicGroup | null> {
+    const result = await serverGetResult<MusicGroup>(`/groups/slug/${encodeURIComponent(slug)}`, 60);
+    if (result.ok) return result.data;
+    if (result.status === 404) return null;
+    throw new Error(`No se pudo cargar el grupo (estado ${result.status}).`);
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {

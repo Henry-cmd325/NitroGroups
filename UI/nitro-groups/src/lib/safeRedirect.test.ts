@@ -7,6 +7,9 @@ describe("safeReturnTo", () => {
         ["//evil.example/x", "/dashboard"],
         ["/\\evil.example", "/dashboard"],
         ["javascript:alert(1)", "/dashboard"],
+        ["/.//evil.example/x", "/dashboard"],        // la normalización de ./ dejaría //evil.example
+        ["/x/..//evil.example", "/dashboard"],
+        ["/%2e//evil.example", "/dashboard"],
         [null, "/dashboard"],
         ["/groups/vargas?fecha=2026-12-12#solicitar", "/groups/vargas?fecha=2026-12-12#solicitar"],
     ])("%s → %s", (input, expected) => {
