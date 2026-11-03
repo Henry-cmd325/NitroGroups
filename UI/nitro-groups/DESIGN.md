@@ -24,32 +24,38 @@ kept as an accent only).
 
 ## Type
 
-Inter for reading, Inter Tight for headings (`.type-poster`, `.type-heading`): weight 600, tracking
--0.03 to -0.038em. Body 17px, secondary 16px, labels 13px. Headlines are big but never heavy.
+Poppins 700 for titles, Inter for everything people read (as on the owner's reference, corva.ai).
+Every page and section title uses one size, `.titulo` (44px on desktop, 30px on a phone), open
+tracking and leading 1.25. Body 18px, secondary 16px, labels 13px.
+
+## Alignment
+
+Two axes only: the page margin (left-aligned blocks such as the hero) and one centred column
+(`.columna`, 58rem) shared by every centred heading, intro and list.
 
 ## Glass
 
-`.vidrio`: translucent `rgb(28 25 37 / 0.55)`, `blur(24px) saturate(160%)`, a 1px light edge and a lit
-top edge. Used only where something floats over content: the sticky navigation, the hero search, the
+`.vidrio`: a 135° wash from `rgb(36 32 47 / 0.86)` to `rgb(20 18 26 / 0.72)`, `blur(12px)`, a 1px edge
+at 5% white, a soft deep shadow and a faint lit top edge. Used only where something floats over content: the sticky navigation, the hero search, the
 floating "free this Saturday" card and the step panel. Never on content blocks.
 
 ## Shapes
 
-Pill buttons (`rounded-full`), 12px fields, 16–28px cards and panels with a `linea` edge. No shadows
-except under glass.
+Buttons are 8px rectangles in Poppins 600 at 14px. Fields 8px. Cards and panels (`.superficie`) 12px,
+a solid `fondo-2` step with a 2px edge just lighter than it (`#221F2C`); on hover only the edge brightens.
+No shadows except under glass.
 
 ## Motion
 
-Transform, opacity and filter only; nothing travels with `prefers-reduced-motion`.
+Calm and short, transform and opacity only; nothing travels with `prefers-reduced-motion`.
 
-- Hero headline: each word rises out of its own mask, 70ms apart (`.palabras`).
-- Hero visual: sound waves drawn in code, flowing slowly (`Ondas`, `.onda`), with a breathing lilac
-  glow (`.resplandor-vivo`).
-- Sections enter part by part with a soft blur-to-sharp rise (`data-reveal`, 90ms stagger).
-- One statement lights up word by word as it crosses the screen (`.ilumina`, scroll-driven).
-- "How it works" advances on its own every 6.5s with a progress line, pauses on hover or focus, and
-  never advances with reduced motion (`Pasos`).
-- Cards lift 4px on hover; buttons press to 98%.
+- Sections and the hero rise 20–24px and fade in over 1s, ease-out, parts 100ms apart (`data-reveal`,
+  `.aparece`). No blur.
+- Controls answer in 0.3–0.5s with `cubic-bezier(0, 0, 0.2, 1)`: colour and edge changes, no jumps.
+- One moving picture: sound waves drawn in code flowing slowly behind the hero (`Ondas`) with a
+  breathing lilac glow.
+- "How it works" advances every 6.5s with a progress line, pauses on hover or focus, and never
+  advances with reduced motion (`Pasos`).
 
 ## Pictures
 

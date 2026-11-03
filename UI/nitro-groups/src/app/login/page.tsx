@@ -49,7 +49,7 @@ export default function LoginPage() {
             <div className="md:col-span-5 md:col-start-2 w-full max-w-md space-y-8">
                 {/* Header */}
                 <div className="space-y-3">
-                    <h1 className="type-poster text-[clamp(3.5rem,8vw,6rem)]">
+                    <h1 className="titulo">
                         Entrar
                     </h1>
                     <p className="text-muted-foreground">

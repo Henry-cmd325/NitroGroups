@@ -42,14 +42,14 @@ function prefersReducedMotion() {
 
 /** Lo que muestra cada paso: un fragmento de la app con datos de ejemplo. */
 function Panel({ step, groupName, price }: { step: number } & PasosProps) {
-    const row = "flex items-center justify-between rounded-xl bg-white/[0.03] px-4 py-3";
+    const row = "flex items-center justify-between rounded-lg bg-white/[0.03] px-4 py-3";
     switch (step) {
         case 0:
             return (
                 <div className="space-y-4">
                     <div className="flex gap-2">
                         {["vie 13", "sáb 14", "dom 15", "sáb 21"].map((d, i) => (
-                            <span key={d} className={`rounded-full px-3.5 py-1.5 text-sm ${i === 1 ? "bg-acento text-acento-ink" : "bg-white/[0.05] text-tinta-2"}`}>{d}</span>
+                            <span key={d} className={`rounded-md px-3 py-1.5 text-sm ${i === 1 ? "bg-acento text-acento-ink" : "bg-white/[0.05] text-tinta-2"}`}>{d}</span>
                         ))}
                     </div>
                     <div className="space-y-2">
@@ -66,7 +66,7 @@ function Panel({ step, groupName, price }: { step: number } & PasosProps) {
             return (
                 <div className="grid grid-cols-2 gap-2">
                     {[["Fecha", "sáb 14 de noviembre"], ["Horas", "3 horas"], ["Lugar", "Hacienda Santa Cruz"], ["Invitados", "180"], ["Evento", "Boda"], ["Presupuesto", "$20,000"]].map(([k, v]) => (
-                        <div key={k} className="rounded-xl bg-white/[0.03] px-4 py-3">
+                        <div key={k} className="rounded-lg bg-white/[0.03] px-4 py-3">
                             <p className="text-[0.8125rem] text-tinta-2">{k}</p>
                             <p className="mt-0.5">{v}</p>
                         </div>
@@ -76,11 +76,11 @@ function Panel({ step, groupName, price }: { step: number } & PasosProps) {
         case 2:
             return (
                 <div className="space-y-2.5">
-                    <p className="inline-flex items-center gap-1.5 rounded-full bg-[rgb(143_220_178/0.12)] px-3 py-1 text-sm text-ok">
+                    <p className="inline-flex items-center gap-1.5 rounded-md bg-[rgb(143_220_178/0.12)] px-3 py-1 text-sm text-ok">
                         <Check className="size-3.5" aria-hidden /> Aceptada
                     </p>
-                    <p className="max-w-[85%] rounded-2xl rounded-tl-md bg-white/[0.05] px-4 py-3">Es nuestra boda. ¿Pueden tocar a la salida de la iglesia?</p>
-                    <p className="ml-auto max-w-[85%] rounded-2xl rounded-tr-md bg-acento/15 px-4 py-3">Con gusto. Llegamos 45 minutos antes para montar.</p>
+                    <p className="max-w-[85%] rounded-lg bg-white/[0.05] px-4 py-3">Es nuestra boda. ¿Pueden tocar a la salida de la iglesia?</p>
+                    <p className="ml-auto max-w-[85%] rounded-lg bg-acento/15 px-4 py-3">Con gusto. Llegamos 45 minutos antes para montar.</p>
                 </div>
             );
         default:
@@ -129,7 +129,7 @@ export function Pasos({ groupName, price }: PasosProps) {
                 {STEPS.map((s, i) => {
                     const open = i === active;
                     return (
-                        <li key={s.title} className={`superficie rounded-2xl transition-colors duration-500 ${open ? "bg-fondo-3/60" : ""}`}>
+                        <li key={s.title} className={`superficie rounded-xl ${open ? "border-[#34304A]" : ""}`}>
                             <button
                                 type="button"
                                 id={`${id}-tab-${i}`}
@@ -138,7 +138,7 @@ export function Pasos({ groupName, price }: PasosProps) {
                                 onClick={() => setActive(i)}
                                 className="w-full text-left px-5 py-4"
                             >
-                                <span className={`block text-[1.0625rem] font-medium tracking-[-0.02em] transition-colors ${open ? "text-tinta" : "text-tinta-2 hover:text-tinta"}`}>{s.title}</span>
+                                <span className={`block font-[family-name:var(--font-display)] font-semibold text-[1.0625rem] transition-colors duration-300 ${open ? "text-tinta" : "text-tinta-2 hover:text-tinta"}`}>{s.title}</span>
                                 <span className={`grid transition-[grid-template-rows,opacity] duration-500 ease-[var(--ease-out)] ${open ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}>
                                     <span className="overflow-hidden">
                                         <span className="block pt-2 text-base text-tinta-2 max-w-[42ch]">{s.body}</span>
@@ -155,9 +155,9 @@ export function Pasos({ groupName, price }: PasosProps) {
                 })}
             </ul>
 
-            <div id={`${id}-panel`} aria-live="polite" className="relative overflow-hidden rounded-[28px] superficie min-h-[22rem] grid place-items-center p-6 md:p-10">
+            <div id={`${id}-panel`} aria-live="polite" className="relative overflow-hidden rounded-xl superficie min-h-[22rem] grid place-items-center p-6 md:p-10">
                 <div className="resplandor resplandor-vivo w-[70%] aspect-square -right-[10%] -top-[20%]" aria-hidden />
-                <div key={active} className="aparece relative w-full max-w-md vidrio rounded-3xl p-5">
+                <div key={active} className="aparece relative w-full max-w-md vidrio rounded-xl p-4">
                     <Panel step={active} groupName={groupName} price={price} />
                 </div>
             </div>

@@ -12,8 +12,8 @@ export default function ClientDashboardPage() {
     return (
         <div className="page-frame pt-12 md:pt-16">
             <div className="flex flex-wrap items-end justify-between gap-6">
-                <h1 className="type-heading text-[clamp(2rem,3.4vw,3rem)]">Mis solicitudes</h1>
-                <Link href={ROUTES.GROUPS.SEARCH} className="h-12 inline-flex items-center px-6 bg-acento text-acento-ink rounded-full font-semibold no-underline hover:bg-acento-press">
+                <h1 className="titulo">Mis solicitudes</h1>
+                <Link href={ROUTES.GROUPS.SEARCH} className="h-12 inline-flex items-center px-6 bg-acento text-acento-ink rounded-lg font-semibold no-underline hover:bg-acento-press">
                     Buscar otro grupo
                 </Link>
             </div>

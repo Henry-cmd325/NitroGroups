@@ -13,7 +13,7 @@ interface SearchFormProps {
     variant?: "plain" | "glass";
 }
 
-const plainField = "h-12 w-full rounded-xl bg-fondo-2 shadow-[inset_0_0_0_1px_var(--linea)] px-4 text-tinta placeholder:text-tinta-2/70 outline-none focus-visible:outline-2 focus-visible:outline-acento focus-visible:-outline-offset-2";
+const plainField = "h-12 w-full rounded-lg bg-fondo-2 shadow-[inset_0_0_0_1px_var(--linea)] px-4 text-tinta placeholder:text-tinta-2/70 outline-none focus-visible:outline-2 focus-visible:outline-acento focus-visible:-outline-offset-2";
 const plainLabel = "block text-sm font-medium text-tinta-2 mb-2";
 const glassField = "h-10 w-full rounded-xl bg-transparent px-0 text-tinta placeholder:text-tinta-2/80 outline-none";
 const glassLabel = "block text-[0.8125rem] font-medium text-tinta-2";
@@ -28,10 +28,10 @@ export function SearchForm({ genres, values = {}, showBudget = false, submitLabe
     const field = glass ? glassField : plainField;
     const label = glass ? glassLabel : plainLabel;
     // En vidrio cada campo es una celda que se ilumina al pasar o enfocar.
-    const cell = glass ? "rounded-2xl px-5 py-2.5 transition-colors hover:bg-white/[0.04] focus-within:bg-white/[0.06]" : "";
+    const cell = glass ? "rounded-xl px-5 py-2.5 transition-colors hover:bg-white/[0.04] focus-within:bg-white/[0.06]" : "";
 
     return (
-        <form action={ROUTES.GROUPS.SEARCH} method="get" role="search" aria-label="Buscar grupos" className={glass ? "w-full vidrio rounded-[28px] p-2" : "w-full"}>
+        <form action={ROUTES.GROUPS.SEARCH} method="get" role="search" aria-label="Buscar grupos" className={glass ? "w-full vidrio rounded-xl p-2" : "w-full"}>
             <div className={`grid ${glass ? "gap-1" : "gap-x-3 gap-y-4"} ${showBudget ? "md:grid-cols-[1.2fr_1fr_1fr_1fr_auto]" : "md:grid-cols-[1.2fr_1fr_1fr_auto]"} ${glass ? "items-center" : "items-end"}`}>
                 <div className={cell}>
                     <label htmlFor={`${id}-genero`} className={label}>Música</label>
@@ -59,7 +59,7 @@ export function SearchForm({ genres, values = {}, showBudget = false, submitLabe
                         </div>
                     </div>
                 )}
-                <button type="submit" className={`${glass ? "h-14 m-1" : "h-12"} px-7 bg-acento text-acento-ink rounded-full font-medium hover:bg-acento-press active:scale-[0.98] transition-[background-color,transform] whitespace-nowrap`}>
+                <button type="submit" className={`${glass ? "h-14 m-1" : "h-12"} px-7 bg-acento text-acento-ink rounded-lg font-[family-name:var(--font-display)] font-semibold text-sm hover:bg-acento-press active:scale-[0.98] transition-[background-color,transform] whitespace-nowrap`}>
                     {submitLabel}
                 </button>
             </div>

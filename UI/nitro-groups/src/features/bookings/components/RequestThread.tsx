@@ -62,7 +62,7 @@ export function RequestThread({ requestId, viewer }: { requestId: number; viewer
         <article className="grid md:grid-cols-12 gap-x-8 gap-y-12">
             <header className="md:col-span-12">
                 <p className={`text-sm ${actions.accept ? "text-acento font-semibold" : "text-tinta-2"}`}>{statusLabel(r.status, viewer)}</p>
-                <h1 className="mt-2 type-heading text-[clamp(2rem,3.4vw,3rem)]">
+                <h1 className="mt-2 titulo">
                     {viewer === "Client" ? (
                         <Link href={ROUTES.GROUPS.PUBLIC_PROFILE(r.groupSlug)} className="no-underline hover:text-acento">{title}</Link>
                     ) : title}
@@ -84,7 +84,7 @@ export function RequestThread({ requestId, viewer }: { requestId: number; viewer
 
             <section className="md:col-span-8 flex flex-col gap-8" aria-label="Conversación">
                 <ol className="flex flex-col gap-6">
-                    <li className="bg-fondo-2 rounded-2xl p-5">
+                    <li className="bg-fondo-2 rounded-xl p-5">
                         <p className="text-sm text-tinta-2 flex flex-wrap gap-x-3"><span>{r.clientName}</span><span className="tabular">{timeFmt.format(new Date(r.createdAt))}</span></p>
                         <p className="mt-2 whitespace-pre-line leading-relaxed">{r.message}</p>
                     </li>
@@ -95,7 +95,7 @@ export function RequestThread({ requestId, viewer }: { requestId: number; viewer
                         </li>
                     )}
                     {(r.messages ?? []).map((m) => (
-                        <li key={m.id} className={`p-5 ${m.senderParty === "Group" ? "bg-fondo-3 md:ml-12" : "bg-fondo-2 rounded-2xl md:mr-12"}`}>
+                        <li key={m.id} className={`p-5 ${m.senderParty === "Group" ? "bg-fondo-3 md:ml-12" : "bg-fondo-2 rounded-xl md:mr-12"}`}>
                             <p className="text-sm text-tinta-2 flex flex-wrap gap-x-3"><span>{m.senderName}</span><span className="tabular">{timeFmt.format(new Date(m.createdAt))}</span></p>
                             <p className="mt-2 whitespace-pre-line leading-relaxed">{m.body}</p>
                         </li>
@@ -106,17 +106,17 @@ export function RequestThread({ requestId, viewer }: { requestId: number; viewer
                     <form onSubmit={(e) => { e.preventDefault(); if (reply.trim()) send.mutate(); }} className="flex flex-col gap-3">
                         <label htmlFor="respuesta" className="text-sm font-medium text-tinta-2">Escribir un mensaje</label>
                         <textarea id="respuesta" value={reply} onChange={(e) => setReply(e.target.value)} rows={3} maxLength={2000}
-                            className="w-full bg-fondo-2 rounded-2xl px-4 py-3 text-tinta outline-none focus-visible:outline-2 focus-visible:outline-acento focus-visible:-outline-offset-2 resize-y" />
-                        <button type="submit" disabled={!reply.trim() || busy} className="self-start h-12 px-6 bg-fondo-3 text-tinta font-semibold hover:bg-fondo-2 rounded-2xl disabled:opacity-45">
+                            className="w-full bg-fondo-2 rounded-xl px-4 py-3 text-tinta outline-none focus-visible:outline-2 focus-visible:outline-acento focus-visible:-outline-offset-2 resize-y" />
+                        <button type="submit" disabled={!reply.trim() || busy} className="self-start h-12 px-6 bg-fondo-3 text-tinta font-semibold hover:bg-fondo-2 rounded-xl disabled:opacity-45">
                             {send.isPending ? "Enviando…" : "Enviar mensaje"}
                         </button>
                     </form>
                 )}
 
                 {actions.requestAgain && (
-                    <div className="bg-fondo-2 rounded-2xl p-5">
+                    <div className="bg-fondo-2 rounded-xl p-5">
                         <p className="text-tinta">Esta solicitud está cerrada. Si quieres otra fecha con {r.groupName}, envíale una solicitud nueva.</p>
-                        <Link href={`${ROUTES.GROUPS.PUBLIC_PROFILE(r.groupSlug)}#solicitar`} className="mt-4 inline-flex h-12 items-center px-6 bg-acento text-acento-ink rounded-full font-semibold no-underline hover:bg-acento-press">
+                        <Link href={`${ROUTES.GROUPS.PUBLIC_PROFILE(r.groupSlug)}#solicitar`} className="mt-4 inline-flex h-12 items-center px-6 bg-acento text-acento-ink rounded-lg font-semibold no-underline hover:bg-acento-press">
                             Pedir otra fecha
                         </Link>
                     </div>
@@ -127,12 +127,12 @@ export function RequestThread({ requestId, viewer }: { requestId: number; viewer
                 {(actions.accept || actions.decline || actions.cancel) && (
                     <div className="flex flex-wrap gap-3 pt-2">
                         {actions.accept && (
-                            <button type="button" disabled={busy} onClick={() => accept.mutate()} className="h-14 px-7 bg-acento text-acento-ink rounded-full font-semibold hover:bg-acento-press disabled:opacity-45">
+                            <button type="button" disabled={busy} onClick={() => accept.mutate()} className="h-14 px-7 bg-acento text-acento-ink rounded-lg font-semibold hover:bg-acento-press disabled:opacity-45">
                                 Aceptar la fecha
                             </button>
                         )}
                         {actions.decline && (
-                            <button type="button" disabled={busy} onClick={() => decline.mutate()} className="h-14 px-7 bg-fondo-2 rounded-2xl text-tinta font-semibold hover:bg-fondo-3 disabled:opacity-45">
+                            <button type="button" disabled={busy} onClick={() => decline.mutate()} className="h-14 px-7 bg-fondo-2 rounded-xl text-tinta font-semibold hover:bg-fondo-3 disabled:opacity-45">
                                 Rechazar
                             </button>
                         )}

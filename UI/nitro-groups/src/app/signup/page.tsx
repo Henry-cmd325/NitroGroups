@@ -287,7 +287,7 @@ export default function SignupPage() {
             <div className="md:col-span-7 w-full max-w-2xl space-y-10">
                 {/* Header */}
                 <div className="space-y-3">
-                    <h1 className="type-poster text-[clamp(3.25rem,8vw,6rem)]">
+                    <h1 className="titulo">
                         Crear cuenta
                     </h1>
                     <p className="text-muted-foreground">

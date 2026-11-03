@@ -1,22 +1,22 @@
 import type { Metadata } from "next";
-import { Inter, Inter_Tight } from "next/font/google";
+import { Inter, Poppins } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import Providers from "./providers";
 import Reveal from "@/components/layout/Reveal";
 
-// Inter para leer, Inter Tight para los títulos: sobria, de líneas limpias. Ver DESIGN.md.
+// Poppins para los títulos, Inter para leer (como en la referencia del cliente). Ver DESIGN.md.
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
   display: "swap",
 });
 
-const interTight = Inter_Tight({
-  variable: "--font-inter-tight",
+const poppins = Poppins({
+  variable: "--font-poppins",
   subsets: ["latin"],
-  weight: ["500", "600"],
+  weight: ["600", "700"],
   display: "swap",
 });
 
@@ -40,7 +40,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es" className={`${inter.variable} ${interTight.variable}`}>
+    <html lang="es" className={`${inter.variable} ${poppins.variable}`}>
       <body
         className="min-h-screen bg-background text-foreground antialiased"
       >

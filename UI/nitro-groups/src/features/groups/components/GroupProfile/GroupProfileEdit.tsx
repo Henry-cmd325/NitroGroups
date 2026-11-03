@@ -107,7 +107,7 @@ export default function GroupProfileEdit({
                       onClick={() => toggleGenre(genre.id)}
                       className={`inline-flex h-10 items-center gap-1.5 px-3.5 text-[0.95rem] font-medium transition-colors duration-150 ${
                         // Seleccionado en tinta invertida: el acento queda para la acción de guardar.
-                        isSelected ? "bg-tinta text-fondo hover:bg-tinta-2" : "bg-fondo-2 rounded-2xl text-tinta hover:bg-fondo-3"
+                        isSelected ? "bg-tinta text-fondo hover:bg-tinta-2" : "bg-fondo-2 rounded-xl text-tinta hover:bg-fondo-3"
                       }`}
                     >
                       {isSelected && <Check aria-hidden className="size-4" />}
@@ -190,7 +190,7 @@ export default function GroupProfileEdit({
           </Field>
 
           {/* Interruptor accesible: el estado se lee en el texto, no solo en el color. */}
-          <div className="flex items-start justify-between gap-6 bg-fondo-2 rounded-2xl px-4 py-4">
+          <div className="flex items-start justify-between gap-6 bg-fondo-2 rounded-xl px-4 py-4">
             <div>
               <p id={id("accepting-label")} className="font-medium text-tinta">Recibir solicitudes</p>
               <p id={id("accepting-hint")} className="mt-1 text-sm text-tinta-2">
@@ -219,7 +219,7 @@ export default function GroupProfileEdit({
 
       {/* Barra de acciones fija al pie: guardar siempre a la vista en formularios largos. */}
       <div className="sticky bottom-0 z-30 mt-14 -mx-[var(--gutter)] bg-fondo px-[var(--gutter)] pb-4 pt-3">
-        <div className="flex flex-col gap-3 bg-fondo-2 rounded-2xl p-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-col gap-3 bg-fondo-2 rounded-xl p-3 sm:flex-row sm:items-center sm:justify-between">
           <div aria-live="polite" className="min-w-0 sm:px-2">
             {saveError ? (
               <Alert variant="destructive" className="bg-transparent p-0">

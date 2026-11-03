@@ -19,7 +19,7 @@ export function GroupResult({ group, date, priority = false }: { group: GroupSea
                 className="aspect-[4/3] w-full"
             />
             <div className="flex flex-col justify-center gap-4 md:py-4">
-                <h3 className="type-poster text-[clamp(2.25rem,4.5vw,3.75rem)] text-tinta">
+                <h3 className="font-[family-name:var(--font-display)] font-semibold text-[1.5rem] leading-tight text-tinta">
                     <Link href={href} className="no-underline after:absolute after:inset-0 hover:text-acento transition-colors">
                         {group.groupName}
                     </Link>

@@ -7,7 +7,7 @@
  */
 :root {
     --fondo: #0A090E;
-    --fondo-2: #131119;
+    --fondo-2: #121018;
     --fondo-3: #1D1A25;
     --tinta: #F4F2F7;
     --tinta-2: #A39DAF;
@@ -20,14 +20,14 @@
     /* Edges and glass. */
     --linea: rgb(255 255 255 / 0.08);
     --linea-fuerte: rgb(255 255 255 / 0.14);
-    --vidrio: rgb(28 25 37 / 0.55);
-    --vidrio-borde: rgb(255 255 255 / 0.12);
-    --vidrio-brillo: rgb(255 255 255 / 0.18);
+    --vidrio-borde: rgb(255 255 255 / 0.05);
+    --vidrio-brillo: rgb(255 255 255 / 0.035);
+    --borde-tarjeta: #221F2C;
 
     --gutter: clamp(1.25rem, 4vw, 3rem);
     --section-gap: clamp(7rem, 14vw, 12rem);
-    --radius: 14px;
-    --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+    --radius: 12px;
+    --ease-out: cubic-bezier(0, 0, 0.2, 1);
 }
 
 /* Semantic aliases, re-resolved on every sheet. */
@@ -97,7 +97,7 @@
     --radius-2xl: 28px;
 
     --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, sans-serif;
-    --font-display: var(--font-inter-tight), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+    --font-display: var(--font-poppins), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
 }
 
 @layer base {
@@ -116,9 +116,8 @@
         @apply bg-background text-foreground;
         overflow-x: clip;
         font-family: var(--font-sans);
-        font-size: 1.0625rem;
-        line-height: 1.55;
-        letter-spacing: -0.011em;
+        font-size: 1.125rem;
+        line-height: 1.5;
         caret-color: var(--acento);
         -webkit-font-smoothing: antialiased;
         text-rendering: optimizeLegibility;
@@ -141,9 +140,9 @@
 
     h1, h2, h3, h4 {
         font-family: var(--font-display);
-        font-weight: 600;
-        letter-spacing: -0.03em;
-        line-height: 1.08;
+        font-weight: 700;
+        letter-spacing: 0;
+        line-height: 1.25;
         text-wrap: balance;
     }
 
@@ -162,20 +161,29 @@
 }
 
 @layer components {
-    /* Display voice: large, light-handed, tight. */
-    .type-poster {
+    /* One title voice: Poppins bold, open tracking, airy leading. One size for every section title. */
+    .type-poster,
+    .type-heading {
         font-family: var(--font-display);
-        font-weight: 600;
-        letter-spacing: -0.038em;
-        line-height: 1.02;
+        font-weight: 700;
+        letter-spacing: 0;
+        line-height: 1.25;
         text-wrap: balance;
     }
 
-    .type-heading {
+    .titulo {
         font-family: var(--font-display);
-        font-weight: 600;
-        letter-spacing: -0.03em;
-        line-height: 1.1;
+        font-weight: 700;
+        font-size: clamp(1.875rem, 3vw, 2.75rem);
+        line-height: 1.25;
+        text-wrap: balance;
+    }
+
+    /* The centred column every centred block shares (one of the page's two alignment axes). */
+    .columna {
+        max-width: 58rem;
+        margin-inline: auto;
+        text-align: center;
     }
 
     .tabular {
@@ -191,19 +199,20 @@
 
     /* Liquid glass: a translucent pane with a lit top edge. Used only where something floats. */
     .vidrio {
-        background: var(--vidrio);
-        -webkit-backdrop-filter: blur(24px) saturate(160%);
-        backdrop-filter: blur(24px) saturate(160%);
+        background: linear-gradient(135deg, rgb(36 32 47 / 0.86), rgb(20 18 26 / 0.72));
+        -webkit-backdrop-filter: blur(12px);
+        backdrop-filter: blur(12px);
         border: 1px solid var(--vidrio-borde);
         box-shadow:
-            inset 0 1px 0 0 var(--vidrio-brillo),
-            0 24px 60px -24px rgb(0 0 0 / 0.6);
+            0 16px 40px 0 rgb(0 0 0 / 0.35),
+            inset 0 1px 0 0 var(--vidrio-brillo);
     }
 
-    /* Quiet surface for cards and panels. */
+    /* Sober card: a solid step above the ground with a 2px edge just lighter than it. No shadow. */
     .superficie {
         background: var(--fondo-2);
-        border: 1px solid var(--linea);
+        border: 2px solid var(--borde-tarjeta);
+        transition: border-color 0.5s var(--ease-out);
     }
 
     /* The one light in the room: a slow lilac glow behind the hero. */
@@ -230,215 +239,38 @@
     to { transform: rotate(360deg); }
 }
 
-/* Motion. Transform, opacity and filter only; nothing travels with reduced motion. */
+/* Motion. Transform and opacity only; nothing travels with reduced motion. */
 @media (prefers-reduced-motion: no-preference) {
     html.js [data-reveal] > * {
         opacity: 0;
-        transform: translateY(28px);
-        filter: blur(6px);
-        transition:
-            opacity 900ms var(--ease-out),
-            transform 900ms var(--ease-out),
-            filter 900ms var(--ease-out);
-        transition-delay: calc(var(--i, 0) * 90ms);
+        transform: translateY(24px);
+        transition: opacity 1s ease-out, transform 1s ease-out;
+        transition-delay: calc(var(--i, 0) * 100ms);
     }
 
     html.js [data-reveal].is-in > * {
         opacity: 1;
         transform: none;
-        filter: none;
-    }
-
-    /* Hero headline: words rise out of a mask, one after another. */
-    .palabras > span {
-        display: inline-block;
-        overflow: hidden;
-        vertical-align: top;
-        padding-bottom: 0.08em;
-        margin-bottom: -0.08em;
-    }
-
-    .palabras > span > span {
-        display: inline-block;
-        animation: palabra 1100ms var(--ease-out) both;
-        animation-delay: calc(120ms + var(--i, 0) * 70ms);
     }
 
     .aparece {
-        animation: aparece 1000ms var(--ease-out) both;
+        animation: aparece 1s ease-out both;
         animation-delay: var(--d, 0ms);
     }
 
     .resplandor-vivo {
         animation: respira 14s ease-in-out infinite alternate;
     }
-
-    /* Statement that lights up word by word as it crosses the screen. */
-    @supports (animation-timeline: view()) {
-        .ilumina > span {
-            animation: ilumina linear both;
-            animation-timeline: view();
-            animation-range: cover 18% cover 48%;
-        }
-
-        .deriva {
-            animation: deriva linear both;
-            animation-timeline: view();
-            animation-range: cover 0% cover 100%;
-        }
-    }
-}
-
-@keyframes palabra {
-    from { transform: translateY(105%); }
-    to { transform: none; }
 }
 
 @keyframes aparece {
-    from { opacity: 0; transform: translateY(16px); filter: blur(8px); }
-    to { opacity: 1; transform: none; filter: none; }
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: none; }
 }
 
 @keyframes respira {
     from { transform: translate3d(-4%, -2%, 0) scale(1); opacity: 0.85; }
     to { transform: translate3d(5%, 3%, 0) scale(1.12); opacity: 1; }
-}
-
-@keyframes ilumina {
-    from { opacity: 0.18; }
-    to { opacity: 1; }
-}
-
-@keyframes deriva {
-    from { transform: translateY(6%); }
-    to { transform: translateY(-6%); }
-}
-
-/* FullCalendar, themed from the palette */
-.fc {
-    --fc-page-bg-color: transparent;
-    --fc-border-color: var(--fondo-3);
-    --fc-neutral-bg-color: var(--fondo-2);
-    --fc-today-bg-color: color-mix(in srgb, var(--acento) 9%, transparent);
-    --fc-highlight-color: color-mix(in srgb, var(--acento) 28%, transparent);
-    --fc-now-indicator-color: var(--acento);
-    --fc-small-font-size: 0.875rem;
-    --fc-event-bg-color: var(--acento);
-    --fc-event-border-color: var(--acento);
-    --fc-event-text-color: var(--fondo);
-    --fc-button-bg-color: var(--fondo-2);
-    --fc-button-border-color: var(--fondo-2);
-    --fc-button-text-color: var(--tinta);
-    --fc-button-hover-bg-color: var(--fondo-3);
-    --fc-button-hover-border-color: var(--fondo-3);
-    --fc-button-active-bg-color: var(--acento);
-    --fc-button-active-border-color: var(--acento);
-    font-variant-numeric: tabular-nums;
-}
-
-.fc .fc-button-primary:not(:disabled).fc-button-active,
-.fc .fc-button-primary:not(:disabled):active {
-    color: var(--fondo);
-}
-
-.fc .fc-button {
-    border-radius: 10px;
-    box-shadow: none;
-    font-weight: 600;
-    font-size: 0.9375rem;
-    padding: 0.5rem 0.875rem;
-    text-transform: none;
-}
-
-.fc .fc-button:focus-visible,
-.fc .fc-button-primary:focus {
-    box-shadow: none;
-    outline: 2px solid var(--acento);
-    outline-offset: 2px;
-}
-
-.fc .fc-button-group > .fc-button + .fc-button {
-    margin-left: 2px;
-}
-
-.fc .fc-toolbar.fc-header-toolbar {
-    margin-bottom: 1.25rem;
-    flex-wrap: wrap;
-    gap: 0.75rem;
-}
-
-.fc .fc-toolbar-title {
-    color: var(--tinta);
-    font-family: var(--font-display);
-    font-weight: 600;
-    letter-spacing: -0.03em;
-    font-size: 1.25rem;
-}
-
-.fc .fc-toolbar-title::first-letter {
-    text-transform: uppercase;
-}
-
-/* Bloques: "no disponible" en la luz acento; "disponible" marcado, contorno y texto ok. */
-.fc .fc-event {
-    border-radius: 10px;
-    box-shadow: none;
-    font-weight: 600;
-}
-
-.fc .ng-busy {
-    background-color: var(--acento);
-    border-color: var(--acento);
-    color: var(--fondo);
-}
-
-.fc .ng-busy .fc-event-main {
-    color: var(--fondo);
-}
-
-.fc .ng-available,
-.ng-swatch-available {
-    background-color: var(--fondo-3);
-    border: 1px solid var(--ok);
-}
-
-.fc .ng-available .fc-event-main {
-    color: var(--ok);
-}
-
-.fc .fc-daygrid-dot-event.ng-busy .fc-daygrid-event-dot { border-color: var(--fondo); }
-.fc .fc-daygrid-dot-event.ng-available .fc-daygrid-event-dot { border-color: var(--ok); }
-
-.fc .fc-col-header-cell {
-    background: var(--fondo-2);
-}
-
-.fc .fc-col-header-cell-cushion {
-    padding: 0.625rem 0.25rem;
-    font-weight: 600;
-}
-
-.fc .fc-day-today .fc-col-header-cell-cushion,
-.fc .fc-day-today .fc-daygrid-day-number {
-    color: var(--acento);
-}
-
-.fc .fc-col-header-cell-cushion,
-.fc .fc-daygrid-day-number,
-.fc .fc-timegrid-axis-cushion,
-.fc .fc-timegrid-slot-label-cushion {
-    color: var(--tinta-2);
-    text-decoration: none;
-}
-
-
-/* Form fields share one soft shape wherever they are written by hand. */
-@layer base {
-    input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
-    select,
-    textarea {
-        border-radius: 12px;
-    }
 }
 
 @keyframes progreso {

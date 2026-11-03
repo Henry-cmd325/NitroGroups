@@ -43,7 +43,7 @@ export default async function SearchPage({ searchParams }: Props) {
 
     return (
         <div className="page-frame pt-10 md:pt-16 pb-[var(--section-gap)]">
-            <h1 className="type-poster text-[clamp(3rem,8vw,7rem)] max-w-[16ch]">{headline(filters, genreName)}</h1>
+            <h1 className="titulo max-w-[16ch]">{headline(filters, genreName)}</h1>
 
             <div className="mt-10 md:mt-14">
                 <SearchForm genres={genres ?? []} values={toUrlFilters(filters)} showBudget id="resultados" submitLabel="Actualizar" />

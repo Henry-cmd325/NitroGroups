@@ -59,7 +59,7 @@ export function PublicGroupProfile({ group, requestedDate, signedIn = false }: {
             )}
 
             <header className="page-frame mt-10 md:mt-16 grid md:grid-cols-12 gap-x-8 gap-y-8 items-end">
-                <h1 className="md:col-span-12 type-poster text-[clamp(2.5rem,6vw,5rem)] max-w-[16ch]">{group.groupName}</h1>
+                <h1 className="md:col-span-12 titulo max-w-[20ch]">{group.groupName}</h1>
                 <div className="md:col-span-8">
                     <p className="mt-4 text-lg text-tinta-2">
                         {[genres.slice(0, 3).join(", "), group.locationText].filter(Boolean).join(" en ")}
@@ -81,7 +81,7 @@ export function PublicGroupProfile({ group, requestedDate, signedIn = false }: {
                 <div className="md:col-span-4 md:justify-self-end flex flex-col gap-3 md:items-end">
                     <p className="text-2xl font-semibold tabular">{price}</p>
                     {group.isAcceptingBookings ? (
-                        <Link href={requestHref} className="inline-flex h-14 items-center justify-center px-7 bg-acento text-acento-ink rounded-full font-semibold no-underline hover:bg-acento-press transition-colors">
+                        <Link href={requestHref} className="inline-flex h-14 items-center justify-center px-7 bg-acento text-acento-ink rounded-lg font-semibold no-underline hover:bg-acento-press transition-colors">
                             {dateText ? `Pedir el ${dateText}` : "Pedir una fecha"}
                         </Link>
                     ) : (
@@ -98,7 +98,7 @@ export function PublicGroupProfile({ group, requestedDate, signedIn = false }: {
 
             {(group.description || group.biography) && (
                 <section className="page-frame mt-[var(--section-gap)] grid md:grid-cols-12 gap-x-8 gap-y-8" aria-labelledby="sobre">
-                    <h2 id="sobre" className="type-poster text-[clamp(2.5rem,5vw,4.5rem)] md:col-span-4">Sobre el grupo</h2>
+                    <h2 id="sobre" className="titulo md:col-span-4">Sobre el grupo</h2>
                     <div className="md:col-span-7 md:col-start-6 flex flex-col gap-5 text-lg leading-relaxed max-w-[64ch]">
                         {group.description && <p className="text-xl text-tinta">{group.description}</p>}
                         {group.biography?.split(/\n{2,}/).map((para, i) => <p key={i} className="text-tinta">{para}</p>)}
@@ -108,7 +108,7 @@ export function PublicGroupProfile({ group, requestedDate, signedIn = false }: {
 
             {(gallery.length > 0 || videos.length > 0 || audios.length > 0) && (
                 <section className="page-frame mt-[var(--section-gap)]" aria-labelledby="galeria">
-                    <h2 id="galeria" className="type-poster text-[clamp(2.5rem,5vw,4.5rem)]">En vivo</h2>
+                    <h2 id="galeria" className="titulo">En vivo</h2>
 
                     {videos.length > 0 && (
                         <div className="mt-10 grid gap-8">
@@ -158,7 +158,7 @@ export function PublicGroupProfile({ group, requestedDate, signedIn = false }: {
 
             {group.isAcceptingBookings && (
                 <section id="solicitar" className="page-frame mt-[var(--section-gap)] scroll-mt-24" aria-labelledby="solicitar-titulo">
-                    <h2 id="solicitar-titulo" className="type-poster text-[clamp(2.5rem,5vw,4.5rem)]">Pedir una fecha</h2>
+                    <h2 id="solicitar-titulo" className="titulo">Pedir una fecha</h2>
                     <p className="mt-4 mb-10 max-w-[52ch] text-lg text-tinta">
                         Cuéntale a {group.groupName} qué celebras, el día y cuántas horas necesitas. Te responde por escrito.
                     </p>
@@ -167,7 +167,7 @@ export function PublicGroupProfile({ group, requestedDate, signedIn = false }: {
                     ) : (
                         <Link
                             href={`${ROUTES.AUTH.LOGIN}?returnTo=${encodeURIComponent(`${ROUTES.GROUPS.PUBLIC_PROFILE(group.slug)}${requestedDate ? `?fecha=${requestedDate}` : ""}#solicitar`)}`}
-                            className="inline-flex h-14 items-center px-7 bg-acento text-acento-ink rounded-full font-semibold no-underline hover:bg-acento-press transition-colors"
+                            className="inline-flex h-14 items-center px-7 bg-acento text-acento-ink rounded-lg font-semibold no-underline hover:bg-acento-press transition-colors"
                         >
                             Entrar para enviar la solicitud
                         </Link>
