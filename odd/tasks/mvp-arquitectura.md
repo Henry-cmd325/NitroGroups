@@ -31,7 +31,9 @@ Rama de trabajo: `claude/practical-keller-qzzaaq` (a partir de `develop`).
 - [x] T8b (S10) UI de solicitudes (formulario en perfil, bandejas en dashboards). Inline, después de T8a.
 - [x] T9 (S11) Workflow de CI + lint del frontend en verde + docs. Inline.
 - [ ] T10 (S12) Sistema de diseño (tokens, tipografía, componentes base) + landing + navegación.
-- [ ] T11 (S12) Rediseño de perfil de grupo, dashboards, onboarding y auth sobre el sistema nuevo. Inline, en paralelo a T8a (solo `UI/`).
+- [x] T11 (S12, parcial) Perfil público, login, registro y solicitudes rediseñados (inline).
+- [ ] T11a (S12) Panel del músico: GroupProfile editable, galería, calendario y pestañas, más los componentes ui compartidos. **Delegado** (backstop de contexto + unidad paralela).
+- [ ] T11b (S12) Onboarding de músico y manager. **Delegado** (backstop de contexto + unidad paralela, superficie disjunta de T11a).
 
 ## Log
 
@@ -74,3 +76,4 @@ Rama de trabajo: `claude/practical-keller-qzzaaq` (a partir de `develop`).
 - RDD sobre `ddc03ee`: riesgo alto, revisar → **APROBADA** (acknowledged), risk sin hallazgos. Atendido: mensajes de conflicto propios de cancelar y escribir; test `[PostgresFact]` de carrera cancelar/aceptar; comprobado que el `Down` de la migración `xmin` tampoco emite DDL. Quedan como follow-up: registrar en logs los conflictos de concurrencia (R4); el UoW compartido traduce cualquier `DbUpdateConcurrencyException` (hoy solo Bookings tiene token).
 - Decisión del usuario sobre A1 (2026-11-03): "Permitirlo". Un manager puede cargar una fecha para su propio grupo (por ejemplo, un evento acordado por teléfono). Sin cambios.
 - Advisories abiertos de T8: A3 (grupo inactivo que acepta reservas recibe solicitudes), A4 (mensajes en solicitudes cerradas: falta decisión de producto), A2 (creación en dos guardados, patrón heredado).
+- 2026-11-03: el usuario autoriza seguir con T11 ("si adelante"). Se divide en T11a/T11b con writers paralelos y superficies disjuntas; el orquestador conserva git, verificación y capturas.
