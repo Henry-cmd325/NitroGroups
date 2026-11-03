@@ -1,3 +1,4 @@
+import Link from "next/link";
 export default async function ClientDashboardPage() {
     return (
         <div className="text-white px-8 py-5">
@@ -39,12 +40,12 @@ export default async function ClientDashboardPage() {
                         <p className="text-gray-400 mb-4">
                             Encuentra el grupo perfecto para tu próximo evento
                         </p>
-                        <a
+                        <Link
                             href="/groups"
                             className="inline-block bg-primary hover:bg-primary/90 text-white font-bold py-3 px-6 rounded-lg transition-colors"
                         >
                             Explorar Músicos
-                        </a>
+                        </Link>
                     </div>
 
                     {/* My Requests */}

@@ -7,7 +7,7 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import type { DateSelectArg, EventChangeArg, EventInput, DatesSetArg, EventClickArg } from "@fullcalendar/core";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { groupAvailabilityService as schedulesService } from "../services/groupAvailability.service";
+import { groupAvailabilityService as schedulesService, type CreateBusyScheduleRequest, type UpdateAvailabilityRequest, type UpdateBusyScheduleRequest } from "../services/groupAvailability.service";
 
 import Card from "@/components/ui/Card";
 import Badge from "@/components/ui/Badge";
@@ -56,17 +56,17 @@ export default function GroupCalendar({ groupId, mode = "public" }: GroupCalenda
   });
 
   const createBusy = useMutation({
-    mutationFn: (req: any) => schedulesService.createBusySchedule(groupId, req),
+    mutationFn: (req: CreateBusyScheduleRequest) => schedulesService.createBusySchedule(groupId, req),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["schedules", groupId] })
   });
 
   const updateAvailability = useMutation({
-    mutationFn: (req: { id: string, data: any }) => schedulesService.updateAvailability(groupId, req.id, req.data),
+    mutationFn: (req: { id: string, data: UpdateAvailabilityRequest }) => schedulesService.updateAvailability(groupId, req.id, req.data),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["schedules", groupId] })
   });
 
   const updateBusy = useMutation({
-    mutationFn: (req: { id: string, data: any }) => schedulesService.updateBusySchedule(groupId, req.id, req.data),
+    mutationFn: (req: { id: string, data: UpdateBusyScheduleRequest }) => schedulesService.updateBusySchedule(groupId, req.id, req.data),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["schedules", groupId] })
   });
 

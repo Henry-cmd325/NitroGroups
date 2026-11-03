@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactNode, useState, Children, isValidElement, useEffect } from "react";
+import { ReactNode, useState, Children, isValidElement } from "react";
 
 interface TabItemProps {
   title: string;
@@ -33,15 +33,10 @@ export default function TabbedSection({ children }: TabbedSectionProps) {
     });
   });
 
-  const [selectedKey, setSelectedKey] = useState("");
+  const [chosenKey, setSelectedKey] = useState("");
 
-  useEffect(() => {
-    if (!tabs.length) return;
-    if (!selectedKey || !tabs.some((tab) => tab.tabKey === selectedKey)) {
-      setSelectedKey(tabs[0].tabKey);
-    }
-  }, [tabs, selectedKey]);
-
+  // La pestaña activa se deriva: la elegida si sigue existiendo, si no la primera.
+  const selectedKey = tabs.some((tab) => tab.tabKey === chosenKey) ? chosenKey : (tabs[0]?.tabKey ?? "");
   const activeTab = tabs.find((t) => t.tabKey === selectedKey);
 
   return (

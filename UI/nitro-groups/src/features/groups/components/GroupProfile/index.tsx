@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { MusicGroup } from "../../types/MusicGroup";
 import { Loader } from "@/components/ui";
@@ -104,10 +104,15 @@ export default function GroupProfile({ mode = "private", slug, initialGroup }: G
     },
   });
 
-  useEffect(() => {
-    if (initialGroup) { setGroup(initialGroup); setOriginalGroup(initialGroup); return; }
-    if (groupQuery.data) { setGroup(groupQuery.data); setOriginalGroup(groupQuery.data); }
-  }, [groupQuery.data, initialGroup]);
+  // Sincroniza el formulario cuando cambia la fuente (props o query) ajustando el estado
+  // durante el render, sin un efecto que dispare renders en cascada.
+  const source = initialGroup ?? groupQuery.data;
+  const [syncedSource, setSyncedSource] = useState(source);
+  if (source && source !== syncedSource) {
+    setSyncedSource(source);
+    setGroup(source);
+    setOriginalGroup(source);
+  }
 
   /* ── handlers ── */
   const toggleEdit = () => {
