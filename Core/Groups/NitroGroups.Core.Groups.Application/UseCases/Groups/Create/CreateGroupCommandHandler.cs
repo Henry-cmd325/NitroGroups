@@ -51,10 +51,11 @@ namespace NitroGroups.Core.Groups.Application.UseCases.Groups.Create
 
             await _unitOfWork.Groups.CreateAsync(group);
 
-            // Add the owner as leader member
+            // El dueño entra como miembro. Se enlaza por la navegación y no por GroupId: el grupo
+            // todavía no tiene id (lo asigna la base al guardar) y EF Core lo copia en el orden correcto.
             var ownerMember = new GroupMember
             {
-                GroupId = group.Id,
+                Group = group,
                 UserId = command.OwnerUserId,
                 Role = GroupMemberRole.Owner,
                 IsActive = true,
