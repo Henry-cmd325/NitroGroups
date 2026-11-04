@@ -59,6 +59,7 @@ public class ListMedia : IEndpoint
                     var response = new GroupMediaListResponse { Items = items, NextCursor = nextCursor };
                     return Ok(response);
                 })
+            .AllowAnonymous()
             .WithTags("Groups");
     }
 

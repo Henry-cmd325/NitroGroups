@@ -1,14 +1,11 @@
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using NitroGroups.Shared.Abstractions.Events;
-using NitroGroups.Shared.Abstractions.Repository;
 using NitroGroups.Shared.Abstractions.Services;
 using NitroGroups.Shared.Infrastructure.Configuration;
-using NitroGroups.Shared.Infrastructure.Context;
 using NitroGroups.Shared.Infrastructure.Context.Interceptors;
 using NitroGroups.Shared.Infrastructure.Events;
-using NitroGroups.Shared.Infrastructure.Repository;
 using NitroGroups.Shared.Infrastructure.Services;
 
 namespace NitroGroups.Shared.Infrastructure
@@ -61,20 +58,23 @@ namespace NitroGroups.Shared.Infrastructure
 
             services.AddScoped<ICurrentUserService, CurrentUserService>();
 
+            // Emails: por SMTP si hay host configurado; si no, solo al log (desarrollo y tests).
+            services.Configure<EmailOptions>(configuration.GetSection(EmailOptions.SectionName));
+            if (!string.IsNullOrWhiteSpace(configuration["Email:Smtp:Host"]))
+                services.AddSingleton<IEmailSender, SmtpEmailSender>();
+            else
+                services.AddSingleton<IEmailSender, LoggingEmailSender>();
+
+            services.TryAddSingleton(TimeProvider.System);
+
             services.AddScoped<AuditInterceptor>();
 
-            services.AddDbContext<NitroGroupsContext>((sp, options) =>
-            {
-                var auditInterceptor = sp.GetRequiredService<AuditInterceptor>();
-
-                options.UseNpgsql(configuration.GetConnectionString("NitroGroupsConnection"))
-                       .AddInterceptors(auditInterceptor);
-            });
+            // Cada módulo registra su DbContext y su outbox con AddModuleDbContext<T>().
+            if (!services.Any(d => d.ServiceType == typeof(OutboxModuleRegistry)))
+                services.AddSingleton(new OutboxModuleRegistry());
 
             services.AddSingleton<IEventProvider, EventProvider>();
-            services.AddScoped<IOutboxService, OutboxService>();
             services.AddHostedService<OutboxProcessor>();
-            services.AddScoped(typeof(IGenericRepository<,>), typeof(GenericRepository<,>));
 
             return services;
         }

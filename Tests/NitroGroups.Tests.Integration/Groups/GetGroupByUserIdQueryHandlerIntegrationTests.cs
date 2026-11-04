@@ -17,7 +17,7 @@ public class GetGroupByUserIdQueryHandlerIntegrationTests : IClassFixture<Integr
     [Fact]
     public async Task Handle_CuandoExisteGrupoDelUsuario_DeberiaRetornarlo()
     {
-        await using var context = _fixture.CreateContext();
+        await using var context = _fixture.CreateGroupsContext();
         var mapper = _fixture.CreateMapper();
         var unitOfWork = _fixture.CreateGroupsUnitOfWork(context);
         var handler = new GetGroupByUserIdQueryHandler(unitOfWork, mapper);
@@ -40,7 +40,7 @@ public class GetGroupByUserIdQueryHandlerIntegrationTests : IClassFixture<Integr
         {
             GroupId = group.Id,
             UserId = 25,
-            Role = GroupMemberRole.Leader,
+            Role = GroupMemberRole.Owner,
             IsActive = true,
             JoinedAt = DateTime.UtcNow,
             JoinedVia = JoinedVia.Manual
@@ -57,7 +57,7 @@ public class GetGroupByUserIdQueryHandlerIntegrationTests : IClassFixture<Integr
     [Fact]
     public async Task Handle_CuandoNoExisteGrupoDelUsuario_DeberiaRetornarFailure()
     {
-        await using var context = _fixture.CreateContext();
+        await using var context = _fixture.CreateGroupsContext();
         var mapper = _fixture.CreateMapper();
         var unitOfWork = _fixture.CreateGroupsUnitOfWork(context);
         var handler = new GetGroupByUserIdQueryHandler(unitOfWork, mapper);

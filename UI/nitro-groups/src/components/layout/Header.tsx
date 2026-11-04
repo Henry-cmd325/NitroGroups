@@ -3,32 +3,29 @@
 import { Logo, MobileMenu, PublicNavigation, UserMenu } from "@/components/layout";
 import { useAuth } from "@/hooks/useAuth";
 
-function HeaderSkeleton() {
-  return (
-    <div className="hidden md:flex items-center space-x-4 animate-pulse opacity-50">
-      <div className="h-9 w-24 bg-muted rounded-md" />
-      <div className="h-9 w-24 bg-muted rounded-md" />
-    </div>
-  );
-}
-
 export default function Header() {
-  const { isLoading } = useAuth();
+    const { isLoading } = useAuth();
 
-  return (
-    <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
-      <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-        <Logo />
-        {isLoading ? (
-          <HeaderSkeleton />
-        ) : (
-          <>
-            <UserMenu />
-            <PublicNavigation />
-          </>
-        )}
-        <MobileMenu />
-      </div>
-    </header>
-  );
+    return (
+        <header className="sticky top-0 z-50 border-b border-linea bg-[rgb(10_9_14/0.6)] [backdrop-filter:blur(20px)_saturate(160%)] [-webkit-backdrop-filter:blur(20px)_saturate(160%)]">
+            <a
+                href="#contenido"
+                className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-3 focus:z-50 focus:bg-acento focus:text-acento-ink focus:px-4 focus:py-2"
+            >
+                Saltar al contenido
+            </a>
+            <div className="page-frame h-14 flex items-center justify-between gap-6">
+                <Logo />
+                {isLoading ? (
+                    <span className="hidden md:block h-9 w-56 rounded-full bg-fondo-2" aria-hidden />
+                ) : (
+                    <>
+                        <UserMenu />
+                        <PublicNavigation />
+                    </>
+                )}
+                <MobileMenu />
+            </div>
+        </header>
+    );
 }

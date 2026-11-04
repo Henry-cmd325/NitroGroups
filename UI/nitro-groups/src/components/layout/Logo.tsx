@@ -1,19 +1,15 @@
-import Image from "next/image";
 import Link from "next/link";
 import { ROUTES } from "@/config/routes";
 
-export function Logo() {
+/** Wordmark tipográfico, sin ícono: el nombre con un punto lila. */
+export function Logo({ className = "" }: { className?: string }) {
     return (
-        <Link href={ROUTES.HOME} className="flex items-center space-x-2">
-            <Image
-                src="/img/Logo.png"
-                alt="NitroGroups Logo"
-                width={30}
-                height={30}
-                style={{ marginTop: "5px" }}
-                priority // Logo should load fast
-            />
-            <span className="text-xl font-semibold">NitroGroups</span>
+        <Link
+            href={ROUTES.HOME}
+            className={`type-heading text-[1.1875rem] leading-none text-tinta no-underline tracking-[-0.03em] ${className}`}
+            aria-label="NitroGroups, inicio"
+        >
+            NitroGroups<span className="text-acento">.</span>
         </Link>
     );
 }

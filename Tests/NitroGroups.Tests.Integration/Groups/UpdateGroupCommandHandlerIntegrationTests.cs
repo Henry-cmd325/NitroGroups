@@ -16,7 +16,7 @@ public class UpdateGroupCommandHandlerIntegrationTests : IClassFixture<Integrati
     [Fact]
     public async Task Handle_CuandoGrupoExiste_DeberiaActualizarYPersistir()
     {
-        await using var context = _fixture.CreateContext();
+        await using var context = _fixture.CreateGroupsContext();
         context.Groups.Add(new Group
         {
             OwnerUserId = 1,
@@ -75,7 +75,7 @@ public class UpdateGroupCommandHandlerIntegrationTests : IClassFixture<Integrati
     [Fact]
     public async Task Handle_CuandoGrupoNoExiste_DeberiaRetornarFailure()
     {
-        await using var context = _fixture.CreateContext();
+        await using var context = _fixture.CreateGroupsContext();
         var mapper = _fixture.CreateMapper();
         var unitOfWork = _fixture.CreateGroupsUnitOfWork(context);
         var handler = new UpdateGroupCommandHandler(unitOfWork, mapper);

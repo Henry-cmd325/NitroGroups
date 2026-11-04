@@ -22,6 +22,7 @@ namespace NitroGroups.Core.Groups.Infrastructure.Endpoints.Groups
                     ? Ok(result.Value)
                     : NotFound(result.Error);
             })
+            .AllowAnonymous()
             .WithTags("Groups");
         }
     }

@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http;
 using NitroGroups.Shared.Abstractions.Services;
 using System.Security.Claims;
 
@@ -6,18 +6,32 @@ namespace NitroGroups.Shared.Infrastructure.Services
 {
     public class CurrentUserService(IHttpContextAccessor httpContextAccessor) : ICurrentUserService
     {
-        private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
+        private ClaimsPrincipal? User => httpContextAccessor.HttpContext?.User;
 
         public long? GetUserId()
         {
-            var id = _httpContextAccessor.HttpContext?.User?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+            var value = User?.FindFirst(NitroClaimTypes.UserId)?.Value;
+            return long.TryParse(value, out var id) ? id : null;
+        }
 
-            if (string.IsNullOrEmpty(id))
+        public string? GetAuth0Id()
+        {
+            if (User?.Identity?.IsAuthenticated != true)
                 return null;
 
-            // Auth0 JWTs use string identifiers (e.g. "auth0|abc123"), not numeric IDs.
-            // Return null if the claim value is not a valid number.
-            return long.TryParse(id, out var userId) ? userId : null;
+            // JwtBearer mapea "sub" a NameIdentifier por defecto; aceptamos ambos.
+            return User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? User.FindFirst("sub")?.Value;
         }
+
+        /// <summary>
+        /// Los access tokens de Auth0 no incluyen "email": hay que agregarlo con una Action como
+        /// claim con namespace (<see cref="NitroClaimTypes.Auth0EmailClaim"/>). Ver README.
+        /// </summary>
+        public string? GetEmail() =>
+            User?.FindFirst(NitroClaimTypes.Auth0EmailClaim)?.Value
+            ?? User?.FindFirst(ClaimTypes.Email)?.Value
+            ?? User?.FindFirst("email")?.Value;
+
+        public bool IsAdmin() => User?.IsInRole(NitroClaimTypes.AdminRole) == true;
     }
 }

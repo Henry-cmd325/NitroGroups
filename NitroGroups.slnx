@@ -8,7 +8,11 @@
     <Project Path="Core/NitroGroups.Core.Bootstrap/NitroGroups.Core.Bootstrap.csproj" />
   </Folder>
   <Folder Name="/Core/Billing/" />
-  <Folder Name="/Core/Booking/" />
+  <Folder Name="/Core/Bookings/">
+    <Project Path="Core/Bookings/NitroGroups.Core.Bookings.Application/NitroGroups.Core.Bookings.Application.csproj" />
+    <Project Path="Core/Bookings/NitroGroups.Core.Bookings.Domain/NitroGroups.Core.Bookings.Domain.csproj" />
+    <Project Path="Core/Bookings/NitroGroups.Core.Bookings.Infrastructure/NitroGroups.Core.Bookings.Infrastructure.csproj" />
+  </Folder>
   <Folder Name="/Core/Catalog/" />
   <Folder Name="/Core/Communication/" />
   <Folder Name="/Core/Contracts/" />
@@ -41,7 +45,6 @@
     <Project Path="Shared/NitroGroups.Shared.Infrastructure/NitroGroups.Shared.Infrastructure.csproj" />
   </Folder>
   <Folder Name="/Tests/">
-    <Project Path="Tests/NitroGroups.Orchestrator.Gate/NitroGroups.Orchestrator.Gate.csproj" />
     <Project Path="Tests/NitroGroups.Tests.Endpoints/NitroGroups.Tests.Endpoints.csproj" />
     <Project Path="Tests/NitroGroups.Tests.Integration/NitroGroups.Tests.Integration.csproj" />
   </Folder>

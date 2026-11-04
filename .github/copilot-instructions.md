@@ -11,7 +11,7 @@
 - **Restore/Build**: From repo root run `dotnet build NitroGroups.slnx` (succeeds in ~6s). If restore needed, `dotnet restore NitroGroups.slnx` first.
 - **Run (Aspire)**: `cd AppHost/AppHost.AppHost; dotnet run` starts **API only** (HTTP 5144). Start Next in another shell: `cd UI/nitro-groups; npm run dev`. AppHost no longer runs `AddJavaScriptApp` (Windows/VS + file dialog could kill AppHost; see aspire#7998). Wire `Auth0` via user-secrets on AppHost; set `BACKEND_API_URL` in `UI/nitro-groups/.env.local`.
 - **Run API alone**: `cd Services/NitroGroups.Services.Api; dotnet run`. Ensure `Auth0` and DB connection strings are set.
-- **EF migrations**: `dotnet ef database update --project ./Shared/NitroGroups.Shared.Infrastructure --startup-project ./Services/NitroGroups.Services.Api`.
+- **EF migrations**: one DbContext per module (`UsersDbContext`, `GroupsDbContext`, `SchedulesDbContext`); see README "Base de datos y migraciones". Example: `dotnet ef database update --context GroupsDbContext --project Core/Groups/NitroGroups.Core.Groups.Infrastructure --startup-project Services/NitroGroups.Services.Api`.
 - **Tests**: No explicit test command observed; default would be `dotnet test NitroGroups.slnx`.
 
 ### Frontend (Next.js)

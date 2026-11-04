@@ -48,7 +48,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
                 )}
                 <div className="relative">
                     {icon && (
-                        <div className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none">
+                        <div className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none">
                             {icon}
                         </div>
                     )}
@@ -56,11 +56,12 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
                         id={inputId}
                         type={currentType}
                         className={cn(
-                            "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
-                            icon && "pl-10",
-                            isPasswordType && "pr-10",
-                            hasError && "border-destructive focus-visible:ring-destructive",
-                            hasSuccess && "border-green-500 focus-visible:ring-green-500",
+                            // DESIGN.md → Inputs: relleno fondo-2 con un borde de luz muy tenue, anillo acento al enfocar.
+                            "flex h-12 w-full rounded-lg bg-fondo-2 shadow-[inset_0_0_0_1px_var(--linea)] px-4 text-base text-tinta file:border-0 file:bg-transparent file:font-medium placeholder:text-tinta-2/70 outline-none focus-visible:outline-2 focus-visible:outline-acento focus-visible:-outline-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
+                            icon && "pl-11",
+                            isPasswordType && "pr-12",
+                            hasError && "shadow-[inset_0_-2px_0_var(--error)]",
+                            hasSuccess && "shadow-[inset_0_-2px_0_var(--ok)]",
                             className
                         )}
                         ref={ref}
@@ -75,7 +76,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
                             type="button"
                             tabIndex={-1}
                             onClick={() => setShowPassword(!showPassword)}
-                            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors focus:outline-none"
+                            className="absolute right-2 top-1/2 -translate-y-1/2 size-9 grid place-items-center text-muted-foreground hover:text-foreground transition-colors"
                             aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
                         >
                             {showPassword ? <EyeOffIcon /> : <EyeIcon />}

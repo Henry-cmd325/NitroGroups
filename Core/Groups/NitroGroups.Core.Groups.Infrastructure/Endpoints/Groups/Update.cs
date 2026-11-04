@@ -8,6 +8,7 @@ using NitroGroups.Shared.Contracts;
 using NitroGroups.Shared.Contracts.Groups.Requests;
 using NitroGroups.Shared.Contracts.Groups.Responses;
 using NitroGroups.Shared.EndpointMapping;
+using NitroGroups.Shared.EndpointMapping.Filters;
 using static Microsoft.AspNetCore.Http.Results;
 
 namespace NitroGroups.Core.Groups.Infrastructure.Endpoints.Groups
@@ -22,6 +23,7 @@ namespace NitroGroups.Core.Groups.Infrastructure.Endpoints.Groups
                 var result = await mediator.SendCommandAsync<UpdateGroupCommand, Result<GroupResponse>>(command);
                 return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
             })
+            .RequireGroupManager("id")
             .WithTags("Groups");
         }
     }

@@ -16,7 +16,7 @@ public class GetGroupAvailabilityQueryHandlerIntegrationTests : IClassFixture<In
     [Fact]
     public async Task Handle_RangoValido_DeberiaRetornarItems()
     {
-        await using var context = _fixture.CreateContext();
+        await using var context = _fixture.CreateSchedulesContext();
         context.GroupAvailabilities.AddRange(
             new GroupAvailability
             {
@@ -48,7 +48,7 @@ public class GetGroupAvailabilityQueryHandlerIntegrationTests : IClassFixture<In
     [Fact]
     public async Task Handle_RangoInvalido_DeberiaRetornarFailure()
     {
-        await using var context = _fixture.CreateContext();
+        await using var context = _fixture.CreateSchedulesContext();
         var unitOfWork = _fixture.CreateSchedulesUnitOfWork(context);
         var handler = new GetGroupAvailabilityQueryHandler(unitOfWork);
 
@@ -61,7 +61,7 @@ public class GetGroupAvailabilityQueryHandlerIntegrationTests : IClassFixture<In
     [Fact]
     public async Task Handle_TypeFilterBlocks_DeberiaRetornarSoloNoDisponibles()
     {
-        await using var context = _fixture.CreateContext();
+        await using var context = _fixture.CreateSchedulesContext();
         context.GroupAvailabilities.AddRange(
             new GroupAvailability { GroupId = 1, StartAt = new DateTimeOffset(2025,1,10,10,0,0,TimeSpan.Zero), EndAt = new DateTimeOffset(2025,1,10,12,0,0,TimeSpan.Zero), Available = true, Note = "Disp" },
             new GroupAvailability { GroupId = 1, StartAt = new DateTimeOffset(2025,1,11,10,0,0,TimeSpan.Zero), EndAt = new DateTimeOffset(2025,1,11,12,0,0,TimeSpan.Zero), Available = false, Note = "Block" });

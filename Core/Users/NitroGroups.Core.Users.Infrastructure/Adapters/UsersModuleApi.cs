@@ -1,0 +1,39 @@
+using Microsoft.EntityFrameworkCore;
+using NitroGroups.Core.Users.Infrastructure.Persistence;
+using NitroGroups.Shared.Contracts.Modules;
+
+namespace NitroGroups.Core.Users.Infrastructure.Adapters
+{
+    /// <summary>Implementación in-process de la API pública del módulo Users.</summary>
+    internal sealed class UsersModuleApi(UsersDbContext context) : IUsersModuleApi
+    {
+        public async Task<long?> GetUserIdByAuth0IdAsync(string auth0Id, CancellationToken cancellationToken = default)
+        {
+            if (string.IsNullOrWhiteSpace(auth0Id))
+                return null;
+
+            return await context.Users.AsNoTracking()
+                .Where(u => u.Auth0Id == auth0Id && u.Active)
+                .Select(u => (long?)u.Id)
+                .FirstOrDefaultAsync(cancellationToken);
+        }
+
+        public async Task<UserSummary?> GetUserAsync(long userId, CancellationToken cancellationToken = default)
+        {
+            var users = await GetUsersAsync([userId], cancellationToken);
+            return users.GetValueOrDefault(userId);
+        }
+
+        public async Task<IReadOnlyDictionary<long, UserSummary>> GetUsersAsync(IEnumerable<long> userIds, CancellationToken cancellationToken = default)
+        {
+            var ids = userIds.Distinct().ToList();
+            if (ids.Count == 0)
+                return new Dictionary<long, UserSummary>();
+
+            return await context.Users.AsNoTracking()
+                .Where(u => ids.Contains(u.Id))
+                .Select(u => new UserSummary(u.Id, u.Email, u.FirstName, u.LastName, u.UserType, u.ProfilePictureUrl))
+                .ToDictionaryAsync(u => u.Id, cancellationToken);
+        }
+    }
+}

@@ -1,5 +1,6 @@
 import { cookies } from "next/headers";
 import { jwtVerify } from "jose";
+import { getSessionSecret } from "@/lib/sessionSecret";
 
 export interface NitroSession {
     user: {
@@ -31,9 +32,7 @@ export async function getNitroSession(): Promise<NitroSession | null> {
             return null;
         }
 
-        const secret = new TextEncoder().encode(
-            process.env.AUTH0_SECRET || "default-secret-change-me"
-        );
+        const secret = getSessionSecret();
 
         const { payload } = await jwtVerify(sessionCookie.value, secret);
         return (payload as { session: NitroSession }).session;

@@ -1,9 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { MusicGroup } from "../../types/MusicGroup";
-import { Loader } from "@/components/ui";
+import Link from "next/link";
+import { ROUTES } from "@/config/routes";
+import { Button } from "@/components/ui/Button";
 import { groupsService } from "../../services/groups.service";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import GroupProfileView from "./GroupProfileView";
@@ -21,7 +23,7 @@ const emptyGroup: MusicGroup = {
 };
 
 export default function GroupProfile({ mode = "private", slug, initialGroup }: GroupProfileProps) {
-  const { user: currentUser } = useCurrentUser();
+  const { user: currentUser, isLoading: isUserLoading, isError: isUserError } = useCurrentUser();
   const userId = currentUser?.id;
   const isPublic = mode === "public";
 
@@ -97,17 +99,25 @@ export default function GroupProfile({ mode = "private", slug, initialGroup }: G
       return updatedGroup;
     },
     onSuccess: (updatedGroup) => {
-      queryClient.setQueryData(["music-group", updatedGroup.id], updatedGroup);
+      // El panel y la galería leen el grupo con la clave ["music-group", userId].
+      if (userId) queryClient.setQueryData(["music-group", userId], updatedGroup);
       setGroup(updatedGroup);
       setOriginalGroup(updatedGroup);
       setIsEditing(false);
     },
   });
 
-  useEffect(() => {
-    if (initialGroup) { setGroup(initialGroup); setOriginalGroup(initialGroup); return; }
-    if (groupQuery.data) { setGroup(groupQuery.data); setOriginalGroup(groupQuery.data); }
-  }, [groupQuery.data, initialGroup]);
+  // Sincroniza el formulario cuando cambia la fuente (props o query) ajustando el estado
+  // durante el render, sin un efecto que dispare renders en cascada.
+  const source = initialGroup ?? groupQuery.data;
+  // Arranca con initialGroup (el estado inicial ya lo usa); si en el primer render la
+  // fuente es la caché de React Query, la condición de abajo sincroniza el formulario.
+  const [syncedSource, setSyncedSource] = useState<MusicGroup | undefined>(initialGroup);
+  if (source && source !== syncedSource) {
+    setSyncedSource(source);
+    setGroup(source);
+    setOriginalGroup(source);
+  }
 
   /* ── handlers ── */
   const toggleEdit = () => {
@@ -122,12 +132,23 @@ export default function GroupProfile({ mode = "private", slug, initialGroup }: G
   const handleCancel = () => { setGroup({ ...originalGroup }); setIsEditing(false); };
   const set = <K extends keyof MusicGroup>(k: K, v: MusicGroup[K]) => setGroup((p) => ({ ...p, [k]: v }));
 
-  /* ── loading / error ── */
-  if (shouldFetch && groupQuery.isLoading) return <div className="flex justify-center py-24"><Loader /></div>;
+  /* ── carga / error ── */
+  // En el panel privado, sin usuario todavía no hay grupo que pedir: se muestra la carga.
+  const waitingForUser = !isPublic && !initialGroup && isUserLoading;
+  if (waitingForUser || (shouldFetch && groupQuery.isLoading)) return <ProfileSkeleton />;
+  if (!isPublic && !initialGroup && isUserError) return (
+    <div role="alert" className="max-w-[56ch] pt-14">
+      <p className="type-heading text-3xl">No pudimos cargar tu cuenta</p>
+      <p className="mt-3 text-tinta-2">Recarga la página en un momento. Si sigue igual, vuelve a iniciar sesión.</p>
+    </div>
+  );
   if (shouldFetch && groupQuery.isError) return (
-    <div className="text-center py-24 text-gray-400">
-      <p className="text-lg">No se encontró el grupo.</p>
-      <p className="text-sm mt-2">Crea tu primer grupo para comenzar.</p>
+    <div className="max-w-[56ch] pt-14">
+      <p className="type-heading text-3xl">Todavía no encontramos tu grupo</p>
+      <p className="mt-3 text-tinta-2">Crea el perfil de tu grupo para empezar a recibir solicitudes.</p>
+      <Button asChild className="mt-6">
+        <Link href={ROUTES.AUTH.ONBOARDING}>Crear mi grupo</Link>
+      </Button>
     </div>
   );
 
@@ -139,6 +160,7 @@ export default function GroupProfile({ mode = "private", slug, initialGroup }: G
         selectedGenres={selectedGenres}
         setSelectedGenres={setSelectedGenres}
         isPending={saveMutation.isPending}
+        saveError={saveMutation.isError ? "No pudimos guardar los cambios. Revisa tu conexión e inténtalo de nuevo." : null}
         genres={genresQuery.data || []}
         isGenresLoading={genresQuery.isLoading}
         handleSave={handleSave}
@@ -154,5 +176,22 @@ export default function GroupProfile({ mode = "private", slug, initialGroup }: G
       isPublic={isPublic}
       toggleEdit={toggleEdit}
     />
+  );
+}
+
+/** Silueta de la cabecera mientras llega el grupo: mismos bloques, sin contenido. */
+function ProfileSkeleton() {
+  return (
+    <div aria-busy className="pt-10 md:pt-14">
+      <span className="sr-only" role="status">Cargando tu grupo…</span>
+      <div aria-hidden className="flex items-end gap-5 md:gap-8">
+        <div className="size-20 bg-fondo-2 md:size-32" />
+        <div className="flex-1 space-y-4">
+          <div className="h-10 w-2/3 max-w-md bg-fondo-2 md:h-16" />
+          <div className="h-4 w-44 bg-fondo-2" />
+        </div>
+      </div>
+      <div aria-hidden className="mt-8 h-[7.5rem] bg-fondo-2 xl:h-[5.25rem]" />
+    </div>
   );
 }

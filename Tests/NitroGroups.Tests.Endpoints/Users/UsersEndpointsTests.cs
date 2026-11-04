@@ -13,34 +13,67 @@ namespace NitroGroups.Tests.Endpoints.Users;
 
 public class UsersEndpointsTests(NitroGroupsWebAppFactory factory) : IClassFixture<NitroGroupsWebAppFactory>
 {
+    private const string OwnAuth0Id = "auth0|test-user-id";
+
     private readonly HttpClient _client = factory.CreateClient();
+    private readonly HttpClient _adminClient = CreateClientWith(factory, TestAuthHandler.AdminHeader);
+    private readonly HttpClient _anonymousClient = CreateClientWith(factory, TestAuthHandler.AnonymousHeader);
     private readonly IMediator _mediator = factory.Mediator;
 
+    private static HttpClient CreateClientWith(NitroGroupsWebAppFactory factory, string header)
+    {
+        var client = factory.CreateClient();
+        client.DefaultRequestHeaders.Add(header, "1");
+        return client;
+    }
+
     // ---------------------------------------------------------------
-    // GET api/users  (requiere autorización)
+    // GET api/users  (solo admin)
     // ---------------------------------------------------------------
 
     [Fact]
-    public async Task GetAllUsers_ConAutenticacion_Returns200()
+    public async Task GetAllUsers_SinToken_Returns401()
     {
-        // En el entorno de test el TestAuthHandler aprueba toda petición autenticada.
-        // El IMediator devuelve null por defecto → el endpoint retorna 200 con null.
+        var response = await _anonymousClient.GetAsync("api/users");
+
+        Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task GetAllUsers_UsuarioNoAdmin_Returns403()
+    {
         var response = await _client.GetAsync("api/users");
 
-        // El endpoint requiere autorización; con el TestScheme activo pasa la auth.
+        Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task GetAllUsers_ComoAdmin_Returns200()
+    {
+        // El IMediator devuelve null por defecto → el endpoint retorna 200 con null.
+        var response = await _adminClient.GetAsync("api/users");
+
         Assert.True(
             response.StatusCode is HttpStatusCode.OK or HttpStatusCode.NoContent,
             $"Status inesperado: {response.StatusCode}");
     }
 
     // ---------------------------------------------------------------
-    // GET api/users/auth0/{auth0Id}  (requiere autorización)
+    // GET api/users/auth0/{auth0Id}  (solo el propio usuario o un admin)
     // ---------------------------------------------------------------
+
+    [Fact]
+    public async Task GetByAuth0_DeOtroUsuario_Returns403()
+    {
+        var response = await _client.GetAsync($"api/users/auth0/{Uri.EscapeDataString("auth0|otro")}");
+
+        Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
+    }
 
     [Fact]
     public async Task GetByAuth0_ExistingUser_Returns200()
     {
-        var auth0Id = "auth0|abc123";
+        var auth0Id = OwnAuth0Id;
         var userDto = new UserDto { Id = 5, Auth0Id = auth0Id, Email = "test@example.com" };
 
         _mediator
@@ -68,7 +101,7 @@ public class UsersEndpointsTests(NitroGroupsWebAppFactory factory) : IClassFixtu
             .SendQueryAsync<GetByAuth0IdQuery, UserDto?>(Arg.Any<GetByAuth0IdQuery>())
             .Returns((UserDto?)null);
 
-        using var request = new HttpRequestMessage(HttpMethod.Get, "api/users/auth0/noexiste");
+        using var request = new HttpRequestMessage(HttpMethod.Get, $"api/users/auth0/{Uri.EscapeDataString(OwnAuth0Id)}");
         request.Headers.Authorization =
             new System.Net.Http.Headers.AuthenticationHeaderValue(
                 TestAuthHandler.SchemeName, "test-token");
@@ -79,8 +112,18 @@ public class UsersEndpointsTests(NitroGroupsWebAppFactory factory) : IClassFixtu
     }
 
     // ---------------------------------------------------------------
-    // POST api/users
+    // POST api/users  (solo admin; los usuarios normales se crean con POST api/auth/sync)
     // ---------------------------------------------------------------
+
+    [Fact]
+    public async Task CreateUser_UsuarioNoAdmin_Returns403()
+    {
+        var request = new CreateUserRequest { Auth0Id = "auth0|x", Email = "x@example.com", FirstName = "X", LastName = "Y" };
+
+        var response = await _client.PostAsJsonAsync("api/users", request, ApiJsonOptions.Default);
+
+        Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
+    }
 
     [Fact]
     public async Task CreateUser_ValidRequest_Returns201()
@@ -99,7 +142,7 @@ public class UsersEndpointsTests(NitroGroupsWebAppFactory factory) : IClassFixtu
             .SendCommandAsync<CreateUserCommand, UserDto>(Arg.Any<CreateUserCommand>())
             .Returns(created);
 
-        var response = await _client.PostAsJsonAsync("api/users", request, ApiJsonOptions.Default);
+        var response = await _adminClient.PostAsJsonAsync("api/users", request, ApiJsonOptions.Default);
 
         Assert.Equal(HttpStatusCode.Created, response.StatusCode);
         var result = await response.Content.ReadFromJsonAsync<UserDto>(ApiJsonOptions.Default);
@@ -119,7 +162,7 @@ public class UsersEndpointsTests(NitroGroupsWebAppFactory factory) : IClassFixtu
             UserType = UserType.Client
         };
 
-        var response = await _client.PostAsJsonAsync("api/users", request, ApiJsonOptions.Default);
+        var response = await _adminClient.PostAsJsonAsync("api/users", request, ApiJsonOptions.Default);
 
         Assert.True(
             response.StatusCode is HttpStatusCode.BadRequest or HttpStatusCode.UnprocessableEntity,

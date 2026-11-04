@@ -1,14 +1,14 @@
 using NitroGroups.Core.Schedules.Application.Abstractions;
-using NitroGroups.Shared.Infrastructure.Context;
+using NitroGroups.Core.Schedules.Infrastructure.Persistence;
 
 namespace NitroGroups.Core.Schedules.Infrastructure.Repositories;
 
 public class UnitOfWorkSchedules(
-    NitroGroupsContext context,
+    SchedulesDbContext context,
     IGroupAvailabilityRepository availabilityRepository,
     IBusyScheduleRepository busyScheduleRepository) : IUnitOfWorkSchedules
 {
-    private readonly NitroGroupsContext _context = context;
+    private readonly SchedulesDbContext _context = context;
     public IGroupAvailabilityRepository AvailabilityRepository { get; } = availabilityRepository;
     public IBusyScheduleRepository BusyScheduleRepository { get; } = busyScheduleRepository;
 

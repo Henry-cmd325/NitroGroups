@@ -5,6 +5,7 @@ using NitroGroups.Core.Groups.Application.Abstractions;
 using GroupMediaEntity = NitroGroups.Core.Groups.Domain.Entities.GroupMedia;
 using NitroGroups.Shared.Contracts.Groups.Requests;
 using NitroGroups.Shared.EndpointMapping;
+using NitroGroups.Shared.EndpointMapping.Filters;
 using static Microsoft.AspNetCore.Http.Results;
 
 namespace NitroGroups.Core.Groups.Infrastructure.Endpoints.Groups
@@ -38,6 +39,7 @@ namespace NitroGroups.Core.Groups.Infrastructure.Endpoints.Groups
 
                 return Created($"/api/groups/{groupId}/media/{media.Id}", new { media.Id });
             })
+            .RequireGroupManager()
             .WithTags("Groups");
         }
     }

@@ -1,7 +1,0 @@
-{
-  "naming": {
-    "preferred": ["getAll", "getById"],
-    "avoid": []
-  },
-  "dtoPatterns": ["Request", "Response"]
-}

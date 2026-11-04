@@ -1,46 +1,43 @@
 "use client";
 
+import Link from "next/link";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { LogoutButton } from "@/components/auth";
 import { UserTypeEnum } from "@/features/groups/types/User";
-import Link from "next/link";
+import { ROUTES } from "@/config/routes";
+import { dashboardFor } from "./navigation";
 
 export function UserMenu() {
     const { user, auth0User, isLoading } = useCurrentUser();
 
     if (isLoading || !auth0User) return null;
 
-    // Determine dashboard link and label based on user type
-    const isMusician = user?.userType === UserTypeEnum.Musician;
-    const dashboardLink = isMusician ? "/dashboard/musician" : "/dashboard/client";
-    const dashboardLabel = isMusician ? "Panel de Artista" : "Mis Solicitudes";
-
-    // Use DB user data if available, fallback to Auth0 data
-    const displayName = user
-        ? `${user.firstName} ${user.lastName}`.trim()
-        : auth0User.name ?? auth0User.nickname ?? auth0User.email;
-
-    const profilePicture = user?.profilePictureUrl || auth0User.picture;
+    const dashboard = dashboardFor(user?.userType === UserTypeEnum.Musician);
+    const displayName = user?.firstName || auth0User.name || auth0User.nickname || auth0User.email;
+    const picture = user?.profilePictureUrl || auth0User.picture;
 
     return (
-        <div className="hidden md:flex items-center space-x-6">
-            <Link href={dashboardLink} className="hover:text-primary transition-colors font-medium">
-                {dashboardLabel}
-            </Link>
-            <div className="flex items-center space-x-3">
-                {profilePicture && (
-                    <img
-                        src={profilePicture}
-                        alt="Profile"
-                        className="w-8 h-8 rounded-full object-cover"
-                    />
+        <div className="hidden md:flex items-center gap-7">
+            <nav aria-label="Principal" className="flex items-center gap-7">
+                <Link href={ROUTES.GROUPS.SEARCH} className="text-[0.875rem] text-tinta-2 no-underline hover:text-tinta transition-colors">
+                    Explorar grupos
+                </Link>
+                <Link href={dashboard.href} className="text-[0.875rem] text-tinta no-underline font-medium hover:text-acento transition-colors">
+                    {dashboard.label}
+                </Link>
+            </nav>
+            <div className="flex items-center gap-3">
+                {picture ? (
+                    // eslint-disable-next-line @next/next/no-img-element -- avatar de Auth0/R2 con dominio variable
+                    <img src={picture} alt="" className="size-9 rounded-full object-cover" />
+                ) : (
+                    <span aria-hidden className="size-9 rounded-full bg-fondo-3 grid place-items-center font-semibold">
+                        {displayName?.charAt(0).toUpperCase()}
+                    </span>
                 )}
-                <span className="text-muted-foreground">
-                    Hola, {displayName}
-                </span>
+                <span className="text-tinta-2 text-sm">{displayName}</span>
             </div>
             <LogoutButton />
         </div>
     );
 }
-

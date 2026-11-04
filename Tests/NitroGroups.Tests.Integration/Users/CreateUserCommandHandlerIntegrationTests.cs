@@ -12,7 +12,7 @@ public class CreateUserCommandHandlerIntegrationTests(IntegrationTestFixture fix
     [Fact]
     public async Task Handle_DeberiaPersistirUsuarioYRetornarDto()
     {
-        await using var context = _fixture.CreateContext();
+        await using var context = _fixture.CreateUsersContext();
         var mapper = _fixture.CreateMapper();
         var unitOfWork = _fixture.CreateUsersUnitOfWork(context);
         var handler = new CreateUserCommandHandler(unitOfWork, mapper);
@@ -47,7 +47,7 @@ public class CreateUserCommandHandlerIntegrationTests(IntegrationTestFixture fix
     [Fact]
     public async Task Handle_DeberiaPersistirMultiplesUsuariosEnLaMismaBaseDePrueba()
     {
-        await using var context = _fixture.CreateContext();
+        await using var context = _fixture.CreateUsersContext();
         var mapper = _fixture.CreateMapper();
         var unitOfWork = _fixture.CreateUsersUnitOfWork(context);
         var handler = new CreateUserCommandHandler(unitOfWork, mapper);

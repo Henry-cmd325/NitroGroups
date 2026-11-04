@@ -17,7 +17,7 @@ public class GetAllUsersHandlerIntegrationTests : IClassFixture<IntegrationTestF
     [Fact]
     public async Task Handle_DeberiaRetornarUsuariosPaginados()
     {
-        await using var context = _fixture.CreateContext();
+        await using var context = _fixture.CreateUsersContext();
         context.Users.AddRange(
             new User("auth0|u1", "u1@example.com", "A", "Uno", UserType.Client),
             new User("auth0|u2", "u2@example.com", "B", "Dos", UserType.Musician),
@@ -41,7 +41,7 @@ public class GetAllUsersHandlerIntegrationTests : IClassFixture<IntegrationTestF
     [Fact]
     public async Task Handle_EnPaginaPosterior_DeberiaRetornarElementosEsperados()
     {
-        await using var context = _fixture.CreateContext();
+        await using var context = _fixture.CreateUsersContext();
         context.Users.AddRange(
             new User("auth0|u1", "u1@example.com", "A", "Uno", UserType.Client),
             new User("auth0|u2", "u2@example.com", "B", "Dos", UserType.Musician),

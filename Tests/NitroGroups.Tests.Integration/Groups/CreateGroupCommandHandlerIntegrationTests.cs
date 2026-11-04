@@ -12,7 +12,7 @@ public class CreateGroupCommandHandlerIntegrationTests(IntegrationTestFixture fi
     [Fact]
     public async Task Handle_CuandoSlugNoExiste_DeberiaCrearGrupoYMiembroLider()
     {
-        await using var context = _fixture.CreateContext();
+        await using var context = _fixture.CreateGroupsContext();
         var mapper = _fixture.CreateMapper();
         var unitOfWork = _fixture.CreateGroupsUnitOfWork(context);
         var handler = new CreateGroupCommandHandler(unitOfWork, mapper);
@@ -58,7 +58,7 @@ public class CreateGroupCommandHandlerIntegrationTests(IntegrationTestFixture fi
 
         GroupMember? leader = context.GroupMembers.SingleOrDefault(x => x.GroupId == persistedGroup.Id && x.UserId == command.OwnerUserId);
         Assert.NotNull(leader);
-        Assert.Equal(GroupMemberRole.Leader, leader!.Role);
+        Assert.Equal(GroupMemberRole.Owner, leader!.Role);
         Assert.True(leader.IsActive);
         Assert.Equal(JoinedVia.Manual, leader.JoinedVia);
     }
@@ -66,7 +66,7 @@ public class CreateGroupCommandHandlerIntegrationTests(IntegrationTestFixture fi
     [Fact]
     public async Task Handle_CuandoSlugYaExiste_DeberiaRetornarFailureYSinCrearNuevoGrupo()
     {
-        await using var context = _fixture.CreateContext();
+        await using var context = _fixture.CreateGroupsContext();
         var mapper = _fixture.CreateMapper();
         var unitOfWork = _fixture.CreateGroupsUnitOfWork(context);
         var handler = new CreateGroupCommandHandler(unitOfWork, mapper);

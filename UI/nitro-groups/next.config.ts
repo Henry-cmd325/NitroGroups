@@ -10,10 +10,6 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
-        hostname: "*.supabase.co",
-      },
-      {
-        protocol: "https",
         hostname: "*.r2.dev",
       },
     ],
@@ -37,6 +33,18 @@ const nextConfig: NextConfig = {
       {
         source: "/api/groups/:path*",
         destination: `${backendUrl}/groups/:path*`,
+      },
+      {
+        source: "/api/event-requests/:path*",
+        destination: `${backendUrl}/event-requests/:path*`,
+      },
+      {
+        source: "/api/event-requests",
+        destination: `${backendUrl}/event-requests`,
+      },
+      {
+        source: "/api/genres",
+        destination: `${backendUrl}/genres`,
       },
       {
         source: "/api/auth/sync",

@@ -1,78 +1,76 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { Menu, X } from "lucide-react";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { Button } from "@/components/ui/Button";
 import { ROUTES } from "@/config/routes";
 import { LogoutButton } from "@/components/auth";
 import { UserTypeEnum } from "@/features/groups/types/User";
+import { PUBLIC_LINKS, dashboardFor } from "./navigation";
 
 export function MobileMenu() {
     const { user, auth0User, isLoading } = useCurrentUser();
-    const [isOpen, setIsOpen] = useState(false);
+    const [open, setOpen] = useState(false);
+    const pathname = usePathname();
 
-    const toggle = () => setIsOpen(!isOpen);
+    // Cerrar al navegar y con Escape.
+    useEffect(() => {
+        if (!open) return;
+        const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+        window.addEventListener("keydown", onKey);
+        return () => window.removeEventListener("keydown", onKey);
+    }, [open]);
+    const [lastPath, setLastPath] = useState(pathname);
+    if (pathname !== lastPath) {
+        setLastPath(pathname);
+        setOpen(false);
+    }
 
     if (isLoading) return null;
 
-    // Determine dashboard link and label based on user type
-    const isMusician = user?.userType === UserTypeEnum.Musician;
-    const dashboardLink = isMusician ? "/dashboard/musician" : "/dashboard/client";
-    const dashboardLabel = isMusician ? "Panel de Artista" : "Mis Solicitudes";
-
-    // Use DB user data if available, fallback to Auth0 data
-    const displayName = user
-        ? `${user.firstName} ${user.lastName}`.trim()
-        : auth0User?.name ?? auth0User?.nickname ?? auth0User?.email;
+    const dashboard = dashboardFor(user?.userType === UserTypeEnum.Musician);
+    const linkClass = "block py-3 text-2xl type-heading text-tinta no-underline";
 
     return (
-        <>
-            <button className="md:hidden p-2" onClick={toggle} aria-label="Toggle menu">
-                {isOpen ? <span className="text-2xl">✕</span> : <span className="text-2xl">☰</span>}
+        <div className="md:hidden">
+            <button
+                type="button"
+                className="size-11 grid place-items-center -mr-2"
+                onClick={() => setOpen((v) => !v)}
+                aria-expanded={open}
+                aria-controls="menu-movil"
+                aria-label={open ? "Cerrar menú" : "Abrir menú"}
+            >
+                {open ? <X className="size-6" /> : <Menu className="size-6" />}
             </button>
 
-            {isOpen && (
-                <div className="absolute top-16 left-0 right-0 border-t bg-background/95 backdrop-blur-md p-4 md:hidden shadow-lg animate-in slide-in-from-top-2">
-                    {auth0User ? (
-                        <div className="flex flex-col space-y-4">
-                            <Link
-                                href={dashboardLink}
-                                className="text-lg font-medium hover:text-primary transition-colors"
-                                onClick={toggle}
-                            >
-                                {dashboardLabel}
-                            </Link>
-                            <span className="text-muted-foreground text-sm">
-                                Hola, {displayName}
-                            </span>
+            {open && (
+                <div id="menu-movil" onClick={(e) => { if ((e.target as HTMLElement).closest("a")) setOpen(false); }} className="fixed inset-x-0 top-14 bottom-0 z-40 bg-fondo px-[var(--gutter)] py-6 overflow-y-auto">
+                    <nav aria-label="Principal">
+                        <Link href={ROUTES.GROUPS.SEARCH} className={linkClass}>Explorar grupos</Link>
+                        {auth0User ? (
+                            <Link href={dashboard.href} className={linkClass}>{dashboard.label}</Link>
+                        ) : (
+                            PUBLIC_LINKS.filter((l) => l.href !== ROUTES.GROUPS.SEARCH).map((l) => (
+                                <Link key={l.href} href={l.href} className={linkClass}>{l.label}</Link>
+                            ))
+                        )}
+                    </nav>
+                    <div className="mt-8 flex flex-col gap-3">
+                        {auth0User ? (
                             <LogoutButton />
-                        </div>
-                    ) : (
-                        <div className="flex flex-col space-y-4">
-                            {/* Mobile Navigation Links */}
-                            <Link
-                                href="#artistas"
-                                className="text-muted-foreground hover:text-foreground transition-colors p-2 rounded hover:bg-accent"
-                                onClick={toggle}
-                            >
-                                Artistas
-                            </Link>
-                            {/* ... more links */}
-
-                            <div className="pt-4 flex flex-col gap-2 border-t">
-                                <Button variant="outline" asChild className="w-full justify-center">
-                                    <Link href={ROUTES.AUTH.LOGIN} onClick={toggle}>Iniciar Sesión</Link>
-                                </Button>
-                                <Button asChild className="w-full justify-center">
-                                    <Link href={ROUTES.AUTH.SIGNUP} onClick={toggle}>Registrarse</Link>
-                                </Button>
-                            </div>
-                        </div>
-                    )}
+                        ) : (
+                            <>
+                                <Button asChild size="lg"><Link href={ROUTES.AUTH.SIGNUP}>Crear cuenta</Link></Button>
+                                <Button asChild size="lg" variant="secondary"><Link href={ROUTES.AUTH.LOGIN}>Entrar</Link></Button>
+                            </>
+                        )}
+                    </div>
                 </div>
             )}
-        </>
+        </div>
     );
 }
-

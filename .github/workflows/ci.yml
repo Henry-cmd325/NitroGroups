@@ -1,0 +1,95 @@
+name: CI
+
+on:
+  push:
+    branches: [develop, master, main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  backend:
+    name: Backend (build, tests, migraciones)
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          # Contraseña desechable por corrida: la base solo vive durante el job.
+          POSTGRES_PASSWORD: ci-${{ github.run_id }}-${{ github.run_attempt }}
+          POSTGRES_DB: nitro_ci
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      DOTNET_CLI_TELEMETRY_OPTOUT: "1"
+      DOTNET_NOLOGO: "1"
+      # La misma contraseña desechable del servicio postgres; nunca se escribe un valor fijo.
+      CI_PG_PASSWORD: ci-${{ github.run_id }}-${{ github.run_attempt }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Restore
+        run: dotnet restore NitroGroups.slnx
+
+      - name: Build
+        run: dotnet build NitroGroups.slnx --no-restore --configuration Release
+
+      - name: Tests de endpoints
+        run: dotnet test Tests/NitroGroups.Tests.Endpoints --no-build --configuration Release
+
+      - name: Tests de integración y arquitectura (incluye los de PostgreSQL real)
+        env:
+          NITRO_TEST_POSTGRES: Host=localhost;Port=5432;Username=postgres;Password=${{ env.CI_PG_PASSWORD }}
+        run: dotnet test Tests/NitroGroups.Tests.Integration --no-build --configuration Release
+
+      - name: Aplicar las migraciones de cada módulo a una base vacía
+        env:
+          ConnectionStrings__NitroGroupsConnection: Host=localhost;Port=5432;Database=nitro_ci;Username=postgres;Password=${{ env.CI_PG_PASSWORD }}
+        run: |
+          dotnet tool install --global dotnet-ef --version 10.0.7
+          export PATH="$PATH:$HOME/.dotnet/tools"
+          # Un DbContext por módulo: Core/<Modulo>/NitroGroups.Core.<Modulo>.Infrastructure/Persistence/<Modulo>DbContext.cs
+          for ctx in Core/*/NitroGroups.Core.*.Infrastructure/Persistence/*DbContext.cs; do
+            project=$(dirname "$(dirname "$ctx")")
+            context=$(basename "$ctx" .cs)
+            echo "::group::$context"
+            dotnet ef database update --context "$context" --project "$project" \
+              --startup-project Services/NitroGroups.Services.Api --configuration Release --no-build
+            echo "::endgroup::"
+          done
+
+  frontend:
+    name: Frontend (lint, tests, build)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: UI/nitro-groups
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: UI/nitro-groups/package-lock.json
+
+      - run: npm ci
+      - run: npm run lint
+      - run: npm test
+      - name: Build
+        run: npm run build
+        env:
+          # La portada se renderiza sin API en el build: serverGet degrada a null.
+          BACKEND_API_URL: http://127.0.0.1:9/api
+          NEXT_TELEMETRY_DISABLED: "1"

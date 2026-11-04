@@ -8,6 +8,7 @@ using NitroGroups.Core.Schedules.Domain.Entities;
 using NitroGroups.Shared.Contracts;
 using NitroGroups.Shared.Contracts.Schedules.Responses;
 using NitroGroups.Shared.EndpointMapping;
+using NitroGroups.Shared.EndpointMapping.Filters;
 
 namespace NitroGroups.Core.Schedules.Infrastructure.Endpoints.BusySchedules;
 
@@ -37,7 +38,8 @@ public class Create : IEndpoint
 
             return Results.Ok(result.Value);
         })
-        .WithTags("Schedules");
+        .RequireGroupManager("id")
+            .WithTags("Schedules");
     }
 }
 

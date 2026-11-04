@@ -16,7 +16,7 @@ public class CheckSlugAvailabilityQueryHandlerIntegrationTests : IClassFixture<I
     [Fact]
     public async Task Handle_CuandoNoExisteSlug_DeberiaRetornarDisponible()
     {
-        await using var context = _fixture.CreateContext();
+        await using var context = _fixture.CreateGroupsContext();
         var unitOfWork = _fixture.CreateGroupsUnitOfWork(context);
         var handler = new CheckSlugAvailabilityQueryHandler(unitOfWork);
 
@@ -29,7 +29,7 @@ public class CheckSlugAvailabilityQueryHandlerIntegrationTests : IClassFixture<I
     [Fact]
     public async Task Handle_CuandoExisteSlug_DeberiaRetornarNoDisponible()
     {
-        await using var context = _fixture.CreateContext();
+        await using var context = _fixture.CreateGroupsContext();
         context.Groups.Add(new Group
         {
             OwnerUserId = 1,
@@ -55,7 +55,7 @@ public class CheckSlugAvailabilityQueryHandlerIntegrationTests : IClassFixture<I
     [Fact]
     public async Task Handle_CuandoSlugEstaVacio_DeberiaRetornarFailure()
     {
-        await using var context = _fixture.CreateContext();
+        await using var context = _fixture.CreateGroupsContext();
         var unitOfWork = _fixture.CreateGroupsUnitOfWork(context);
         var handler = new CheckSlugAvailabilityQueryHandler(unitOfWork);
 

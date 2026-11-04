@@ -15,7 +15,7 @@ public class CreateGroupAvailabilityCommandHandlerIntegrationTests : IClassFixtu
     [Fact]
     public async Task Handle_DeberiaCrearBloqueYPersistirlo()
     {
-        await using var context = _fixture.CreateContext();
+        await using var context = _fixture.CreateSchedulesContext();
         var unitOfWork = _fixture.CreateSchedulesUnitOfWork(context);
         var handler = new CreateGroupAvailabilityCommandHandler(unitOfWork);
 

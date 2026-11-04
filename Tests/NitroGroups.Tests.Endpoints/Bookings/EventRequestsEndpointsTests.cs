@@ -1,0 +1,265 @@
+using Cortex.Mediator;
+using NitroGroups.Core.Bookings.Application;
+using NitroGroups.Core.Bookings.Application.UseCases.EventRequests.Cancel;
+using NitroGroups.Core.Bookings.Application.UseCases.EventRequests.Create;
+using NitroGroups.Core.Bookings.Application.UseCases.EventRequests.Get;
+using NitroGroups.Core.Bookings.Application.UseCases.EventRequests.List;
+using NitroGroups.Core.Bookings.Application.UseCases.EventRequests.Messages;
+using NitroGroups.Core.Bookings.Application.UseCases.EventRequests.Respond;
+using NitroGroups.Shared.Contracts.Bookings.Responses;
+using NitroGroups.Shared.Domain.DomainEvents.Bookings.Enums;
+using NitroGroups.Tests.Endpoints.Infrastructure;
+using NSubstitute;
+using System.Net;
+using System.Net.Http.Json;
+using System.Text.Json;
+
+namespace NitroGroups.Tests.Endpoints.Bookings;
+
+/// <summary>Solicitudes de evento (S10): autenticación, identidad desde el token y permisos.</summary>
+public class EventRequestsEndpointsTests : IClassFixture<NitroGroupsWebAppFactory>
+{
+    private const long ForeignGroupId = 999; // grupo que el usuario de test NO administra
+
+    private readonly HttpClient _client;
+    private readonly HttpClient _anonymous;
+    private readonly HttpClient _unregistered;
+    private readonly IMediator _mediator;
+
+    public EventRequestsEndpointsTests(NitroGroupsWebAppFactory factory)
+    {
+        _client = factory.CreateClient();
+        _anonymous = factory.CreateClient();
+        _anonymous.DefaultRequestHeaders.Add(TestAuthHandler.AnonymousHeader, "1");
+        _unregistered = factory.CreateClient();
+        _unregistered.DefaultRequestHeaders.Add(TestAuthHandler.UnregisteredHeader, "1");
+        _mediator = factory.Mediator;
+
+        factory.GroupsModule.CanManageGroupAsync(ForeignGroupId, Arg.Any<long>(), Arg.Any<CancellationToken>()).Returns(false);
+    }
+
+    private static object ValidBody() => new
+    {
+        groupId = 1,
+        eventDate = "2026-12-12",
+        startTime = "20:00:00",
+        durationHours = 5,
+        eventType = "Boda",
+        locationText = "Salón Los Arcos, CDMX",
+        guestCount = 150,
+        budget = 25000,
+        message = "Buscamos mariachi para la entrada y el vals.",
+    };
+
+    private static BookingResult<EventRequestResponse> Ok(long id = 42) =>
+        BookingResult<EventRequestResponse>.Success(new EventRequestResponse { Id = id, GroupId = 1, Status = EventRequestStatus.Pending });
+
+    [Theory]
+    [InlineData("POST", "api/event-requests")]
+    [InlineData("GET", "api/event-requests/mine")]
+    [InlineData("GET", "api/groups/1/event-requests")]
+    [InlineData("GET", "api/event-requests/5")]
+    [InlineData("POST", "api/event-requests/5/accept")]
+    [InlineData("POST", "api/event-requests/5/decline")]
+    [InlineData("POST", "api/event-requests/5/cancel")]
+    [InlineData("POST", "api/event-requests/5/messages")]
+    public async Task SinToken_Returns401(string method, string url)
+    {
+        using var request = new HttpRequestMessage(new HttpMethod(method), url) { Content = JsonContent.Create(new { }) };
+
+        var response = await _anonymous.SendAsync(request);
+
+        Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+    }
+
+    [Theory]
+    [InlineData("POST", "api/event-requests")]
+    [InlineData("GET", "api/event-requests/mine")]
+    [InlineData("GET", "api/event-requests/5")]
+    [InlineData("POST", "api/event-requests/5/accept")]
+    [InlineData("POST", "api/event-requests/5/cancel")]
+    [InlineData("POST", "api/event-requests/5/messages")]
+    public async Task UsuarioSinSincronizar_Returns401(string method, string url)
+    {
+        using var request = new HttpRequestMessage(new HttpMethod(method), url) { Content = JsonContent.Create(ValidBody()) };
+
+        var response = await _unregistered.SendAsync(request);
+
+        Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task Crear_ElClienteSaleDelToken_IgnorandoUserIdDelBody()
+    {
+        _mediator.SendCommandAsync<CreateEventRequestCommand, BookingResult<EventRequestResponse>>(Arg.Any<CreateEventRequestCommand>())
+            .Returns(Ok());
+
+        var response = await _client.PostAsJsonAsync("api/event-requests", new
+        {
+            userId = 77,
+            clientUserId = 77,
+            groupId = 1,
+            eventDate = "2026-12-12",
+            durationHours = 5,
+            eventType = "Boda",
+            locationText = "Salón Los Arcos, CDMX",
+            message = "Buscamos mariachi para la entrada y el vals.",
+        });
+
+        Assert.Equal(HttpStatusCode.Created, response.StatusCode);
+        Assert.Equal("api/event-requests/42", response.Headers.Location?.OriginalString);
+        await _mediator.Received().SendCommandAsync<CreateEventRequestCommand, BookingResult<EventRequestResponse>>(
+            Arg.Is<CreateEventRequestCommand>(c => c.ClientUserId == TestAuthHandler.UserId && c.GroupId == 1
+                && c.EventDate == new DateOnly(2026, 12, 12) && c.DurationHours == 5));
+        await _mediator.DidNotReceive().SendCommandAsync<CreateEventRequestCommand, BookingResult<EventRequestResponse>>(
+            Arg.Is<CreateEventRequestCommand>(c => c.ClientUserId == 77));
+    }
+
+    [Theory]
+    [InlineData("durationHours", 0)]
+    [InlineData("durationHours", 13)]
+    [InlineData("message", "corto")]
+    [InlineData("locationText", "")]
+    [InlineData("eventType", "")]
+    public async Task Crear_DatosInvalidos_Returns400(string field, object value)
+    {
+        var body = JsonSerializer.SerializeToNode(ValidBody(), ApiJsonOptions.Default)!.AsObject();
+        body[field] = JsonSerializer.SerializeToNode(value);
+
+        var response = await _client.PostAsJsonAsync("api/event-requests", body);
+
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        using var problem = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
+        Assert.True(problem.RootElement.GetProperty("errors").TryGetProperty(char.ToUpperInvariant(field[0]) + field[1..], out _));
+    }
+
+    [Fact]
+    public async Task Crear_ConflictoDelCasoDeUso_Returns409ConMensajeEnEspanol()
+    {
+        _mediator.SendCommandAsync<CreateEventRequestCommand, BookingResult<EventRequestResponse>>(Arg.Any<CreateEventRequestCommand>())
+            .Returns(BookingResult<EventRequestResponse>.Failure(BookingErrorKind.Conflict, "El grupo no está disponible en esa fecha."));
+
+        var response = await _client.PostAsJsonAsync("api/event-requests", ValidBody());
+
+        Assert.Equal(HttpStatusCode.Conflict, response.StatusCode);
+        Assert.Contains("El grupo no está disponible en esa fecha.", await response.Content.ReadAsStringAsync());
+    }
+
+    [Fact]
+    public async Task Mias_UsaElUsuarioDelToken()
+    {
+        _mediator.SendQueryAsync<GetMyEventRequestsQuery, List<EventRequestResponse>>(Arg.Any<GetMyEventRequestsQuery>())
+            .Returns([new EventRequestResponse { Id = 3 }]);
+
+        var response = await _client.GetAsync("api/event-requests/mine");
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        await _mediator.Received().SendQueryAsync<GetMyEventRequestsQuery, List<EventRequestResponse>>(
+            Arg.Is<GetMyEventRequestsQuery>(q => q.ClientUserId == TestAuthHandler.UserId));
+    }
+
+    [Fact]
+    public async Task BandejaDelGrupo_GrupoAjeno_Returns403()
+    {
+        var response = await _client.GetAsync($"api/groups/{ForeignGroupId}/event-requests");
+
+        Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
+        await _mediator.DidNotReceive().SendQueryAsync<GetGroupEventRequestsQuery, List<EventRequestResponse>>(
+            Arg.Is<GetGroupEventRequestsQuery>(q => q.GroupId == ForeignGroupId));
+    }
+
+    [Fact]
+    public async Task BandejaDelGrupo_Manager_PasaElFiltroDeEstado()
+    {
+        _mediator.SendQueryAsync<GetGroupEventRequestsQuery, List<EventRequestResponse>>(Arg.Any<GetGroupEventRequestsQuery>())
+            .Returns([]);
+
+        var response = await _client.GetAsync("api/groups/1/event-requests?status=Pending");
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        await _mediator.Received().SendQueryAsync<GetGroupEventRequestsQuery, List<EventRequestResponse>>(
+            Arg.Is<GetGroupEventRequestsQuery>(q => q.GroupId == 1 && q.Status == EventRequestStatus.Pending));
+    }
+
+    [Fact]
+    public async Task Detalle_NoParticipante_Returns404()
+    {
+        _mediator.SendQueryAsync<GetEventRequestByIdQuery, BookingResult<EventRequestResponse>>(Arg.Is<GetEventRequestByIdQuery>(q => q.Id == 404))
+            .Returns(BookingResult<EventRequestResponse>.NotFound());
+
+        var response = await _client.GetAsync("api/event-requests/404");
+
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        await _mediator.Received().SendQueryAsync<GetEventRequestByIdQuery, BookingResult<EventRequestResponse>>(
+            Arg.Is<GetEventRequestByIdQuery>(q => q.Id == 404 && q.UserId == TestAuthHandler.UserId && !q.IsAdmin));
+    }
+
+    [Theory]
+    [InlineData("accept", EventRequestDecision.Accept)]
+    [InlineData("decline", EventRequestDecision.Decline)]
+    public async Task Responder_SinBody_UsaElUsuarioDelToken(string action, EventRequestDecision decision)
+    {
+        _mediator.SendCommandAsync<RespondToEventRequestCommand, BookingResult<EventRequestResponse>>(Arg.Any<RespondToEventRequestCommand>())
+            .Returns(Ok(7));
+
+        var response = await _client.PostAsync($"api/event-requests/7/{action}", null);
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        await _mediator.Received().SendCommandAsync<RespondToEventRequestCommand, BookingResult<EventRequestResponse>>(
+            Arg.Is<RespondToEventRequestCommand>(c => c.Id == 7 && c.UserId == TestAuthHandler.UserId && c.Decision == decision && c.Message == null));
+    }
+
+    [Fact]
+    public async Task Responder_TransicionInvalida_Returns409()
+    {
+        _mediator.SendCommandAsync<RespondToEventRequestCommand, BookingResult<EventRequestResponse>>(Arg.Is<RespondToEventRequestCommand>(c => c.Id == 8))
+            .Returns(BookingResult<EventRequestResponse>.Failure(BookingErrorKind.Conflict, "Solo se puede aceptar una solicitud pendiente; esta está cancelada."));
+
+        var response = await _client.PostAsJsonAsync("api/event-requests/8/accept", new { message = "Va" });
+
+        Assert.Equal(HttpStatusCode.Conflict, response.StatusCode);
+        Assert.Contains("Solo se puede aceptar una solicitud pendiente", await response.Content.ReadAsStringAsync());
+    }
+
+    [Fact]
+    public async Task Responder_MensajeDemasiadoLargo_Returns400()
+    {
+        var response = await _client.PostAsJsonAsync("api/event-requests/9/decline", new { message = new string('x', 2001) });
+
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task Cancelar_UsaElUsuarioDelToken()
+    {
+        _mediator.SendCommandAsync<CancelEventRequestCommand, BookingResult<EventRequestResponse>>(Arg.Any<CancelEventRequestCommand>())
+            .Returns(Ok(11));
+
+        var response = await _client.PostAsync("api/event-requests/11/cancel", null);
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        await _mediator.Received().SendCommandAsync<CancelEventRequestCommand, BookingResult<EventRequestResponse>>(
+            Arg.Is<CancelEventRequestCommand>(c => c.Id == 11 && c.UserId == TestAuthHandler.UserId));
+    }
+
+    [Fact]
+    public async Task Mensaje_ElRemitenteSaleDelToken()
+    {
+        _mediator.SendCommandAsync<PostEventRequestMessageCommand, BookingResult<EventRequestMessageResponse>>(Arg.Any<PostEventRequestMessageCommand>())
+            .Returns(BookingResult<EventRequestMessageResponse>.Success(new EventRequestMessageResponse { Id = 1, Body = "Hola" }));
+
+        var response = await _client.PostAsJsonAsync("api/event-requests/12/messages", new { body = "Hola", senderUserId = 77 });
+
+        Assert.Equal(HttpStatusCode.Created, response.StatusCode);
+        await _mediator.Received().SendCommandAsync<PostEventRequestMessageCommand, BookingResult<EventRequestMessageResponse>>(
+            Arg.Is<PostEventRequestMessageCommand>(c => c.Id == 12 && c.UserId == TestAuthHandler.UserId && c.Body == "Hola"));
+    }
+
+    [Fact]
+    public async Task Mensaje_Vacio_Returns400()
+    {
+        var response = await _client.PostAsJsonAsync("api/event-requests/12/messages", new { body = "   " });
+
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+    }
+}

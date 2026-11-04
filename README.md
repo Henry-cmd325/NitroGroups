@@ -76,10 +76,85 @@ Asegúrate de que `BACKEND_API_URL` en `UI/nitro-groups/.env.local` apunte a `ht
    npm run dev
    ```
 
-## Ejecución de migraciones desde la consola
-```bash
-dotnet ef database update --project ./Shared/NitroGroups.Shared.Infrastructure --startup-project ./Services/NitroGroups.Services.Api
+## Autenticación y permisos (Auth0)
+
+La API es **deny-by-default**: todo endpoint exige un access token válido de Auth0, salvo los públicos declarados con `.AllowAnonymous()` (perfil de grupo, galería, disponibilidad, géneros, salud). `Tests/NitroGroups.Tests.Endpoints/Security` fija esa lista: un endpoint público nuevo hace fallar el test hasta que se declara.
+
+- La identidad **siempre** sale del token. `ownerUserId` o `auth0Id` en el body se ignoran.
+- Las escrituras sobre un grupo exigen ser **Owner o Manager** del grupo (`RequireGroupManager`).
+- El **admin** de la plataforma es el rol `admin` de Auth0.
+
+Los access tokens de Auth0 no traen email ni roles por defecto. Agrega esta Action (*Login / Post Login*):
+
+```js
+exports.onExecutePostLogin = async (event, api) => {
+  const ns = 'https://nitrogroups.com';
+  // Solo emails verificados: un email sin verificar no identifica a nadie.
+  if (event.user.email_verified) {
+    api.accessToken.setCustomClaim(`${ns}/email`, event.user.email);
+  }
+  api.accessToken.setCustomClaim(`${ns}/roles`, event.authorization?.roles ?? []);
+};
 ```
+
+Si cambias el namespace de los roles, configura `Auth0:RolesClaim` en la API.
+
+**Frontend:** `AUTH0_SECRET` firma la cookie de sesión y es obligatorio, con al menos 32 caracteres (`openssl rand -hex 32`). Sin él no se emite ni se acepta ninguna sesión.
+
+## Tests
+
+```bash
+dotnet test NitroGroups.slnx
+```
+
+Los tests de concurrencia necesitan PostgreSQL real (InMemory no los reproduce). Corren cuando existe `NITRO_TEST_POSTGRES`, una cadena de conexión a un servidor: cada test crea su propia base y la borra al terminar. En CI siempre está definida; en local, sin la variable, se saltan con su motivo visible.
+
+```bash
+NITRO_TEST_POSTGRES="Host=localhost;Username=postgres;Password=postgres" dotnet test Tests/NitroGroups.Tests.Integration
+```
+
+## Base de datos y migraciones
+
+Cada módulo tiene su propio `DbContext`, su esquema de PostgreSQL (`users`, `groups`, `schedules`, `bookings`), su tabla de historial `__ef_migrations_history` y su `outbox_events`. Las migraciones viven en `Core/<Modulo>/NitroGroups.Core.<Modulo>.Infrastructure/Persistence/Migrations`.
+
+Para aplicar las migraciones de todos los módulos:
+
+```bash
+for m in Users Groups Schedules Bookings; do
+  dotnet ef database update --context ${m}DbContext \
+    --project Core/$m/NitroGroups.Core.$m.Infrastructure \
+    --startup-project Services/NitroGroups.Services.Api
+done
+```
+
+Para crear una migración en un módulo:
+
+```bash
+dotnet ef migrations add <Nombre> --context GroupsDbContext \
+  --project Core/Groups/NitroGroups.Core.Groups.Infrastructure \
+  --startup-project Services/NitroGroups.Services.Api \
+  --output-dir Persistence/Migrations
+```
+
+**Bases creadas antes de noviembre de 2026** (con la migración única `Init` en `public`): ejecuta una vez `scripts/db/2026-11-upgrade-to-module-schemas.sql` antes de aplicar las migraciones. El script mueve las tablas con sus datos a su esquema, es transaccional y no hace nada si la base ya está migrada.
+
+```bash
+psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f scripts/db/2026-11-upgrade-to-module-schemas.sql
+```
+
+## Emails
+
+Los avisos de las solicitudes de evento (`api/event-requests`: nueva solicitud, aceptada, rechazada, cancelada y mensajes nuevos) salen del outbox del módulo Bookings. Si un envío falla, el outbox reintenta el evento más tarde. Los emails no incluyen el texto de los mensajes.
+
+Sin configuración, los emails **no se envían**: solo se registran en el log el destinatario y el asunto (útil en desarrollo y tests). Para enviarlos por SMTP, define `Email:Smtp:Host`:
+
+| Clave | Por defecto | Descripción |
+| --- | --- | --- |
+| `Email:From` | `NitroGroups <no-reply@nitrogroups.com>` | Remitente |
+| `Email:Smtp:Host` | (vacío: solo log) | Servidor SMTP; activa el envío real |
+| `Email:Smtp:Port` | `587` | Puerto |
+| `Email:Smtp:Username` / `Email:Smtp:Password` | (vacíos) | Credenciales; guárdalas en User Secrets o variables de entorno (`Email__Smtp__Password`) |
+| `Email:Smtp:EnableSsl` | `true` | TLS |
 
 ## Tailwind CSS
 

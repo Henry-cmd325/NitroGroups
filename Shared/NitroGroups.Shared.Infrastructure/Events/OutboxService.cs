@@ -4,20 +4,25 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NitroGroups.Shared.Abstractions.Events;
 using NitroGroups.Shared.Domain;
-using NitroGroups.Shared.Infrastructure.Context;
+using NitroGroups.Shared.Infrastructure.Persistence;
 using NitroGroups.Shared.Infrastructure.Context.Entities;
 using System.Text.Json;
 
 namespace NitroGroups.Shared.Infrastructure.Events
 {
-    public class OutboxService(
-        NitroGroupsContext context,
-        ILogger<OutboxService> logger,
+    /// <summary>
+    /// Outbox de un módulo: guarda los eventos en la tabla <c>outbox_events</c> del esquema
+    /// del módulo (misma transacción que sus datos) y los despacha a los handlers.
+    /// </summary>
+    public class OutboxService<TContext>(
+        TContext context,
+        ILogger<OutboxService<TContext>> logger,
         IServiceProvider serviceProvider,
         IEventProvider eventProvider) : IOutboxService
+        where TContext : ModuleDbContext
     {
-        private readonly NitroGroupsContext _context = context;
-        private readonly ILogger<OutboxService> _logger = logger;
+        private readonly TContext _context = context;
+        private readonly ILogger<OutboxService<TContext>> _logger = logger;
         private readonly IServiceProvider _serviceProvider = serviceProvider;
         private readonly IEventProvider _eventProvider = eventProvider;
         
@@ -51,7 +56,17 @@ namespace NitroGroups.Shared.Infrastructure.Events
             if (outboxEvents.Count != 0)
             {
                 _context.OutboxEvents.AddRange(outboxEvents);
-                await _context.SaveChangesAsync();
+                try
+                {
+                    // Este guardado incluye los cambios de estado pendientes del módulo.
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException ex)
+                {
+                    // El estado no se guardó: el evento tampoco debe quedar en memoria.
+                    _context.OutboxEvents.RemoveRange(outboxEvents);
+                    throw new NitroGroups.Shared.Abstractions.Repository.ConcurrencyConflictException("El registro cambió desde que se leyó.", ex);
+                }
 
                 _logger.LogDebug("Saved {EventCount} events to outbox", outboxEvents.Count);
             }

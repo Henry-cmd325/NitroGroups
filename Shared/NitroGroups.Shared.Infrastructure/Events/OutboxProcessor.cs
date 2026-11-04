@@ -5,7 +5,10 @@ using NitroGroups.Shared.Abstractions.Events;
 
 namespace NitroGroups.Shared.Infrastructure.Events
 {
-    public class OutboxProcessor(IServiceProvider serviceProvider, ILogger<OutboxProcessor> logger) : BackgroundService
+    public class OutboxProcessor(
+        IServiceProvider serviceProvider,
+        OutboxModuleRegistry registry,
+        ILogger<OutboxProcessor> logger) : BackgroundService
     {
         private readonly IServiceProvider _serviceProvider = serviceProvider;
         private readonly ILogger<OutboxProcessor> _logger = logger;
@@ -18,10 +21,14 @@ namespace NitroGroups.Shared.Infrastructure.Events
             {
                 try
                 {
-                    await using var scope = _serviceProvider.CreateAsyncScope();
-                    var outboxService = scope.ServiceProvider.GetRequiredService<IOutboxService>();
-                    
-                    await outboxService.ProcessPendingEventsAsync();
+                    foreach (var contextType in registry.ContextTypes)
+                    {
+                        await using var scope = _serviceProvider.CreateAsyncScope();
+                        var outboxType = typeof(OutboxService<>).MakeGenericType(contextType);
+                        var outboxService = (IOutboxService)scope.ServiceProvider.GetRequiredService(outboxType);
+
+                        await outboxService.ProcessPendingEventsAsync();
+                    }
 
                     // Procesar eventos cada 5 segundos
                     await Task.Delay(TimeSpan.FromSeconds(5), stoppingToken);

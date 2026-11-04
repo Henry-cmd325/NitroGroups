@@ -75,8 +75,8 @@ export const usersService = {
         const firstName = nameParts[0] || auth0User.email.split('@')[0];
         const lastName = nameParts.slice(1).join(' ') || '';
 
-        // Map userType to backend string enum: Client, Musician, BandMember, Admin
-        const typeMap: Record<string, string> = { client: 'Client', musician: 'Musician', band_member: 'BandMember' };
+        // Tipo de cuenta del backend: Client | Musician ("band_member" es el flujo de manager, cuenta de músico)
+        const typeMap: Record<string, string> = { client: 'Client', musician: 'Musician', band_member: 'Musician' };
         const rawType = (auth0User.user_metadata?.user_type || 'musician').toLowerCase();
         const userType = typeMap[rawType] ?? 'Musician';
 

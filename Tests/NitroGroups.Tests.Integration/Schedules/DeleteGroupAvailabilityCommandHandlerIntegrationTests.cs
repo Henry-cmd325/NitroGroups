@@ -16,7 +16,7 @@ public class DeleteGroupAvailabilityCommandHandlerIntegrationTests : IClassFixtu
     [Fact]
     public async Task Handle_CuandoExiste_DeberiaEliminarYRetornarSuccess()
     {
-        await using var context = _fixture.CreateContext();
+        await using var context = _fixture.CreateSchedulesContext();
         var entity = new GroupAvailability
         {
             GroupId = 55,
@@ -41,7 +41,7 @@ public class DeleteGroupAvailabilityCommandHandlerIntegrationTests : IClassFixtu
     [Fact]
     public async Task Handle_CuandoNoExiste_DeberiaRetornarFailure()
     {
-        await using var context = _fixture.CreateContext();
+        await using var context = _fixture.CreateSchedulesContext();
         var unitOfWork = _fixture.CreateSchedulesUnitOfWork(context);
         var handler = new DeleteGroupAvailabilityCommandHandler(unitOfWork);
 
@@ -49,5 +49,27 @@ public class DeleteGroupAvailabilityCommandHandlerIntegrationTests : IClassFixtu
 
         Assert.True(result.IsFailure);
         Assert.Equal("GroupAvailability no encontrado.", result.Error);
+    }
+
+    [Fact]
+    public async Task Handle_CuandoElItemEsDeOtroGrupo_NoDeberiaEliminarlo()
+    {
+        // Un manager del grupo 55 no puede borrar la disponibilidad del grupo 77 usando su id.
+        await using var context = _fixture.CreateSchedulesContext();
+        var ajeno = new GroupAvailability
+        {
+            GroupId = 77,
+            StartAt = new DateTimeOffset(2025, 7, 1, 10, 0, 0, TimeSpan.Zero),
+            EndAt = new DateTimeOffset(2025, 7, 1, 12, 0, 0, TimeSpan.Zero),
+        };
+        context.GroupAvailabilities.Add(ajeno);
+        await context.SaveChangesAsync();
+
+        var handler = new DeleteGroupAvailabilityCommandHandler(_fixture.CreateSchedulesUnitOfWork(context));
+
+        var result = await handler.Handle(new DeleteGroupAvailabilityCommand(55, ajeno.Id), CancellationToken.None);
+
+        Assert.True(result.IsFailure);
+        Assert.Contains(context.GroupAvailabilities, a => a.Id == ajeno.Id);
     }
 }

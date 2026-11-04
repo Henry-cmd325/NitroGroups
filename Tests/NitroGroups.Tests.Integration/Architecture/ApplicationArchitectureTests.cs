@@ -1,7 +1,10 @@
 using NitroGroups.Core.Groups.Application.Abstractions;
 using NitroGroups.Core.Schedules.Application.Abstractions;
+using NitroGroups.Core.Bookings.Application.Abstractions;
 using NitroGroups.Core.Users.Application.Abstractions;
-using NitroGroups.Shared.Infrastructure.Context;
+using NitroGroups.Core.Groups.Infrastructure.Persistence;
+using NitroGroups.Core.Schedules.Infrastructure.Persistence;
+using NitroGroups.Core.Users.Infrastructure.Persistence;
 using System.Reflection;
 
 namespace NitroGroups.Tests.Integration.Architecture;
@@ -12,7 +15,8 @@ public class ApplicationArchitectureTests
     [
         typeof(Core.Users.Application.DependencyInjection).Assembly,
         typeof(Core.Groups.Application.DependencyInjection).Assembly,
-        typeof(Core.Schedules.Application.DependencyInjection).Assembly
+        typeof(Core.Schedules.Application.DependencyInjection).Assembly,
+        typeof(Core.Bookings.Application.DependencyInjection).Assembly
     ];
 
     [Fact]
@@ -23,7 +27,8 @@ public class ApplicationArchitectureTests
             "NitroGroups.Shared.Infrastructure",
             "NitroGroups.Core.Users.Infrastructure",
             "NitroGroups.Core.Groups.Infrastructure",
-            "NitroGroups.Core.Schedules.Infrastructure"
+            "NitroGroups.Core.Schedules.Infrastructure",
+            "NitroGroups.Core.Bookings.Infrastructure"
         };
 
         var violations = ApplicationAssemblies
@@ -43,12 +48,15 @@ public class ApplicationArchitectureTests
         {
             typeof(IUnitOfWorkUser),
             typeof(IUnitOfWorkGroups),
-            typeof(IUnitOfWorkSchedules)
+            typeof(IUnitOfWorkSchedules),
+            typeof(IUnitOfWorkBookings)
         };
 
         var forbiddenParameterTypes = new HashSet<Type>
         {
-            typeof(NitroGroupsContext),
+            typeof(UsersDbContext),
+            typeof(GroupsDbContext),
+            typeof(SchedulesDbContext),
             typeof(IGroupAvailabilityRepository),
             typeof(IBusyScheduleRepository)
         };

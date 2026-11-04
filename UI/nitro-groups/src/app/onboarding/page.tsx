@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
-import Loader from "@/components/ui/Loader";
+import { OnboardingLoading } from "@/features/onboarding/components/OnboardingParts";
 
 /**
  * Main onboarding router - detects user type and redirects to appropriate flow
@@ -38,10 +38,5 @@ export default function OnboardingPage() {
         }
     }, [isLoading, isAuthenticated, router]);
 
-    return (
-        <div className="min-h-screen flex flex-col items-center justify-center gap-4">
-            <Loader />
-            <p className="text-muted-foreground">Configurando tu experiencia...</p>
-        </div>
-    );
+    return <OnboardingLoading label="Preparando tu registro…" />;
 }

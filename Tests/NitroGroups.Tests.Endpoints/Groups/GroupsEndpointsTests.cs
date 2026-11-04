@@ -210,7 +210,7 @@ public class GroupsEndpointsTests(NitroGroupsWebAppFactory factory) : IClassFixt
     {
         var members = new List<GroupMemberResponse>
         {
-            new() { UserId = 1, Role = NitroGroups.Shared.Domain.DomainEvents.Groups.Enums.GroupMemberRole.Leader }
+            new() { UserId = 1, Role = NitroGroups.Shared.Domain.DomainEvents.Groups.Enums.GroupMemberRole.Owner }
         };
 
         _mediator
