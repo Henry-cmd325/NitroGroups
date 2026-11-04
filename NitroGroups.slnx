@@ -41,7 +41,6 @@
     <Project Path="Shared/NitroGroups.Shared.Infrastructure/NitroGroups.Shared.Infrastructure.csproj" />
   </Folder>
   <Folder Name="/Tests/">
-    <Project Path="Tests/NitroGroups.Orchestrator.Gate/NitroGroups.Orchestrator.Gate.csproj" />
     <Project Path="Tests/NitroGroups.Tests.Endpoints/NitroGroups.Tests.Endpoints.csproj" />
     <Project Path="Tests/NitroGroups.Tests.Integration/NitroGroups.Tests.Integration.csproj" />
   </Folder>
