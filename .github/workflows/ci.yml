@@ -20,7 +20,8 @@ jobs:
       postgres:
         image: postgres:16
         env:
-          POSTGRES_PASSWORD: postgres
+          # Contraseña desechable por corrida: la base solo vive durante el job.
+          POSTGRES_PASSWORD: ci-${{ github.run_id }}-${{ github.run_attempt }}
           POSTGRES_DB: nitro_ci
         ports: ["5432:5432"]
         options: >-
@@ -29,6 +30,8 @@ jobs:
     env:
       DOTNET_CLI_TELEMETRY_OPTOUT: "1"
       DOTNET_NOLOGO: "1"
+      # La misma contraseña desechable del servicio postgres; nunca se escribe un valor fijo.
+      CI_PG_PASSWORD: ci-${{ github.run_id }}-${{ github.run_attempt }}
     steps:
       - uses: actions/checkout@v4
 
@@ -47,12 +50,12 @@ jobs:
 
       - name: Tests de integración y arquitectura (incluye los de PostgreSQL real)
         env:
-          NITRO_TEST_POSTGRES: Host=localhost;Port=5432;Username=postgres;Password=postgres
+          NITRO_TEST_POSTGRES: Host=localhost;Port=5432;Username=postgres;Password=${{ env.CI_PG_PASSWORD }}
         run: dotnet test Tests/NitroGroups.Tests.Integration --no-build --configuration Release
 
       - name: Aplicar las migraciones de cada módulo a una base vacía
         env:
-          ConnectionStrings__NitroGroupsConnection: Host=localhost;Port=5432;Database=nitro_ci;Username=postgres;Password=postgres
+          ConnectionStrings__NitroGroupsConnection: Host=localhost;Port=5432;Database=nitro_ci;Username=postgres;Password=${{ env.CI_PG_PASSWORD }}
         run: |
           dotnet tool install --global dotnet-ef --version 10.0.7
           export PATH="$PATH:$HOME/.dotnet/tools"
