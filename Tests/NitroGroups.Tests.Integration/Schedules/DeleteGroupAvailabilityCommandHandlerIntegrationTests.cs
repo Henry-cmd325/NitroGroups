@@ -16,7 +16,7 @@ public class DeleteGroupAvailabilityCommandHandlerIntegrationTests : IClassFixtu
     [Fact]
     public async Task Handle_CuandoExiste_DeberiaEliminarYRetornarSuccess()
     {
-        await using var context = _fixture.CreateContext();
+        await using var context = _fixture.CreateSchedulesContext();
         var entity = new GroupAvailability
         {
             GroupId = 55,
@@ -41,7 +41,7 @@ public class DeleteGroupAvailabilityCommandHandlerIntegrationTests : IClassFixtu
     [Fact]
     public async Task Handle_CuandoNoExiste_DeberiaRetornarFailure()
     {
-        await using var context = _fixture.CreateContext();
+        await using var context = _fixture.CreateSchedulesContext();
         var unitOfWork = _fixture.CreateSchedulesUnitOfWork(context);
         var handler = new DeleteGroupAvailabilityCommandHandler(unitOfWork);
 

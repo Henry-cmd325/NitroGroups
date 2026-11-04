@@ -5,15 +5,16 @@ using NitroGroups.Core.Groups.Application.Abstractions;
 using NitroGroups.Core.Groups.Application.Mappings;
 using NitroGroups.Core.Groups.Domain.Entities;
 using NitroGroups.Core.Groups.Infrastructure;
+using NitroGroups.Core.Groups.Infrastructure.Persistence;
 using NitroGroups.Core.Schedules.Application.Abstractions;
 using NitroGroups.Core.Schedules.Infrastructure;
+using NitroGroups.Core.Schedules.Infrastructure.Persistence;
 using NitroGroups.Core.Users.Application.Abstractions;
-using NitroGroups.Core.Users.Application.Abstractions.Integrations;
 using NitroGroups.Core.Users.Application.Mappings;
 using NitroGroups.Core.Users.Domain.Entities;
 using NitroGroups.Core.Users.Infrastructure;
+using NitroGroups.Core.Users.Infrastructure.Persistence;
 using NitroGroups.Shared.Abstractions.Events;
-using NitroGroups.Shared.Infrastructure.Context;
 using NitroGroups.Shared.Infrastructure.Repository;
 using NSubstitute;
 
@@ -21,15 +22,19 @@ namespace NitroGroups.Tests.Integration.Infrastructure;
 
 public sealed class IntegrationTestFixture : IDisposable
 {
-    public NitroGroupsContext CreateContext()
+    public UsersDbContext CreateUsersContext() => CreateContext<UsersDbContext>(o => new UsersDbContext(o));
+    public GroupsDbContext CreateGroupsContext() => CreateContext<GroupsDbContext>(o => new GroupsDbContext(o));
+    public SchedulesDbContext CreateSchedulesContext() => CreateContext<SchedulesDbContext>(o => new SchedulesDbContext(o));
+
+    private static TContext CreateContext<TContext>(Func<DbContextOptions<TContext>, TContext> factory)
+        where TContext : DbContext
     {
-        var databaseName = $"NitroGroupsTests_{Guid.NewGuid():N}";
-        var options = new DbContextOptionsBuilder<NitroGroupsContext>()
-            .UseInMemoryDatabase(databaseName)
+        var options = new DbContextOptionsBuilder<TContext>()
+            .UseInMemoryDatabase($"NitroGroupsTests_{Guid.NewGuid():N}")
             .EnableSensitiveDataLogging()
             .Options;
 
-        var context = new NitroGroupsContext(options);
+        var context = factory(options);
         context.Database.EnsureCreated();
         return context;
     }
@@ -49,44 +54,33 @@ public sealed class IntegrationTestFixture : IDisposable
         return provider.GetRequiredService<IMapper>();
     }
 
-    public IUnitOfWorkUser CreateUsersUnitOfWork(NitroGroupsContext context)
-    {
-        var outbox = Substitute.For<IOutboxService>();
-        var groupIntegration = Substitute.For<IGroupIntegrationService>();
-        return CreateUsersUnitOfWork(context, outbox, groupIntegration);
-    }
+    public IUnitOfWorkUser CreateUsersUnitOfWork(UsersDbContext context)
+        => CreateUsersUnitOfWork(context, Substitute.For<IOutboxService>());
 
-    public IUnitOfWorkUser CreateUsersUnitOfWork(
-        NitroGroupsContext context,
-        IOutboxService outbox,
-        IGroupIntegrationService groupIntegration)
-    {
-        var users = new GenericRepository<User, long>(context);
-        var musicians = new GenericRepository<Musician, long>(context);
+    public IUnitOfWorkUser CreateUsersUnitOfWork(UsersDbContext context, IOutboxService outbox)
+        => new UnitOfWorkUser(
+            context,
+            outbox,
+            new GenericRepository<User, long>(context),
+            new GenericRepository<Musician, long>(context));
 
-        return new UnitOfWorkUser(context, outbox, users, musicians, groupIntegration);
-    }
+    public IUnitOfWorkGroups CreateGroupsUnitOfWork(GroupsDbContext context)
+        => new UnitOfWorkGroups(
+            context,
+            Substitute.For<IOutboxService>(),
+            new GenericRepository<Group, long>(context),
+            new GenericRepository<GroupMember, long>(context),
+            new GenericRepository<MusicGenre, long>(context),
+            new GenericRepository<GroupGenre, long>(context),
+            new GenericRepository<GroupMedia, long>(context));
 
-    public IUnitOfWorkGroups CreateGroupsUnitOfWork(NitroGroupsContext context)
-    {
-        var outbox = Substitute.For<IOutboxService>();
-        var groups = new GenericRepository<Group, long>(context);
-        var members = new GenericRepository<GroupMember, long>(context);
-        var genres = new GenericRepository<MusicGenre, long>(context);
-        var groupGenres = new GenericRepository<GroupGenre, long>(context);
-        var media = new GenericRepository<GroupMedia, long>(context);
-
-        return new UnitOfWorkGroups(context, outbox, groups, members, genres, groupGenres, media);
-    }
-
-    public IUnitOfWorkSchedules CreateSchedulesUnitOfWork(NitroGroupsContext context)
+    public IUnitOfWorkSchedules CreateSchedulesUnitOfWork(SchedulesDbContext context)
     {
         var services = new ServiceCollection();
-        services.AddScoped(_ => context);
-        services.AddSchedulesInfrastructure();
+        services.AddSingleton(context);
+        services.AddSchedulesRepositories();
 
-        var provider = services.BuildServiceProvider();
-        return provider.GetRequiredService<IUnitOfWorkSchedules>();
+        return services.BuildServiceProvider().GetRequiredService<IUnitOfWorkSchedules>();
     }
 
     public void Dispose()

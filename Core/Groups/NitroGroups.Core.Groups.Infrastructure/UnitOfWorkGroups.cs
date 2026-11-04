@@ -2,13 +2,13 @@ using NitroGroups.Core.Groups.Application.Abstractions;
 using NitroGroups.Core.Groups.Domain.Entities;
 using NitroGroups.Shared.Abstractions.Events;
 using NitroGroups.Shared.Abstractions.Repository;
-using NitroGroups.Shared.Infrastructure.Context;
+using NitroGroups.Core.Groups.Infrastructure.Persistence;
 using NitroGroups.Shared.Infrastructure.Repository;
 
 namespace NitroGroups.Core.Groups.Infrastructure
 {
     public class UnitOfWorkGroups(
-        NitroGroupsContext context, 
+        GroupsDbContext context,
         IOutboxService outboxService,
         IGenericRepository<Group, long> groups,
         IGenericRepository<GroupMember, long> groupMembers,

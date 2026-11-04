@@ -8,7 +8,9 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using NitroGroups.Core.Groups.Application.Abstractions;
 using NitroGroups.Core.Groups.Domain.Entities;
 using NitroGroups.Shared.Abstractions.Repository;
-using NitroGroups.Shared.Infrastructure.Context;
+using NitroGroups.Core.Groups.Infrastructure.Persistence;
+using NitroGroups.Core.Schedules.Infrastructure.Persistence;
+using NitroGroups.Core.Users.Infrastructure.Persistence;
 using NSubstitute;
 
 namespace NitroGroups.Tests.Endpoints.Infrastructure;
@@ -51,11 +53,10 @@ public class NitroGroupsWebAppFactory : WebApplicationFactory<Program>
             services.RemoveAll<IUnitOfWorkGroups>();
             services.AddScoped(_ => UnitOfWorkGroups);
 
-            // Reemplazar NitroGroupsContext por base de datos en memoria
-            services.RemoveAll<DbContextOptions<NitroGroupsContext>>();
-            services.RemoveAll<NitroGroupsContext>();
-            services.AddDbContext<NitroGroupsContext>(options =>
-                options.UseInMemoryDatabase("NitroGroupsTestDb"));
+            // Reemplazar los DbContext de cada módulo por bases de datos en memoria
+            ReplaceWithInMemory<UsersDbContext>(services);
+            ReplaceWithInMemory<GroupsDbContext>(services);
+            ReplaceWithInMemory<SchedulesDbContext>(services);
 
             // Autenticación que aprueba toda petición (bypass de JWT):
             // registrar el esquema y sobreescribir los defaults DESPUÉS de que
@@ -70,5 +71,12 @@ public class NitroGroupsWebAppFactory : WebApplicationFactory<Program>
                 opts.DefaultChallengeScheme = TestAuthHandler.SchemeName;
             });
         });
+    }
+
+    private static void ReplaceWithInMemory<TContext>(IServiceCollection services) where TContext : DbContext
+    {
+        services.RemoveAll<DbContextOptions<TContext>>();
+        services.RemoveAll<TContext>();
+        services.AddDbContext<TContext>(options => options.UseInMemoryDatabase($"NitroGroupsTestDb_{typeof(TContext).Name}"));
     }
 }

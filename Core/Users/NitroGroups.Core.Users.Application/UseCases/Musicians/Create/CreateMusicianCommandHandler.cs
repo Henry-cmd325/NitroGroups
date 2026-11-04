@@ -4,6 +4,7 @@ using NitroGroups.Core.Users.Application.Abstractions;
 using NitroGroups.Core.Users.Application.Abstractions.Services;
 using NitroGroups.Core.Users.Domain.Entities;
 using NitroGroups.Shared.Contracts;
+using NitroGroups.Shared.Contracts.Modules;
 using NitroGroups.Shared.Contracts.Users.Requests;
 using NitroGroups.Shared.Contracts.Users.Responses;
 using NitroGroups.Shared.Domain.DomainEvents.Users.Enums;
@@ -17,7 +18,8 @@ namespace NitroGroups.Core.Users.Application.UseCases.Musicians.Create
     
     public class CreateMusicianCommandHandler(
         IUnitOfWorkUser unitOfWork, 
-        IAuthenticationService authService, 
+        IAuthenticationService authService,
+        IGroupsModuleApi groupsModule,
         IMapper mapper) : ICommandHandler<CreateMusicianCommand, Result<MusicianDto>>
     {
         private readonly IUnitOfWorkUser _unitOfWork = unitOfWork;
@@ -57,7 +59,7 @@ namespace NitroGroups.Core.Users.Application.UseCases.Musicians.Create
 
             if (command.IdGroup != 0)
             {
-                var groupExists = await _unitOfWork.GroupIntegrationService.CheckIfGroupExists(command.IdGroup);
+                var groupExists = await groupsModule.GroupExistsAsync(command.IdGroup, cancellationToken);
                 if (!groupExists)
                     return "El grupo al que se queria unir ya no existe";
 

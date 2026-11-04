@@ -1,0 +1,61 @@
+using Microsoft.EntityFrameworkCore;
+using NitroGroups.Core.Groups.Infrastructure.Persistence;
+using NitroGroups.Shared.Contracts.Modules;
+using NitroGroups.Shared.Domain.DomainEvents.Groups.Enums;
+
+namespace NitroGroups.Core.Groups.Infrastructure.Adapters
+{
+    /// <summary>Implementación in-process de la API pública del módulo Groups.</summary>
+    internal sealed class GroupsModuleApi(GroupsDbContext context) : IGroupsModuleApi
+    {
+        private static readonly GroupMemberRole[] ManagerRoles = [GroupMemberRole.Leader];
+
+        public Task<bool> GroupExistsAsync(long groupId, CancellationToken cancellationToken = default)
+            => context.Groups.AsNoTracking().AnyAsync(g => g.Id == groupId, cancellationToken);
+
+        public async Task<GroupSummary?> GetGroupAsync(long groupId, CancellationToken cancellationToken = default)
+        {
+            var groups = await GetGroupsAsync([groupId], cancellationToken);
+            return groups.GetValueOrDefault(groupId);
+        }
+
+        public async Task<IReadOnlyDictionary<long, GroupSummary>> GetGroupsAsync(IEnumerable<long> groupIds, CancellationToken cancellationToken = default)
+        {
+            var ids = groupIds.Distinct().ToList();
+            if (ids.Count == 0)
+                return new Dictionary<long, GroupSummary>();
+
+            return await context.Groups.AsNoTracking()
+                .Where(g => ids.Contains(g.Id))
+                .Select(g => new GroupSummary(g.Id, g.Slug, g.GroupName, g.Email, g.OwnerUserId, g.IsAcceptingBookings, g.ProfilePictureUrl))
+                .ToDictionaryAsync(g => g.Id, cancellationToken);
+        }
+
+        public async Task<bool> CanManageGroupAsync(long groupId, long userId, CancellationToken cancellationToken = default)
+        {
+            var isOwner = await context.Groups.AsNoTracking()
+                .AnyAsync(g => g.Id == groupId && g.OwnerUserId == userId, cancellationToken);
+
+            return isOwner || await context.GroupMembers.AsNoTracking()
+                .AnyAsync(m => m.GroupId == groupId && m.UserId == userId && m.IsActive && ManagerRoles.Contains(m.Role), cancellationToken);
+        }
+
+        public async Task<IReadOnlyList<long>> GetManagerUserIdsAsync(long groupId, CancellationToken cancellationToken = default)
+        {
+            var managers = await context.GroupMembers.AsNoTracking()
+                .Where(m => m.GroupId == groupId && m.IsActive && ManagerRoles.Contains(m.Role))
+                .Select(m => m.UserId)
+                .ToListAsync(cancellationToken);
+
+            var owner = await context.Groups.AsNoTracking()
+                .Where(g => g.Id == groupId)
+                .Select(g => (long?)g.OwnerUserId)
+                .FirstOrDefaultAsync(cancellationToken);
+
+            if (owner is > 0)
+                managers.Add(owner.Value);
+
+            return managers.Distinct().ToList();
+        }
+    }
+}

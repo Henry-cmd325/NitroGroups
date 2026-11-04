@@ -1,7 +1,9 @@
 using NitroGroups.Core.Groups.Application.Abstractions;
 using NitroGroups.Core.Schedules.Application.Abstractions;
 using NitroGroups.Core.Users.Application.Abstractions;
-using NitroGroups.Shared.Infrastructure.Context;
+using NitroGroups.Core.Groups.Infrastructure.Persistence;
+using NitroGroups.Core.Schedules.Infrastructure.Persistence;
+using NitroGroups.Core.Users.Infrastructure.Persistence;
 using System.Reflection;
 
 namespace NitroGroups.Tests.Integration.Architecture;
@@ -48,7 +50,9 @@ public class ApplicationArchitectureTests
 
         var forbiddenParameterTypes = new HashSet<Type>
         {
-            typeof(NitroGroupsContext),
+            typeof(UsersDbContext),
+            typeof(GroupsDbContext),
+            typeof(SchedulesDbContext),
             typeof(IGroupAvailabilityRepository),
             typeof(IBusyScheduleRepository)
         };

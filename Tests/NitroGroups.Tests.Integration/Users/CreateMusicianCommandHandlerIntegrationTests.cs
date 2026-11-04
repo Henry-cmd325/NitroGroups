@@ -1,8 +1,8 @@
-using NitroGroups.Core.Users.Application.Abstractions.Integrations;
 using NitroGroups.Core.Users.Application.Abstractions.Services;
 using NitroGroups.Core.Users.Application.UseCases.Musicians.Create;
 using NitroGroups.Core.Users.Domain.Entities;
 using NitroGroups.Shared.Abstractions.Events;
+using NitroGroups.Shared.Contracts.Modules;
 using NitroGroups.Shared.Contracts.Users.Requests;
 using NitroGroups.Shared.Domain.DomainEvents.Users.Enums;
 using NitroGroups.Tests.Integration.Infrastructure;
@@ -17,17 +17,17 @@ public class CreateMusicianCommandHandlerIntegrationTests(IntegrationTestFixture
     [Fact]
     public async Task Handle_CuandoExisteUsuario_DeberiaCrearPerfilMusicianYActualizarTipo()
     {
-        await using var context = _fixture.CreateContext();
+        await using var context = _fixture.CreateUsersContext();
         var existingUser = new User("auth0|musician-existing", "existing@example.com", "Laura", "Gómez", UserType.Client);
         context.Users.Add(existingUser);
         await context.SaveChangesAsync();
 
         var mapper = _fixture.CreateMapper();
         var outbox = Substitute.For<IOutboxService>();
-        var groupIntegration = Substitute.For<IGroupIntegrationService>();
-        var unitOfWork = _fixture.CreateUsersUnitOfWork(context, outbox, groupIntegration);
+        var groupsModule = Substitute.For<IGroupsModuleApi>();
+        var unitOfWork = _fixture.CreateUsersUnitOfWork(context, outbox);
         var authService = Substitute.For<IAuthenticationService>();
-        var handler = new CreateMusicianCommandHandler(unitOfWork, authService, mapper);
+        var handler = new CreateMusicianCommandHandler(unitOfWork, authService, groupsModule, mapper);
 
         var command = new CreateMusicianCommand(
             new UserInfoData
@@ -68,14 +68,14 @@ public class CreateMusicianCommandHandlerIntegrationTests(IntegrationTestFixture
     [Fact]
     public async Task Handle_CuandoIdGroupNoExiste_DeberiaRetornarFailure()
     {
-        await using var context = _fixture.CreateContext();
+        await using var context = _fixture.CreateUsersContext();
         var mapper = _fixture.CreateMapper();
         var outbox = Substitute.For<IOutboxService>();
-        var groupIntegration = Substitute.For<IGroupIntegrationService>();
-        groupIntegration.CheckIfGroupExists(123).Returns(false);
-        var unitOfWork = _fixture.CreateUsersUnitOfWork(context, outbox, groupIntegration);
+        var groupsModule = Substitute.For<IGroupsModuleApi>();
+        groupsModule.GroupExistsAsync(123, Arg.Any<CancellationToken>()).Returns(false);
+        var unitOfWork = _fixture.CreateUsersUnitOfWork(context, outbox);
         var authService = Substitute.For<IAuthenticationService>();
-        var handler = new CreateMusicianCommandHandler(unitOfWork, authService, mapper);
+        var handler = new CreateMusicianCommandHandler(unitOfWork, authService, groupsModule, mapper);
 
         var command = new CreateMusicianCommand(
             new UserInfoData

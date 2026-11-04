@@ -1,14 +1,13 @@
 using Microsoft.EntityFrameworkCore;
 using NitroGroups.Shared.Abstractions.Repository;
 using NitroGroups.Shared.Contracts;
-using NitroGroups.Shared.Infrastructure.Context;
 using System.Linq.Expressions;
 
 namespace NitroGroups.Shared.Infrastructure.Repository
 {
-    public class GenericRepository<TEntity, TKey>(NitroGroupsContext context) : IGenericRepository<TEntity, TKey> where TEntity : class
+    public class GenericRepository<TEntity, TKey>(DbContext context) : IGenericRepository<TEntity, TKey> where TEntity : class
     {
-        protected readonly NitroGroupsContext _context = context;
+        protected readonly DbContext _context = context;
         private readonly DbSet<TEntity> _dbSet = context.Set<TEntity>();
         public async Task CreateAsync(TEntity entity)
         {

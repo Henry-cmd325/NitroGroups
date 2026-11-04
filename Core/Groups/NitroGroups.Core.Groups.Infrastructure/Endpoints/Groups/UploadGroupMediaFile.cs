@@ -3,12 +3,10 @@ using Cortex.Mediator;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
-using NitroGroups.Core.Groups.Application.UseCases.Groups.GetByUserId;
-using NitroGroups.Core.Users.Application.UseCases.Users.GetByAuth0Id;
 using NitroGroups.Shared.Abstractions.Services;
 using NitroGroups.Shared.Contracts;
 using NitroGroups.Shared.Contracts.Groups.Responses;
-using NitroGroups.Shared.Contracts.Users.Responses;
+using NitroGroups.Shared.Contracts.Modules;
 using NitroGroups.Shared.EndpointMapping;
 using static Microsoft.AspNetCore.Http.Results;
 
@@ -26,7 +24,8 @@ namespace NitroGroups.Core.Groups.Infrastructure.Endpoints.Groups
             app.MapPost("api/groups/{groupId:long}/media/upload", async (
                 HttpContext http,
                 long groupId,
-                IMediator mediator,
+                IUsersModuleApi usersModule,
+                IGroupsModuleApi groupsModule,
                 IGroupMediaObjectStorage groupMediaStorage,
                 CancellationToken cancellationToken) =>
             {
@@ -59,24 +58,15 @@ namespace NitroGroups.Core.Groups.Infrastructure.Endpoints.Groups
                         statusCode: StatusCodes.Status400BadRequest);
                 }
 
-                var appUser = await mediator.SendQueryAsync<GetByAuth0IdQuery, UserDto?>(new GetByAuth0IdQuery(auth0));
-                if (appUser is null)
+                var userId = await usersModule.GetUserIdByAuth0IdAsync(auth0, cancellationToken);
+                if (userId is null)
                 {
                     return Results.Json(
                         new { error = "Usuario no registrado" },
                         statusCode: StatusCodes.Status403Forbidden);
                 }
 
-                var groupResult = await mediator.SendQueryAsync<GetGroupByUserIdQuery, Result<GroupResponse?>>(
-                    new GetGroupByUserIdQuery(appUser.Id));
-                if (groupResult.IsFailure || groupResult.Value is null)
-                {
-                    return Results.Json(
-                        new { error = "No tienes un grupo" },
-                        statusCode: StatusCodes.Status403Forbidden);
-                }
-
-                if (groupResult.Value.Id != groupId)
+                if (!await groupsModule.CanManageGroupAsync(groupId, userId.Value, cancellationToken))
                 {
                     return Results.Json(
                         new { error = "Este contenido no pertenece a tu grupo" },

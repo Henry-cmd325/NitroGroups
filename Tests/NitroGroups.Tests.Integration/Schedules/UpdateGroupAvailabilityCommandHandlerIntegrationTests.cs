@@ -11,7 +11,7 @@ public class UpdateGroupAvailabilityCommandHandlerIntegrationTests(IntegrationTe
     [Fact]
     public async Task Handle_CuandoExisteYPerteneceAlGrupo_DeberiaActualizarYPersistir()
     {
-        await using var context = _fixture.CreateContext();
+        await using var context = _fixture.CreateSchedulesContext();
         var unitOfWork = _fixture.CreateSchedulesUnitOfWork(context);
         var entity = new GroupAvailability
         {
@@ -54,7 +54,7 @@ public class UpdateGroupAvailabilityCommandHandlerIntegrationTests(IntegrationTe
     [Fact]
     public async Task Handle_CuandoNoExiste_DeberiaRetornarFailure()
     {
-        await using var context = _fixture.CreateContext();
+        await using var context = _fixture.CreateSchedulesContext();
         var unitOfWork = _fixture.CreateSchedulesUnitOfWork(context);
         var handler = new UpdateGroupAvailabilityCommandHandler(unitOfWork);
 
@@ -75,7 +75,7 @@ public class UpdateGroupAvailabilityCommandHandlerIntegrationTests(IntegrationTe
     [Fact]
     public async Task Handle_CuandoPerteneceAOtroGrupo_DeberiaRetornarFailureYSinPersistirCambios()
     {
-        await using var context = _fixture.CreateContext();
+        await using var context = _fixture.CreateSchedulesContext();
         var unitOfWork = _fixture.CreateSchedulesUnitOfWork(context);
         var entity = new GroupAvailability
         {

@@ -10,7 +10,7 @@ namespace NitroGroups.Core.Bootstrap
         public static IServiceCollection AddGroupsModule(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddGroupsApplication(configuration);
-            services.AddGroupsInfrastructure();
+            services.AddGroupsInfrastructure(configuration);
 
             return services;
         }

@@ -13,7 +13,7 @@ public class BusySchedulesCommandHandlersIntegrationTests(IntegrationTestFixture
     [Fact]
     public async Task CreateBusySchedule_DeberiaPersistirYRetornarDto()
     {
-        await using var context = _fixture.CreateContext();
+        await using var context = _fixture.CreateSchedulesContext();
         var unitOfWork = _fixture.CreateSchedulesUnitOfWork(context);
         var handler = new CreateBusyScheduleCommandHandler(unitOfWork);
 
@@ -41,7 +41,7 @@ public class BusySchedulesCommandHandlersIntegrationTests(IntegrationTestFixture
     [Fact]
     public async Task UpdateBusySchedule_CuandoExisteYCorrespondeAlGrupo_DeberiaActualizar()
     {
-        await using var context = _fixture.CreateContext();
+        await using var context = _fixture.CreateSchedulesContext();
         var entity = new BusySchedule
         {
             GroupId = 77,
@@ -77,7 +77,7 @@ public class BusySchedulesCommandHandlersIntegrationTests(IntegrationTestFixture
     [Fact]
     public async Task UpdateBusySchedule_CuandoNoExiste_DeberiaRetornarFailure()
     {
-        await using var context = _fixture.CreateContext();
+        await using var context = _fixture.CreateSchedulesContext();
         var unitOfWork = _fixture.CreateSchedulesUnitOfWork(context);
         var handler = new UpdateBusyScheduleCommandHandler(unitOfWork);
 
@@ -98,7 +98,7 @@ public class BusySchedulesCommandHandlersIntegrationTests(IntegrationTestFixture
     [Fact]
     public async Task RemoveBusySchedule_CuandoExiste_DeberiaEliminarlo()
     {
-        await using var context = _fixture.CreateContext();
+        await using var context = _fixture.CreateSchedulesContext();
         var entity = new BusySchedule
         {
             GroupId = 88,
@@ -123,7 +123,7 @@ public class BusySchedulesCommandHandlersIntegrationTests(IntegrationTestFixture
     [Fact]
     public async Task RemoveBusySchedule_CuandoNoPerteneceAlGrupo_DeberiaRetornarFailureYSinEliminar()
     {
-        await using var context = _fixture.CreateContext();
+        await using var context = _fixture.CreateSchedulesContext();
         var entity = new BusySchedule
         {
             GroupId = 100,

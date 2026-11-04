@@ -76,9 +76,33 @@ Asegúrate de que `BACKEND_API_URL` en `UI/nitro-groups/.env.local` apunte a `ht
    npm run dev
    ```
 
-## Ejecución de migraciones desde la consola
+## Base de datos y migraciones
+
+Cada módulo tiene su propio `DbContext`, su esquema de PostgreSQL (`users`, `groups`, `schedules`), su tabla de historial `__ef_migrations_history` y su `outbox_events`. Las migraciones viven en `Core/<Modulo>/NitroGroups.Core.<Modulo>.Infrastructure/Persistence/Migrations`.
+
+Para aplicar las migraciones de todos los módulos:
+
 ```bash
-dotnet ef database update --project ./Shared/NitroGroups.Shared.Infrastructure --startup-project ./Services/NitroGroups.Services.Api
+for m in Users Groups Schedules; do
+  dotnet ef database update --context ${m}DbContext \
+    --project Core/$m/NitroGroups.Core.$m.Infrastructure \
+    --startup-project Services/NitroGroups.Services.Api
+done
+```
+
+Para crear una migración en un módulo:
+
+```bash
+dotnet ef migrations add <Nombre> --context GroupsDbContext \
+  --project Core/Groups/NitroGroups.Core.Groups.Infrastructure \
+  --startup-project Services/NitroGroups.Services.Api \
+  --output-dir Persistence/Migrations
+```
+
+**Bases creadas antes de noviembre de 2026** (con la migración única `Init` en `public`): ejecuta una vez `scripts/db/2026-11-upgrade-to-module-schemas.sql` antes de aplicar las migraciones. El script mueve las tablas con sus datos a su esquema, es transaccional y no hace nada si la base ya está migrada.
+
+```bash
+psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f scripts/db/2026-11-upgrade-to-module-schemas.sql
 ```
 
 ## Tailwind CSS

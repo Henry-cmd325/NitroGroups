@@ -12,7 +12,7 @@ public class CreateGroupCommandHandlerIntegrationTests(IntegrationTestFixture fi
     [Fact]
     public async Task Handle_CuandoSlugNoExiste_DeberiaCrearGrupoYMiembroLider()
     {
-        await using var context = _fixture.CreateContext();
+        await using var context = _fixture.CreateGroupsContext();
         var mapper = _fixture.CreateMapper();
         var unitOfWork = _fixture.CreateGroupsUnitOfWork(context);
         var handler = new CreateGroupCommandHandler(unitOfWork, mapper);
@@ -66,7 +66,7 @@ public class CreateGroupCommandHandlerIntegrationTests(IntegrationTestFixture fi
     [Fact]
     public async Task Handle_CuandoSlugYaExiste_DeberiaRetornarFailureYSinCrearNuevoGrupo()
     {
-        await using var context = _fixture.CreateContext();
+        await using var context = _fixture.CreateGroupsContext();
         var mapper = _fixture.CreateMapper();
         var unitOfWork = _fixture.CreateGroupsUnitOfWork(context);
         var handler = new CreateGroupCommandHandler(unitOfWork, mapper);
