@@ -31,6 +31,7 @@ public class Get : IEndpoint
 
             return Results.Ok(result.Value);
         })
-        .WithTags("Schedules");
+        .AllowAnonymous()
+            .WithTags("Schedules");
     }
 }

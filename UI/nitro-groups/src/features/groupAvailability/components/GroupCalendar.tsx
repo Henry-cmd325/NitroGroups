@@ -7,11 +7,15 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import type { DateSelectArg, EventChangeArg, EventInput, DatesSetArg, EventClickArg } from "@fullcalendar/core";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { groupAvailabilityService as schedulesService } from "../services/groupAvailability.service";
 
-import Card from "@/components/ui/Card";
-import Badge from "@/components/ui/Badge";
+/** La API antepone "busy_" al id de los horarios ocupados (el resto son bloques de disponibilidad). */
+const BUSY_ID_PREFIX = "busy_";
+import { groupAvailabilityService as schedulesService, type CreateBusyScheduleRequest, type UpdateAvailabilityRequest, type UpdateBusyScheduleRequest } from "../services/groupAvailability.service";
+
+import esLocale from "@fullcalendar/core/locales/es";
+import { Alert, AlertDescription } from "@/components/ui/Alert";
 import { Button } from "@/components/ui/Button";
+import { formatRangeLabel } from "./formatRange";
 
 export type GroupCalendarMode = "public" | "private";
 
@@ -21,20 +25,6 @@ interface GroupCalendarProps {
 }
 
 type PendingDelete = { id: string; title: string; kind: "avail" | "busy" };
-
-function formatRangeLabel(startStr: string, endStr: string): string {
-  try {
-    const s = new Date(startStr);
-    const e = new Date(endStr);
-    const opts: Intl.DateTimeFormatOptions = {
-      dateStyle: "medium",
-      timeStyle: "short"
-    };
-    return `${s.toLocaleString(undefined, opts)} — ${e.toLocaleString(undefined, opts)}`;
-  } catch {
-    return `${startStr} → ${endStr}`;
-  }
-}
 
 export default function GroupCalendar({ groupId, mode = "public" }: GroupCalendarProps) {
   const isPrivate = mode === "private";
@@ -56,17 +46,17 @@ export default function GroupCalendar({ groupId, mode = "public" }: GroupCalenda
   });
 
   const createBusy = useMutation({
-    mutationFn: (req: any) => schedulesService.createBusySchedule(groupId, req),
+    mutationFn: (req: CreateBusyScheduleRequest) => schedulesService.createBusySchedule(groupId, req),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["schedules", groupId] })
   });
 
   const updateAvailability = useMutation({
-    mutationFn: (req: { id: string, data: any }) => schedulesService.updateAvailability(groupId, req.id, req.data),
+    mutationFn: (req: { id: string, data: UpdateAvailabilityRequest }) => schedulesService.updateAvailability(groupId, req.id, req.data),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["schedules", groupId] })
   });
 
   const updateBusy = useMutation({
-    mutationFn: (req: { id: string, data: any }) => schedulesService.updateBusySchedule(groupId, req.id, req.data),
+    mutationFn: (req: { id: string, data: UpdateBusyScheduleRequest }) => schedulesService.updateBusySchedule(groupId, req.id, req.data),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["schedules", groupId] })
   });
 
@@ -80,24 +70,23 @@ export default function GroupCalendar({ groupId, mode = "public" }: GroupCalenda
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["schedules", groupId] })
   });
 
-  const header = useMemo(
-    () => (
-      <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-        <div>
-          <h3 className="text-xl font-semibold text-white">Calendario del grupo</h3>
-          <p className="text-sm text-muted-foreground">
-            {isPrivate
-              ? "Por defecto el grupo está disponible. Selecciona un rango para marcar horario no disponible; arrastra un bloque para ajustar."
-              : "El grupo está disponible salvo en los bloques señalados (no disponible o reglas explícitas)."}
-          </p>
-        </div>
-        <Badge variant={isPrivate ? "secondary" : "outline"}>
-          {isPrivate ? "Modo privado" : "Modo público"}
-        </Badge>
-      </div>
-    ),
-    [isPrivate],
+  // Los colores vienen fijos de la API; aquí se cambian por clases del sistema (globals.css → .fc).
+  const events = useMemo<EventInput[]>(
+    () =>
+      (serverEvents as EventInput[]).map((ev) => ({
+        ...ev,
+        backgroundColor: undefined,
+        borderColor: undefined,
+        textColor: undefined,
+        classNames: [String(ev.id ?? "").startsWith(BUSY_ID_PREFIX) ? "ng-busy" : "ng-available"],
+      })),
+    [serverEvents],
   );
+
+  // El aviso refleja solo el último cambio enviado: si el siguiente sale bien, desaparece.
+  const lastMutation = [createBusy, updateAvailability, updateBusy, deleteAvailability, deleteBusy]
+    .reduce((latest, m) => (m.submittedAt > latest.submittedAt ? m : latest));
+  const mutationFailed = lastMutation.isError;
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -182,73 +171,81 @@ export default function GroupCalendar({ groupId, mode = "public" }: GroupCalenda
     setDateRange({ start: arg.startStr, end: arg.endStr });
   };
 
+  const dialogPanel =
+    "w-full max-w-md bg-fondo-2 p-6 text-tinta shadow-[0_24px_64px_-16px_var(--fondo)]";
+
   return (
-    <>
-      <Card
-        className="border-border bg-card/80 backdrop-blur"
-        header={header}
-        footer={
-          <div className="flex flex-col gap-2 text-xs text-muted-foreground">
-            <p className="text-[11px] leading-snug">
-              Por defecto las franjas sin bloque cuentan como <span className="text-foreground">disponible</span>. Solo
-              añadimos lo que excepciones a eso.
-            </p>
-            <div className="flex flex-wrap items-center gap-3">
-              <span className="inline-flex items-center gap-2">
-                <span className="h-2 w-2 rounded border border-emerald-500/50 bg-emerald-500/15" title="Solo si existe en el sistema" />
-                Disponible (bloque explícito)
-              </span>
-              <span className="inline-flex items-center gap-2">
-                <span className="h-2 w-2 rounded-full bg-rose-400" />
-                No disponible
-              </span>
-              <span className="inline-flex items-center gap-2">
-                <span className="h-2 w-2 rounded-full bg-violet-400" />
-                {isPrivate ? "Arrastra o elimina excepciones" : "Solo lectura"}
-              </span>
-            </div>
-          </div>
-        }
-      >
-        <div className="rounded-xl bg-background/40 p-2 md:p-4">
-          {isLoading ? (
-            <div className="flex h-[400px] items-center justify-center">
-              <div className="h-8 w-8 animate-spin rounded-full border-4 border-emerald-500 border-t-transparent"></div>
-            </div>
-          ) : (
-            <FullCalendar
-              ref={calendarRef}
-              plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-              initialView="timeGridWeek"
-              headerToolbar={{
-                left: "prev,next today",
-                center: "title",
-                right: "dayGridMonth,timeGridWeek,timeGridDay",
-              }}
-              height="auto"
-              nowIndicator
-              slotMinTime="08:00:00"
-              slotMaxTime="23:00:00"
-              editable={isPrivate}
-              eventStartEditable={isPrivate}
-              eventDurationEditable={isPrivate}
-              eventResizableFromStart={isPrivate}
-              selectable={isPrivate}
-              selectMirror={isPrivate}
-              select={handleSelect}
-              events={serverEvents as EventInput[]}
-              eventClick={handleEventClick}
-              eventChange={handleEventChange}
-              datesSet={handleDatesSet}
-              dayMaxEvents
-            />
-          )}
+    <section aria-labelledby="calendario-titulo" className="py-10">
+      <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+        <div className="max-w-[62ch]">
+          <h2 id="calendario-titulo" className="sr-only">Calendario</h2>
+          <p className="text-tinta-2">
+            {isPrivate
+              ? "Cuentas como disponible salvo en lo que marques. Arrastra sobre las horas para bloquearlas, mueve un bloque para ajustarlo o tócalo para quitarlo."
+              : "El grupo está disponible salvo en los bloques marcados."}
+          </p>
         </div>
-      </Card>
+        <ul aria-label="Leyenda" className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-tinta-2">
+          <li className="inline-flex items-center gap-2">
+            <span aria-hidden className="size-3 bg-acento" />
+            No disponible
+          </li>
+          <li className="inline-flex items-center gap-2">
+            <span aria-hidden className="ng-swatch-available size-3" />
+            Disponible (bloque marcado)
+          </li>
+          <li className="inline-flex items-center gap-2">
+            <span aria-hidden className="size-3 bg-fondo-2" />
+            Sin marcar: disponible
+          </li>
+        </ul>
+      </div>
+
+      {mutationFailed && (
+        <Alert variant="destructive" className="mt-6">
+          <AlertDescription>No pudimos guardar el último cambio del calendario. Recarga la página e inténtalo de nuevo.</AlertDescription>
+        </Alert>
+      )}
+
+      <div className="mt-8">
+        {isLoading ? (
+          <div aria-busy className="grid h-[480px] place-items-center bg-fondo-2">
+            <p role="status" className="text-tinta-2">Cargando calendario…</p>
+          </div>
+        ) : (
+          <FullCalendar
+            ref={calendarRef}
+            plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+            locale={esLocale}
+            initialView="timeGridWeek"
+            headerToolbar={{
+              left: "prev,next today",
+              center: "title",
+              right: "dayGridMonth,timeGridWeek,timeGridDay",
+            }}
+            height="auto"
+            nowIndicator
+            slotMinTime="08:00:00"
+            slotMaxTime="23:00:00"
+            editable={isPrivate}
+            eventStartEditable={isPrivate}
+            eventDurationEditable={isPrivate}
+            eventResizableFromStart={isPrivate}
+            selectable={isPrivate}
+            selectMirror={isPrivate}
+            select={handleSelect}
+            events={events}
+            eventClick={handleEventClick}
+            eventChange={handleEventChange}
+            datesSet={handleDatesSet}
+            dayMaxEvents
+          />
+        )}
+      </div>
 
       {pendingSelect && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm"
+          className="fixed inset-0 z-50 grid place-items-center bg-fondo/85 p-4"
           role="presentation"
           onClick={() => setPendingSelect(null)}
         >
@@ -256,23 +253,23 @@ export default function GroupCalendar({ groupId, mode = "public" }: GroupCalenda
             role="dialog"
             aria-modal="true"
             aria-labelledby="select-interval-title"
-            className="bg-card text-card-foreground w-full max-w-md rounded-lg border border-border p-6 shadow-lg"
+            aria-describedby="select-interval-range"
+            className={dialogPanel}
             onClick={(e) => e.stopPropagation()}
           >
-            <h4 id="select-interval-title" className="text-lg font-semibold text-foreground">
-              Marcar no disponible
-            </h4>
-            <p className="mt-2 text-sm text-muted-foreground">
-              El resto del calendario se entiende como disponible. Este intervalo se guardará como excepción (no
-              disponible).
-            </p>
-            <p className="mt-2 rounded-md border border-border bg-background/50 px-3 py-2 text-sm font-medium text-foreground">
+            <h3 id="select-interval-title" className="type-heading text-2xl">
+              Bloquear este horario
+            </h3>
+            <p id="select-interval-range" className="mt-4 bg-fondo px-4 py-3 font-medium tabular">
               {formatRangeLabel(pendingSelect.startStr, pendingSelect.endStr)}
             </p>
-            <div className="mt-6 flex flex-col gap-2 sm:flex-row sm:justify-end">
+            <p className="mt-3 text-sm text-tinta-2">
+              Nadie podrá pedirte una fecha en ese horario. Puedes quitar el bloque cuando quieras.
+            </p>
+            <div className="mt-6 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
               <Button
                 type="button"
-                variant="outline"
+                variant="ghost"
                 onClick={() => setPendingSelect(null)}
                 disabled={createBusy.isPending}
               >
@@ -280,11 +277,11 @@ export default function GroupCalendar({ groupId, mode = "public" }: GroupCalenda
               </Button>
               <Button
                 type="button"
-                variant="secondary"
                 onClick={confirmMarkUnavailable}
                 disabled={createBusy.isPending}
+                autoFocus
               >
-                {createBusy.isPending ? "Guardando…" : "Guardar no disponible"}
+                {createBusy.isPending ? "Bloqueando…" : "Bloquear horario"}
               </Button>
             </div>
           </div>
@@ -293,7 +290,7 @@ export default function GroupCalendar({ groupId, mode = "public" }: GroupCalenda
 
       {pendingDelete && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm"
+          className="fixed inset-0 z-50 grid place-items-center bg-fondo/85 p-4"
           role="presentation"
           onClick={() => setPendingDelete(null)}
         >
@@ -301,27 +298,28 @@ export default function GroupCalendar({ groupId, mode = "public" }: GroupCalenda
             role="dialog"
             aria-modal="true"
             aria-labelledby="delete-event-title"
-            className="bg-card text-card-foreground w-full max-w-md rounded-lg border border-border p-6 shadow-lg"
+            className={dialogPanel}
             onClick={(e) => e.stopPropagation()}
           >
-            <h4 id="delete-event-title" className="text-lg font-semibold text-foreground">
-              Eliminar evento
-            </h4>
-            <p className="mt-2 text-sm text-muted-foreground">
-              ¿Seguro que quieres eliminar{" "}
-              <span className="font-medium text-foreground">«{pendingDelete.title}»</span>?
+            <h3 id="delete-event-title" className="type-heading text-2xl">
+              Quitar «{pendingDelete.title}»
+            </h3>
+            <p className="mt-3 text-tinta-2">
+              {pendingDelete.kind === "busy"
+                ? "Ese horario vuelve a contar como disponible."
+                : "El bloque desaparece del calendario."}
             </p>
-            <div className="mt-6 flex flex-col gap-2 sm:flex-row sm:justify-end">
-              <Button type="button" variant="outline" onClick={() => setPendingDelete(null)}>
+            <div className="mt-6 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+              <Button type="button" variant="ghost" onClick={() => setPendingDelete(null)} autoFocus>
                 Cancelar
               </Button>
               <Button type="button" variant="destructive" onClick={confirmDelete}>
-                Eliminar
+                Quitar del calendario
               </Button>
             </div>
           </div>
         </div>
       )}
-    </>
+    </section>
   );
 }

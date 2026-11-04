@@ -1,28 +1,36 @@
 import * as React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
+import { CircleAlert, CircleCheck, Info, TriangleAlert, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-const alertVariants = cva(
-    "relative w-full rounded-lg border p-4 [&>svg~*]:pl-7 [&>svg+div]:translate-y-[-3px] [&>svg]:absolute [&>svg]:left-4 [&>svg]:top-4 [&>svg]:text-foreground",
-    {
-        variants: {
-            variant: {
-                default: "bg-background text-foreground",
-                destructive:
-                    "border-destructive/50 text-destructive dark:border-destructive [&>svg]:text-destructive",
-                success:
-                    "border-green-500/50 text-green-700 dark:text-green-400 bg-green-50 dark:bg-green-950/30 [&>svg]:text-green-600 dark:[&>svg]:text-green-400",
-                warning:
-                    "border-yellow-500/50 text-yellow-700 dark:text-yellow-400 bg-yellow-50 dark:bg-yellow-950/30 [&>svg]:text-yellow-600 dark:[&>svg]:text-yellow-400",
-                info:
-                    "border-blue-500/50 text-blue-700 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/30 [&>svg]:text-blue-600 dark:[&>svg]:text-blue-400",
-            },
+/**
+ * Aviso en línea: icono y texto sobre fondo-2. El color vive en el icono y, en errores, en el
+ * texto; nunca en un borde lateral (DESIGN.md → Refused on purpose).
+ */
+const alertVariants = cva("relative flex w-full items-start gap-3 bg-fondo-2 px-4 py-3.5 text-tinta", {
+    variants: {
+        variant: {
+            default: "[&_[data-alert-icon]]:text-tinta-2",
+            info: "[&_[data-alert-icon]]:text-tinta-2",
+            destructive: "text-error [&_[data-alert-icon]]:text-error",
+            success: "[&_[data-alert-icon]]:text-ok",
+            warning: "[&_[data-alert-icon]]:text-acento",
         },
-        defaultVariants: {
-            variant: "default",
-        },
-    }
-);
+    },
+    defaultVariants: {
+        variant: "default",
+    },
+});
+
+type AlertVariant = NonNullable<VariantProps<typeof alertVariants>["variant"]>;
+
+const defaultIcons: Record<AlertVariant, React.ReactNode> = {
+    default: <Info />,
+    info: <Info />,
+    destructive: <CircleAlert />,
+    success: <CircleCheck />,
+    warning: <TriangleAlert />,
+};
 
 export interface AlertProps
     extends React.HTMLAttributes<HTMLDivElement>,
@@ -33,39 +41,27 @@ export interface AlertProps
 
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(
     ({ className, variant, onClose, icon, children, ...props }, ref) => {
+        const v: AlertVariant = variant ?? "default";
         return (
             <div
                 ref={ref}
-                role="alert"
-                className={cn(
-                    alertVariants({ variant }),
-                    "animate-in fade-in-50 slide-in-from-top-2 duration-300",
-                    className
-                )}
+                // Errores y advertencias interrumpen; el resto se anuncia sin cortar la lectura.
+                role={v === "destructive" || v === "warning" ? "alert" : "status"}
+                className={cn(alertVariants({ variant }), onClose && "pr-12", className)}
                 {...props}
             >
-                {icon && <div className="[&>svg]:h-5 [&>svg]:w-5">{icon}</div>}
-                <div className="flex-1">{children}</div>
+                <span data-alert-icon aria-hidden className="mt-0.5 shrink-0 [&>svg]:size-5">
+                    {icon ?? defaultIcons[v]}
+                </span>
+                <div className="min-w-0 flex-1">{children}</div>
                 {onClose && (
                     <button
+                        type="button"
                         onClick={onClose}
-                        className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-                        aria-label="Close"
+                        className="absolute right-2 top-2 grid size-9 place-items-center text-tinta-2 transition-colors hover:bg-fondo-3 hover:text-tinta"
+                        aria-label="Cerrar aviso"
                     >
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="16"
-                            height="16"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                        >
-                            <line x1="18" y1="6" x2="6" y2="18" />
-                            <line x1="6" y1="6" x2="18" y2="18" />
-                        </svg>
+                        <X aria-hidden className="size-4" />
                     </button>
                 )}
             </div>
@@ -79,11 +75,7 @@ const AlertTitle = React.forwardRef<
     HTMLParagraphElement,
     React.HTMLAttributes<HTMLHeadingElement>
 >(({ className, ...props }, ref) => (
-    <h5
-        ref={ref}
-        className={cn("mb-1 font-medium leading-none tracking-tight", className)}
-        {...props}
-    />
+    <p ref={ref} className={cn("font-semibold leading-snug", className)} {...props} />
 ));
 AlertTitle.displayName = "AlertTitle";
 
@@ -91,11 +83,7 @@ const AlertDescription = React.forwardRef<
     HTMLParagraphElement,
     React.HTMLAttributes<HTMLParagraphElement>
 >(({ className, ...props }, ref) => (
-    <div
-        ref={ref}
-        className={cn("text-sm [&_p]:leading-relaxed", className)}
-        {...props}
-    />
+    <div ref={ref} className={cn("text-[0.95rem] leading-snug [&_p]:leading-relaxed", className)} {...props} />
 ));
 AlertDescription.displayName = "AlertDescription";
 

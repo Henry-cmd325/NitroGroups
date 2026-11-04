@@ -2,6 +2,7 @@ namespace NitroGroups.Shared.Contracts.Groups.Requests
 {
     public class CreateGroupRequest
     {
+        /// <summary>Ignorado: el dueño es siempre el usuario autenticado. Se mantiene por compatibilidad.</summary>
         public long OwnerUserId { get; set; }
         public string Slug { get; set; } = string.Empty;
         public string GroupName { get; set; } = string.Empty;

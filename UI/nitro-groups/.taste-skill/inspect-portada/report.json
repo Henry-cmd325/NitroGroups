@@ -1,0 +1,2414 @@
+{
+ "url": "http://localhost:3100/",
+ "at": "2026-11-03T20:03:12.494Z",
+ "allow": [
+  "palette-purple"
+ ],
+ "viewports": [
+  {
+   "width": 1440,
+   "height": 900,
+   "load": "load",
+   "screens": 9,
+   "filled": [
+    0.69,
+    0.28,
+    0.51,
+    1,
+    1,
+    0.7,
+    0.75,
+    0.99,
+    0.99
+   ],
+   "motion": {
+    "elements": 55,
+    "css": 47,
+    "transitions": 7,
+    "scripted": 1,
+    "videos": 0,
+    "playingVideos": 0
+   },
+   "metrics": {
+    "viewport": {
+     "w": 1440,
+     "h": 900
+    },
+    "page": {
+     "height": 7331,
+     "screens": 8.1,
+     "words": 303,
+     "img": 0,
+     "video": 0,
+     "canvas": 0,
+     "svg": 18,
+     "sections": 5,
+     "horizontalOverflow": 0,
+     "overflowCulprits": [],
+     "uiFragments": 0,
+     "uiAbuse": false,
+     "realPictures": 0,
+     "videoCount": 0,
+     "uiPictures": 0,
+     "pictureSamples": [],
+     "blendText": 0,
+     "sideScrollers": 0,
+     "brokenImages": [],
+     "emoji": [],
+     "videosNoPoster": 0
+    },
+    "hero": {
+     "text": "Jarana del Golfo JARANA DEL GOLFO",
+     "words": 6,
+     "chars": 33,
+     "lines": 2,
+     "size": 258,
+     "vw": 17.9,
+     "font": "Unbounded",
+     "weight": 800,
+     "tracking": -0.04,
+     "leading": 0.86,
+     "upper": true,
+     "italic": false,
+     "mono": false,
+     "align": "left",
+     "position": "center",
+     "widthRatio": 0.96,
+     "top": 294,
+     "tag": "a",
+     "kind": "heading"
+    },
+    "h1": {
+     "text": "Música en vivo para tu fecha",
+     "words": 6,
+     "lines": 2,
+     "size": 37.4,
+     "font": "Unbounded"
+    },
+    "headings": [
+     {
+      "text": "NITROGROUPS",
+      "words": 1,
+      "chars": 11,
+      "lines": 1,
+      "size": 28,
+      "vw": 1.9,
+      "font": "Unbounded",
+      "weight": 800,
+      "tracking": -0.04,
+      "leading": 1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.17,
+      "top": 18,
+      "tag": "a",
+      "kind": "heading"
+     },
+     {
+      "text": "Música en vivo para tu fecha",
+      "words": 6,
+      "chars": 28,
+      "lines": 2,
+      "size": 37.4,
+      "vw": 2.6,
+      "font": "Unbounded",
+      "weight": 800,
+      "tracking": -0.03,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.39,
+      "top": 88,
+      "tag": "h1",
+      "kind": "heading"
+     },
+     {
+      "text": "Jarana del Golfo JARANA DEL GOLFO",
+      "words": 6,
+      "chars": 33,
+      "lines": 2,
+      "size": 258,
+      "vw": 17.9,
+      "font": "Unbounded",
+      "weight": 800,
+      "tracking": -0.04,
+      "leading": 0.86,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.96,
+      "top": 294,
+      "tag": "a",
+      "kind": "heading"
+     },
+     {
+      "text": "PRECIO A LA VISTA",
+      "words": 4,
+      "chars": 17,
+      "lines": 1,
+      "size": 64.8,
+      "vw": 4.5,
+      "font": "Unbounded",
+      "weight": 800,
+      "tracking": -0.04,
+      "leading": 0.92,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.76,
+      "top": 1015,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "BUSCA",
+      "words": 1,
+      "chars": 5,
+      "lines": 1,
+      "size": 244.8,
+      "vw": 17,
+      "font": "Unbounded",
+      "weight": 800,
+      "tracking": -0.04,
+      "leading": 1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "center",
+      "position": "center",
+      "widthRatio": 1,
+      "top": 2594,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "PIDE",
+      "words": 1,
+      "chars": 4,
+      "lines": 1,
+      "size": 244.8,
+      "vw": 17,
+      "font": "Unbounded",
+      "weight": 800,
+      "tracking": -0.04,
+      "leading": 1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "center",
+      "position": "center",
+      "widthRatio": 1,
+      "top": 3494,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "CONFIRMA",
+      "words": 1,
+      "chars": 8,
+      "lines": 1,
+      "size": 244.8,
+      "vw": 17,
+      "font": "Unbounded",
+      "weight": 800,
+      "tracking": -0.04,
+      "leading": 1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "center",
+      "position": "center",
+      "widthRatio": 1,
+      "top": 4394,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Toda la música de una fiesta",
+      "words": 6,
+      "chars": 28,
+      "lines": 1,
+      "size": 43.2,
+      "vw": 3,
+      "font": "Unbounded",
+      "weight": 800,
+      "tracking": -0.03,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 1,
+      "top": 5168,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Mariachi",
+      "words": 1,
+      "chars": 8,
+      "lines": 1,
+      "size": 28,
+      "vw": 1.9,
+      "font": "Unbounded",
+      "weight": 800,
+      "tracking": -0.03,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.38,
+      "top": 5299,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "Banda",
+      "words": 1,
+      "chars": 5,
+      "lines": 1,
+      "size": 28,
+      "vw": 1.9,
+      "font": "Unbounded",
+      "weight": 800,
+      "tracking": -0.03,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.13,
+      "top": 5299,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "Cumbia",
+      "words": 1,
+      "chars": 6,
+      "lines": 1,
+      "size": 28,
+      "vw": 1.9,
+      "font": "Unbounded",
+      "weight": 800,
+      "tracking": -0.03,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "right",
+      "widthRatio": 0.22,
+      "top": 5299,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "Trío",
+      "words": 1,
+      "chars": 4,
+      "lines": 1,
+      "size": 28,
+      "vw": 1.9,
+      "font": "Unbounded",
+      "weight": 800,
+      "tracking": -0.03,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "right",
+      "widthRatio": 0.13,
+      "top": 5299,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "TU GRUPO, EN CARTEL",
+      "words": 4,
+      "chars": 19,
+      "lines": 2,
+      "size": 144,
+      "vw": 10,
+      "font": "Unbounded",
+      "weight": 800,
+      "tracking": -0.04,
+      "leading": 0.9,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 1,
+      "top": 6134,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "NitroGroups NITROGROUPS",
+      "words": 2,
+      "chars": 23,
+      "lines": 1,
+      "size": 153,
+      "vw": 10.6,
+      "font": "Unbounded",
+      "weight": 800,
+      "tracking": -0.04,
+      "leading": 0.86,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.96,
+      "top": 7135,
+      "tag": "span",
+      "kind": "heading"
+     }
+    ],
+    "headingSummary": {
+     "count": 14,
+     "maxLines": 2,
+     "over2Lines": 0,
+     "statements": 0,
+     "centered": 3,
+     "medianWords": 1,
+     "mixedFontHeadings": 0
+    },
+    "type": {
+     "families": [
+      {
+       "family": "Onest",
+       "share": 0.88,
+       "mono": false
+      },
+      {
+       "family": "Unbounded",
+       "share": 0.12,
+       "mono": false
+      }
+     ],
+     "familyCount": 2,
+     "sizes": [
+      13,
+      14,
+      15,
+      17,
+      19,
+      20,
+      28,
+      37,
+      43,
+      65,
+      144,
+      153,
+      201,
+      245,
+      258
+     ],
+     "sizeCount": 15,
+     "notLoaded": [],
+     "body": {
+      "font": "Onest",
+      "size": 18.7,
+      "leading": 1.5,
+      "weight": 400,
+      "tracking": 0,
+      "contrast": 11.2
+     },
+     "measureChars": 56,
+     "max": {
+      "size": 258,
+      "vw": 17.9,
+      "font": "Unbounded",
+      "text": "Jarana"
+     },
+     "monoShare": 0,
+     "monoProseShare": 0,
+     "monoFamilies": [],
+     "monoSamples": [],
+     "microLabels": 0,
+     "microLabelShare": 0,
+     "microSamples": [],
+     "upperShare": 0.07,
+     "centerShare": 0.06,
+     "smallText": 0
+    },
+    "eyebrows": [],
+    "numbered": [],
+    "color": {
+     "bodyBg": "#d6beff",
+     "bodyBgHsl": {
+      "h": 262,
+      "s": 1,
+      "l": 0.87
+     },
+     "dark": false,
+     "sectionBgs": [
+      {
+       "color": "#c8a9fb",
+       "top": 2266,
+       "hsl": {
+        "h": 263,
+        "s": 0.91,
+        "l": 0.82
+       }
+      },
+      {
+       "color": "#4b12b8",
+       "top": 3166,
+       "hsl": {
+        "h": 261,
+        "s": 0.82,
+        "l": 0.4
+       }
+      },
+      {
+       "color": "#1d0736",
+       "top": 4066,
+       "hsl": {
+        "h": 268,
+        "s": 0.77,
+        "l": 0.12
+       }
+      }
+     ],
+     "textColors": [
+      {
+       "color": "#1d0736",
+       "share": 0.42
+      },
+      {
+       "color": "#d6beff",
+       "share": 0.35
+      },
+      {
+       "color": "#4a2c72",
+       "share": 0.12
+      },
+      {
+       "color": "#b9a0e6",
+       "share": 0.11
+      }
+     ],
+     "button": {
+      "bg": "#c8a9fb",
+      "hsl": {
+       "h": 263,
+       "s": 0.91,
+       "l": 0.82
+      },
+      "fg": "#1d0736"
+     },
+     "lowContrast": []
+    },
+    "buttons": {
+     "count": 8,
+     "inHero": 7,
+     "radius": 0,
+     "height": 48,
+     "withShadow": 0,
+     "withGradient": 0,
+     "mono": 0,
+     "upper": 0,
+     "heroLabels": [
+      "Crear cuenta",
+      "vie 6 nov",
+      "sáb 7 nov",
+      "dom 8 nov",
+      "vie 13 nov"
+     ]
+    },
+    "surfaces": {
+     "shadowStatic": 0,
+     "shadowOverlay": 0,
+     "shadowSamples": [],
+     "gradients": 0,
+     "scrims": 0,
+     "gradientSamples": [],
+     "gradientText": 0,
+     "hairlines": 0,
+     "hairlineSamples": [],
+     "outlinedBoxes": 0,
+     "dashed": 0,
+     "blurred": 0,
+     "roundedBoxes": 0,
+     "boxRadius": 0,
+     "squareMedia": 0,
+     "roundedMedia": 0,
+     "mediaRadius": 0,
+     "textShadow": 0,
+     "cardRows": []
+    },
+    "heroMedia": [],
+    "nav": {
+     "links": 6,
+     "fixed": false,
+     "height": 64,
+     "floatingPill": false,
+     "blur": false
+    },
+    "fontsLoaded": [
+     "unbounded",
+     "onest"
+    ]
+   },
+   "layout": {
+    "viewport": {
+     "w": 1440,
+     "h": 900
+    },
+    "pageH": 7331,
+    "margins": {
+     "left": 24,
+     "right": 42
+    },
+    "sections": [
+     {
+      "sel": "section.page-frame.pt-6",
+      "tag": "section",
+      "top": 64,
+      "height": 749,
+      "words": 74,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Jarana",
+       "size": 258,
+       "tag": "span"
+      },
+      "left": 32,
+      "right": 39,
+      "textLeft": 32,
+      "textRight": 39,
+      "fullBleed": false,
+      "footer": false,
+      "hero": true,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "section.page-frame.mt-[var(--section-gap)]",
+      "tag": "section",
+      "top": 1015,
+      "height": 1050,
+      "words": 37,
+      "media": 1,
+      "middle": 56,
+      "heading": null,
+      "left": 732,
+      "right": 54,
+      "textLeft": 732,
+      "textRight": 54,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "div.relative.min-h-[100svh]",
+      "tag": "div",
+      "top": 2266,
+      "height": 900,
+      "words": 20,
+      "media": 1,
+      "middle": 0,
+      "heading": {
+       "text": "Busca",
+       "size": 245,
+       "tag": "h2"
+      },
+      "left": 32,
+      "right": 192,
+      "textLeft": 32,
+      "textRight": 192,
+      "fullBleed": true,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "div.relative.min-h-[100svh]",
+      "tag": "div",
+      "top": 3166,
+      "height": 900,
+      "words": 17,
+      "media": 1,
+      "middle": 0,
+      "heading": {
+       "text": "Pide",
+       "size": 245,
+       "tag": "h2"
+      },
+      "left": 32,
+      "right": 383,
+      "textLeft": 32,
+      "textRight": 383,
+      "fullBleed": true,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "div.relative.min-h-[100svh]",
+      "tag": "div",
+      "top": 4066,
+      "height": 900,
+      "words": 19,
+      "media": 1,
+      "middle": 0,
+      "heading": {
+       "text": "Confirma",
+       "size": 245,
+       "tag": "h2"
+      },
+      "left": 32,
+      "right": 1000,
+      "textLeft": 0,
+      "textRight": 0,
+      "fullBleed": true,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "section.mt-[var(--section-gap)].is-in",
+      "tag": "section",
+      "top": 5168,
+      "height": 765,
+      "words": 35,
+      "media": 4,
+      "middle": 0,
+      "heading": {
+       "text": "Mariachi",
+       "size": 28,
+       "tag": "span"
+      },
+      "left": 0,
+      "right": 0,
+      "textLeft": 24,
+      "textRight": 119,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "section.campo-tinta.mt-[var(--section-gap)]",
+      "tag": "section",
+      "top": 6134,
+      "height": 810,
+      "words": 29,
+      "media": 0,
+      "middle": 148,
+      "heading": {
+       "text": "Tu grupo, en cartel",
+       "size": 144,
+       "tag": "h2"
+      },
+      "left": 32,
+      "right": 141,
+      "textLeft": 32,
+      "textRight": 141,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "footer.campo-tinta",
+      "tag": "footer",
+      "top": 6944,
+      "height": 387,
+      "words": 39,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "NitroGroups",
+       "size": 153,
+       "tag": "span"
+      },
+      "left": 32,
+      "right": 43,
+      "textLeft": 32,
+      "textRight": 43,
+      "fullBleed": false,
+      "footer": true,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     }
+    ],
+    "gaps": [
+     {
+      "top": 5932,
+      "height": 284
+     },
+     {
+      "top": 6528,
+      "height": 284
+     }
+    ],
+    "h1s": [
+     {
+      "text": "Música en vivo para tu fecha",
+      "size": 37,
+      "top": 88,
+      "firstScreen": true
+     }
+    ],
+    "edgeText": [],
+    "edges": [
+     {
+      "x": 32,
+      "n": 7
+     },
+     {
+      "x": 75,
+      "n": 1
+     },
+     {
+      "x": 271,
+      "n": 1
+     }
+    ],
+    "leftBlocks": 9,
+    "bodySize": 19,
+    "stage": false,
+    "explains": true,
+    "slivers": [],
+    "voidShare": 0.13,
+    "voidBox": {
+     "x": 0,
+     "y": 780,
+     "w": 1440,
+     "h": 120
+    }
+   },
+   "app": null,
+   "consoleErrors": []
+  },
+  {
+   "width": 768,
+   "height": 1024,
+   "load": "load",
+   "screens": 8,
+   "filled": [
+    0.39,
+    0.37,
+    1,
+    1,
+    0.87,
+    0.83,
+    0.99,
+    0.99
+   ],
+   "motion": {
+    "elements": 55,
+    "css": 47,
+    "transitions": 7,
+    "scripted": 1,
+    "videos": 0,
+    "playingVideos": 0
+   },
+   "metrics": {
+    "viewport": {
+     "w": 768,
+     "h": 1024
+    },
+    "page": {
+     "height": 7318,
+     "screens": 7.1,
+     "words": 302,
+     "img": 0,
+     "video": 0,
+     "canvas": 0,
+     "svg": 18,
+     "sections": 5,
+     "horizontalOverflow": 0,
+     "overflowCulprits": [],
+     "uiFragments": 0,
+     "uiAbuse": false,
+     "realPictures": 0,
+     "videoCount": 0,
+     "uiPictures": 0,
+     "pictureSamples": [],
+     "blendText": 0,
+     "sideScrollers": 0,
+     "brokenImages": [],
+     "emoji": [],
+     "videosNoPoster": 0
+    },
+    "hero": {
+     "text": "Jarana del Golfo JARANA DEL GOLFO",
+     "words": 6,
+     "chars": 33,
+     "lines": 2,
+     "size": 136,
+     "vw": 17.7,
+     "font": "Unbounded",
+     "weight": 800,
+     "tracking": -0.04,
+     "leading": 0.86,
+     "upper": true,
+     "italic": false,
+     "mono": false,
+     "align": "left",
+     "position": "center",
+     "widthRatio": 0.95,
+     "top": 416,
+     "tag": "a",
+     "kind": "heading"
+    },
+    "h1": {
+     "text": "Música en vivo para tu fecha",
+     "words": 6,
+     "lines": 1,
+     "size": 28,
+     "font": "Unbounded"
+    },
+    "headings": [
+     {
+      "text": "NITROGROUPS",
+      "words": 1,
+      "chars": 11,
+      "lines": 1,
+      "size": 28,
+      "vw": 3.6,
+      "font": "Unbounded",
+      "weight": 800,
+      "tracking": -0.04,
+      "leading": 1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.33,
+      "top": 18,
+      "tag": "a",
+      "kind": "heading"
+     },
+     {
+      "text": "Música en vivo para tu fecha",
+      "words": 6,
+      "chars": 28,
+      "lines": 1,
+      "size": 28,
+      "vw": 3.6,
+      "font": "Unbounded",
+      "weight": 800,
+      "tracking": -0.03,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.95,
+      "top": 88,
+      "tag": "h1",
+      "kind": "heading"
+     },
+     {
+      "text": "Jarana del Golfo JARANA DEL GOLFO",
+      "words": 6,
+      "chars": 33,
+      "lines": 2,
+      "size": 136,
+      "vw": 17.7,
+      "font": "Unbounded",
+      "weight": 800,
+      "tracking": -0.04,
+      "leading": 0.86,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.95,
+      "top": 416,
+      "tag": "a",
+      "kind": "heading"
+     },
+     {
+      "text": "PRECIO A LA VISTA",
+      "words": 4,
+      "chars": 17,
+      "lines": 1,
+      "size": 40,
+      "vw": 5.2,
+      "font": "Unbounded",
+      "weight": 800,
+      "tracking": -0.04,
+      "leading": 0.92,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.88,
+      "top": 925,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "BUSCA",
+      "words": 1,
+      "chars": 5,
+      "lines": 1,
+      "size": 130.6,
+      "vw": 17,
+      "font": "Unbounded",
+      "weight": 800,
+      "tracking": -0.04,
+      "leading": 1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "center",
+      "position": "center",
+      "widthRatio": 1,
+      "top": 2329,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "PIDE",
+      "words": 1,
+      "chars": 4,
+      "lines": 1,
+      "size": 130.6,
+      "vw": 17,
+      "font": "Unbounded",
+      "weight": 800,
+      "tracking": -0.04,
+      "leading": 1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "center",
+      "position": "center",
+      "widthRatio": 1,
+      "top": 3353,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "CONFIRMA",
+      "words": 1,
+      "chars": 8,
+      "lines": 1,
+      "size": 130.6,
+      "vw": 17,
+      "font": "Unbounded",
+      "weight": 800,
+      "tracking": -0.04,
+      "leading": 1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "center",
+      "position": "center",
+      "widthRatio": 1,
+      "top": 4377,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Toda la música de una fiesta",
+      "words": 6,
+      "chars": 28,
+      "lines": 1,
+      "size": 28,
+      "vw": 3.6,
+      "font": "Unbounded",
+      "weight": 800,
+      "tracking": -0.03,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 1,
+      "top": 5074,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "TU GRUPO, EN CARTEL",
+      "words": 4,
+      "chars": 19,
+      "lines": 2,
+      "size": 76.8,
+      "vw": 10,
+      "font": "Unbounded",
+      "weight": 800,
+      "tracking": -0.04,
+      "leading": 0.9,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 1,
+      "top": 6028,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "NitroGroups NITROGROUPS",
+      "words": 2,
+      "chars": 23,
+      "lines": 1,
+      "size": 81,
+      "vw": 10.5,
+      "font": "Unbounded",
+      "weight": 800,
+      "tracking": -0.04,
+      "leading": 0.86,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.95,
+      "top": 7182,
+      "tag": "span",
+      "kind": "heading"
+     }
+    ],
+    "headingSummary": {
+     "count": 10,
+     "maxLines": 2,
+     "over2Lines": 0,
+     "statements": 0,
+     "centered": 3,
+     "medianWords": 2,
+     "mixedFontHeadings": 0
+    },
+    "type": {
+     "families": [
+      {
+       "family": "Onest",
+       "share": 0.88,
+       "mono": false
+      },
+      {
+       "family": "Unbounded",
+       "share": 0.12,
+       "mono": false
+      }
+     ],
+     "familyCount": 2,
+     "sizes": [
+      13,
+      15,
+      17,
+      24,
+      28,
+      40,
+      77,
+      81,
+      106,
+      131,
+      136
+     ],
+     "sizeCount": 11,
+     "notLoaded": [],
+     "body": {
+      "font": "Onest",
+      "size": 17,
+      "leading": 1.5,
+      "weight": 400,
+      "tracking": 0,
+      "contrast": 11.2
+     },
+     "measureChars": 34,
+     "max": {
+      "size": 136,
+      "vw": 17.7,
+      "font": "Unbounded",
+      "text": "Jarana"
+     },
+     "monoShare": 0,
+     "monoProseShare": 0,
+     "monoFamilies": [],
+     "monoSamples": [],
+     "microLabels": 0,
+     "microLabelShare": 0,
+     "microSamples": [],
+     "upperShare": 0.07,
+     "centerShare": 0.06,
+     "smallText": 0
+    },
+    "eyebrows": [],
+    "numbered": [],
+    "color": {
+     "bodyBg": "#d6beff",
+     "bodyBgHsl": {
+      "h": 262,
+      "s": 1,
+      "l": 0.87
+     },
+     "dark": false,
+     "sectionBgs": [
+      {
+       "color": "#c8a9fb",
+       "top": 1882,
+       "hsl": {
+        "h": 263,
+        "s": 0.91,
+        "l": 0.82
+       }
+      },
+      {
+       "color": "#4b12b8",
+       "top": 2906,
+       "hsl": {
+        "h": 261,
+        "s": 0.82,
+        "l": 0.4
+       }
+      },
+      {
+       "color": "#1d0736",
+       "top": 3930,
+       "hsl": {
+        "h": 268,
+        "s": 0.77,
+        "l": 0.12
+       }
+      }
+     ],
+     "textColors": [
+      {
+       "color": "#1d0736",
+       "share": 0.42
+      },
+      {
+       "color": "#d6beff",
+       "share": 0.35
+      },
+      {
+       "color": "#4a2c72",
+       "share": 0.12
+      },
+      {
+       "color": "#b9a0e6",
+       "share": 0.11
+      }
+     ],
+     "button": {
+      "bg": "#c8a9fb",
+      "hsl": {
+       "h": 263,
+       "s": 0.91,
+       "l": 0.82
+      },
+      "fg": "#1d0736"
+     },
+     "lowContrast": []
+    },
+    "buttons": {
+     "count": 8,
+     "inHero": 7,
+     "radius": 0,
+     "height": 48,
+     "withShadow": 0,
+     "withGradient": 0,
+     "mono": 0,
+     "upper": 0,
+     "heroLabels": [
+      "Crear cuenta",
+      "vie 6 nov",
+      "sáb 7 nov",
+      "dom 8 nov",
+      "vie 13 nov"
+     ]
+    },
+    "surfaces": {
+     "shadowStatic": 0,
+     "shadowOverlay": 0,
+     "shadowSamples": [],
+     "gradients": 0,
+     "scrims": 0,
+     "gradientSamples": [],
+     "gradientText": 0,
+     "hairlines": 0,
+     "hairlineSamples": [],
+     "outlinedBoxes": 0,
+     "dashed": 0,
+     "blurred": 0,
+     "roundedBoxes": 0,
+     "boxRadius": 0,
+     "squareMedia": 0,
+     "roundedMedia": 0,
+     "mediaRadius": 0,
+     "textShadow": 0,
+     "cardRows": []
+    },
+    "heroMedia": [],
+    "nav": {
+     "links": 6,
+     "fixed": false,
+     "height": 64,
+     "floatingPill": false,
+     "blur": false
+    },
+    "fontsLoaded": [
+     "unbounded",
+     "onest"
+    ]
+   },
+   "layout": {
+    "viewport": {
+     "w": 768,
+     "h": 1024
+    },
+    "pageH": 7318,
+    "margins": {
+     "left": 20,
+     "right": 26
+    },
+    "sections": [
+     {
+      "sel": "section.page-frame.pt-6",
+      "tag": "section",
+      "top": 64,
+      "height": 741,
+      "words": 74,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Jarana",
+       "size": 136,
+       "tag": "span"
+      },
+      "left": 20,
+      "right": 26,
+      "textLeft": 20,
+      "textRight": 26,
+      "fullBleed": false,
+      "footer": false,
+      "hero": true,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "section.page-frame.mt-[var(--section-gap)]",
+      "tag": "section",
+      "top": 925,
+      "height": 838,
+      "words": 36,
+      "media": 1,
+      "middle": 96,
+      "heading": null,
+      "left": 20,
+      "right": 42,
+      "textLeft": 20,
+      "textRight": 42,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "div.relative.min-h-[100svh]",
+      "tag": "div",
+      "top": 1882,
+      "height": 1024,
+      "words": 20,
+      "media": 1,
+      "middle": 0,
+      "heading": {
+       "text": "Busca",
+       "size": 131,
+       "tag": "h2"
+      },
+      "left": 20,
+      "right": 102,
+      "textLeft": 20,
+      "textRight": 102,
+      "fullBleed": true,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "div.relative.min-h-[100svh]",
+      "tag": "div",
+      "top": 2906,
+      "height": 1024,
+      "words": 17,
+      "media": 1,
+      "middle": 0,
+      "heading": {
+       "text": "Pide",
+       "size": 131,
+       "tag": "h2"
+      },
+      "left": 20,
+      "right": 204,
+      "textLeft": 20,
+      "textRight": 204,
+      "fullBleed": true,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "div.relative.min-h-[100svh]",
+      "tag": "div",
+      "top": 3930,
+      "height": 1024,
+      "words": 19,
+      "media": 1,
+      "middle": 0,
+      "heading": {
+       "text": "Confirma",
+       "size": 131,
+       "tag": "h2"
+      },
+      "left": 20,
+      "right": 377,
+      "textLeft": 0,
+      "textRight": 0,
+      "fullBleed": true,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "section.mt-[var(--section-gap)].is-in",
+      "tag": "section",
+      "top": 5074,
+      "height": 834,
+      "words": 35,
+      "media": 4,
+      "middle": 0,
+      "heading": {
+       "text": "Mariachi",
+       "size": 24,
+       "tag": "span"
+      },
+      "left": 0,
+      "right": 0,
+      "textLeft": 20,
+      "textRight": 47,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "section.campo-tinta.mt-[var(--section-gap)]",
+      "tag": "section",
+      "top": 6028,
+      "height": 922,
+      "words": 29,
+      "media": 0,
+      "middle": 70,
+      "heading": {
+       "text": "Tu grupo, en cartel",
+       "size": 77,
+       "tag": "h2"
+      },
+      "left": 20,
+      "right": 85,
+      "textLeft": 20,
+      "textRight": 85,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "footer.campo-tinta",
+      "tag": "footer",
+      "top": 6950,
+      "height": 369,
+      "words": 39,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "NitroGroups",
+       "size": 81,
+       "tag": "span"
+      },
+      "left": 20,
+      "right": 25,
+      "textLeft": 20,
+      "textRight": 25,
+      "fullBleed": false,
+      "footer": true,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     }
+    ],
+    "gaps": [
+     {
+      "top": 2476,
+      "height": 340
+     },
+     {
+      "top": 3500,
+      "height": 340
+     },
+     {
+      "top": 4524,
+      "height": 312
+     },
+     {
+      "top": 6304,
+      "height": 504
+     }
+    ],
+    "h1s": [
+     {
+      "text": "Música en vivo para tu fecha",
+      "size": 28,
+      "top": 88,
+      "firstScreen": true
+     }
+    ],
+    "edgeText": [],
+    "edges": [
+     {
+      "x": 20,
+      "n": 7
+     },
+     {
+      "x": 43,
+      "n": 1
+     },
+     {
+      "x": 147,
+      "n": 1
+     }
+    ],
+    "leftBlocks": 9,
+    "bodySize": 17,
+    "stage": false,
+    "explains": false,
+    "slivers": [],
+    "voidShare": 0,
+    "voidBox": null
+   },
+   "app": null,
+   "consoleErrors": []
+  },
+  {
+   "width": 390,
+   "height": 844,
+   "load": "load",
+   "screens": 9,
+   "filled": [
+    0.55,
+    0.26,
+    0.68,
+    0.99,
+    1,
+    0.77,
+    0.75,
+    0.97,
+    0.94
+   ],
+   "motion": {
+    "elements": 55,
+    "css": 47,
+    "transitions": 7,
+    "scripted": 1,
+    "videos": 0,
+    "playingVideos": 0
+   },
+   "metrics": {
+    "viewport": {
+     "w": 390,
+     "h": 844
+    },
+    "page": {
+     "height": 6845,
+     "screens": 8.1,
+     "words": 294,
+     "img": 0,
+     "video": 0,
+     "canvas": 0,
+     "svg": 18,
+     "sections": 5,
+     "horizontalOverflow": 0,
+     "overflowCulprits": [],
+     "uiFragments": 0,
+     "uiAbuse": false,
+     "realPictures": 0,
+     "videoCount": 0,
+     "uiPictures": 0,
+     "pictureSamples": [],
+     "blendText": 0,
+     "sideScrollers": 0,
+     "brokenImages": [],
+     "emoji": [],
+     "videosNoPoster": 0
+    },
+    "hero": {
+     "text": "Jarana del Golfo JARANA DEL GOLFO",
+     "words": 6,
+     "chars": 33,
+     "lines": 2,
+     "size": 65,
+     "vw": 16.7,
+     "font": "Unbounded",
+     "weight": 800,
+     "tracking": -0.04,
+     "leading": 0.86,
+     "upper": true,
+     "italic": false,
+     "mono": false,
+     "align": "left",
+     "position": "center",
+     "widthRatio": 0.9,
+     "top": 513,
+     "tag": "a",
+     "kind": "heading"
+    },
+    "h1": {
+     "text": "Música en vivo para tu fecha",
+     "words": 6,
+     "lines": 2,
+     "size": 28,
+     "font": "Unbounded"
+    },
+    "headings": [
+     {
+      "text": "NITROGROUPS",
+      "words": 1,
+      "chars": 11,
+      "lines": 1,
+      "size": 28,
+      "vw": 7.2,
+      "font": "Unbounded",
+      "weight": 800,
+      "tracking": -0.04,
+      "leading": 1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.64,
+      "top": 18,
+      "tag": "a",
+      "kind": "heading"
+     },
+     {
+      "text": "Música en vivo para tu fecha",
+      "words": 6,
+      "chars": 28,
+      "lines": 2,
+      "size": 28,
+      "vw": 7.2,
+      "font": "Unbounded",
+      "weight": 800,
+      "tracking": -0.03,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.9,
+      "top": 88,
+      "tag": "h1",
+      "kind": "heading"
+     },
+     {
+      "text": "Jarana del Golfo JARANA DEL GOLFO",
+      "words": 6,
+      "chars": 33,
+      "lines": 2,
+      "size": 65,
+      "vw": 16.7,
+      "font": "Unbounded",
+      "weight": 800,
+      "tracking": -0.04,
+      "leading": 0.86,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.9,
+      "top": 513,
+      "tag": "a",
+      "kind": "heading"
+     },
+     {
+      "text": "PRECIO A LA VISTA",
+      "words": 4,
+      "chars": 17,
+      "lines": 2,
+      "size": 40,
+      "vw": 10.3,
+      "font": "Unbounded",
+      "weight": 800,
+      "tracking": -0.04,
+      "leading": 0.92,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.9,
+      "top": 987,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "BUSCA",
+      "words": 1,
+      "chars": 5,
+      "lines": 1,
+      "size": 72,
+      "vw": 18.5,
+      "font": "Unbounded",
+      "weight": 800,
+      "tracking": -0.04,
+      "leading": 1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "center",
+      "position": "center",
+      "widthRatio": 1,
+      "top": 2445,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "PIDE",
+      "words": 1,
+      "chars": 4,
+      "lines": 1,
+      "size": 72,
+      "vw": 18.5,
+      "font": "Unbounded",
+      "weight": 800,
+      "tracking": -0.04,
+      "leading": 1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "center",
+      "position": "center",
+      "widthRatio": 1,
+      "top": 3289,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "CONFIRMA",
+      "words": 1,
+      "chars": 8,
+      "lines": 1,
+      "size": 72,
+      "vw": 18.5,
+      "font": "Unbounded",
+      "weight": 800,
+      "tracking": -0.04,
+      "leading": 1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "center",
+      "position": "center",
+      "widthRatio": 1,
+      "top": 4133,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Toda la música de una fiesta",
+      "words": 6,
+      "chars": 28,
+      "lines": 2,
+      "size": 28,
+      "vw": 7.2,
+      "font": "Unbounded",
+      "weight": 800,
+      "tracking": -0.03,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 1,
+      "top": 4711,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Mariachi",
+      "words": 1,
+      "chars": 8,
+      "lines": 1,
+      "size": 24,
+      "vw": 6.2,
+      "font": "Unbounded",
+      "weight": 800,
+      "tracking": -0.03,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.52,
+      "top": 4855,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "Banda",
+      "words": 1,
+      "chars": 5,
+      "lines": 1,
+      "size": 24,
+      "vw": 6.2,
+      "font": "Unbounded",
+      "weight": 800,
+      "tracking": -0.03,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "right",
+      "widthRatio": 0.24,
+      "top": 4855,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "Cumbia",
+      "words": 1,
+      "chars": 6,
+      "lines": 1,
+      "size": 24,
+      "vw": 6.2,
+      "font": "Unbounded",
+      "weight": 800,
+      "tracking": -0.03,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.52,
+      "top": 5209,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "Trío",
+      "words": 1,
+      "chars": 4,
+      "lines": 1,
+      "size": 24,
+      "vw": 6.2,
+      "font": "Unbounded",
+      "weight": 800,
+      "tracking": -0.03,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "right",
+      "widthRatio": 0.24,
+      "top": 5209,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "TU GRUPO, EN CARTEL",
+      "words": 4,
+      "chars": 19,
+      "lines": 2,
+      "size": 48,
+      "vw": 12.3,
+      "font": "Unbounded",
+      "weight": 800,
+      "tracking": -0.04,
+      "leading": 0.9,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 1,
+      "top": 5731,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "NitroGroups NITROGROUPS",
+      "words": 2,
+      "chars": 23,
+      "lines": 1,
+      "size": 39,
+      "vw": 10,
+      "font": "Unbounded",
+      "weight": 800,
+      "tracking": -0.04,
+      "leading": 0.86,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.9,
+      "top": 6723,
+      "tag": "span",
+      "kind": "heading"
+     }
+    ],
+    "headingSummary": {
+     "count": 14,
+     "maxLines": 2,
+     "over2Lines": 0,
+     "statements": 0,
+     "centered": 3,
+     "medianWords": 1,
+     "mixedFontHeadings": 0
+    },
+    "type": {
+     "families": [
+      {
+       "family": "Onest",
+       "share": 0.87,
+       "mono": false
+      },
+      {
+       "family": "Unbounded",
+       "share": 0.13,
+       "mono": false
+      }
+     ],
+     "familyCount": 2,
+     "sizes": [
+      13,
+      15,
+      17,
+      24,
+      28,
+      39,
+      40,
+      48,
+      51,
+      65,
+      72
+     ],
+     "sizeCount": 11,
+     "notLoaded": [],
+     "body": {
+      "font": "Onest",
+      "size": 17,
+      "leading": 1.5,
+      "weight": 400,
+      "tracking": 0,
+      "contrast": 11.2
+     },
+     "measureChars": 41,
+     "max": {
+      "size": 72,
+      "vw": 18.5,
+      "font": "Unbounded",
+      "text": "Busca"
+     },
+     "monoShare": 0,
+     "monoProseShare": 0,
+     "monoFamilies": [],
+     "monoSamples": [],
+     "microLabels": 0,
+     "microLabelShare": 0,
+     "microSamples": [],
+     "upperShare": 0.07,
+     "centerShare": 0.06,
+     "smallText": 0
+    },
+    "eyebrows": [],
+    "numbered": [],
+    "color": {
+     "bodyBg": "#d6beff",
+     "bodyBgHsl": {
+      "h": 262,
+      "s": 1,
+      "l": 0.87
+     },
+     "dark": false,
+     "sectionBgs": [
+      {
+       "color": "#c8a9fb",
+       "top": 2059,
+       "hsl": {
+        "h": 263,
+        "s": 0.91,
+        "l": 0.82
+       }
+      },
+      {
+       "color": "#4b12b8",
+       "top": 2903,
+       "hsl": {
+        "h": 261,
+        "s": 0.82,
+        "l": 0.4
+       }
+      },
+      {
+       "color": "#1d0736",
+       "top": 3747,
+       "hsl": {
+        "h": 268,
+        "s": 0.77,
+        "l": 0.12
+       }
+      }
+     ],
+     "textColors": [
+      {
+       "color": "#1d0736",
+       "share": 0.44
+      },
+      {
+       "color": "#d6beff",
+       "share": 0.35
+      },
+      {
+       "color": "#b9a0e6",
+       "share": 0.11
+      },
+      {
+       "color": "#4a2c72",
+       "share": 0.09
+      }
+     ],
+     "button": {
+      "bg": "#c8a9fb",
+      "hsl": {
+       "h": 263,
+       "s": 0.91,
+       "l": 0.82
+      },
+      "fg": "#1d0736"
+     },
+     "lowContrast": []
+    },
+    "buttons": {
+     "count": 7,
+     "inHero": 6,
+     "radius": 0,
+     "height": 48,
+     "withShadow": 0,
+     "withGradient": 0,
+     "mono": 0,
+     "upper": 0,
+     "heroLabels": [
+      "vie 6 nov",
+      "sáb 7 nov",
+      "dom 8 nov",
+      "vie 13 nov",
+      "sáb 14 nov"
+     ]
+    },
+    "surfaces": {
+     "shadowStatic": 0,
+     "shadowOverlay": 0,
+     "shadowSamples": [],
+     "gradients": 0,
+     "scrims": 0,
+     "gradientSamples": [],
+     "gradientText": 0,
+     "hairlines": 0,
+     "hairlineSamples": [],
+     "outlinedBoxes": 0,
+     "dashed": 0,
+     "blurred": 0,
+     "roundedBoxes": 0,
+     "boxRadius": 0,
+     "squareMedia": 0,
+     "roundedMedia": 0,
+     "mediaRadius": 0,
+     "textShadow": 0,
+     "cardRows": []
+    },
+    "heroMedia": [],
+    "nav": {
+     "links": 2,
+     "fixed": false,
+     "height": 64,
+     "floatingPill": false,
+     "blur": false
+    },
+    "fontsLoaded": [
+     "unbounded",
+     "onest"
+    ]
+   },
+   "layout": {
+    "viewport": {
+     "w": 390,
+     "h": 844
+    },
+    "pageH": 6845,
+    "margins": {
+     "left": 20,
+     "right": 12
+    },
+    "sections": [
+     {
+      "sel": "section.page-frame.pt-6",
+      "tag": "section",
+      "top": 64,
+      "height": 803,
+      "words": 74,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Jarana",
+       "size": 65,
+       "tag": "span"
+      },
+      "left": 20,
+      "right": 23,
+      "textLeft": 20,
+      "textRight": 23,
+      "fullBleed": false,
+      "footer": false,
+      "hero": true,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "section.page-frame.mt-[var(--section-gap)]",
+      "tag": "section",
+      "top": 987,
+      "height": 952,
+      "words": 36,
+      "media": 1,
+      "middle": 0,
+      "heading": null,
+      "left": 20,
+      "right": 42,
+      "textLeft": 20,
+      "textRight": 42,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "div.relative.min-h-[100svh]",
+      "tag": "div",
+      "top": 2059,
+      "height": 844,
+      "words": 20,
+      "media": 1,
+      "middle": 0,
+      "heading": {
+       "text": "Busca",
+       "size": 72,
+       "tag": "h2"
+      },
+      "left": 20,
+      "right": 37,
+      "textLeft": 20,
+      "textRight": 37,
+      "fullBleed": true,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "div.relative.min-h-[100svh]",
+      "tag": "div",
+      "top": 2903,
+      "height": 844,
+      "words": 17,
+      "media": 1,
+      "middle": 0,
+      "heading": {
+       "text": "Pide",
+       "size": 72,
+       "tag": "h2"
+      },
+      "left": 20,
+      "right": 45,
+      "textLeft": 20,
+      "textRight": 45,
+      "fullBleed": true,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "div.relative.min-h-[100svh]",
+      "tag": "div",
+      "top": 3747,
+      "height": 844,
+      "words": 19,
+      "media": 1,
+      "middle": 0,
+      "heading": {
+       "text": "Confirma",
+       "size": 72,
+       "tag": "h2"
+      },
+      "left": 20,
+      "right": 31,
+      "textLeft": 0,
+      "textRight": 0,
+      "fullBleed": true,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "section.mt-[var(--section-gap)].is-in",
+      "tag": "section",
+      "top": 4711,
+      "height": 900,
+      "words": 35,
+      "media": 4,
+      "middle": 0,
+      "heading": {
+       "text": "Mariachi",
+       "size": 24,
+       "tag": "span"
+      },
+      "left": 0,
+      "right": 0,
+      "textLeft": 20,
+      "textRight": 19,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "section.campo-tinta.mt-[var(--section-gap)]",
+      "tag": "section",
+      "top": 5731,
+      "height": 675,
+      "words": 29,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Tu grupo, en cartel",
+       "size": 48,
+       "tag": "h2"
+      },
+      "left": 20,
+      "right": 32,
+      "textLeft": 20,
+      "textRight": 32,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "footer.campo-tinta",
+      "tag": "footer",
+      "top": 6406,
+      "height": 439,
+      "words": 39,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "NitroGroups",
+       "size": 39,
+       "tag": "span"
+      },
+      "left": 20,
+      "right": 22,
+      "textLeft": 20,
+      "textRight": 22,
+      "fullBleed": false,
+      "footer": true,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     }
+    ],
+    "gaps": [
+     {
+      "top": 2528,
+      "height": 260
+     },
+     {
+      "top": 3372,
+      "height": 260
+     },
+     {
+      "top": 4216,
+      "height": 260
+     },
+     {
+      "top": 5928,
+      "height": 280
+     }
+    ],
+    "h1s": [
+     {
+      "text": "Música en vivo para tu fecha",
+      "size": 28,
+      "top": 88,
+      "firstScreen": true
+     }
+    ],
+    "edgeText": [],
+    "edges": [
+     {
+      "x": 20,
+      "n": 9
+     }
+    ],
+    "leftBlocks": 9,
+    "bodySize": 17,
+    "stage": false,
+    "explains": false,
+    "slivers": [],
+    "voidShare": 0,
+    "voidBox": null
+   },
+   "app": null,
+   "consoleErrors": []
+  }
+ ],
+ "findings": [
+  {
+   "level": "WARN",
+   "id": "size-count",
+   "width": 1440,
+   "message": "15 different font sizes (13, 14, 15, 17, 19, 20, 28, 37, 43, 65, 144, 153, 201, 245, 258).",
+   "fix": "A page needs about five: display, heading, lead, body, small.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "FAIL",
+   "id": "few-pictures",
+   "width": 1440,
+   "message": "Only 0 picture(s) on the page (0 photographs, footage or raster images, 0 interface fragments). Drawings in SVG do not count.",
+   "fix": "Find real pictures of the subject's world with scripts/assets.mjs (photographs, archival images, maps, engravings, footage), download them to assets/ and give them room: a hero picture, one per section that has a subject, a full-width band. At least four, usually six to twelve."
+  },
+  {
+   "level": "WARN",
+   "id": "no-footage",
+   "width": 1440,
+   "message": "No video anywhere on the page.",
+   "fix": "Look for one honest clip with scripts/assets.mjs --video (the place, the material, the process) and use it as a muted loop with a poster frame. Defend its absence only if no clip fits the subject."
+  },
+  {
+   "level": "WARN",
+   "id": "off-centre",
+   "width": 1440,
+   "message": "The margins differ: 24px on the left, 42px on the right, at 1440px.",
+   "fix": "Put the navigation and the content on one pair of margins; check for padding on one side only, a scrollbar gutter, or a header on another inset than the page."
+  },
+  {
+   "level": "WARN",
+   "id": "lopsided",
+   "width": 1440,
+   "message": "A section keeps its content on one side and leaves 732px of the width empty: section.page-frame.mt-[var(--section-gap)].",
+   "fix": "Fill the other side with what the section has (its picture, a second column, the figure), or defend the void in one sentence."
+  },
+  {
+   "level": "WARN",
+   "id": "blank-gap",
+   "width": 768,
+   "message": "A 504px stretch at 6304px holds nothing.",
+   "fix": "Check that it is a deliberate rest (once per page at most); otherwise close it to the normal section gap."
+  },
+  {
+   "level": "WARN",
+   "id": "small-title",
+   "width": 768,
+   "message": "The h1 is 28px (\"Música en vivo para tu fecha\").",
+   "fix": "Set the title at display size, or make the large text of the first screen the h1."
+  }
+ ],
+ "images": [
+  {
+   "viewport": "desktop",
+   "width": 1440,
+   "fold": "/home/user/NitroGroups/UI/nitro-groups/.taste-skill/inspect-portada/desktop-fold.jpg",
+   "pages": [
+    "/home/user/NitroGroups/UI/nitro-groups/.taste-skill/inspect-portada/desktop-page-01.jpg",
+    "/home/user/NitroGroups/UI/nitro-groups/.taste-skill/inspect-portada/desktop-page-02.jpg",
+    "/home/user/NitroGroups/UI/nitro-groups/.taste-skill/inspect-portada/desktop-page-03.jpg"
+   ],
+   "film": []
+  },
+  {
+   "viewport": "tablet",
+   "width": 768,
+   "fold": "/home/user/NitroGroups/UI/nitro-groups/.taste-skill/inspect-portada/tablet-fold.jpg",
+   "pages": [
+    "/home/user/NitroGroups/UI/nitro-groups/.taste-skill/inspect-portada/tablet-page-01.jpg",
+    "/home/user/NitroGroups/UI/nitro-groups/.taste-skill/inspect-portada/tablet-page-02.jpg"
+   ],
+   "film": []
+  },
+  {
+   "viewport": "mobile",
+   "width": 390,
+   "fold": "/home/user/NitroGroups/UI/nitro-groups/.taste-skill/inspect-portada/mobile-fold.jpg",
+   "pages": [
+    "/home/user/NitroGroups/UI/nitro-groups/.taste-skill/inspect-portada/mobile-page-01.jpg",
+    "/home/user/NitroGroups/UI/nitro-groups/.taste-skill/inspect-portada/mobile-page-02.jpg"
+   ],
+   "film": []
+  }
+ ]
+}

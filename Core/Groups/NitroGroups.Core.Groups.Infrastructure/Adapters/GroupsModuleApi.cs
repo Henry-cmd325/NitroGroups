@@ -8,7 +8,7 @@ namespace NitroGroups.Core.Groups.Infrastructure.Adapters
     /// <summary>Implementación in-process de la API pública del módulo Groups.</summary>
     internal sealed class GroupsModuleApi(GroupsDbContext context) : IGroupsModuleApi
     {
-        private static readonly GroupMemberRole[] ManagerRoles = [GroupMemberRole.Leader];
+        private static readonly GroupMemberRole[] ManagerRoles = [GroupMemberRole.Owner, GroupMemberRole.Manager];
 
         public Task<bool> GroupExistsAsync(long groupId, CancellationToken cancellationToken = default)
             => context.Groups.AsNoTracking().AnyAsync(g => g.Id == groupId, cancellationToken);
@@ -27,7 +27,7 @@ namespace NitroGroups.Core.Groups.Infrastructure.Adapters
 
             return await context.Groups.AsNoTracking()
                 .Where(g => ids.Contains(g.Id))
-                .Select(g => new GroupSummary(g.Id, g.Slug, g.GroupName, g.Email, g.OwnerUserId, g.IsAcceptingBookings, g.ProfilePictureUrl))
+                .Select(g => new GroupSummary(g.Id, g.Slug, g.GroupName, g.Email, g.OwnerUserId, g.IsAcceptingBookings, g.ProfilePictureUrl, g.Active))
                 .ToDictionaryAsync(g => g.Id, cancellationToken);
         }
 

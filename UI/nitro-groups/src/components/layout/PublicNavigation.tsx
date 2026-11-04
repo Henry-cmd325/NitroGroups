@@ -1,29 +1,31 @@
 "use client";
 
-import { useAuth } from "@/hooks/useAuth";
 import Link from "next/link";
+import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/Button";
 import { ROUTES } from "@/config/routes";
+import { PUBLIC_LINKS } from "./navigation";
 
 export function PublicNavigation() {
     const { isLoading, isAuthenticated } = useAuth();
 
-    // Don't show login/register buttons while loading or when authenticated
     if (isLoading || isAuthenticated) return null;
 
     return (
-        <>
-            <nav className="hidden md:flex items-center space-x-6 h-full">
-                {/* Navigation links can be added here */}
+        <div className="hidden md:flex items-center gap-8">
+            <nav aria-label="Principal" className="flex items-center gap-7">
+                {PUBLIC_LINKS.map((link) => (
+                    <Link key={link.href} href={link.href} className="text-[0.875rem] text-tinta-2 no-underline hover:text-tinta transition-colors">
+                        {link.label}
+                    </Link>
+                ))}
+                <Link href={ROUTES.AUTH.LOGIN} className="text-[0.875rem] text-tinta-2 no-underline hover:text-tinta transition-colors">
+                    Entrar
+                </Link>
             </nav>
-            <div className="hidden md:flex items-center space-x-3">
-                <Button variant="ghost" asChild>
-                    <Link href={ROUTES.AUTH.LOGIN}>Iniciar Sesión</Link>
-                </Button>
-                <Button asChild>
-                    <Link href={ROUTES.AUTH.SIGNUP}>Registrarse</Link>
-                </Button>
-            </div>
-        </>
+            <Button asChild size="sm">
+                <Link href={ROUTES.AUTH.SIGNUP}>Crear cuenta</Link>
+            </Button>
+        </div>
     );
 }

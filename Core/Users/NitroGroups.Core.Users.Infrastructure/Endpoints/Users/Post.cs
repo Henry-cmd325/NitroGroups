@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Routing;
 using NitroGroups.Core.Users.Application.UseCases.Users.Create;
 using NitroGroups.Shared.Contracts.Users.Requests;
 using NitroGroups.Shared.Contracts.Users.Responses;
+using NitroGroups.Shared.Abstractions.Services;
 using NitroGroups.Shared.EndpointMapping;
 using NitroGroups.Shared.EndpointMapping.Filters;
 using static Microsoft.AspNetCore.Http.Results;
@@ -24,6 +25,7 @@ namespace NitroGroups.Core.Users.Infrastructure.Endpoints.Users
                 return Created($"api/users/{createdUser.Id}", createdUser);
             })
             .AddEndpointFilter<ValidationFilter<CreateUserRequest>>()
+            .RequireAuthorization(NitroClaimTypes.AdminPolicy)
             .WithTags("Users");
         }
     }

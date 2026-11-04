@@ -56,7 +56,17 @@ namespace NitroGroups.Shared.Infrastructure.Events
             if (outboxEvents.Count != 0)
             {
                 _context.OutboxEvents.AddRange(outboxEvents);
-                await _context.SaveChangesAsync();
+                try
+                {
+                    // Este guardado incluye los cambios de estado pendientes del módulo.
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException ex)
+                {
+                    // El estado no se guardó: el evento tampoco debe quedar en memoria.
+                    _context.OutboxEvents.RemoveRange(outboxEvents);
+                    throw new NitroGroups.Shared.Abstractions.Repository.ConcurrencyConflictException("El registro cambió desde que se leyó.", ex);
+                }
 
                 _logger.LogDebug("Saved {EventCount} events to outbox", outboxEvents.Count);
             }

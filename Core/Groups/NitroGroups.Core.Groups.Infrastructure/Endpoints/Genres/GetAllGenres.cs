@@ -19,6 +19,7 @@ namespace NitroGroups.Core.Groups.Infrastructure.Endpoints.Genres
                 var response = mapper.Map<List<GenreListResponse>>(genres);
                 return Ok(response);
             })
+            .AllowAnonymous()
             .WithTags("Genres");
         }
     }

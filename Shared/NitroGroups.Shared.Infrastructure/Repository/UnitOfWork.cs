@@ -18,7 +18,14 @@ namespace NitroGroups.Shared.Infrastructure.Repository
 
         public async Task<int> CompleteAsync()
         {
-            return await _context.SaveChangesAsync();
+            try
+            {
+                return await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                throw new ConcurrencyConflictException("El registro cambió desde que se leyó.", ex);
+            }
         }
 
         public async ValueTask DisposeAsync()

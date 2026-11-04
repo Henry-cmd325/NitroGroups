@@ -4,6 +4,7 @@ export const ROUTES = {
         LOGIN: "/login",
         LOGOUT: "/auth/logout",
         SIGNUP: "/signup",
+        SIGNUP_MUSICIAN: "/signup?tipo=musico",
         ONBOARDING: "/onboarding",
     },
     DASHBOARD: {
@@ -12,6 +13,7 @@ export const ROUTES = {
         CLIENT: "/dashboard/client",
     },
     GROUPS: {
+        SEARCH: "/groups",
         PUBLIC_PROFILE: (slug: string) => `/groups/${slug}`,
     },
 } as const;

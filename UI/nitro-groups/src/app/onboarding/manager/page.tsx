@@ -1,54 +1,106 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import { useAuth } from "@/hooks/useAuth";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
-import { Alert, AlertDescription } from "@/components/ui/Alert";
-import Loader from "@/components/ui/Loader";
-import { ProgressSteps } from "@/components/ui/ProgressSteps";
 import PhoneInput from "@/components/ui/PhoneInput";
-import { groupsService, generateSlug } from "@/features/groups/services/groups.service";
+import { groupsService } from "@/features/groups/services/groups.service";
+import {
+    GROUP_DESCRIPTION_MAX,
+    GROUP_NAME_MAX,
+    SLUG_MIN,
+    parseInviteEmail,
+    parseOptionalPrice,
+    toGroupSlug,
+    validateManagerStep,
+    type FieldError,
+    type ManagerField,
+    type SlugStatus,
+} from "@/features/onboarding/rules";
+import {
+    ArrivalView,
+    ChoiceGroup,
+    FormError,
+    OnboardingFrame,
+    OnboardingLoading,
+    RangeField,
+    ReviewList,
+    StepActions,
+    StepHeading,
+    TextareaField,
+} from "@/features/onboarding/components/OnboardingParts";
 
 interface ManagerFormData {
-    // Group info
+    // Datos del grupo
     groupName: string;
     slug: string;
     groupDescription: string;
     biography: string;
-    // Location & Contact
+    // Ubicación y contacto
     locationText: string;
     phone: string;
     email: string;
-    // Pricing
+    // Precios
     basePrice: string;
     hourlyRate: string;
     minimumDurationHours: number;
     serviceRadiusKm: number;
     currency: string;
-    // Invitations
+    // Invitaciones
     inviteEmails: string[];
     currentEmail: string;
 }
 
 const STEPS = [
-    { id: "welcome", label: "Bienvenida", description: "Tu rol como manager" },
-    { id: "group", label: "Grupo", description: "Información básica" },
-    { id: "pricing", label: "Precios", description: "Tarifas y servicio" },
-    { id: "invite", label: "Invitar", description: "Agrega músicos" },
-    { id: "complete", label: "Listo", description: "Resumen final" },
+    { id: "welcome", label: "Tu rol" },
+    { id: "group", label: "Grupo" },
+    { id: "pricing", label: "Precios" },
+    { id: "invite", label: "Músicos" },
+    { id: "complete", label: "Revisar" },
 ];
 
+/** Nota lateral de cada paso: qué se hace con lo que escribe y qué viene después. */
+const ASIDE: Record<number, string> = {
+    1: "Son cinco pasos y toman unos minutos. Al final tu grupo queda publicado en el catálogo.",
+    2: "El nombre define la dirección del perfil público. La ubicación sirve para que te encuentren clientes de tu zona.",
+    3: "Los precios son de referencia: a cada cliente le respondes con una cotización propia.",
+    4: "Puedes dejar esta lista vacía. Los músicos también se suman después, desde tu panel.",
+    5: "Al crear el grupo se publica su perfil y entras a tu panel para agregar fotos y fechas.",
+};
+
+const ROLE_ITEMS = [
+    "Crear y administrar tu grupo musical",
+    "Llevar el calendario y la disponibilidad",
+    "Responder cotizaciones y solicitudes de clientes",
+    "Sumar a los músicos del grupo",
+];
+
+const formatMoney = (value: string, currency: string) => {
+    const parsed = parseOptionalPrice(value);
+    if (parsed === undefined) return null;
+    return `$${parsed.toLocaleString("es-MX")} ${currency}`;
+};
+
 export default function ManagerOnboardingPage() {
-    const router = useRouter();
     const { user: authUser, isLoading: authLoading, isAuthenticated } = useAuth();
     const { user } = useCurrentUser();
     const [currentStep, setCurrentStep] = useState(1);
+    const [hasNavigated, setHasNavigated] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [error, setError] = useState("");
-    const [slugStatus, setSlugStatus] = useState<"idle" | "checking" | "available" | "taken">("idle");
+    const [fieldError, setFieldError] = useState<FieldError<ManagerField> | null>(null);
+    const [submitError, setSubmitError] = useState("");
+    const [inviteError, setInviteError] = useState("");
+    const [slugStatus, setSlugStatus] = useState<SlugStatus>("idle");
+    const [createdSlug, setCreatedSlug] = useState<string | null>(null);
+    const fieldRefs = {
+        groupName: useRef<HTMLInputElement>(null),
+        locationText: useRef<HTMLInputElement>(null),
+        basePrice: useRef<HTMLInputElement>(null),
+        hourlyRate: useRef<HTMLInputElement>(null),
+    };
 
     const [formData, setFormData] = useState<ManagerFormData>({
         groupName: "",
@@ -67,77 +119,65 @@ export default function ManagerOnboardingPage() {
         currentEmail: "",
     });
 
-    // Set initial email from auth user
+    // Propone el correo de la sesión como contacto del grupo (solo si sigue vacío).
+    const sessionEmail = authUser?.email;
     useEffect(() => {
-        if (authUser?.email && !formData.email) {
-            setFormData(prev => ({
-                ...prev,
-                email: authUser.email || "",
-            }));
-        }
-    }, [authUser]);
+        if (!sessionEmail) return;
+        setFormData((prev) => (prev.email ? prev : { ...prev, email: sessionEmail }));
+    }, [sessionEmail]);
 
-    // Check slug availability with debounce
-    const checkSlug = useCallback(async (slug: string) => {
-        if (!slug || slug.length < 3) {
-            setSlugStatus("idle");
-            return;
-        }
-        setSlugStatus("checking");
-        try {
-            const available = await groupsService.checkSlugAvailability(slug);
-            setSlugStatus(available ? "available" : "taken");
-        } catch {
-            setSlugStatus("idle");
-        }
-    }, []);
-
+    // Comprueba si la dirección está libre, 500 ms después de la última tecla.
     useEffect(() => {
-        const timer = setTimeout(() => {
-            if (formData.slug) {
-                checkSlug(formData.slug);
+        const slug = formData.slug;
+        let cancelled = false;
+        const timer = setTimeout(async () => {
+            if (slug.length < SLUG_MIN) {
+                setSlugStatus("idle");
+                return;
+            }
+            setSlugStatus("checking");
+            try {
+                const available = await groupsService.checkSlugAvailability(slug);
+                if (!cancelled) setSlugStatus(available ? "available" : "taken");
+            } catch {
+                if (!cancelled) setSlugStatus("idle");
             }
         }, 500);
-        return () => clearTimeout(timer);
-    }, [formData.slug, checkSlug]);
+        return () => {
+            cancelled = true;
+            clearTimeout(timer);
+        };
+    }, [formData.slug]);
 
-    if (authLoading) {
-        return (
-            <div className="min-h-screen flex items-center justify-center">
-                <Loader />
-            </div>
-        );
-    }
-
+    if (authLoading) return <OnboardingLoading label="Cargando tu cuenta…" />;
     if (!isAuthenticated) return null;
 
-    const updateFormData = <K extends keyof ManagerFormData>(
-        field: K,
-        value: ManagerFormData[K]
-    ) => {
+    const updateFormData = <K extends keyof ManagerFormData>(field: K, value: ManagerFormData[K]) => {
         setFormData((prev) => ({ ...prev, [field]: value }));
-        setError("");
+        setFieldError((prev) => (prev?.field === field ? null : prev));
+        setSubmitError("");
     };
 
     const handleGroupNameChange = (value: string) => {
-        const slug = generateSlug(value);
-        setFormData(prev => ({
-            ...prev,
-            groupName: value,
-            slug,
-        }));
-        setError("");
+        setFormData((prev) => ({ ...prev, groupName: value, slug: toGroupSlug(value) }));
+        setFieldError((prev) => (prev?.field === "groupName" ? null : prev));
+        setSubmitError("");
     };
 
+    const errorFor = (field: ManagerField) => (fieldError?.field === field ? fieldError.message : undefined);
+
     const addEmail = () => {
-        const email = formData.currentEmail.trim();
-        if (email && email.includes("@") && !formData.inviteEmails.includes(email)) {
-            setFormData((prev) => ({
-                ...prev,
-                inviteEmails: [...prev.inviteEmails, email],
-                currentEmail: "",
-            }));
+        const result = parseInviteEmail(formData.currentEmail, formData.inviteEmails);
+        if (!result.ok) {
+            setInviteError(result.message);
+            return;
         }
+        setInviteError("");
+        setFormData((prev) => ({
+            ...prev,
+            inviteEmails: [...prev.inviteEmails, result.email],
+            currentEmail: "",
+        }));
     };
 
     const removeEmail = (email: string) => {
@@ -147,50 +187,40 @@ export default function ManagerOnboardingPage() {
         }));
     };
 
-    const validateStep = (step: number): boolean => {
-        switch (step) {
-            case 2:
-                if (!formData.groupName.trim()) {
-                    setError("Por favor ingresa el nombre del grupo");
-                    return false;
-                }
-                if (formData.groupName.trim().length < 3) {
-                    setError("El nombre del grupo debe tener al menos 3 caracteres");
-                    return false;
-                }
-                if (slugStatus === "taken") {
-                    setError("Este nombre de grupo ya está en uso, elige otro");
-                    return false;
-                }
-                if (!formData.locationText.trim()) {
-                    setError("Por favor ingresa la ubicación del grupo");
-                    return false;
-                }
-                break;
-        }
-        return true;
-    };
-
     const handleNext = () => {
-        if (validateStep(currentStep)) {
-            setCurrentStep((prev) => Math.min(prev + 1, STEPS.length));
+        const problem = validateManagerStep(currentStep, formData, slugStatus);
+        if (problem) {
+            setFieldError(problem);
+            fieldRefs[problem.field].current?.focus();
+            return;
         }
+        setFieldError(null);
+        setInviteError("");
+        setHasNavigated(true);
+        setCurrentStep((prev) => Math.min(prev + 1, STEPS.length));
     };
 
     const handleBack = () => {
+        setFieldError(null);
+        setSubmitError("");
+        setInviteError("");
+        setHasNavigated(true);
         setCurrentStep((prev) => Math.max(prev - 1, 1));
-        setError("");
     };
 
     const handleComplete = async () => {
+        if (!user) {
+            setSubmitError("Aún estamos cargando los datos de tu cuenta. Espera unos segundos y vuelve a pulsar “Crear mi grupo”.");
+            return;
+        }
         setIsSubmitting(true);
-        setError("");
+        setSubmitError("");
 
         try {
-            // Call POST /api/groups
-            await groupsService.create({
-                ownerUserId: user!.id,
-                slug: formData.slug || generateSlug(formData.groupName),
+            // POST /api/groups
+            const group = await groupsService.create({
+                ownerUserId: user.id,
+                slug: formData.slug || toGroupSlug(formData.groupName),
                 groupName: formData.groupName,
                 description: formData.groupDescription,
                 biography: formData.biography,
@@ -201,8 +231,8 @@ export default function ManagerOnboardingPage() {
                 locationText: formData.locationText,
                 serviceRadiusKm: formData.serviceRadiusKm,
                 currency: formData.currency,
-                basePrice: formData.basePrice ? parseFloat(formData.basePrice) : undefined,
-                hourlyRate: formData.hourlyRate ? parseFloat(formData.hourlyRate) : undefined,
+                basePrice: parseOptionalPrice(formData.basePrice),
+                hourlyRate: parseOptionalPrice(formData.hourlyRate),
                 minimumDurationHours: formData.minimumDurationHours,
                 setupTimeMinutes: 30,
                 isAcceptingBookings: true,
@@ -214,467 +244,350 @@ export default function ManagerOnboardingPage() {
             //     await invitationsService.send(groupId, email);
             // }
 
-            // Clear signup session data
+            // Limpia el dato temporal del registro
             if (typeof window !== "undefined") {
                 sessionStorage.removeItem("nitro_signup_user_type");
             }
 
-            router.push("/dashboard/musician");
+            setCreatedSlug(group?.slug || formData.slug);
         } catch (err) {
-            setError("Error al crear el grupo. Por favor intenta de nuevo.");
+            setSubmitError("No pudimos crear el grupo. Revisa tu conexión y vuelve a intentarlo; lo que escribiste sigue aquí.");
             console.error(err);
         } finally {
             setIsSubmitting(false);
         }
     };
 
+    if (createdSlug) {
+        return (
+            <ArrivalView
+                name={formData.groupName}
+                lead="¡Todo listo! Tu grupo ya está publicado en NitroGroups."
+                actions={
+                    <>
+                        <Button asChild size="lg">
+                            <Link href={`/groups/${createdSlug}`}>Ver mi perfil público</Link>
+                        </Button>
+                        <Button asChild size="lg" variant="secondary">
+                            <Link href="/dashboard/musician">Ir a mi panel</Link>
+                        </Button>
+                    </>
+                }
+            >
+                <p>
+                    Así lo verán los clientes. Desde tu panel agregas fotos, ajustas precios y marcas las fechas
+                    en que el grupo puede tocar.
+                </p>
+            </ArrivalView>
+        );
+    }
+
+    const focusHeading = hasNavigated;
+    const basePriceText = formatMoney(formData.basePrice, formData.currency);
+    const hourlyRateText = formatMoney(formData.hourlyRate, formData.currency);
+
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-muted/20 to-background px-4 py-12">
-            <div className="w-full max-w-2xl space-y-8 animate-in fade-in-50 slide-in-from-bottom-4 duration-500">
-                {/* Header */}
-                <div className="text-center space-y-2">
-                    <h1 className="text-4xl font-bold tracking-tight">
-                        💼 Configura tu Grupo Musical
-                    </h1>
-                    <p className="text-muted-foreground">
-                        Administra tu grupo profesionalmente
-                    </p>
-                </div>
+        <OnboardingFrame
+            title="Publica tu grupo"
+            intro="Crea el perfil del grupo que representas. Todo lo puedes cambiar después desde tu panel."
+            steps={STEPS}
+            currentStep={currentStep}
+            aside={<p>{ASIDE[currentStep]}</p>}
+        >
+            <form
+                noValidate
+                onSubmit={(e) => {
+                    e.preventDefault();
+                    if (currentStep < STEPS.length) handleNext();
+                    else if (!isSubmitting) void handleComplete();
+                }}
+                className="space-y-8"
+            >
+                {currentStep === 1 && (
+                    <div className="space-y-6">
+                        <StepHeading title="Como manager, llevas el grupo" focusOnMount={focusHeading}>
+                            No necesitas tocar en el grupo. Te encargas de que lo encuentren, lo contraten y llegue a tiempo.
+                        </StepHeading>
+                        <ul className="bg-fondo-2 p-5 md:p-6 space-y-3">
+                            {ROLE_ITEMS.map((item) => (
+                                <li key={item} className="flex gap-3">
+                                    <span aria-hidden className="mt-[0.6em] size-1.5 shrink-0 bg-acento" />
+                                    <span>{item}</span>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                )}
 
-                {/* Progress Steps */}
-                <ProgressSteps steps={STEPS} currentStep={currentStep} />
+                {currentStep === 2 && (
+                    <div className="space-y-6">
+                        <StepHeading title="Datos del grupo" focusOnMount={focusHeading}>
+                            Es lo que verán los clientes en el perfil público.
+                        </StepHeading>
 
-                {/* Form Card */}
-                <div className="bg-card border rounded-lg shadow-lg p-8 space-y-6">
-                    {error && (
-                        <Alert variant="destructive">
-                            <AlertDescription>{error}</AlertDescription>
-                        </Alert>
-                    )}
-
-                    {/* Step 1: Welcome */}
-                    {currentStep === 1 && (
-                        <div className="space-y-6 animate-in fade-in-50 slide-in-from-right-4 duration-300">
-                            <div className="text-center space-y-4 py-4">
-                                <div className="text-6xl">💼</div>
-                                <h2 className="text-2xl font-semibold">Bienvenido, Manager</h2>
-                                <p className="text-muted-foreground max-w-md mx-auto">
-                                    Como manager, podrás administrar tu grupo musical,
-                                    gestionar contrataciones y hacer crecer tu negocio.
-                                </p>
-                            </div>
-
-                            <div className="space-y-3 bg-muted/50 rounded-lg p-6">
-                                <h3 className="font-medium mb-4">Tu rol incluye:</h3>
-                                {[
-                                    "Crear y administrar tu grupo musical",
-                                    "Gestionar calendario y disponibilidad",
-                                    "Manejar cotizaciones y contratos",
-                                    "Invitar músicos a tu grupo",
-                                    "Recibir contrataciones de clientes",
-                                    "Acceso a reportes financieros",
-                                ].map((item, i) => (
-                                    <div key={i} className="flex items-center gap-3">
-                                        <span className="text-primary">✓</span>
-                                        <span className="text-sm">{item}</span>
-                                    </div>
-                                ))}
-                            </div>
-
-                            <div className="p-4 border border-blue-500/30 bg-blue-500/10 rounded-lg">
-                                <p className="text-sm text-blue-700 dark:text-blue-300">
-                                    <strong>💡 Tip:</strong> Al terminar este proceso, tu grupo aparecerá
-                                    en el catálogo público y podrás empezar a recibir solicitudes.
-                                </p>
-                            </div>
-                        </div>
-                    )}
-
-                    {/* Step 2: Group Info */}
-                    {currentStep === 2 && (
-                        <div className="space-y-6 animate-in fade-in-50 slide-in-from-right-4 duration-300">
-                            <div className="text-center space-y-2 pb-4">
-                                <div className="text-5xl">🎵</div>
-                                <h2 className="text-xl font-semibold">Información del grupo</h2>
-                                <p className="text-sm text-muted-foreground">
-                                    Datos básicos para el perfil público de tu grupo
-                                </p>
-                            </div>
-
-                            {/* Group Name */}
-                            <div className="space-y-2">
-                                <Input
-                                    label="Nombre del grupo *"
-                                    type="text"
-                                    placeholder="Ej: Los Mariachis del Valle"
-                                    value={formData.groupName}
-                                    onChange={(e) => handleGroupNameChange(e.target.value)}
-                                    required
-                                />
-                                {formData.slug && (
-                                    <div className="flex items-center gap-2 text-xs">
-                                        <span className="text-muted-foreground">URL:</span>
-                                        <code className="bg-muted px-2 py-0.5 rounded">
-                                            nitrogroups.com/{formData.slug}
-                                        </code>
-                                        {slugStatus === "checking" && (
-                                            <span className="text-muted-foreground">Verificando...</span>
-                                        )}
-                                        {slugStatus === "available" && (
-                                            <span className="text-green-600">✓ Disponible</span>
-                                        )}
-                                        {slugStatus === "taken" && (
-                                            <span className="text-destructive">✗ No disponible</span>
-                                        )}
-                                    </div>
-                                )}
-                            </div>
-
-                            {/* Description */}
-                            <div className="space-y-2">
-                                <label className="text-sm font-medium">
-                                    Descripción del grupo
-                                </label>
-                                <textarea
-                                    className="w-full min-h-[100px] px-4 py-3 rounded-lg border border-input bg-background focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all resize-none"
-                                    placeholder="Describe el estilo musical, servicios que ofrecen..."
-                                    value={formData.groupDescription}
-                                    onChange={(e) => updateFormData("groupDescription", e.target.value)}
-                                    maxLength={500}
-                                />
-                                <p className="text-xs text-muted-foreground text-right">
-                                    {formData.groupDescription.length}/500
-                                </p>
-                            </div>
-
-                            {/* Location */}
+                        <div className="space-y-2">
                             <Input
-                                label="Ubicación *"
+                                ref={fieldRefs.groupName}
+                                label="Nombre del grupo"
                                 type="text"
-                                placeholder="Ej: Guadalajara, Jalisco, México"
-                                value={formData.locationText}
-                                onChange={(e) => updateFormData("locationText", e.target.value)}
+                                placeholder="Ej.: Los Mariachis del Valle"
+                                value={formData.groupName}
+                                onChange={(e) => handleGroupNameChange(e.target.value)}
+                                maxLength={GROUP_NAME_MAX}
                                 required
-                                icon={
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                        <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
-                                        <circle cx="12" cy="10" r="3" />
-                                    </svg>
-                                }
+                                error={errorFor("groupName")}
+                                helperText={`Obligatorio, de 3 a ${GROUP_NAME_MAX} caracteres.`}
                             />
-
-                            {/* Phone & Email */}
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <PhoneInput
-                                    label="Teléfono del grupo"
-                                    value={formData.phone}
-                                    onChange={(phone) => updateFormData("phone", phone)}
-                                />
-                                <Input
-                                    label="Email de contacto"
-                                    type="email"
-                                    placeholder="grupo@email.com"
-                                    value={formData.email}
-                                    onChange={(e) => updateFormData("email", e.target.value)}
-                                    icon={
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                            <rect width="20" height="16" x="2" y="4" rx="2" />
-                                            <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
-                                        </svg>
-                                    }
-                                />
-                            </div>
+                            {formData.slug && (
+                                <p className="text-sm text-tinta-2 break-all" aria-live="polite">
+                                    Dirección del perfil: <span className="text-tinta">/groups/{formData.slug}</span>
+                                    {slugStatus === "checking" && <span> (comprobando…)</span>}
+                                    {slugStatus === "available" && <span className="text-ok"> (disponible)</span>}
+                                    {slugStatus === "taken" && <span className="text-error"> (ya la usa otro grupo)</span>}
+                                </p>
+                            )}
                         </div>
-                    )}
 
-                    {/* Step 3: Pricing */}
-                    {currentStep === 3 && (
-                        <div className="space-y-6 animate-in fade-in-50 slide-in-from-right-4 duration-300">
-                            <div className="text-center space-y-2 pb-4">
-                                <div className="text-5xl">💰</div>
-                                <h2 className="text-xl font-semibold">Tarifas y servicio</h2>
-                                <p className="text-sm text-muted-foreground">
-                                    Configura los precios base de tu grupo (puedes modificarlos después)
-                                </p>
-                            </div>
+                        <TextareaField
+                            label="Descripción del grupo (opcional)"
+                            value={formData.groupDescription}
+                            onChange={(value) => updateFormData("groupDescription", value)}
+                            max={GROUP_DESCRIPTION_MAX}
+                            rows={4}
+                            placeholder="Estilo musical, número de integrantes, tipo de eventos…"
+                        />
 
-                            {/* Currency Selector */}
-                            <div className="space-y-2">
-                                <label className="text-sm font-medium">Moneda</label>
-                                <div className="flex gap-2">
-                                    {["MXN", "USD"].map((curr) => (
-                                        <button
-                                            key={curr}
-                                            type="button"
-                                            onClick={() => updateFormData("currency", curr)}
-                                            className={`px-4 py-2 rounded-lg border-2 text-sm font-medium transition-all ${formData.currency === curr
-                                                ? "border-primary bg-primary/5 text-primary"
-                                                : "border-muted hover:border-primary/50"
-                                                }`}
-                                        >
-                                            {curr === "MXN" ? "🇲🇽 MXN" : "🇺🇸 USD"}
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
+                        <Input
+                            ref={fieldRefs.locationText}
+                            label="Ubicación"
+                            type="text"
+                            placeholder="Ej.: Guadalajara, Jalisco"
+                            value={formData.locationText}
+                            onChange={(e) => updateFormData("locationText", e.target.value)}
+                            autoComplete="address-level2"
+                            required
+                            error={errorFor("locationText")}
+                            helperText="Obligatorio. Ciudad y estado desde donde sale el grupo."
+                        />
 
-                            {/* Prices */}
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <Input
-                                    label="Precio base por evento"
-                                    type="number"
-                                    placeholder="Ej: 5000"
-                                    value={formData.basePrice}
-                                    onChange={(e) => updateFormData("basePrice", e.target.value)}
-                                    helperText={`En ${formData.currency}`}
-                                    icon={
-                                        <span className="text-sm font-medium">$</span>
-                                    }
-                                />
-                                <Input
-                                    label="Tarifa por hora"
-                                    type="number"
-                                    placeholder="Ej: 1500"
-                                    value={formData.hourlyRate}
-                                    onChange={(e) => updateFormData("hourlyRate", e.target.value)}
-                                    helperText={`En ${formData.currency}`}
-                                    icon={
-                                        <span className="text-sm font-medium">$/hr</span>
-                                    }
-                                />
-                            </div>
-
-                            {/* Duration & Radius */}
-                            <div className="space-y-4">
-                                <div className="space-y-2">
-                                    <label className="text-sm font-medium">
-                                        Duración mínima del evento
-                                    </label>
-                                    <div className="flex items-center gap-4">
-                                        <input
-                                            type="range"
-                                            min="1"
-                                            max="12"
-                                            value={formData.minimumDurationHours}
-                                            onChange={(e) => updateFormData("minimumDurationHours", parseInt(e.target.value))}
-                                            className="flex-1 h-2 bg-muted rounded-lg appearance-none cursor-pointer accent-primary"
-                                        />
-                                        <span className="text-lg font-bold min-w-[4ch] text-right">
-                                            {formData.minimumDurationHours}h
-                                        </span>
-                                    </div>
-                                </div>
-
-                                <div className="space-y-2">
-                                    <label className="text-sm font-medium">
-                                        Radio de servicio
-                                    </label>
-                                    <div className="flex items-center gap-4">
-                                        <input
-                                            type="range"
-                                            min="10"
-                                            max="500"
-                                            step="10"
-                                            value={formData.serviceRadiusKm}
-                                            onChange={(e) => updateFormData("serviceRadiusKm", parseInt(e.target.value))}
-                                            className="flex-1 h-2 bg-muted rounded-lg appearance-none cursor-pointer accent-primary"
-                                        />
-                                        <span className="text-lg font-bold min-w-[6ch] text-right">
-                                            {formData.serviceRadiusKm} km
-                                        </span>
-                                    </div>
-                                    <p className="text-xs text-muted-foreground">
-                                        Distancia máxima que estás dispuesto a viajar para un evento
-                                    </p>
-                                </div>
-                            </div>
-
-                            <div className="p-4 border border-amber-500/30 bg-amber-500/10 rounded-lg">
-                                <p className="text-sm text-amber-700 dark:text-amber-300">
-                                    <strong>Nota:</strong> Los precios son referenciales. Podrás crear
-                                    cotizaciones personalizadas para cada cliente.
-                                </p>
-                            </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-4">
+                            <PhoneInput
+                                label="Teléfono del grupo (opcional)"
+                                value={formData.phone}
+                                onChange={(phone) => updateFormData("phone", phone)}
+                            />
+                            <Input
+                                label="Correo de contacto"
+                                type="email"
+                                placeholder="grupo@correo.com"
+                                value={formData.email}
+                                onChange={(e) => updateFormData("email", e.target.value)}
+                                autoComplete="email"
+                                helperText="Propusimos el de tu cuenta; cámbialo si el grupo tiene otro."
+                            />
                         </div>
-                    )}
+                    </div>
+                )}
 
-                    {/* Step 4: Invite Musicians */}
-                    {currentStep === 4 && (
-                        <div className="space-y-6 animate-in fade-in-50 slide-in-from-right-4 duration-300">
-                            <div className="text-center space-y-2 pb-4">
-                                <div className="text-5xl">📧</div>
-                                <h2 className="text-xl font-semibold">Invita a tus músicos</h2>
-                                <p className="text-sm text-muted-foreground">
-                                    Agrega los emails de los músicos que formarán parte del grupo
-                                </p>
-                            </div>
+                {currentStep === 3 && (
+                    <div className="space-y-6">
+                        <StepHeading title="Precios y servicio" focusOnMount={focusHeading}>
+                            Son precios de referencia para el perfil. A cada cliente le respondes con su propia cotización.
+                        </StepHeading>
 
-                            <div className="flex gap-2">
+                        <ChoiceGroup
+                            legend="Moneda"
+                            name="currency"
+                            layout="inline"
+                            value={formData.currency}
+                            onChange={(value) => updateFormData("currency", value)}
+                            options={[
+                                { value: "MXN", label: "Pesos (MXN)" },
+                                { value: "USD", label: "Dólares (USD)" },
+                            ]}
+                        />
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-4">
+                            <Input
+                                ref={fieldRefs.basePrice}
+                                label="Precio base por evento (opcional)"
+                                type="number"
+                                inputMode="decimal"
+                                min={0}
+                                placeholder="5000"
+                                value={formData.basePrice}
+                                onChange={(e) => updateFormData("basePrice", e.target.value)}
+                                error={errorFor("basePrice")}
+                                helperText={`En ${formData.currency}, solo números.`}
+                                icon={<span className="text-sm font-semibold" aria-hidden>$</span>}
+                            />
+                            <Input
+                                ref={fieldRefs.hourlyRate}
+                                label="Tarifa por hora (opcional)"
+                                type="number"
+                                inputMode="decimal"
+                                min={0}
+                                placeholder="1500"
+                                value={formData.hourlyRate}
+                                onChange={(e) => updateFormData("hourlyRate", e.target.value)}
+                                error={errorFor("hourlyRate")}
+                                helperText={`En ${formData.currency} por hora, solo números.`}
+                                icon={<span className="text-sm font-semibold" aria-hidden>$</span>}
+                            />
+                        </div>
+
+                        <RangeField
+                            label="Duración mínima del evento"
+                            value={formData.minimumDurationHours}
+                            onChange={(value) => updateFormData("minimumDurationHours", value)}
+                            min={1}
+                            max={12}
+                            format={(h) => (h === 1 ? "1 hora" : `${h} horas`)}
+                            hint="De 1 a 12 horas. Lo mínimo que el grupo acepta tocar en un evento."
+                        />
+
+                        <RangeField
+                            label="Distancia que viajan"
+                            value={formData.serviceRadiusKm}
+                            onChange={(value) => updateFormData("serviceRadiusKm", value)}
+                            min={10}
+                            max={500}
+                            step={10}
+                            format={(km) => `${km} km`}
+                            hint="De 10 a 500 km desde tu ubicación. Lo más lejos que irían a tocar."
+                        />
+                    </div>
+                )}
+
+                {currentStep === 4 && (
+                    <div className="space-y-6">
+                        <StepHeading title="Los músicos del grupo" focusOnMount={focusHeading}>
+                            Anota el correo de quienes tocan contigo. Puedes saltarte este paso.
+                        </StepHeading>
+
+                        <div className="flex flex-col gap-3 sm:flex-row sm:items-start">
+                            <div className="flex-1">
                                 <Input
-                                    label=""
+                                    label="Correo del músico"
                                     type="email"
-                                    placeholder="musico@email.com"
+                                    placeholder="musico@correo.com"
                                     value={formData.currentEmail}
-                                    onChange={(e) => updateFormData("currentEmail", e.target.value)}
+                                    onChange={(e) => {
+                                        updateFormData("currentEmail", e.target.value);
+                                        setInviteError("");
+                                    }}
                                     onKeyDown={(e) => {
                                         if (e.key === "Enter") {
                                             e.preventDefault();
                                             addEmail();
                                         }
                                     }}
+                                    error={inviteError || undefined}
+                                    helperText="Escríbelo y pulsa Agregar o Enter."
                                 />
-                                <Button
-                                    type="button"
-                                    variant="outline"
-                                    onClick={addEmail}
-                                    className="shrink-0 mt-1"
-                                >
-                                    Agregar
-                                </Button>
                             </div>
-
-                            {formData.inviteEmails.length > 0 ? (
-                                <div className="space-y-2">
-                                    <p className="text-sm font-medium">
-                                        Músicos a invitar ({formData.inviteEmails.length}):
-                                    </p>
-                                    <div className="flex flex-wrap gap-2">
-                                        {formData.inviteEmails.map((email) => (
-                                            <div
-                                                key={email}
-                                                className="flex items-center gap-2 bg-muted px-3 py-1.5 rounded-full text-sm"
-                                            >
-                                                <span>{email}</span>
-                                                <button
-                                                    type="button"
-                                                    onClick={() => removeEmail(email)}
-                                                    className="text-muted-foreground hover:text-foreground"
-                                                >
-                                                    ×
-                                                </button>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            ) : (
-                                <div className="text-center py-8 text-muted-foreground">
-                                    <p>No has agregado músicos aún</p>
-                                    <p className="text-sm">
-                                        Puedes hacer esto después desde tu dashboard
-                                    </p>
-                                </div>
-                            )}
+                            <Button type="button" variant="secondary" onClick={addEmail} className="h-12 sm:mt-[1.625rem]">
+                                Agregar
+                            </Button>
                         </div>
-                    )}
 
-                    {/* Step 5: Complete */}
-                    {currentStep === 5 && (
-                        <div className="space-y-6 animate-in fade-in-50 slide-in-from-right-4 duration-300">
-                            <div className="text-center space-y-2 pb-4">
-                                <div className="text-5xl">🚀</div>
-                                <h2 className="text-xl font-semibold">¡Todo listo!</h2>
-                                <p className="text-sm text-muted-foreground">
-                                    Revisa la información de tu grupo
+                        {formData.inviteEmails.length > 0 ? (
+                            <div className="space-y-3">
+                                <p className="text-sm text-tinta-2" aria-live="polite">
+                                    {formData.inviteEmails.length === 1
+                                        ? "1 músico en la lista"
+                                        : `${formData.inviteEmails.length} músicos en la lista`}
                                 </p>
+                                <ul className="flex flex-wrap gap-2">
+                                    {formData.inviteEmails.map((email) => (
+                                        <li key={email} className="flex items-center bg-fondo-2 pl-4 text-sm">
+                                            <span className="break-all py-2">{email}</span>
+                                            <button
+                                                type="button"
+                                                onClick={() => removeEmail(email)}
+                                                className="ml-2 size-9 grid place-items-center text-tinta-2 hover:bg-fondo-3 hover:text-tinta transition-colors"
+                                                aria-label={`Quitar ${email}`}
+                                            >
+                                                <svg aria-hidden width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="square">
+                                                    <path d="M6 6l12 12M18 6L6 18" />
+                                                </svg>
+                                            </button>
+                                        </li>
+                                    ))}
+                                </ul>
                             </div>
-
-                            <div className="space-y-4 bg-muted/50 rounded-lg p-6">
-                                <div className="flex justify-between items-start">
-                                    <span className="text-muted-foreground">Nombre del grupo</span>
-                                    <span className="font-medium text-right">{formData.groupName}</span>
-                                </div>
-                                <div className="flex justify-between items-start">
-                                    <span className="text-muted-foreground">URL</span>
-                                    <code className="text-sm bg-background px-2 py-0.5 rounded">{formData.slug}</code>
-                                </div>
-                                <div className="flex justify-between items-start">
-                                    <span className="text-muted-foreground">Ubicación</span>
-                                    <span className="font-medium text-right">{formData.locationText}</span>
-                                </div>
-                                {formData.phone && (
-                                    <div className="flex justify-between items-start">
-                                        <span className="text-muted-foreground">Teléfono</span>
-                                        <span className="font-medium">{formData.phone}</span>
-                                    </div>
-                                )}
-                                {(formData.basePrice || formData.hourlyRate) && (
-                                    <div className="flex justify-between items-start">
-                                        <span className="text-muted-foreground">Precios</span>
-                                        <div className="text-right text-sm">
-                                            {formData.basePrice && (
-                                                <p>Base: ${formData.basePrice} {formData.currency}</p>
-                                            )}
-                                            {formData.hourlyRate && (
-                                                <p>Por hora: ${formData.hourlyRate} {formData.currency}</p>
-                                            )}
-                                        </div>
-                                    </div>
-                                )}
-                                <div className="flex justify-between items-start">
-                                    <span className="text-muted-foreground">Radio de servicio</span>
-                                    <span className="font-medium">{formData.serviceRadiusKm} km</span>
-                                </div>
-                                <div className="flex justify-between items-start">
-                                    <span className="text-muted-foreground">Músicos a invitar</span>
-                                    <span className="font-medium">{formData.inviteEmails.length}</span>
-                                </div>
-                                {formData.groupDescription && (
-                                    <div className="pt-2 border-t">
-                                        <p className="text-muted-foreground text-sm mb-1">Descripción</p>
-                                        <p className="text-sm">{formData.groupDescription}</p>
-                                    </div>
-                                )}
-                            </div>
-
-                            <div className="text-center text-sm text-muted-foreground">
-                                <p>Las invitaciones se enviarán cuando los músicos se registren</p>
-                            </div>
-                        </div>
-                    )}
-
-                    {/* Navigation Buttons */}
-                    <div className="flex gap-3 pt-4">
-                        {currentStep > 1 && (
-                            <Button
-                                type="button"
-                                variant="outline"
-                                onClick={handleBack}
-                                className="flex-1"
-                            >
-                                Atrás
-                            </Button>
-                        )}
-
-                        {currentStep < STEPS.length ? (
-                            <Button
-                                type="button"
-                                onClick={handleNext}
-                                className="flex-1"
-                                size="lg"
-                            >
-                                Siguiente
-                            </Button>
                         ) : (
-                            <Button
-                                type="button"
-                                onClick={handleComplete}
-                                className="flex-1"
-                                size="lg"
-                                disabled={isSubmitting}
-                            >
-                                {isSubmitting ? (
-                                    <>
-                                        <Loader />
-                                        <span>Creando grupo...</span>
-                                    </>
-                                ) : (
-                                    "Crear grupo y continuar"
-                                )}
-                            </Button>
+                            <p className="text-tinta-2">Aún no hay músicos en la lista. Puedes agregarlos después desde tu panel.</p>
                         )}
+
+                        <p className="text-sm text-tinta-2">
+                            El envío de invitaciones todavía no está disponible: por ahora esta lista no se envía ni se guarda.
+                        </p>
                     </div>
-                </div>
-            </div>
-        </div>
+                )}
+
+                {currentStep === 5 && (
+                    <div className="space-y-6">
+                        <StepHeading title="Revisa antes de crear" focusOnMount={focusHeading}>
+                            Si algo no está bien, vuelve al paso anterior. Todo se puede editar después.
+                        </StepHeading>
+                        <ReviewList
+                            items={[
+                                { label: "Nombre del grupo", value: formData.groupName },
+                                { label: "Dirección del perfil", value: <span className="break-all">/groups/{formData.slug}</span> },
+                                { label: "Ubicación", value: formData.locationText },
+                                ...(formData.phone ? [{ label: "Teléfono", value: formData.phone }] : []),
+                                ...(formData.email ? [{ label: "Correo de contacto", value: formData.email }] : []),
+                                ...(basePriceText || hourlyRateText
+                                    ? [{
+                                        label: "Precios",
+                                        value: (
+                                            <span className="tabular block space-y-1">
+                                                {basePriceText && <span className="block">Por evento desde {basePriceText}</span>}
+                                                {hourlyRateText && <span className="block">Por hora {hourlyRateText}</span>}
+                                            </span>
+                                        ),
+                                    }]
+                                    : []),
+                                {
+                                    label: "Servicio",
+                                    value: (
+                                        <span className="tabular">
+                                            Mínimo {formData.minimumDurationHours === 1 ? "1 hora" : `${formData.minimumDurationHours} horas`}, hasta {formData.serviceRadiusKm} km
+                                        </span>
+                                    ),
+                                },
+                                {
+                                    label: "Músicos en la lista",
+                                    value: formData.inviteEmails.length === 0 ? "Ninguno por ahora" : <span className="tabular">{formData.inviteEmails.length}</span>,
+                                },
+                                ...(formData.groupDescription
+                                    ? [{ label: "Descripción", value: <span className="whitespace-pre-line">{formData.groupDescription}</span> }]
+                                    : []),
+                            ]}
+                        />
+                    </div>
+                )}
+
+                <FormError message={submitError} />
+
+                <StepActions>
+                    {currentStep > 1 && (
+                        <Button type="button" variant="secondary" size="lg" onClick={handleBack} disabled={isSubmitting}>
+                            Atrás
+                        </Button>
+                    )}
+                    <Button type="submit" size="lg" className="sm:min-w-56" disabled={isSubmitting} aria-busy={isSubmitting}>
+                        {currentStep === 1
+                            ? "Empezar"
+                            : currentStep < STEPS.length
+                                ? "Continuar"
+                                : isSubmitting
+                                    ? "Creando tu grupo…"
+                                    : "Crear mi grupo"}
+                    </Button>
+                </StepActions>
+            </form>
+        </OnboardingFrame>
     );
 }

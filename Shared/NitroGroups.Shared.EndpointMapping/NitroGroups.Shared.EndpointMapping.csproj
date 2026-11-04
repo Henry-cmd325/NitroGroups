@@ -11,4 +11,9 @@
     <PackageReference Include="FluentValidation" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\NitroGroups.Shared.Abstractions\NitroGroups.Shared.Abstractions.csproj" />
+    <ProjectReference Include="..\NitroGroups.Shared.Contracts\NitroGroups.Shared.Contracts.csproj" />
+  </ItemGroup>
+
 </Project>

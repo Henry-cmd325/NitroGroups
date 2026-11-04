@@ -5,6 +5,7 @@ using NitroGroups.Core.Groups.Application.Abstractions;
 using NitroGroups.Core.Groups.Domain.Entities;
 using NitroGroups.Shared.Contracts.Groups.Requests;
 using NitroGroups.Shared.EndpointMapping;
+using NitroGroups.Shared.EndpointMapping.Filters;
 using static Microsoft.AspNetCore.Http.Results;
 
 namespace NitroGroups.Core.Groups.Infrastructure.Endpoints.Groups
@@ -41,6 +42,7 @@ namespace NitroGroups.Core.Groups.Infrastructure.Endpoints.Groups
                 await unitOfWork.CompleteAsync();
                 return NoContent();
             })
+            .RequireGroupManager()
             .WithTags("Groups");
         }
     }

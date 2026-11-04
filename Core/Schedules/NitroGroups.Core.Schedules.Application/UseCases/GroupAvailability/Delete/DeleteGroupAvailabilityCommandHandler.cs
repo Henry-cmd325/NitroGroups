@@ -12,7 +12,10 @@ public class DeleteGroupAvailabilityCommandHandler(IUnitOfWorkSchedules unitOfWo
     public async Task<Result<DeleteResponse>> Handle(DeleteGroupAvailabilityCommand command, CancellationToken cancellationToken)
     {
         var entity = await unitOfWork.AvailabilityRepository.GetByIdAsync(command.Id);
-        if (entity is null) return Result<DeleteResponse>.Failure("GroupAvailability no encontrado.");
+        // El ítem debe pertenecer al grupo de la ruta: el filtro de permisos solo valida ese grupo.
+        if (entity is null || entity.GroupId != command.GroupId)
+            return Result<DeleteResponse>.Failure("GroupAvailability no encontrado.");
+
         unitOfWork.AvailabilityRepository.Delete(entity);
         await unitOfWork.SaveChangesAsync(cancellationToken);
         return Result<DeleteResponse>.Success(new DeleteResponse { Success = true });

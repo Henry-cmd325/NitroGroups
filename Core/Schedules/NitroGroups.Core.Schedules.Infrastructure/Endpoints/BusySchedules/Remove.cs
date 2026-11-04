@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Routing;
 using NitroGroups.Core.Schedules.Application.UseCases.BusySchedules.Remove;
 using NitroGroups.Shared.Contracts;
 using NitroGroups.Shared.EndpointMapping;
+using NitroGroups.Shared.EndpointMapping.Filters;
 
 namespace NitroGroups.Core.Schedules.Infrastructure.Endpoints.BusySchedules;
 
@@ -28,6 +29,7 @@ public class Remove : IEndpoint
 
             return Results.NoContent();
         })
-        .WithTags("Schedules");
+        .RequireGroupManager("id")
+            .WithTags("Schedules");
     }
 }

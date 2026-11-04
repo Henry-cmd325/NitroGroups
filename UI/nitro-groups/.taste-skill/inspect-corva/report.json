@@ -1,0 +1,1800 @@
+{
+ "url": "http://localhost:3100/",
+ "at": "2026-11-03T21:27:49.284Z",
+ "allow": [
+  "palette-purple",
+  "glass",
+  "gradient",
+  "shadow",
+  "hairline",
+  "outlined-box"
+ ],
+ "viewports": [
+  {
+   "width": 1440,
+   "height": 900,
+   "load": "load",
+   "screens": 5,
+   "filled": [
+    0.35,
+    0.51,
+    0.49,
+    0.42,
+    0.43
+   ],
+   "motion": {
+    "elements": 62,
+    "css": 32,
+    "transitions": 29,
+    "scripted": 1,
+    "videos": 0,
+    "playingVideos": 0
+   },
+   "metrics": {
+    "viewport": {
+     "w": 1440,
+     "h": 900
+    },
+    "page": {
+     "height": 3900,
+     "screens": 4.3,
+     "words": 406,
+     "img": 0,
+     "video": 0,
+     "canvas": 0,
+     "svg": 10,
+     "sections": 6,
+     "horizontalOverflow": 0,
+     "overflowCulprits": [],
+     "uiFragments": 0,
+     "uiAbuse": false,
+     "realPictures": 0,
+     "videoCount": 0,
+     "uiPictures": 0,
+     "pictureSamples": [],
+     "blendText": 0,
+     "sideScrollers": 0,
+     "brokenImages": [],
+     "emoji": [],
+     "videosNoPoster": 0
+    },
+    "hero": {
+     "text": "Música en vivo para tu fecha",
+     "words": 6,
+     "chars": 28,
+     "lines": 2,
+     "size": 43.2,
+     "vw": 3,
+     "font": "Poppins",
+     "weight": 700,
+     "tracking": 0,
+     "leading": 1.25,
+     "upper": false,
+     "italic": false,
+     "mono": false,
+     "align": "left",
+     "position": "left",
+     "widthRatio": 0.31,
+     "top": 201,
+     "tag": "h1",
+     "kind": "heading"
+    },
+    "h1": {
+     "text": "Música en vivo para tu fecha",
+     "words": 6,
+     "lines": 2,
+     "size": 43.2,
+     "font": "Poppins"
+    },
+    "headings": [
+     {
+      "text": "Música en vivo para tu fecha",
+      "words": 6,
+      "chars": 28,
+      "lines": 2,
+      "size": 43.2,
+      "vw": 3,
+      "font": "Poppins",
+      "weight": 700,
+      "tracking": 0,
+      "leading": 1.25,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.31,
+      "top": 201,
+      "tag": "h1",
+      "kind": "heading"
+     },
+     {
+      "text": "Libres este fin de semana",
+      "words": 5,
+      "chars": 25,
+      "lines": 1,
+      "size": 43.2,
+      "vw": 3,
+      "font": "Poppins",
+      "weight": 700,
+      "tracking": 0,
+      "leading": 1.25,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "center",
+      "position": "center",
+      "widthRatio": 0.64,
+      "top": 771,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Sin llamadas de ida y vuelta. Eliges la fecha, ves el precio y le escribes al grupo. Todo queda por escrito.",
+      "words": 21,
+      "chars": 108,
+      "lines": 2,
+      "size": 30,
+      "vw": 2.1,
+      "font": "Poppins",
+      "weight": 600,
+      "tracking": 0,
+      "leading": 1.4,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "center",
+      "position": "center",
+      "widthRatio": 0.64,
+      "top": 1617,
+      "tag": "p",
+      "kind": "statement"
+     },
+     {
+      "text": "Así se contrata un grupo",
+      "words": 5,
+      "chars": 24,
+      "lines": 1,
+      "size": 43.2,
+      "vw": 3,
+      "font": "Poppins",
+      "weight": 700,
+      "tracking": 0,
+      "leading": 1.25,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "center",
+      "position": "center",
+      "widthRatio": 0.64,
+      "top": 1893,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "La música de toda la fiesta",
+      "words": 6,
+      "chars": 27,
+      "lines": 1,
+      "size": 43.2,
+      "vw": 3,
+      "font": "Poppins",
+      "weight": 700,
+      "tracking": 0,
+      "leading": 1.25,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "center",
+      "position": "center",
+      "widthRatio": 0.64,
+      "top": 2582,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Encuentra quién toca en tu fecha",
+      "words": 6,
+      "chars": 32,
+      "lines": 1,
+      "size": 43.2,
+      "vw": 3,
+      "font": "Poppins",
+      "weight": 700,
+      "tracking": 0,
+      "leading": 1.25,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "center",
+      "position": "center",
+      "widthRatio": 0.64,
+      "top": 3165,
+      "tag": "h2",
+      "kind": "heading"
+     }
+    ],
+    "headingSummary": {
+     "count": 6,
+     "maxLines": 2,
+     "over2Lines": 0,
+     "statements": 1,
+     "centered": 5,
+     "medianWords": 6,
+     "mixedFontHeadings": 0
+    },
+    "type": {
+     "families": [
+      {
+       "family": "Inter",
+       "share": 0.78,
+       "mono": false
+      },
+      {
+       "family": "Poppins",
+       "share": 0.22,
+       "mono": false
+      }
+     ],
+     "familyCount": 2,
+     "sizes": [
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      30,
+      43
+     ],
+     "sizeCount": 9,
+     "notLoaded": [],
+     "body": {
+      "font": "Inter",
+      "size": 16,
+      "leading": 1.5,
+      "weight": 400,
+      "tracking": 0,
+      "contrast": 7.2
+     },
+     "measureChars": 58,
+     "max": {
+      "size": 43.2,
+      "vw": 3,
+      "font": "Poppins",
+      "text": "Música en vivo para tu fecha"
+     },
+     "monoShare": 0,
+     "monoProseShare": 0,
+     "monoFamilies": [],
+     "monoSamples": [],
+     "microLabels": 0,
+     "microLabelShare": 0,
+     "microSamples": [],
+     "upperShare": 0,
+     "centerShare": 0.37,
+     "smallText": 0
+    },
+    "eyebrows": [],
+    "numbered": [],
+    "color": {
+     "bodyBg": "#0a090e",
+     "bodyBgHsl": {
+      "h": 252,
+      "s": 0.22,
+      "l": 0.05
+     },
+     "dark": true,
+     "sectionBgs": [
+      {
+       "color": "#121018",
+       "top": 3059,
+       "hsl": {
+        "h": 255,
+        "s": 0.2,
+        "l": 0.08
+       }
+      }
+     ],
+     "textColors": [
+      {
+       "color": "#a39daf",
+       "share": 0.71
+      },
+      {
+       "color": "#f4f2f7",
+       "share": 0.25
+      },
+      {
+       "color": "#120b24",
+       "share": 0.02
+      },
+      {
+       "color": "#8fdcb2",
+       "share": 0.02
+      },
+      {
+       "color": "#c9b8ff",
+       "share": 0
+      }
+     ],
+     "button": {
+      "bg": "#121018",
+      "hsl": {
+       "h": 255,
+       "s": 0.2,
+       "l": 0.08
+      },
+      "fg": "#a39daf"
+     },
+     "lowContrast": []
+    },
+    "buttons": {
+     "count": 17,
+     "inHero": 2,
+     "radius": 16,
+     "height": 44,
+     "withShadow": 0,
+     "withGradient": 0,
+     "mono": 0,
+     "upper": 0,
+     "heroLabels": [
+      "Crear cuenta",
+      "Buscar grupos"
+     ]
+    },
+    "surfaces": {
+     "shadowStatic": 3,
+     "shadowOverlay": 0,
+     "shadowSamples": [
+      "form.w-full.vidrio → rgba(0, 0, 0, 0.35) 0px 16px 40px 0px, rgba(255, 255, 255, 0.035) 0px 1px 0px 0p",
+      "a.aparece.group → rgba(0, 0, 0, 0.35) 0px 16px 40px 0px, rgba(255, 255, 255, 0.035) 0px 1px 0px 0p",
+      "div.aparece.relative → rgba(0, 0, 0, 0.35) 0px 16px 40px 0px, rgba(255, 255, 255, 0.035) 0px 1px 0px 0p"
+     ],
+     "gradients": 10,
+     "scrims": 0,
+     "gradientSamples": [
+      "div.resplandor.resplandor-vivo → radial-gradient(closest-side, rgba(201, 184, 255, 0.22), rgba(201, 184, 255, 0.07) 55%, rgba(0, 0, 0, 0))",
+      "div.absolute.inset-x-0 → linear-gradient(in oklab, rgba(0, 0, 0, 0) 0%, rgb(10, 9, 14) 100%)",
+      "form.w-full.vidrio → linear-gradient(135deg, rgba(36, 32, 47, 0.86), rgba(20, 18, 26, 0.72))",
+      "a.aparece.group → linear-gradient(135deg, rgba(36, 32, 47, 0.86), rgba(20, 18, 26, 0.72))"
+     ],
+     "gradientText": 0,
+     "hairlines": 4,
+     "hairlineSamples": [
+      "header.sticky.top-0 1440px",
+      "footer.mt-[var(--section-gap)].border-t 1440px",
+      "span.mx-5.mb-4 433px rule",
+      "span.block.h-full 433px rule"
+     ],
+     "outlinedBoxes": 3,
+     "dashed": 0,
+     "blurred": 4,
+     "roundedBoxes": 12,
+     "boxRadius": 22,
+     "squareMedia": 0,
+     "roundedMedia": 0,
+     "mediaRadius": 0,
+     "textShadow": 0,
+     "cardRows": [
+      {
+       "count": 3,
+       "iconTopped": false,
+       "rounded": true,
+       "top": 951
+      }
+     ]
+    },
+    "heroMedia": [
+     {
+      "type": "svg",
+      "ratio": 0.42
+     }
+    ],
+    "nav": {
+     "links": 6,
+     "fixed": true,
+     "height": 57,
+     "floatingPill": false,
+     "blur": true
+    },
+    "fontsLoaded": [
+     "inter",
+     "poppins"
+    ]
+   },
+   "layout": {
+    "viewport": {
+     "w": 1440,
+     "h": 900
+    },
+    "pageH": 3900,
+    "margins": {
+     "left": 128,
+     "right": 148
+    },
+    "sections": [
+     {
+      "sel": "section.relative.isolate",
+      "tag": "section",
+      "top": 57,
+      "height": 599,
+      "words": 54,
+      "media": 1,
+      "middle": 0,
+      "heading": {
+       "text": "Música en vivo para tu fecha",
+       "size": 43,
+       "tag": "h1"
+      },
+      "left": 128,
+      "right": 0,
+      "textLeft": 128,
+      "textRight": 168,
+      "fullBleed": false,
+      "footer": false,
+      "hero": true,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "section.page-frame.mt-[calc(var(--section-gap)*0.6)]",
+      "tag": "section",
+      "top": 771,
+      "height": 655,
+      "words": 61,
+      "media": 3,
+      "middle": 0,
+      "heading": {
+       "text": "Jarana del Golfo",
+       "size": 18,
+       "tag": "h3"
+      },
+      "left": 138,
+      "right": 138,
+      "textLeft": 150,
+      "textRight": 170,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "section.page-frame.mt-[var(--section-gap)]",
+      "tag": "section",
+      "top": 1893,
+      "height": 497,
+      "words": 70,
+      "media": 0,
+      "middle": 32,
+      "heading": null,
+      "left": 130,
+      "right": 271,
+      "textLeft": 150,
+      "textRight": 271,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "section.page-frame.mt-[var(--section-gap)]",
+      "tag": "section",
+      "top": 2582,
+      "height": 285,
+      "words": 39,
+      "media": 0,
+      "middle": 1,
+      "heading": null,
+      "left": 311,
+      "right": 311,
+      "textLeft": 311,
+      "textRight": 311,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "section.page-frame.mt-[var(--section-gap)]",
+      "tag": "section",
+      "top": 3059,
+      "height": 389,
+      "words": 27,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Encuentra quién toca en tu fecha",
+       "size": 43,
+       "tag": "h2"
+      },
+      "left": 325,
+      "right": 325,
+      "textLeft": 325,
+      "textRight": 325,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "footer.mt-[var(--section-gap)].border-t",
+      "tag": "footer",
+      "top": 3640,
+      "height": 260,
+      "words": 26,
+      "media": 0,
+      "middle": 240,
+      "heading": null,
+      "left": 128,
+      "right": 302,
+      "textLeft": 128,
+      "textRight": 302,
+      "fullBleed": false,
+      "footer": true,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     }
+    ],
+    "gaps": [],
+    "h1s": [
+     {
+      "text": "Música en vivo para tu fecha",
+      "size": 43,
+      "top": 201,
+      "firstScreen": true
+     }
+    ],
+    "edgeText": [],
+    "edges": [
+     {
+      "x": 128,
+      "n": 2
+     },
+     {
+      "x": 150,
+      "n": 1
+     },
+     {
+      "x": 550,
+      "n": 1
+     },
+     {
+      "x": 950,
+      "n": 1
+     }
+    ],
+    "leftBlocks": 5,
+    "bodySize": 18,
+    "stage": false,
+    "explains": true,
+    "slivers": [],
+    "voidShare": 0.08,
+    "voidBox": {
+     "x": 0,
+     "y": 540,
+     "w": 360,
+     "h": 300
+    }
+   },
+   "app": null,
+   "consoleErrors": []
+  },
+  {
+   "width": 768,
+   "height": 1024,
+   "load": "load",
+   "screens": 5,
+   "filled": [
+    0.41,
+    0.62,
+    0.71,
+    0.41,
+    0.47
+   ],
+   "motion": {
+    "elements": 62,
+    "css": 32,
+    "transitions": 29,
+    "scripted": 1,
+    "videos": 0,
+    "playingVideos": 0
+   },
+   "metrics": {
+    "viewport": {
+     "w": 768,
+     "h": 1024
+    },
+    "page": {
+     "height": 4285,
+     "screens": 4.2,
+     "words": 406,
+     "img": 0,
+     "video": 0,
+     "canvas": 0,
+     "svg": 10,
+     "sections": 6,
+     "horizontalOverflow": 0,
+     "overflowCulprits": [],
+     "uiFragments": 0,
+     "uiAbuse": false,
+     "realPictures": 0,
+     "videoCount": 0,
+     "uiPictures": 0,
+     "pictureSamples": [],
+     "blendText": 0,
+     "sideScrollers": 0,
+     "brokenImages": [],
+     "emoji": [],
+     "videosNoPoster": 0
+    },
+    "hero": {
+     "text": "Música en vivo para tu fecha",
+     "words": 6,
+     "chars": 28,
+     "lines": 2,
+     "size": 30,
+     "vw": 3.9,
+     "font": "Poppins",
+     "weight": 700,
+     "tracking": 0,
+     "leading": 1.25,
+     "upper": false,
+     "italic": false,
+     "mono": false,
+     "align": "left",
+     "position": "left",
+     "widthRatio": 0.41,
+     "top": 217,
+     "tag": "h1",
+     "kind": "heading"
+    },
+    "h1": {
+     "text": "Música en vivo para tu fecha",
+     "words": 6,
+     "lines": 2,
+     "size": 30,
+     "font": "Poppins"
+    },
+    "headings": [
+     {
+      "text": "Música en vivo para tu fecha",
+      "words": 6,
+      "chars": 28,
+      "lines": 2,
+      "size": 30,
+      "vw": 3.9,
+      "font": "Poppins",
+      "weight": 700,
+      "tracking": 0,
+      "leading": 1.25,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.41,
+      "top": 217,
+      "tag": "h1",
+      "kind": "heading"
+     },
+     {
+      "text": "Libres este fin de semana",
+      "words": 5,
+      "chars": 25,
+      "lines": 1,
+      "size": 30,
+      "vw": 3.9,
+      "font": "Poppins",
+      "weight": 700,
+      "tracking": 0,
+      "leading": 1.25,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "center",
+      "position": "center",
+      "widthRatio": 0.92,
+      "top": 945,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Así se contrata un grupo",
+      "words": 5,
+      "chars": 24,
+      "lines": 1,
+      "size": 30,
+      "vw": 3.9,
+      "font": "Poppins",
+      "weight": 700,
+      "tracking": 0,
+      "leading": 1.25,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "center",
+      "position": "center",
+      "widthRatio": 0.92,
+      "top": 2244,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "La música de toda la fiesta",
+      "words": 6,
+      "chars": 27,
+      "lines": 1,
+      "size": 30,
+      "vw": 3.9,
+      "font": "Poppins",
+      "weight": 700,
+      "tracking": 0,
+      "leading": 1.25,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "center",
+      "position": "center",
+      "widthRatio": 0.92,
+      "top": 3203,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Encuentra quién toca en tu fecha",
+      "words": 6,
+      "chars": 32,
+      "lines": 1,
+      "size": 30,
+      "vw": 3.9,
+      "font": "Poppins",
+      "weight": 700,
+      "tracking": 0,
+      "leading": 1.25,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "center",
+      "position": "center",
+      "widthRatio": 0.85,
+      "top": 3655,
+      "tag": "h2",
+      "kind": "heading"
+     }
+    ],
+    "headingSummary": {
+     "count": 5,
+     "maxLines": 2,
+     "over2Lines": 0,
+     "statements": 0,
+     "centered": 4,
+     "medianWords": 6,
+     "mixedFontHeadings": 0
+    },
+    "type": {
+     "families": [
+      {
+       "family": "Inter",
+       "share": 0.78,
+       "mono": false
+      },
+      {
+       "family": "Poppins",
+       "share": 0.22,
+       "mono": false
+      }
+     ],
+     "familyCount": 2,
+     "sizes": [
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      22,
+      30
+     ],
+     "sizeCount": 9,
+     "notLoaded": [],
+     "body": {
+      "font": "Inter",
+      "size": 16,
+      "leading": 1.5,
+      "weight": 400,
+      "tracking": 0,
+      "contrast": 7.2
+     },
+     "measureChars": 58,
+     "max": {
+      "size": 30,
+      "vw": 3.9,
+      "font": "Poppins",
+      "text": "Música en vivo para tu fecha"
+     },
+     "monoShare": 0,
+     "monoProseShare": 0,
+     "monoFamilies": [],
+     "monoSamples": [],
+     "microLabels": 0,
+     "microLabelShare": 0,
+     "microSamples": [],
+     "upperShare": 0,
+     "centerShare": 0.37,
+     "smallText": 0
+    },
+    "eyebrows": [],
+    "numbered": [],
+    "color": {
+     "bodyBg": "#0a090e",
+     "bodyBgHsl": {
+      "h": 252,
+      "s": 0.22,
+      "l": 0.05
+     },
+     "dark": true,
+     "sectionBgs": [
+      {
+       "color": "#121018",
+       "top": 2739,
+       "hsl": {
+        "h": 255,
+        "s": 0.2,
+        "l": 0.08
+       }
+      }
+     ],
+     "textColors": [
+      {
+       "color": "#a39daf",
+       "share": 0.71
+      },
+      {
+       "color": "#f4f2f7",
+       "share": 0.25
+      },
+      {
+       "color": "#120b24",
+       "share": 0.02
+      },
+      {
+       "color": "#8fdcb2",
+       "share": 0.02
+      },
+      {
+       "color": "#c9b8ff",
+       "share": 0
+      }
+     ],
+     "button": {
+      "bg": "#121018",
+      "hsl": {
+       "h": 255,
+       "s": 0.2,
+       "l": 0.08
+      },
+      "fg": "#a39daf"
+     },
+     "lowContrast": []
+    },
+    "buttons": {
+     "count": 17,
+     "inHero": 2,
+     "radius": 16,
+     "height": 44,
+     "withShadow": 0,
+     "withGradient": 0,
+     "mono": 0,
+     "upper": 0,
+     "heroLabels": [
+      "Crear cuenta",
+      "Buscar grupos"
+     ]
+    },
+    "surfaces": {
+     "shadowStatic": 3,
+     "shadowOverlay": 0,
+     "shadowSamples": [
+      "form.w-full.vidrio → rgba(0, 0, 0, 0.35) 0px 16px 40px 0px, rgba(255, 255, 255, 0.035) 0px 1px 0px 0p",
+      "a.aparece.group → rgba(0, 0, 0, 0.35) 0px 16px 40px 0px, rgba(255, 255, 255, 0.035) 0px 1px 0px 0p",
+      "div.aparece.relative → rgba(0, 0, 0, 0.35) 0px 16px 40px 0px, rgba(255, 255, 255, 0.035) 0px 1px 0px 0p"
+     ],
+     "gradients": 10,
+     "scrims": 0,
+     "gradientSamples": [
+      "div.resplandor.resplandor-vivo → radial-gradient(closest-side, rgba(201, 184, 255, 0.22), rgba(201, 184, 255, 0.07) 55%, rgba(0, 0, 0, 0))",
+      "div.absolute.inset-x-0 → linear-gradient(in oklab, rgba(0, 0, 0, 0) 0%, rgb(10, 9, 14) 100%)",
+      "form.w-full.vidrio → linear-gradient(135deg, rgba(36, 32, 47, 0.86), rgba(20, 18, 26, 0.72))",
+      "a.aparece.group → linear-gradient(135deg, rgba(36, 32, 47, 0.86), rgba(20, 18, 26, 0.72))"
+     ],
+     "gradientText": 0,
+     "hairlines": 4,
+     "hairlineSamples": [
+      "header.sticky.top-0 768px",
+      "footer.mt-[var(--section-gap)].border-t 768px",
+      "span.mx-5.mb-4 663px rule",
+      "span.block.h-full 663px rule"
+     ],
+     "outlinedBoxes": 3,
+     "dashed": 0,
+     "blurred": 4,
+     "roundedBoxes": 12,
+     "boxRadius": 22,
+     "squareMedia": 0,
+     "roundedMedia": 0,
+     "mediaRadius": 0,
+     "textShadow": 0,
+     "cardRows": [
+      {
+       "count": 3,
+       "iconTopped": false,
+       "rounded": true,
+       "top": 1108
+      }
+     ]
+    },
+    "heroMedia": [
+     {
+      "type": "svg",
+      "ratio": 0.51
+     }
+    ],
+    "nav": {
+     "links": 6,
+     "fixed": true,
+     "height": 57,
+     "floatingPill": false,
+     "blur": true
+    },
+    "fontsLoaded": [
+     "inter",
+     "poppins"
+    ]
+   },
+   "layout": {
+    "viewport": {
+     "w": 768,
+     "h": 1024
+    },
+    "pageH": 4285,
+    "margins": {
+     "left": 31,
+     "right": 33
+    },
+    "sections": [
+     {
+      "sel": "section.relative.isolate",
+      "tag": "section",
+      "top": 57,
+      "height": 820,
+      "words": 54,
+      "media": 1,
+      "middle": 0,
+      "heading": {
+       "text": "Música en vivo para tu fecha",
+       "size": 30,
+       "tag": "h1"
+      },
+      "left": 31,
+      "right": 0,
+      "textLeft": 31,
+      "textRight": 72,
+      "fullBleed": false,
+      "footer": false,
+      "hero": true,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "section.page-frame.mt-[calc(var(--section-gap)*0.6)]",
+      "tag": "section",
+      "top": 945,
+      "height": 1014,
+      "words": 54,
+      "media": 3,
+      "middle": 0,
+      "heading": {
+       "text": "Jarana del Golfo",
+       "size": 18,
+       "tag": "h3"
+      },
+      "left": 38,
+      "right": 38,
+      "textLeft": 38,
+      "textRight": 38,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "section.page-frame.mt-[var(--section-gap)]",
+      "tag": "section",
+      "top": 2244,
+      "height": 848,
+      "words": 70,
+      "media": 0,
+      "middle": 0,
+      "heading": null,
+      "left": 33,
+      "right": 33,
+      "textLeft": 53,
+      "textRight": 151,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "section.page-frame.mt-[var(--section-gap)]",
+      "tag": "section",
+      "top": 3203,
+      "height": 269,
+      "words": 39,
+      "media": 0,
+      "middle": 0,
+      "heading": null,
+      "left": 59,
+      "right": 59,
+      "textLeft": 59,
+      "textRight": 59,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "section.page-frame.mt-[var(--section-gap)]",
+      "tag": "section",
+      "top": 3584,
+      "height": 330,
+      "words": 27,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Encuentra quién toca en tu fecha",
+       "size": 30,
+       "tag": "h2"
+      },
+      "left": 59,
+      "right": 59,
+      "textLeft": 59,
+      "textRight": 59,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "footer.mt-[var(--section-gap)].border-t",
+      "tag": "footer",
+      "top": 4025,
+      "height": 260,
+      "words": 26,
+      "media": 0,
+      "middle": 58,
+      "heading": null,
+      "left": 31,
+      "right": 85,
+      "textLeft": 31,
+      "textRight": 85,
+      "fullBleed": false,
+      "footer": true,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     }
+    ],
+    "gaps": [],
+    "h1s": [
+     {
+      "text": "Música en vivo para tu fecha",
+      "size": 30,
+      "top": 217,
+      "firstScreen": true
+     }
+    ],
+    "edgeText": [],
+    "edges": [
+     {
+      "x": 31,
+      "n": 2
+     },
+     {
+      "x": 53,
+      "n": 2
+     },
+     {
+      "x": 414,
+      "n": 1
+     }
+    ],
+    "leftBlocks": 5,
+    "bodySize": 18,
+    "stage": false,
+    "explains": true,
+    "slivers": [],
+    "voidShare": 0,
+    "voidBox": null
+   },
+   "app": null,
+   "consoleErrors": []
+  },
+  {
+   "width": 390,
+   "height": 844,
+   "load": "load",
+   "screens": 7,
+   "filled": [
+    0.67,
+    0.67,
+    0.86,
+    0.39,
+    0.71,
+    0.75,
+    0.28
+   ],
+   "motion": {
+    "elements": 70,
+    "css": 34,
+    "transitions": 35,
+    "scripted": 1,
+    "videos": 0,
+    "playingVideos": 0
+   },
+   "metrics": {
+    "viewport": {
+     "w": 390,
+     "h": 844
+    },
+    "page": {
+     "height": 5842,
+     "screens": 6.9,
+     "words": 396,
+     "img": 0,
+     "video": 0,
+     "canvas": 0,
+     "svg": 10,
+     "sections": 6,
+     "horizontalOverflow": 0,
+     "overflowCulprits": [],
+     "uiFragments": 0,
+     "uiAbuse": false,
+     "realPictures": 0,
+     "videoCount": 0,
+     "uiPictures": 0,
+     "pictureSamples": [],
+     "blendText": 0,
+     "sideScrollers": 0,
+     "brokenImages": [],
+     "emoji": [],
+     "videosNoPoster": 0
+    },
+    "hero": {
+     "text": "Música en vivo para tu fecha",
+     "words": 6,
+     "chars": 28,
+     "lines": 2,
+     "size": 30,
+     "vw": 7.7,
+     "font": "Poppins",
+     "weight": 700,
+     "tracking": 0,
+     "leading": 1.25,
+     "upper": false,
+     "italic": false,
+     "mono": false,
+     "align": "left",
+     "position": "center",
+     "widthRatio": 0.8,
+     "top": 192,
+     "tag": "h1",
+     "kind": "heading"
+    },
+    "h1": {
+     "text": "Música en vivo para tu fecha",
+     "words": 6,
+     "lines": 2,
+     "size": 30,
+     "font": "Poppins"
+    },
+    "headings": [
+     {
+      "text": "Música en vivo para tu fecha",
+      "words": 6,
+      "chars": 28,
+      "lines": 2,
+      "size": 30,
+      "vw": 7.7,
+      "font": "Poppins",
+      "weight": 700,
+      "tracking": 0,
+      "leading": 1.25,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.8,
+      "top": 192,
+      "tag": "h1",
+      "kind": "heading"
+     },
+     {
+      "text": "Libres este fin de semana",
+      "words": 5,
+      "chars": 25,
+      "lines": 2,
+      "size": 30,
+      "vw": 7.7,
+      "font": "Poppins",
+      "weight": 700,
+      "tracking": 0,
+      "leading": 1.25,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "center",
+      "position": "center",
+      "widthRatio": 0.9,
+      "top": 1160,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Sin llamadas de ida y vuelta. Eliges la fecha, ves el precio y le escribes al grupo. Todo queda por escrito.",
+      "words": 21,
+      "chars": 108,
+      "lines": 4,
+      "size": 22,
+      "vw": 5.6,
+      "font": "Poppins",
+      "weight": 600,
+      "tracking": 0,
+      "leading": 1.4,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "center",
+      "position": "center",
+      "widthRatio": 0.9,
+      "top": 2758,
+      "tag": "p",
+      "kind": "statement"
+     },
+     {
+      "text": "Así se contrata un grupo",
+      "words": 5,
+      "chars": 24,
+      "lines": 2,
+      "size": 30,
+      "vw": 7.7,
+      "font": "Poppins",
+      "weight": 700,
+      "tracking": 0,
+      "leading": 1.25,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "center",
+      "position": "center",
+      "widthRatio": 0.9,
+      "top": 2994,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "La música de toda la fiesta",
+      "words": 6,
+      "chars": 27,
+      "lines": 2,
+      "size": 30,
+      "vw": 7.7,
+      "font": "Poppins",
+      "weight": 700,
+      "tracking": 0,
+      "leading": 1.25,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "center",
+      "position": "center",
+      "widthRatio": 0.9,
+      "top": 4063,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Encuentra quién toca en tu fecha",
+      "words": 6,
+      "chars": 32,
+      "lines": 2,
+      "size": 30,
+      "vw": 7.7,
+      "font": "Poppins",
+      "weight": 700,
+      "tracking": 0,
+      "leading": 1.25,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "center",
+      "position": "center",
+      "widthRatio": 0.76,
+      "top": 4782,
+      "tag": "h2",
+      "kind": "heading"
+     }
+    ],
+    "headingSummary": {
+     "count": 6,
+     "maxLines": 4,
+     "over2Lines": 0,
+     "statements": 1,
+     "centered": 5,
+     "medianWords": 6,
+     "mixedFontHeadings": 0
+    },
+    "type": {
+     "families": [
+      {
+       "family": "Inter",
+       "share": 0.78,
+       "mono": false
+      },
+      {
+       "family": "Poppins",
+       "share": 0.22,
+       "mono": false
+      }
+     ],
+     "familyCount": 2,
+     "sizes": [
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      22,
+      30
+     ],
+     "sizeCount": 9,
+     "notLoaded": [],
+     "body": {
+      "font": "Inter",
+      "size": 16,
+      "leading": 1.5,
+      "weight": 400,
+      "tracking": 0,
+      "contrast": 7.2
+     },
+     "measureChars": 39,
+     "max": {
+      "size": 30,
+      "vw": 7.7,
+      "font": "Poppins",
+      "text": "Música en vivo para tu fecha"
+     },
+     "monoShare": 0,
+     "monoProseShare": 0,
+     "monoFamilies": [],
+     "monoSamples": [],
+     "microLabels": 0,
+     "microLabelShare": 0,
+     "microSamples": [],
+     "upperShare": 0,
+     "centerShare": 0.38,
+     "smallText": 0
+    },
+    "eyebrows": [],
+    "numbered": [],
+    "color": {
+     "bodyBg": "#0a090e",
+     "bodyBgHsl": {
+      "h": 252,
+      "s": 0.22,
+      "l": 0.05
+     },
+     "dark": true,
+     "sectionBgs": [
+      {
+       "color": "#121018",
+       "top": 1388,
+       "hsl": {
+        "h": 255,
+        "s": 0.2,
+        "l": 0.08
+       }
+      }
+     ],
+     "textColors": [
+      {
+       "color": "#a39daf",
+       "share": 0.71
+      },
+      {
+       "color": "#f4f2f7",
+       "share": 0.27
+      },
+      {
+       "color": "#120b24",
+       "share": 0.01
+      },
+      {
+       "color": "#c9b8ff",
+       "share": 0
+      }
+     ],
+     "button": {
+      "bg": "#121018",
+      "hsl": {
+       "h": 255,
+       "s": 0.2,
+       "l": 0.08
+      },
+      "fg": "#a39daf"
+     },
+     "lowContrast": []
+    },
+    "buttons": {
+     "count": 16,
+     "inHero": 1,
+     "radius": 16,
+     "height": 44,
+     "withShadow": 0,
+     "withGradient": 0,
+     "mono": 0,
+     "upper": 0,
+     "heroLabels": [
+      "Buscar grupos"
+     ]
+    },
+    "surfaces": {
+     "shadowStatic": 3,
+     "shadowOverlay": 0,
+     "shadowSamples": [
+      "form.w-full.vidrio → rgba(0, 0, 0, 0.35) 0px 16px 40px 0px, rgba(255, 255, 255, 0.035) 0px 1px 0px 0p",
+      "a.aparece.group → rgba(0, 0, 0, 0.35) 0px 16px 40px 0px, rgba(255, 255, 255, 0.035) 0px 1px 0px 0p",
+      "div.aparece.relative → rgba(0, 0, 0, 0.35) 0px 16px 40px 0px, rgba(255, 255, 255, 0.035) 0px 1px 0px 0p"
+     ],
+     "gradients": 10,
+     "scrims": 0,
+     "gradientSamples": [
+      "div.resplandor.resplandor-vivo → radial-gradient(closest-side, rgba(201, 184, 255, 0.22), rgba(201, 184, 255, 0.07) 55%, rgba(0, 0, 0, 0))",
+      "div.absolute.inset-x-0 → linear-gradient(in oklab, rgba(0, 0, 0, 0) 0%, rgb(10, 9, 14) 100%)",
+      "form.w-full.vidrio → linear-gradient(135deg, rgba(36, 32, 47, 0.86), rgba(20, 18, 26, 0.72))",
+      "a.aparece.group → linear-gradient(135deg, rgba(36, 32, 47, 0.86), rgba(20, 18, 26, 0.72))"
+     ],
+     "gradientText": 0,
+     "hairlines": 3,
+     "hairlineSamples": [
+      "header.sticky.top-0 390px",
+      "footer.mt-[var(--section-gap)].border-t 390px",
+      "span.mx-5.mb-4 306px rule"
+     ],
+     "outlinedBoxes": 3,
+     "dashed": 0,
+     "blurred": 4,
+     "roundedBoxes": 12,
+     "boxRadius": 22,
+     "squareMedia": 0,
+     "roundedMedia": 0,
+     "mediaRadius": 0,
+     "textShadow": 0,
+     "cardRows": [
+      {
+       "count": 3,
+       "iconTopped": false,
+       "rounded": true,
+       "top": 1388
+      }
+     ]
+    },
+    "heroMedia": [
+     {
+      "type": "svg",
+      "ratio": 0.83
+     }
+    ],
+    "nav": {
+     "links": 2,
+     "fixed": true,
+     "height": 57,
+     "floatingPill": false,
+     "blur": true
+    },
+    "fontsLoaded": [
+     "inter",
+     "poppins"
+    ]
+   },
+   "layout": {
+    "viewport": {
+     "w": 390,
+     "h": 844
+    },
+    "pageH": 5842,
+    "margins": {
+     "left": 20,
+     "right": 22
+    },
+    "sections": [
+     {
+      "sel": "section.relative.isolate",
+      "tag": "section",
+      "top": 57,
+      "height": 1036,
+      "words": 54,
+      "media": 1,
+      "middle": 0,
+      "heading": {
+       "text": "Música en vivo para tu fecha",
+       "size": 30,
+       "tag": "h1"
+      },
+      "left": 20,
+      "right": 33,
+      "textLeft": 20,
+      "textRight": 49,
+      "fullBleed": true,
+      "footer": false,
+      "hero": true,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "div.columna.is-in",
+      "tag": "div",
+      "top": 1160,
+      "height": 172,
+      "words": 22,
+      "media": 0,
+      "middle": 0,
+      "heading": null,
+      "left": 35,
+      "right": 35,
+      "textLeft": 35,
+      "textRight": 35,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "div.mt-14.grid",
+      "tag": "div",
+      "top": 1388,
+      "height": 1192,
+      "words": 32,
+      "media": 3,
+      "middle": 0,
+      "heading": {
+       "text": "Jarana del Golfo",
+       "size": 18,
+       "tag": "h3"
+      },
+      "left": 30,
+      "right": 30,
+      "textLeft": 42,
+      "textRight": 62,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "section.page-frame.mt-[var(--section-gap)]",
+      "tag": "section",
+      "top": 2758,
+      "height": 123,
+      "words": 20,
+      "media": 0,
+      "middle": 0,
+      "heading": null,
+      "left": 31,
+      "right": 31,
+      "textLeft": 31,
+      "textRight": 31,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "section.page-frame.mt-[var(--section-gap)]",
+      "tag": "section",
+      "top": 2994,
+      "height": 958,
+      "words": 63,
+      "media": 0,
+      "middle": 0,
+      "heading": null,
+      "left": 20,
+      "right": 20,
+      "textLeft": 20,
+      "textRight": 20,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "section.page-frame.mt-[var(--section-gap)]",
+      "tag": "section",
+      "top": 4063,
+      "height": 541,
+      "words": 39,
+      "media": 0,
+      "middle": 0,
+      "heading": null,
+      "left": 25,
+      "right": 26,
+      "textLeft": 25,
+      "textRight": 26,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "section.page-frame.mt-[var(--section-gap)]",
+      "tag": "section",
+      "top": 4716,
+      "height": 440,
+      "words": 27,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Encuentra quién toca en tu fecha",
+       "size": 30,
+       "tag": "h2"
+      },
+      "left": 52,
+      "right": 52,
+      "textLeft": 52,
+      "textRight": 52,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "footer.mt-[var(--section-gap)].border-t",
+      "tag": "footer",
+      "top": 5268,
+      "height": 574,
+      "words": 26,
+      "media": 0,
+      "middle": 0,
+      "heading": null,
+      "left": 20,
+      "right": 100,
+      "textLeft": 20,
+      "textRight": 100,
+      "fullBleed": false,
+      "footer": true,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     }
+    ],
+    "gaps": [],
+    "h1s": [
+     {
+      "text": "Música en vivo para tu fecha",
+      "size": 30,
+      "top": 192,
+      "firstScreen": true
+     }
+    ],
+    "edgeText": [],
+    "edges": [
+     {
+      "x": 42,
+      "n": 3
+     },
+     {
+      "x": 20,
+      "n": 2
+     }
+    ],
+    "leftBlocks": 5,
+    "bodySize": 18,
+    "stage": false,
+    "explains": true,
+    "slivers": [],
+    "voidShare": 0,
+    "voidBox": null
+   },
+   "app": null,
+   "consoleErrors": []
+  }
+ ],
+ "findings": [
+  {
+   "level": "FAIL",
+   "id": "few-pictures",
+   "width": 1440,
+   "message": "Only 0 picture(s) on the page (0 photographs, footage or raster images, 0 interface fragments). Drawings in SVG do not count.",
+   "fix": "Find real pictures of the subject's world with scripts/assets.mjs (photographs, archival images, maps, engravings, footage), download them to assets/ and give them room: a hero picture, one per section that has a subject, a full-width band. At least four, usually six to twelve."
+  },
+  {
+   "level": "WARN",
+   "id": "no-footage",
+   "width": 1440,
+   "message": "No video anywhere on the page.",
+   "fix": "Look for one honest clip with scripts/assets.mjs --video (the place, the material, the process) and use it as a muted loop with a poster frame. Defend its absence only if no clip fits the subject."
+  },
+  {
+   "level": "WARN",
+   "id": "font-not-dealt",
+   "width": 1440,
+   "message": "The sheet dealt Unbounded and Onest, but the page renders Inter, Poppins.",
+   "fix": "Load the dealt face (the link on the sheet) and put it first in font-family. A build that falls back to a default face lands on the default look."
+  },
+  {
+   "level": "WARN",
+   "id": "off-centre",
+   "width": 1440,
+   "message": "The margins differ: 128px on the left, 148px on the right, at 1440px.",
+   "fix": "Put the navigation and the content on one pair of margins; check for padding on one side only, a scrollbar gutter, or a header on another inset than the page."
+  },
+  {
+   "level": "WARN",
+   "id": "small-title",
+   "width": 768,
+   "message": "The h1 is 30px (\"Música en vivo para tu fecha\").",
+   "fix": "Set the title at display size, or make the large text of the first screen the h1."
+  }
+ ],
+ "images": [
+  {
+   "viewport": "desktop",
+   "width": 1440,
+   "fold": "/home/user/NitroGroups/UI/nitro-groups/.taste-skill/inspect-corva/desktop-fold.jpg",
+   "pages": [
+    "/home/user/NitroGroups/UI/nitro-groups/.taste-skill/inspect-corva/desktop-page-01.jpg",
+    "/home/user/NitroGroups/UI/nitro-groups/.taste-skill/inspect-corva/desktop-page-02.jpg"
+   ],
+   "film": []
+  },
+  {
+   "viewport": "tablet",
+   "width": 768,
+   "fold": "/home/user/NitroGroups/UI/nitro-groups/.taste-skill/inspect-corva/tablet-fold.jpg",
+   "pages": [
+    "/home/user/NitroGroups/UI/nitro-groups/.taste-skill/inspect-corva/tablet-page-01.jpg"
+   ],
+   "film": []
+  },
+  {
+   "viewport": "mobile",
+   "width": 390,
+   "fold": "/home/user/NitroGroups/UI/nitro-groups/.taste-skill/inspect-corva/mobile-fold.jpg",
+   "pages": [
+    "/home/user/NitroGroups/UI/nitro-groups/.taste-skill/inspect-corva/mobile-page-01.jpg"
+   ],
+   "film": []
+  }
+ ]
+}

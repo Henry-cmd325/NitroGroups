@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using NitroGroups.Core.Groups.Application.Abstractions;
 using NitroGroups.Shared.EndpointMapping;
+using NitroGroups.Shared.EndpointMapping.Filters;
 using static Microsoft.AspNetCore.Http.Results;
 
 namespace NitroGroups.Core.Groups.Infrastructure.Endpoints.Groups
@@ -22,6 +23,7 @@ namespace NitroGroups.Core.Groups.Infrastructure.Endpoints.Groups
                 await unitOfWork.CompleteAsync();
                 return NoContent();
             })
+            .RequireGroupManager()
             .WithTags("Groups");
         }
     }

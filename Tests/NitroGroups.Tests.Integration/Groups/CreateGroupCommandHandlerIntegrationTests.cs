@@ -58,7 +58,7 @@ public class CreateGroupCommandHandlerIntegrationTests(IntegrationTestFixture fi
 
         GroupMember? leader = context.GroupMembers.SingleOrDefault(x => x.GroupId == persistedGroup.Id && x.UserId == command.OwnerUserId);
         Assert.NotNull(leader);
-        Assert.Equal(GroupMemberRole.Leader, leader!.Role);
+        Assert.Equal(GroupMemberRole.Owner, leader!.Role);
         Assert.True(leader.IsActive);
         Assert.Equal(JoinedVia.Manual, leader.JoinedVia);
     }

@@ -40,7 +40,7 @@ public class GetGroupByUserIdQueryHandlerIntegrationTests : IClassFixture<Integr
         {
             GroupId = group.Id,
             UserId = 25,
-            Role = GroupMemberRole.Leader,
+            Role = GroupMemberRole.Owner,
             IsActive = true,
             JoinedAt = DateTime.UtcNow,
             JoinedVia = JoinedVia.Manual

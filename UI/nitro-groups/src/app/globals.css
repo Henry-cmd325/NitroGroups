@@ -1,44 +1,75 @@
 @import "tailwindcss";
 
+/*
+ * NitroGroups design system — "Noche". See DESIGN.md.
+ * A near-black ground with a faint violet cast, warm white ink, one lilac accent.
+ * Quiet by default: space and type carry the page; glass only where something floats.
+ */
 :root {
-    --background: #020617;
-    --foreground: #f8fafc;
-    --card: #0f172a;
-    --card-foreground: #f8fafc;
-    --popover: #0f172a;
-    --popover-foreground: #f8fafc;
-    --primary: #a855f7;
-    --primary-foreground: #020617;
-    --secondary: #1e293b;
-    --secondary-foreground: #f8fafc;
-    --muted: #1e293b;
-    --muted-foreground: #c4b5fd;
-    --accent: #7c3aed;
-    --accent-foreground: #f8fafc;
-    --destructive: #f87171;
-    --destructive-foreground: #020617;
-    --border: rgba(196, 181, 253, 0.15);
-    --input: #1e293b;
-    --ring: #a855f7;
-    --font-weight-medium: 500;
-    --font-weight-normal: 400;
-    --chart-1: #a855f7;
-    --chart-2: #7c3aed;
-    --chart-3: #06b6d4;
-    --chart-4: #34d399;
-    --chart-5: #fbbf24;
-    --sidebar: #0f172a;
-    --sidebar-foreground: #f8fafc;
-    --sidebar-primary: #a855f7;
-    --sidebar-primary-foreground: #020617;
-    --sidebar-accent: #1e293b;
-    --sidebar-accent-foreground: #f8fafc;
-    --sidebar-border: rgba(196, 181, 253, 0.15);
-    --sidebar-ring: #a855f7;
-    --back-purple: #241335
+    --fondo: #0A090E;
+    --fondo-2: #121018;
+    --fondo-3: #1D1A25;
+    --tinta: #F4F2F7;
+    --tinta-2: #A39DAF;
+    --acento: #C9B8FF;
+    --acento-press: #B6A0FA;
+    --acento-ink: #120B24;
+    --error: #FF8F8F;
+    --ok: #8FDCB2;
+
+    /* Edges and glass. */
+    --linea: rgb(255 255 255 / 0.08);
+    --linea-fuerte: rgb(255 255 255 / 0.14);
+    --vidrio-borde: rgb(255 255 255 / 0.05);
+    --vidrio-brillo: rgb(255 255 255 / 0.035);
+    --borde-tarjeta: #221F2C;
+
+    --gutter: clamp(1.25rem, 4vw, 3rem);
+    --section-gap: clamp(7rem, 14vw, 12rem);
+    --radius: 12px;
+    --ease-out: cubic-bezier(0, 0, 0.2, 1);
 }
 
-@theme {
+/* Semantic aliases, re-resolved on every sheet. */
+:root, .hoja-clara, .campo-tinta {
+    --background: var(--fondo);
+    --foreground: var(--tinta);
+    --card: var(--fondo-2);
+    --card-foreground: var(--tinta);
+    --popover: var(--fondo-2);
+    --popover-foreground: var(--tinta);
+    --primary: var(--acento);
+    --primary-foreground: var(--acento-ink);
+    --secondary: var(--fondo-2);
+    --secondary-foreground: var(--tinta);
+    --muted: var(--fondo-2);
+    --muted-foreground: var(--tinta-2);
+    --accent: var(--fondo-3);
+    --accent-foreground: var(--tinta);
+    --destructive: var(--error);
+    --destructive-foreground: var(--fondo);
+    --border: var(--linea);
+    --input: var(--fondo-2);
+    --ring: var(--acento);
+}
+
+/* Working screens and raised fields keep the same tokens; the classes stay as hooks. */
+.hoja-clara { }
+.campo-tinta { background: var(--fondo-2); color: var(--tinta); }
+
+@theme inline {
+    --color-fondo: var(--fondo);
+    --color-fondo-2: var(--fondo-2);
+    --color-fondo-3: var(--fondo-3);
+    --color-tinta: var(--tinta);
+    --color-tinta-2: var(--tinta-2);
+    --color-acento: var(--acento);
+    --color-acento-press: var(--acento-press);
+    --color-acento-ink: var(--acento-ink);
+    --color-linea: var(--linea);
+    --color-error: var(--error);
+    --color-ok: var(--ok);
+
     --color-background: var(--background);
     --color-foreground: var(--foreground);
     --color-card: var(--card);
@@ -58,192 +89,214 @@
     --color-border: var(--border);
     --color-input: var(--input);
     --color-ring: var(--ring);
-    --color-chart-1: var(--chart-1);
-    --color-chart-2: var(--chart-2);
-    --color-chart-3: var(--chart-3);
-    --color-chart-4: var(--chart-4);
-    --color-chart-5: var(--chart-5);
-    --radius-sm: calc(var(--radius) - 4px);
-    --radius-md: calc(var(--radius) - 2px);
-    --radius-lg: var(--radius);
-    --radius-xl: calc(var(--radius) + 4px);
-    --color-sidebar: var(--sidebar);
-    --color-sidebar-foreground: var(--sidebar-foreground);
-    --color-sidebar-primary: var(--sidebar-primary);
-    --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-    --color-sidebar-accent: var(--sidebar-accent);
-    --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-    --color-sidebar-border: var(--sidebar-border);
-    --color-sidebar-ring: var(--sidebar-ring);
-    --font-sans: var(--font-geist-sans);
-    --font-mono: var(--font-geist-mono);
+
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 22px;
+    --radius-2xl: 28px;
+
+    --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, sans-serif;
+    --font-display: var(--font-poppins), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
 }
 
 @layer base {
     * {
-        @apply border-border outline-ring/50;
+        @apply border-border;
+    }
+
+    html {
+        color-scheme: dark;
+        overflow-x: clip;
+        scrollbar-color: var(--fondo-3) var(--fondo);
+        -webkit-text-size-adjust: 100%;
     }
 
     body {
         @apply bg-background text-foreground;
+        overflow-x: clip;
+        font-family: var(--font-sans);
+        font-size: 1.125rem;
+        line-height: 1.5;
+        caret-color: var(--acento);
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
+    }
+
+    ::selection {
+        background: var(--acento);
+        color: var(--acento-ink);
+    }
+
+    :focus-visible {
+        outline: 2px solid var(--acento);
+        outline-offset: 3px;
+    }
+
+    a {
+        text-underline-offset: 0.22em;
+        text-decoration-thickness: 1px;
+    }
+
+    h1, h2, h3, h4 {
+        font-family: var(--font-display);
+        font-weight: 700;
+        letter-spacing: 0;
+        line-height: 1.25;
+        text-wrap: balance;
+    }
+
+    p {
+        text-wrap: pretty;
+    }
+
+    input, select, textarea, button {
+        font: inherit;
+        letter-spacing: inherit;
+    }
+
+    ::-webkit-scrollbar { width: 10px; height: 10px; }
+    ::-webkit-scrollbar-track { background: var(--fondo); }
+    ::-webkit-scrollbar-thumb { background: var(--fondo-3); border-radius: 10px; border: 2px solid var(--fondo); }
+}
+
+@layer components {
+    /* One title voice: Poppins bold, open tracking, airy leading. One size for every section title. */
+    .type-poster,
+    .type-heading {
+        font-family: var(--font-display);
+        font-weight: 700;
+        letter-spacing: 0;
+        line-height: 1.25;
+        text-wrap: balance;
+    }
+
+    .titulo {
+        font-family: var(--font-display);
+        font-weight: 700;
+        font-size: clamp(1.875rem, 3vw, 2.75rem);
+        line-height: 1.25;
+        text-wrap: balance;
+    }
+
+    /* The centred column every centred block shares (one of the page's two alignment axes). */
+    .columna {
+        max-width: 58rem;
+        margin-inline: auto;
+        text-align: center;
+    }
+
+    .tabular {
+        font-variant-numeric: tabular-nums;
+    }
+
+    .page-frame {
+        width: 100%;
+        max-width: 80rem;
+        margin-inline: auto;
+        padding-inline: var(--gutter);
+    }
+
+    /* Liquid glass: a translucent pane with a lit top edge. Used only where something floats. */
+    .vidrio {
+        background: linear-gradient(135deg, rgb(36 32 47 / 0.86), rgb(20 18 26 / 0.72));
+        -webkit-backdrop-filter: blur(12px);
+        backdrop-filter: blur(12px);
+        border: 1px solid var(--vidrio-borde);
+        box-shadow:
+            0 16px 40px 0 rgb(0 0 0 / 0.35),
+            inset 0 1px 0 0 var(--vidrio-brillo);
+    }
+
+    /* Sober card: a solid step above the ground with a 2px edge just lighter than it. No shadow. */
+    .superficie {
+        background: var(--fondo-2);
+        border: 2px solid var(--borde-tarjeta);
+        transition: border-color 0.5s var(--ease-out);
+    }
+
+    /* The one light in the room: a slow lilac glow behind the hero. */
+    .resplandor {
+        position: absolute;
+        pointer-events: none;
+        border-radius: 9999px;
+        background: radial-gradient(closest-side, rgb(201 184 255 / 0.22), rgb(201 184 255 / 0.07) 55%, transparent);
+        filter: blur(20px);
     }
 }
 
-@layer base {
-    :where(:not(:has([class*=" text-"]), :not(:has([class^="text-"])))) {  
-        h1 {
-            font-size: var(--text-2xl);
-            font-weight: var(--font-weight-medium);
-            line-height: 1.5;
-        }
-
-        h2 {
-            font-size: var(--text-xl);
-            font-weight: var(--font-weight-medium);
-            line-height: 1.5;
-        }
-
-        h3 {
-            font-size: var(--text-lg);
-            font-weight: var(--font-weight-medium);
-            line-height: 1.5;
-        }
-
-        h4 {
-            font-size: var(--text-base);
-            font-weight: var(--font-weight-medium);
-            line-height: 1.5;
-        }
-
-        p {
-            font-size: var(--text-base);
-            font-weight: var(--font-weight-normal);
-            line-height: 1.5;
-        }
-
-        label {
-            font-size: var(--text-base);
-            font-weight: var(--font-weight-medium);
-            line-height: 1.5;
-        }
-
-        button {
-            font-size: var(--text-base);
-            font-weight: var(--font-weight-medium);
-            line-height: 1.5;
-        }
-
-        input {
-            font-size: var(--text-base);
-            font-weight: var(--font-weight-normal);
-            line-height: 1.5;
-        }
-    }
-}
-
-/* Validation styles */
-.valid.modified:not([type=checkbox]) {
-    outline: 1px solid #26b050;
-}
-
-.invalid {
-    outline: 1px solid red;
-}
-
-.validation-message {
-    color: red;
-}
-
-/* Loader animation */
-.loader-logo {
-    animation: pulse 1.5s infinite ease-in-out;
-    width: 150px;
-    height: auto;
-}
-
-@keyframes pulse {
-    0% {
-        transform: scale(1);
-        opacity: 1;
-    }
-    50% {
-        transform: scale(1.05);
-        opacity: 0.8;
-    }
-    100% {
-        transform: scale(1);
-        opacity: 1;
-    }
-}
-
-/* Spinner animation */
+/* Spinner (loading states) */
 .spinner {
-    border: 4px solid var(--secondary);
-    border-left-color: var(--primary);
+    border: 2px solid var(--fondo-3);
+    border-left-color: var(--acento);
     border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    animation: spin 1s linear infinite;
+    width: 28px;
+    height: 28px;
+    animation: spin 0.9s linear infinite;
 }
 
 @keyframes spin {
-    to {
-        transform: rotate(360deg);
+    to { transform: rotate(360deg); }
+}
+
+/* Motion. Transform and opacity only; nothing travels with reduced motion. */
+@media (prefers-reduced-motion: no-preference) {
+    html.js [data-reveal] > * {
+        opacity: 0;
+        transform: translateY(24px);
+        transition: opacity 1s ease-out, transform 1s ease-out;
+        transition-delay: calc(var(--i, 0) * 100ms);
+    }
+
+    html.js [data-reveal].is-in > * {
+        opacity: 1;
+        transform: none;
+    }
+
+    .aparece {
+        animation: aparece 1s ease-out both;
+        animation-delay: var(--d, 0ms);
+    }
+
+    .resplandor-vivo {
+        animation: respira 14s ease-in-out infinite alternate;
     }
 }
 
-/* FullCalendar theme overrides */
-.fc {
-    --fc-page-bg-color: transparent;
-    --fc-border-color: rgba(196, 181, 253, 0.15);
-    --fc-neutral-bg-color: rgba(15, 23, 42, 0.75);
-    --fc-today-bg-color: rgba(168, 85, 247, 0.15);
-    --fc-event-text-color: #0f172a;
-    --fc-button-bg-color: var(--primary);
-    --fc-button-border-color: var(--primary);
-    --fc-button-text-color: #0f172a;
-    --fc-button-hover-bg-color: #9333ea;
-    --fc-button-hover-border-color: #9333ea;
-    --fc-button-active-bg-color: #7c3aed;
-    --fc-button-active-border-color: #7c3aed;
+@keyframes aparece {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: none; }
 }
 
-.fc .fc-toolbar-title {
-    color: #f8fafc;
-    font-weight: 600;
+@keyframes respira {
+    from { transform: translate3d(-4%, -2%, 0) scale(1); opacity: 0.85; }
+    to { transform: translate3d(5%, 3%, 0) scale(1.12); opacity: 1; }
 }
 
-.fc .fc-col-header-cell-cushion,
-.fc .fc-daygrid-day-number,
-.fc .fc-timegrid-axis-cushion {
-    color: #e2e8f0;
+@keyframes progreso {
+    from { transform: scaleX(0); }
+    to { transform: scaleX(1); }
 }
 
-.fc .fc-timegrid-slot-label,
-.fc .fc-timegrid-axis-frame {
-    color: #cbd5f5;
+/* Sound waves: the hero's moving picture. */
+@media (prefers-reduced-motion: no-preference) {
+    .onda {
+        stroke-dasharray: 340 60;
+        animation: onda-fluye 18s linear infinite;
+        animation-delay: calc(var(--n, 0) * -0.9s);
+    }
+
+    .ondas {
+        animation: ondas-mece 16s ease-in-out infinite alternate;
+        transform-origin: 50% 50%;
+    }
 }
 
-.fc .fc-button {
-    box-shadow: none;
+@keyframes onda-fluye {
+    to { stroke-dashoffset: -800; }
 }
 
-/* ── Shared form field style ── */
-.input-field {
-    width: 100%;
-    background: var(--input);
-    border: 1px solid var(--border);
-    border-radius: 0.75rem;
-    padding: 0.6875rem 1rem;
-    color: var(--foreground);
-    font-size: 0.875rem;
-    transition: border-color 0.2s, box-shadow 0.2s;
-}
-.input-field:focus {
-    outline: none;
-    border-color: var(--primary);
-    box-shadow: 0 0 0 2px rgba(168, 85, 247, 0.15);
-}
-.input-field::placeholder {
-    color: #64748b;
+@keyframes ondas-mece {
+    from { transform: translateY(-1.5%) scaleY(0.94); }
+    to { transform: translateY(1.5%) scaleY(1.06); }
 }

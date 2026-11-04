@@ -27,7 +27,7 @@ public class GetMembersRoleByIdGroupQueryHandlerIntegrationTests : IClassFixture
             {
                 GroupId = 10,
                 UserId = 1,
-                Role = GroupMemberRole.Leader,
+                Role = GroupMemberRole.Owner,
                 IsActive = true,
                 JoinedAt = DateTime.UtcNow,
                 JoinedVia = JoinedVia.Manual
@@ -47,7 +47,7 @@ public class GetMembersRoleByIdGroupQueryHandlerIntegrationTests : IClassFixture
 
         Assert.True(result.IsSuccess);
         Assert.Equal(2, result.Value!.Count);
-        Assert.Contains(result.Value, x => x.UserId == 1 && x.Role == GroupMemberRole.Leader);
+        Assert.Contains(result.Value, x => x.UserId == 1 && x.Role == GroupMemberRole.Owner);
         Assert.Contains(result.Value, x => x.UserId == 2 && x.Role == GroupMemberRole.Member);
     }
 

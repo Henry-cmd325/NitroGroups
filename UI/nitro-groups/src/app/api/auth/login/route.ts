@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { resolveBackendApiBaseUrl } from "@/lib/backendBaseUrl";
+import { getSessionSecret } from "@/lib/sessionSecret";
 
 interface LoginRequest {
     email: string;
@@ -118,10 +119,11 @@ export async function POST(request: NextRequest) {
                 || idTokenPayload["https://nitrogroups.com/user_metadata"]?.user_type
                 || idTokenPayload.user_metadata?.user_type
                 || "client";
+            // "band_member" es solo el flujo de onboarding de manager: la cuenta es de músico.
             const userTypeMap: Record<string, number> = {
                 client: 0,
                 musician: 1,
-                band_member: 2,
+                band_member: 1,
             };
             const mappedType = userTypeMap[rawType] ?? 0;
 
@@ -130,7 +132,11 @@ export async function POST(request: NextRequest) {
 
             const syncResponse = await fetch(`${backendUrl}/auth/sync`, {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                // La API toma la identidad del access token, no del body.
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${tokenData.access_token}`,
+                },
                 body: JSON.stringify({
                     auth0Id: idTokenPayload.sub,
                     email: idTokenPayload.email,
@@ -159,9 +165,7 @@ export async function POST(request: NextRequest) {
 
         // Encrypt and set session cookie
         const { SignJWT } = await import("jose");
-        const secret = new TextEncoder().encode(
-            process.env.AUTH0_SECRET || "default-secret-change-me"
-        );
+        const secret = getSessionSecret();
 
         const jwt = await new SignJWT({ session: sessionData })
             .setProtectedHeader({ alg: "HS256" })

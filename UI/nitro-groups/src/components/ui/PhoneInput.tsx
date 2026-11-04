@@ -1,36 +1,37 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useId } from "react";
+import { ChevronDown } from "lucide-react";
 
 interface CountryCode {
     code: string;
     name: string;
     dial: string;
-    flag: string;
 }
 
+// Sin banderas emoji: el código ISO y la lada se leen igual en cualquier sistema.
 const COUNTRY_CODES: CountryCode[] = [
-    { code: "MX", name: "México", dial: "+52", flag: "🇲🇽" },
-    { code: "US", name: "Estados Unidos", dial: "+1", flag: "🇺🇸" },
-    { code: "CO", name: "Colombia", dial: "+57", flag: "🇨🇴" },
-    { code: "AR", name: "Argentina", dial: "+54", flag: "🇦🇷" },
-    { code: "ES", name: "España", dial: "+34", flag: "🇪🇸" },
-    { code: "CL", name: "Chile", dial: "+56", flag: "🇨🇱" },
-    { code: "PE", name: "Perú", dial: "+51", flag: "🇵🇪" },
-    { code: "EC", name: "Ecuador", dial: "+593", flag: "🇪🇨" },
-    { code: "VE", name: "Venezuela", dial: "+58", flag: "🇻🇪" },
-    { code: "GT", name: "Guatemala", dial: "+502", flag: "🇬🇹" },
-    { code: "CR", name: "Costa Rica", dial: "+506", flag: "🇨🇷" },
-    { code: "PA", name: "Panamá", dial: "+507", flag: "🇵🇦" },
-    { code: "DO", name: "Rep. Dominicana", dial: "+1", flag: "🇩🇴" },
-    { code: "HN", name: "Honduras", dial: "+504", flag: "🇭🇳" },
-    { code: "SV", name: "El Salvador", dial: "+503", flag: "🇸🇻" },
-    { code: "NI", name: "Nicaragua", dial: "+505", flag: "🇳🇮" },
-    { code: "BO", name: "Bolivia", dial: "+591", flag: "🇧🇴" },
-    { code: "PY", name: "Paraguay", dial: "+595", flag: "🇵🇾" },
-    { code: "UY", name: "Uruguay", dial: "+598", flag: "🇺🇾" },
-    { code: "CU", name: "Cuba", dial: "+53", flag: "🇨🇺" },
-    { code: "BR", name: "Brasil", dial: "+55", flag: "🇧🇷" },
+    { code: "MX", name: "México", dial: "+52" },
+    { code: "US", name: "Estados Unidos", dial: "+1" },
+    { code: "CO", name: "Colombia", dial: "+57" },
+    { code: "AR", name: "Argentina", dial: "+54" },
+    { code: "ES", name: "España", dial: "+34" },
+    { code: "CL", name: "Chile", dial: "+56" },
+    { code: "PE", name: "Perú", dial: "+51" },
+    { code: "EC", name: "Ecuador", dial: "+593" },
+    { code: "VE", name: "Venezuela", dial: "+58" },
+    { code: "GT", name: "Guatemala", dial: "+502" },
+    { code: "CR", name: "Costa Rica", dial: "+506" },
+    { code: "PA", name: "Panamá", dial: "+507" },
+    { code: "DO", name: "Rep. Dominicana", dial: "+1" },
+    { code: "HN", name: "Honduras", dial: "+504" },
+    { code: "SV", name: "El Salvador", dial: "+503" },
+    { code: "NI", name: "Nicaragua", dial: "+505" },
+    { code: "BO", name: "Bolivia", dial: "+591" },
+    { code: "PY", name: "Paraguay", dial: "+595" },
+    { code: "UY", name: "Uruguay", dial: "+598" },
+    { code: "CU", name: "Cuba", dial: "+53" },
+    { code: "BR", name: "Brasil", dial: "+55" },
 ];
 
 interface PhoneInputProps {
@@ -41,13 +42,19 @@ interface PhoneInputProps {
     error?: string;
 }
 
+/** Teléfono con lada: mismo lenguaje que `Input` (relleno fondo-2, sin borde, anillo al enfocar). */
 export default function PhoneInput({ label, value, onChange, required, error }: PhoneInputProps) {
-    const [selectedCountry, setSelectedCountry] = useState<CountryCode>(COUNTRY_CODES[0]); // Default: Mexico
+    const [selectedCountry, setSelectedCountry] = useState<CountryCode>(COUNTRY_CODES[0]); // Por defecto: México
     const [isOpen, setIsOpen] = useState(false);
     const [search, setSearch] = useState("");
     const dropdownRef = useRef<HTMLDivElement>(null);
+    const triggerRef = useRef<HTMLButtonElement>(null);
+    const id = useId();
+    const inputId = `${id}-phone`;
+    const listId = `${id}-countries`;
+    const errorId = `${id}-error`;
 
-    // Extract phone number without country code
+    // Número sin la lada del país
     const phoneNumber = value.startsWith(selectedCountry.dial)
         ? value.slice(selectedCountry.dial.length).trim()
         : value.replace(/^\+\d+\s*/, "");
@@ -63,6 +70,12 @@ export default function PhoneInput({ label, value, onChange, required, error }: 
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
 
+    const close = () => {
+        setIsOpen(false);
+        setSearch("");
+        triggerRef.current?.focus();
+    };
+
     const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const raw = e.target.value.replace(/[^\d]/g, "");
         onChange(`${selectedCountry.dial} ${raw}`);
@@ -71,8 +84,7 @@ export default function PhoneInput({ label, value, onChange, required, error }: 
     const handleSelectCountry = (country: CountryCode) => {
         setSelectedCountry(country);
         onChange(`${country.dial} ${phoneNumber}`);
-        setIsOpen(false);
-        setSearch("");
+        close();
     };
 
     const filteredCountries = search
@@ -85,88 +97,95 @@ export default function PhoneInput({ label, value, onChange, required, error }: 
         : COUNTRY_CODES;
 
     return (
-        <div className="space-y-1.5">
+        <div className="w-full space-y-2">
             {label && (
-                <label className="text-sm font-medium leading-none">
+                <label htmlFor={inputId} className="text-sm font-medium leading-none">
                     {label}
                 </label>
             )}
-            <div className="flex gap-0">
-                {/* Country Code Selector */}
-                <div className="relative" ref={dropdownRef}>
+            <div className="flex gap-0.5">
+                {/* Lada */}
+                <div
+                    className="relative"
+                    ref={dropdownRef}
+                    onKeyDown={(e) => {
+                        if (e.key === "Escape" && isOpen) {
+                            e.stopPropagation();
+                            close();
+                        }
+                    }}
+                >
                     <button
+                        ref={triggerRef}
                         type="button"
                         onClick={() => setIsOpen(!isOpen)}
-                        className="flex items-center gap-1.5 h-10 px-3 border border-r-0 rounded-l-md bg-muted/50 hover:bg-muted transition-colors text-sm whitespace-nowrap"
+                        aria-haspopup="true"
+                        aria-expanded={isOpen}
+                        aria-controls={isOpen ? listId : undefined}
+                        aria-label={`Lada: ${selectedCountry.name} ${selectedCountry.dial}. Cambiar país`}
+                        className="flex h-12 items-center gap-2 whitespace-nowrap bg-fondo-2 px-3.5 text-tinta tabular transition-colors hover:bg-fondo-3 focus-visible:-outline-offset-2"
                     >
-                        <span className="text-lg leading-none">{selectedCountry.flag}</span>
-                        <span className="text-muted-foreground">{selectedCountry.dial}</span>
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="12"
-                            height="12"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            className={`transition-transform ${isOpen ? "rotate-180" : ""}`}
-                        >
-                            <path d="m6 9 6 6 6-6" />
-                        </svg>
+                        <span className="text-sm text-tinta-2">{selectedCountry.code}</span>
+                        <span>{selectedCountry.dial}</span>
+                        <ChevronDown aria-hidden className={`size-4 text-tinta-2 transition-transform ${isOpen ? "rotate-180" : ""}`} />
                     </button>
 
                     {isOpen && (
-                        <div className="absolute top-full left-0 mt-1 w-64 max-h-60 overflow-auto bg-background border rounded-lg shadow-xl z-50 animate-in fade-in-0 slide-in-from-top-2 duration-200">
-                            {/* Search */}
-                            <div className="sticky top-0 bg-background p-2 border-b">
+                        // Menú flotante: es lo único que lleva sombra (DESIGN.md → Tokens).
+                        <div className="absolute left-0 top-full z-50 mt-1 max-h-72 w-72 overflow-auto bg-fondo-2 shadow-[0_12px_32px_-8px_var(--fondo)]">
+                            <div className="sticky top-0 bg-fondo-2 p-2">
                                 <input
                                     type="text"
-                                    placeholder="Buscar país..."
+                                    placeholder="Buscar país…"
+                                    aria-label="Buscar país"
                                     value={search}
                                     onChange={(e) => setSearch(e.target.value)}
-                                    className="w-full h-8 px-3 text-sm border rounded-md bg-muted/50 focus:outline-none focus:ring-2 focus:ring-primary/50"
+                                    className="h-10 w-full bg-fondo px-3 text-sm text-tinta placeholder:text-tinta-2/70 outline-none focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-acento"
                                     autoFocus
                                 />
                             </div>
-                            {/* Country List */}
-                            {filteredCountries.map((country) => (
-                                <button
-                                    key={country.code}
-                                    type="button"
-                                    onClick={() => handleSelectCountry(country)}
-                                    className={`w-full flex items-center gap-3 px-3 py-2 text-sm hover:bg-accent transition-colors text-left ${selectedCountry.code === country.code
-                                            ? "bg-primary/5 text-primary"
-                                            : ""
-                                        }`}
-                                >
-                                    <span className="text-lg leading-none">{country.flag}</span>
-                                    <span className="flex-1">{country.name}</span>
-                                    <span className="text-muted-foreground text-xs">
-                                        {country.dial}
-                                    </span>
-                                </button>
-                            ))}
+                            <ul id={listId} aria-label="Países">
+                                {filteredCountries.map((country) => {
+                                    const isCurrent = selectedCountry.code === country.code;
+                                    return (
+                                        <li key={country.code}>
+                                            <button
+                                                type="button"
+                                                onClick={() => handleSelectCountry(country)}
+                                                aria-current={isCurrent ? "true" : undefined}
+                                                className={`flex w-full items-center gap-3 px-3 py-2.5 text-left text-sm transition-colors hover:bg-fondo-3 focus-visible:-outline-offset-2 ${isCurrent ? "text-acento" : "text-tinta"}`}
+                                            >
+                                                <span className="w-7 text-tinta-2">{country.code}</span>
+                                                <span className="flex-1">{country.name}</span>
+                                                <span className="tabular text-tinta-2">{country.dial}</span>
+                                            </button>
+                                        </li>
+                                    );
+                                })}
+                            </ul>
                             {filteredCountries.length === 0 && (
-                                <p className="px-3 py-4 text-sm text-muted-foreground text-center">
-                                    No se encontraron países
-                                </p>
+                                <p className="px-3 py-4 text-sm text-tinta-2">Ningún país coincide con “{search}”.</p>
                             )}
                         </div>
                     )}
                 </div>
 
-                {/* Phone Number Input */}
+                {/* Número */}
                 <input
+                    id={inputId}
                     type="tel"
-                    placeholder="10 1234 5678"
+                    inputMode="tel"
+                    autoComplete="tel-national"
+                    placeholder="55 1234 5678"
                     value={phoneNumber}
                     onChange={handlePhoneChange}
                     required={required}
-                    className={`flex-1 h-10 px-3 border rounded-r-md bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-colors ${error ? "border-destructive focus:ring-destructive/50" : "border-input"
-                        }`}
+                    aria-invalid={error ? true : undefined}
+                    aria-describedby={error ? errorId : undefined}
+                    className={`h-12 min-w-0 flex-1 bg-fondo-2 px-4 text-base text-tinta tabular placeholder:text-tinta-2/70 outline-none focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-acento ${error ? "shadow-[inset_0_-2px_0_var(--error)]" : ""}`}
                 />
             </div>
-            {error && <p className="text-sm text-destructive">{error}</p>}
+            {error && <p id={errorId} className="text-sm text-error">{error}</p>}
         </div>
     );
 }

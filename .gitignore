@@ -575,3 +575,4 @@ ai/logs/
 
 # Gentle-AI (índice local de skills, rutas de la máquina)
 .atl/
+backup/

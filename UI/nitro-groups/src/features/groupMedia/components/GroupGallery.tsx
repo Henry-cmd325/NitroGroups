@@ -1,14 +1,14 @@
 "use client";
 
-import { useRef, useState } from "react";
-import { Plus, Play, Image as ImageIcon, Film, MoreHorizontal, Music, Trash2, X } from "lucide-react";
+import { useEffect, useId, useRef, useState } from "react";
+import { Film, Music, Plus, Trash2, X } from "lucide-react";
 import { useQueryClient, useMutation, useQuery } from "@tanstack/react-query";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { groupsService } from "@/features/groups/services/groups.service";
 import { uploadGroupMediaFile } from "@/lib/groupMediaUpload";
-import { Loader } from "@/components/ui";
+import { Alert, AlertDescription } from "@/components/ui/Alert";
+import { Button } from "@/components/ui/Button";
 import type { GroupMediaResponse } from "../types/GroupMedia";
-import type { MusicGroup } from "@/features/groups/types/MusicGroup";
 
 type GroupGalleryProps = {
     media?: GroupMediaResponse[];
@@ -49,8 +49,9 @@ export default function GroupGallery({ media: mediaProp }: GroupGalleryProps) {
         setIsAdding(true);
     };
 
-    // Delete state
+    // Borrado en dos pasos: primero se pide confirmar, luego se elimina.
     const [deletingId, setDeletingId] = useState<number | null>(null);
+    const [confirmingId, setConfirmingId] = useState<number | null>(null);
 
     // Mutations
     const addMutation = useMutation({
@@ -103,6 +104,7 @@ export default function GroupGallery({ media: mediaProp }: GroupGalleryProps) {
                 queryClient.setQueryData(["music-group", user.id], updatedGroup);
             }
             setDeletingId(null);
+            setConfirmingId(null);
         }
     });
 
@@ -117,247 +119,283 @@ export default function GroupGallery({ media: mediaProp }: GroupGalleryProps) {
         }
     };
 
+    const closeDialog = () => {
+        setIsAdding(false);
+        setAddMode("upload");
+        fileRef.current = null;
+        setFileSelectionLabel(null);
+        setFileInputKey((k) => k + 1);
+        addMutation.reset();
+    };
+
+    const dialogRef = useRef<HTMLDivElement>(null);
+    const titleId = useId();
+    // Escape cierra igual que el botón Cancelar (resetea archivo, modo y error).
+    const closeDialogRef = useRef(closeDialog);
+    useEffect(() => { closeDialogRef.current = closeDialog; });
+    useEffect(() => {
+        if (!isAdding) return;
+        // Al abrir, el foco entra al diálogo; Escape lo cierra.
+        dialogRef.current?.querySelector<HTMLElement>("input, select, button")?.focus();
+        const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") closeDialogRef.current(); };
+        window.addEventListener("keydown", onKey);
+        return () => window.removeEventListener("keydown", onKey);
+    }, [isAdding]);
+
+    const field = "block h-12 w-full bg-fondo px-4 text-base text-tinta placeholder:text-tinta-2/70 outline-none focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-acento";
+    const modeTab = (active: boolean) =>
+        `h-10 border-b-2 px-1 font-semibold transition-colors ${active ? "border-acento text-tinta" : "border-transparent text-tinta-2 hover:text-tinta"}`;
+
+    const items = media as GroupMediaResponse[];
+
     return (
-        <div className="w-full text-white py-2">
-            {/* header */}
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
-                <div>
-                    <h2 className="text-xl font-semibold">Galería Multimedia</h2>
-                    <p className="text-sm text-gray-500 mt-1">Fotos y videos de tus presentaciones.</p>
+        <section aria-labelledby="galeria-titulo" className="py-10">
+            <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+                <div className="max-w-[60ch]">
+                    <h2 id="galeria-titulo" className="sr-only">Galería</h2>
+                    <p className="text-tinta-2">
+                        Fotos, videos y audio de tus presentaciones. Es lo primero que mira un cliente en tu perfil.
+                    </p>
                 </div>
-                {groupId && (
-                    <button 
-                        onClick={openAddModal}
-                        className="flex items-center gap-2 bg-primary hover:bg-primary/85 text-white text-sm px-5 py-2.5 rounded-xl font-semibold transition-colors"
-                    >
-                        <Plus size={16} /> Subir Contenido
-                    </button>
+                {groupId && items.length > 0 && (
+                    <Button onClick={openAddModal} className="self-start sm:self-auto">
+                        <Plus aria-hidden /> Subir foto o video
+                    </Button>
                 )}
             </div>
 
-            {/* grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                {/* upload placeholder */}
-                {groupId && (
-                    <div 
-                        onClick={openAddModal}
-                        className="bg-card border-2 border-dashed border-border rounded-2xl aspect-[4/3] flex flex-col items-center justify-center cursor-pointer hover:border-primary/40 hover:bg-primary/5 transition-colors group"
-                    >
-                        <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-                            <Plus className="text-primary" size={24} />
-                        </div>
-                        <p className="text-sm font-medium text-white">Añadir foto o video</p>
-                        <p className="text-xs text-gray-500 mt-1">Subida a almacenamiento (R2) — máx. 50 MB</p>
-                    </div>
-                )}
-
-                {media.length === 0 ? (
-                    /* empty state */
-                    <div className="sm:col-span-1 lg:col-span-2 bg-card border border-border rounded-2xl aspect-[4/3] flex flex-col items-center justify-center">
-                        <div className="w-16 h-16 rounded-full bg-primary/5 flex items-center justify-center mb-4">
-                            <Music className="text-primary/40" size={28} />
-                        </div>
-                        <p className="text-sm font-medium text-gray-400">Aún no tienes contenido multimedia</p>
-                        <p className="text-xs text-gray-500 mt-1 max-w-xs text-center">
-                            ¡Sube tus mejores fotos y videos de presentaciones para atraer más clientes!
-                        </p>
-                    </div>
-                ) : (
-                    /* gallery items */
-                    (media as GroupMediaResponse[]).map((item) => (
-                        <div key={item.id} className="group relative bg-card rounded-2xl overflow-hidden aspect-[4/3] border border-border">
-                            {item.type === "video" ? (
-                                <div className="w-full h-full bg-black/50 flex flex-col items-center justify-center">
-                                    <Film size={48} className="text-white/20 mb-2" />
-                                </div>
-                            ) : item.type === "audio" ? (
-                                <div className="w-full h-full bg-zinc-800 flex flex-col items-center justify-center">
-                                    <Music size={48} className="text-primary/40 mb-2" />
-                                </div>
-                            ) : (
-                                <img src={item.url} alt={item.title || "Media"} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
-                            )}
-
-                            {/* hover overlay */}
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent flex flex-col justify-between p-4">
-                                {/* top right menu */}
-                                <div className="flex justify-end opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                    <button 
-                                        onClick={() => { setDeletingId(item.id); removeMutation.mutate(item.id); }}
-                                        disabled={removeMutation.isPending && deletingId === item.id}
-                                        className="w-8 h-8 rounded-full bg-red-500/80 backdrop-blur-sm flex items-center justify-center hover:bg-red-600 transition-colors"
-                                    >
-                                        {(removeMutation.isPending && deletingId === item.id) ? (
-                                            <Loader className="w-4 h-4" />
+            {groupQuery.isLoading ? (
+                <div aria-busy className="mt-8 grid grid-cols-2 gap-0.5 lg:grid-cols-4">
+                    <span className="sr-only" role="status">Cargando galería…</span>
+                    <div aria-hidden className="col-span-2 row-span-2 aspect-square bg-fondo-2" />
+                    {[0, 1, 2, 3].map((n) => <div key={n} aria-hidden className="aspect-square bg-fondo-2" />)}
+                </div>
+            ) : items.length === 0 ? (
+                <div className="mt-8 flex flex-col items-start gap-5 bg-fondo-2 px-6 py-12 md:px-10 md:py-16">
+                    <p className="type-heading text-2xl">Tu galería está vacía</p>
+                    <p className="max-w-[52ch] text-tinta-2">
+                        Sube fotos de tus presentaciones. La primera hace de portada mientras no elijas una en tu perfil.
+                    </p>
+                    {groupId && (
+                        <Button onClick={openAddModal}>
+                            <Plus aria-hidden /> Subir foto o video
+                        </Button>
+                    )}
+                </div>
+            ) : (
+                <ul className="mt-8 grid grid-cols-2 gap-x-0.5 gap-y-6 lg:grid-cols-4">
+                    {items.map((item, index) => {
+                        const kind = item.type.toLowerCase();
+                        const preview = kind === "photo" ? item.url : item.thumbnailUrl;
+                        const label = item.title || (kind === "video" ? "Video sin título" : kind === "audio" ? "Audio sin título" : "Foto sin título");
+                        const isDeleting = removeMutation.isPending && deletingId === item.id;
+                        const isConfirming = confirmingId === item.id;
+                        return (
+                            <li key={item.id} className={index === 0 ? "col-span-2 lg:row-span-2" : undefined}>
+                                {/* La primera pieza manda: en escritorio llena dos filas para que su pie cierre con el de la segunda fila. */}
+                                <figure className="flex h-full flex-col">
+                                    <div className={`relative aspect-square overflow-hidden bg-fondo-3 ${index === 0 ? "lg:aspect-auto lg:min-h-0 lg:flex-1" : ""}`}>
+                                        {preview ? (
+                                            // eslint-disable-next-line @next/next/no-img-element -- archivos de R2 o enlaces externos
+                                            <img src={preview} alt={label} loading="lazy" decoding="async" className="absolute inset-0 size-full object-cover" />
                                         ) : (
-                                            <Trash2 size={16} className="text-white" />
+                                            <div className="absolute inset-0 grid place-items-center text-tinta-2">
+                                                {kind === "audio" ? <Music aria-hidden className="size-10" /> : <Film aria-hidden className="size-10" />}
+                                            </div>
                                         )}
-                                    </button>
-                                </div>
-
-                                {/* bottom info */}
-                                <div>
-                                    <p className="text-sm font-medium text-white truncate shadow-black drop-shadow-md">{item.title || "Sin título"}</p>
-                                </div>
-                            </div>
-
-                            {/* type badge */}
-                            <div className="absolute top-3 left-3 w-8 h-8 bg-black/50 backdrop-blur-sm rounded-lg flex items-center justify-center border border-white/10">
-                                {item.type === "video" ? <Film size={14} className="text-white" /> : 
-                                 item.type === "audio" ? <Music size={14} className="text-white" /> : 
-                                 <ImageIcon size={14} className="text-white" />}
-                            </div>
-
-                            {/* play button for video */}
-                            {item.type === "video" && (
-                                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                                    <div className="w-12 h-12 bg-primary/90 backdrop-blur-sm rounded-full flex items-center justify-center pl-0.5 shadow-lg">
-                                        <Play className="text-white fill-white" size={18} />
+                                        {kind !== "photo" && (
+                                            <span className="absolute left-0 top-0 inline-flex items-center gap-1.5 bg-fondo px-2 py-1 text-sm text-tinta">
+                                                {kind === "audio" ? <Music aria-hidden className="size-4" /> : <Film aria-hidden className="size-4" />}
+                                                {kind === "audio" ? "Audio" : "Video"}
+                                            </span>
+                                        )}
                                     </div>
-                                </div>
-                            )}
-                        </div>
-                    ))
-                )}
-            </div>
+                                    <figcaption className="mt-2 flex min-h-10 items-center justify-between gap-2">
+                                        {isConfirming ? (
+                                            <>
+                                                <span className="text-sm text-tinta">¿Eliminar de la galería?</span>
+                                                <span className="flex shrink-0 gap-1">
+                                                    <Button size="sm" variant="ghost" onClick={() => setConfirmingId(null)} disabled={isDeleting}>
+                                                        Cancelar
+                                                    </Button>
+                                                    <Button
+                                                        size="sm"
+                                                        variant="destructive"
+                                                        disabled={isDeleting}
+                                                        onClick={() => { setDeletingId(item.id); removeMutation.mutate(item.id); }}
+                                                    >
+                                                        {isDeleting ? "Eliminando…" : "Eliminar"}
+                                                    </Button>
+                                                </span>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <span className={`truncate text-sm ${item.title ? "text-tinta" : "text-tinta-2"}`}>{label}</span>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setConfirmingId(item.id)}
+                                                    aria-label={`Eliminar ${label}`}
+                                                    className="grid size-10 shrink-0 place-items-center text-tinta-2 transition-colors hover:bg-fondo-2 hover:text-tinta"
+                                                >
+                                                    <Trash2 aria-hidden className="size-4" />
+                                                </button>
+                                            </>
+                                        )}
+                                    </figcaption>
+                                </figure>
+                            </li>
+                        );
+                    })}
+                </ul>
+            )}
 
-            {/* Add Media Modal (Simple overlay for now, normally would use a real Dialog component) */}
+            {removeMutation.isError && (
+                <Alert variant="destructive" className="mt-6">
+                    <AlertDescription>No pudimos eliminar el archivo. Inténtalo de nuevo.</AlertDescription>
+                </Alert>
+            )}
+
             {isAdding && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
-                    <div className="bg-card w-full max-w-md rounded-2xl border border-border shadow-2xl overflow-hidden">
-                        <div className="flex justify-between items-center p-5 border-b border-border">
-                            <h3 className="text-lg font-semibold">Añadir Contenido</h3>
-                            <button onClick={() => setIsAdding(false)} className="text-gray-400 hover:text-white">
-                                <X size={20} />
+                <div className="fixed inset-0 z-50 grid place-items-center bg-fondo/85 p-4" role="presentation" onClick={closeDialog}>
+                    <div
+                        ref={dialogRef}
+                        role="dialog"
+                        aria-modal="true"
+                        aria-labelledby={titleId}
+                        onClick={(e) => e.stopPropagation()}
+                        className="max-h-[calc(100dvh-2rem)] w-full max-w-lg overflow-y-auto bg-fondo-2 shadow-[0_24px_64px_-16px_var(--fondo)]"
+                    >
+                        <div className="flex items-center justify-between gap-4 px-6 pt-5">
+                            <h3 id={titleId} className="type-heading text-2xl">Subir a la galería</h3>
+                            <button type="button" onClick={closeDialog} aria-label="Cerrar" className="grid size-10 place-items-center text-tinta-2 transition-colors hover:bg-fondo-3 hover:text-tinta">
+                                <X aria-hidden className="size-5" />
                             </button>
                         </div>
-                        <form onSubmit={handleAddSubmit} className="p-5 space-y-4">
-                            <div className="flex rounded-xl border border-border p-0.5 bg-background/50">
-                                <button
-                                    type="button"
-                                    onClick={() => {
-                                        setAddMode("upload");
-                                    }}
-                                    className={`flex-1 rounded-lg py-2 text-sm font-medium transition-colors ${
-                                        addMode === "upload" ? "bg-primary text-primary-foreground" : "text-gray-400 hover:text-white"
-                                    }`}
-                                >
-                                    Subir archivo
+                        <form onSubmit={handleAddSubmit} className="space-y-5 px-6 pb-6 pt-3">
+                            <div className="flex gap-6" role="group" aria-label="Cómo añadirlo">
+                                <button type="button" aria-pressed={addMode === "upload"} onClick={() => { setAddMode("upload"); }} className={modeTab(addMode === "upload")}>
+                                    Desde tu equipo
                                 </button>
                                 <button
                                     type="button"
+                                    aria-pressed={addMode === "url"}
                                     onClick={() => {
                                         setAddMode("url");
                                         fileRef.current = null;
                                         setFileSelectionLabel(null);
                                         setFileInputKey((k) => k + 1);
                                     }}
-                                    className={`flex-1 rounded-lg py-2 text-sm font-medium transition-colors ${
-                                        addMode === "url" ? "bg-primary text-primary-foreground" : "text-gray-400 hover:text-white"
-                                    }`}
+                                    className={modeTab(addMode === "url")}
                                 >
-                                    Enlace (URL)
+                                    Con un enlace
                                 </button>
                             </div>
+
                             {addMode === "upload" && (
-                            <div>
-                                <label className="block text-sm text-gray-400 mb-1.5" htmlFor="group-media-file">Archivo</label>
-                                <input
-                                    id="group-media-file"
-                                    key={fileInputKey}
-                                    type="file"
-                                    accept="image/*,video/*,audio/*"
-                                    onClick={(e) => e.stopPropagation()}
-                                    onChange={(e) => {
-                                        e.stopPropagation();
-                                        const f = e.target.files?.[0] ?? null;
-                                        fileRef.current = f;
-                                        setFileSelectionLabel(
-                                            f
-                                                ? `${f.name} (${f.size > 0 ? Math.max(1, Math.round(f.size / 1024)) : 0} KB)`
-                                                : null
-                                        );
-                                    }}
-                                    className="block w-full min-w-0 text-sm text-white file:mr-3 file:rounded-lg file:border-0 file:bg-primary/20 file:px-3 file:py-1.5 file:text-primary"
-                                />
-                                {fileSelectionLabel ? (
-                                    <p className="text-xs text-emerald-500/90 mt-1.5" aria-live="polite">
-                                        Listo: {fileSelectionLabel}
+                                <div>
+                                    <label className="mb-2 block text-sm font-medium" htmlFor="group-media-file">Archivo</label>
+                                    <input
+                                        id="group-media-file"
+                                        key={fileInputKey}
+                                        type="file"
+                                        accept="image/*,video/*,audio/*"
+                                        aria-describedby="group-media-file-hint"
+                                        onClick={(e) => e.stopPropagation()}
+                                        onChange={(e) => {
+                                            e.stopPropagation();
+                                            const f = e.target.files?.[0] ?? null;
+                                            fileRef.current = f;
+                                            setFileSelectionLabel(
+                                                f
+                                                    ? `${f.name} (${f.size > 0 ? Math.max(1, Math.round(f.size / 1024)) : 0} KB)`
+                                                    : null
+                                            );
+                                        }}
+                                        className="block w-full min-w-0 bg-fondo text-sm text-tinta-2 file:mr-4 file:h-12 file:cursor-pointer file:border-0 file:bg-fondo-3 file:px-4 file:font-semibold file:text-tinta hover:file:bg-fondo-3/80"
+                                    />
+                                    <p id="group-media-file-hint" className={`mt-2 text-sm ${fileSelectionLabel ? "text-ok" : "text-tinta-2"}`} aria-live="polite">
+                                        {fileSelectionLabel ? `Elegido: ${fileSelectionLabel}` : "Imagen, video o audio, hasta 50 MB."}
                                     </p>
-                                ) : (
-                                    <p className="text-xs text-gray-500 mt-1.5">Imagen, video o audio · máx. 50 MB</p>
-                                )}
-                            </div>
+                                </div>
                             )}
+
                             {addMode === "url" && (
-                            <>
-                            <div>
-                                <label className="block text-sm text-gray-400 mb-1.5">Tipo de contenido</label>
-                                <select 
-                                    value={newMedia.type} 
-                                    onChange={e => setNewMedia({...newMedia, type: e.target.value})}
-                                    className="w-full bg-background border border-border rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-primary/50"
-                                >
-                                    <option value="photo">Foto</option>
-                                    <option value="video">Video</option>
-                                    <option value="audio">Audio</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label className="block text-sm text-gray-400 mb-1.5">URL</label>
-                                <input 
-                                    type="url" 
-                                    value={newMedia.url} 
-                                    onChange={e => setNewMedia({...newMedia, url: e.target.value})}
-                                    placeholder="https://" 
-                                    className="w-full bg-background border border-border rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-primary/50"
-                                />
-                                <p className="text-xs text-gray-500 mt-1">Enlace directo, YouTube, etc.</p>
-                            </div>
-                            </>
+                                <>
+                                    <div>
+                                        <label className="mb-2 block text-sm font-medium" htmlFor="group-media-type">Tipo</label>
+                                        <select
+                                            id="group-media-type"
+                                            value={newMedia.type}
+                                            onChange={e => setNewMedia({ ...newMedia, type: e.target.value })}
+                                            className={field}
+                                        >
+                                            <option value="photo">Foto</option>
+                                            <option value="video">Video</option>
+                                            <option value="audio">Audio</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label className="mb-2 block text-sm font-medium" htmlFor="group-media-url">Enlace</label>
+                                        <input
+                                            id="group-media-url"
+                                            type="url"
+                                            inputMode="url"
+                                            value={newMedia.url}
+                                            onChange={e => setNewMedia({ ...newMedia, url: e.target.value })}
+                                            placeholder="https://"
+                                            aria-describedby="group-media-url-hint"
+                                            className={field}
+                                        />
+                                        <p id="group-media-url-hint" className="mt-2 text-sm text-tinta-2">Un enlace directo al archivo o a YouTube.</p>
+                                    </div>
+                                </>
                             )}
+
                             <div>
-                                <label className="block text-sm text-gray-400 mb-1.5">Título (opcional)</label>
-                                <input 
-                                    type="text" 
-                                    value={newMedia.title} 
-                                    onChange={e => setNewMedia({...newMedia, title: e.target.value})}
-                                    placeholder="Ej. Concierto en vivo" 
-                                    className="w-full bg-background border border-border rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-primary/50"
+                                <div className="mb-2 flex items-baseline justify-between gap-3">
+                                    <label className="text-sm font-medium" htmlFor="group-media-title">Título</label>
+                                    <span className="text-sm text-tinta-2">Opcional</span>
+                                </div>
+                                <input
+                                    id="group-media-title"
+                                    type="text"
+                                    value={newMedia.title}
+                                    onChange={e => setNewMedia({ ...newMedia, title: e.target.value })}
+                                    placeholder="Ej. Boda en Tlaquepaque, 2025"
+                                    className={field}
                                 />
                             </div>
-                            
-                            <div className="pt-4 flex gap-3">
-                                <button 
-                                    type="button" 
-                                    onClick={() => {
-                                        setIsAdding(false);
-                                        setAddMode("upload");
-                                        fileRef.current = null;
-                                        setFileSelectionLabel(null);
-                                        setFileInputKey((k) => k + 1);
-                                    }}
-                                    className="flex-1 px-4 py-2.5 rounded-xl border border-white/10 hover:bg-white/5 transition-colors text-sm"
-                                >
+
+                            {addMutation.isError && (
+                                <Alert variant="destructive" className="bg-fondo">
+                                    <AlertDescription>
+                                        {addMode === "upload"
+                                            ? "No pudimos subir el archivo. Revisa que pese menos de 50 MB e inténtalo de nuevo."
+                                            : "No pudimos guardar el enlace. Inténtalo de nuevo."}
+                                    </AlertDescription>
+                                </Alert>
+                            )}
+
+                            <div className="flex flex-col-reverse gap-2 pt-2 sm:flex-row sm:justify-end">
+                                <Button type="button" variant="ghost" onClick={closeDialog}>
                                     Cancelar
-                                </button>
-                                <button 
-                                    type="submit" 
+                                </Button>
+                                <Button
+                                    type="submit"
                                     disabled={
                                         addMutation.isPending ||
                                         (addMode === "upload" && !fileSelectionLabel) ||
                                         (addMode === "url" && !newMedia.url?.trim())
                                     }
-                                    className="flex-1 bg-primary hover:bg-primary/80 text-white font-medium px-4 py-2.5 rounded-xl transition-colors text-sm flex justify-center items-center"
                                 >
-                                    {addMutation.isPending ? <Loader className="w-5 h-5" /> : 'Guardar'}
-                                </button>
+                                    {addMutation.isPending && <span aria-hidden className="spinner !size-[1em] !border-2" />}
+                                    {addMutation.isPending ? "Subiendo…" : "Subir a la galería"}
+                                </Button>
                             </div>
                         </form>
                     </div>
                 </div>
             )}
-        </div>
+        </section>
     );
 }
-
